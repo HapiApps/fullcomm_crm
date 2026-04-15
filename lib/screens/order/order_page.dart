@@ -208,8 +208,8 @@ class _OrderPageState extends State<OrderPage> {
                         2: FlexColumnWidth(2),//cus
                         3: FlexColumnWidth(1),//amt
                         4: FlexColumnWidth(1),//o date
-                        5: FlexColumnWidth(1),//status
-                        6: FlexColumnWidth(1),//invo
+                        5: FlexColumnWidth(1),//invo
+                        6: FlexColumnWidth(1),//status
                       },
                       border: TableBorder(
                         horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -428,6 +428,14 @@ class _OrderPageState extends State<OrderPage> {
                                   ),
                                 ],
                               ),),
+                              headerCell(6, CustomText(//4
+                                textAlign: TextAlign.left,
+                                text: "Order Details",
+                                size: 15,
+                                isBold: true,
+                                isCopy: true,
+                                colors: Colors.white,
+                              ),),
                               headerCell(5, Row(
                                 children: [
                                   CustomText(
@@ -468,14 +476,6 @@ class _OrderPageState extends State<OrderPage> {
                                     ),
                                   ),
                                 ],
-                              ),),
-                              headerCell(6, CustomText(//4
-                                textAlign: TextAlign.left,
-                                text: "Order Details",
-                                size: 15,
-                                isBold: true,
-                                isCopy: true,
-                                colors: Colors.white,
                               ),),
                             ]),
                       ],
@@ -523,8 +523,8 @@ class _OrderPageState extends State<OrderPage> {
                                   2: FlexColumnWidth(2),//cus
                                   3: FlexColumnWidth(1),//amt
                                   4: FlexColumnWidth(1),//o date
-                                  5: FlexColumnWidth(1),//status
-                                  6: FlexColumnWidth(1),//invo
+                                  5: FlexColumnWidth(1),//invo
+                                  6: FlexColumnWidth(1),//status
                                 },
                                 border: TableBorder(
                                   horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -589,16 +589,6 @@ class _OrderPageState extends State<OrderPage> {
                                             ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            text: data.status.toString(),
-                                            size: 14,
-                                            isCopy: true,
-                                            colors:data.status.toString()=="Completed"?Colors.green:colorsConst.textColor,
-                                          ),
-                                        ),
                                         Tooltip(
                                           message: productCtr.formatDateTime(data.createdTs.toString()),
                                           child: Padding(
@@ -635,6 +625,16 @@ class _OrderPageState extends State<OrderPage> {
                                                 ],
                                               ),
                                             ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: data.status.toString(),
+                                            size: 14,
+                                            isCopy: true,
+                                            colors:data.status.toString()=="Completed"?Colors.green:colorsConst.textColor,
                                           ),
                                         ),
                                       ]

@@ -6,6 +6,7 @@ import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/utilities/utils.dart';
 import '../../components/Customtext.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
@@ -25,6 +26,23 @@ class QuotationHistory extends StatefulWidget {
 
 class _QuotationHistoryState extends State<QuotationHistory> {
   var sizeInKB=0.0.obs;
+  List<double> colWidths = [
+    60,//s no
+    150,//Action
+    150,//q no
+    150,//cus
+    150,//com
+    130,//com no
+    140,//prd
+    110,//ite
+    110,//amt
+    130,//date
+    120,//vali
+    150,//quo
+    140,//stat
+  ];
+  final ScrollController _controller = ScrollController();
+  final ScrollController _horizontalController = ScrollController();
   @override
   void initState() {
     super.initState();
@@ -80,17 +98,67 @@ class _QuotationHistoryState extends State<QuotationHistory> {
             "-${DateTime.now().year.toString()}";
   }
   late FocusNode _focusNode;
-  final ScrollController _controller = ScrollController();
+  List<String> statusList = ["Confirm Order", "Quotation Draft"];
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _controller.dispose();
+    _horizontalController.dispose();
+    super.dispose();
+  }
+  // KEYBOARD SCROLL LOGIC
+  void _handleKeyEvent(KeyEvent event) {
+    if (event is KeyDownEvent) {
+      const double horizontalScrollAmount = 60.0;
+      const double verticalScrollAmount = 50.0; // Adjust for row height
 
+      // --- HORIZONTAL SCROLLING ---
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        _horizontalController.animateTo(
+          (_horizontalController.offset + horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        _horizontalController.animateTo(
+          (_horizontalController.offset - horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      }
+
+      // --- VERTICAL SCROLLING (Add this part) ---
+      else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+        _controller.animateTo(
+          (_controller.offset + verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+        _controller.animateTo(
+          (_controller.offset - verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    // Column widths mapped for the Table widget
+    final Map<int, TableColumnWidth> tableWidthMap = {
+      for (int i = 0; i < colWidths.length; i++) i: FixedColumnWidth(colWidths[i])
+    };
+
+    double totalTableWidth = colWidths.reduce((a, b) => a + b);
     return SelectionArea(
       child: Scaffold(
         body: Obx(()=>Container(
-          width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+          width: controllers.isLeftOpen.value
+              ? MediaQuery.of(context).size.width - 150
+              : MediaQuery.of(context).size.width - 60,
           height: MediaQuery.of(context).size.height,
-          alignment: Alignment.center,
-          padding: EdgeInsets.fromLTRB(20, 5, 20, 16),
+          padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
           child: Column(
             children: [
               Row(
@@ -207,649 +275,1566 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                 ],
               ),
               15.height,
-              SizedBox(
-                width: controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
-                child: Table(
-                  columnWidths: const {
-                    0: FixedColumnWidth(70),//s no
-                    1: FlexColumnWidth(1.3),//q no
-                    2: FlexColumnWidth(1.7),//cus
-                    3: FlexColumnWidth(1.7),//com
-                    4: FlexColumnWidth(1.2),//com no
-                    5: FlexColumnWidth(1.2),//prd
-                    6: FlexColumnWidth(0.9),//ite
-                    7: FlexColumnWidth(0.9),//amt
-                    8: FlexColumnWidth(1),//date
-                    9: FlexColumnWidth(1.5),//stat
-                    10: FlexColumnWidth(1.5),//quo
-                    11:FlexColumnWidth(1.5),//con order
-                  },
-                  border: TableBorder(
-                    horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                    verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                  ),
-                  children: [
-                    TableRow(
-                        decoration: BoxDecoration(
-                            color: colorsConst.primary,
-                            borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(5),
-                                topRight: Radius.circular(5))),
-                        children: [
-                          headerCell(2,  CustomText(
-                            textAlign: TextAlign.left,
-                            text: "S.No",
-                            size: 15,
-                            isBold: true,
-                            isCopy: true,
-                            colors: Colors.white,
-                          ),),
-                          headerCell(2,  Row(
-                            children: [
-                              CustomText(
-                                textAlign: TextAlign.left,
-                                text: "Quotation No",
-                                size: 15,
-                                isBold: true,
-                                isCopy: true,
-                                colors: Colors.white,
+              Expanded(
+                child: KeyboardListener(
+                  focusNode: _focusNode,
+                  onKeyEvent: _handleKeyEvent,
+                  child: Scrollbar(
+                    controller: _horizontalController,
+                    thumbVisibility: true,
+                    child: SingleChildScrollView(
+                      controller: _horizontalController,
+                      scrollDirection: Axis.horizontal,
+                      child: SizedBox(
+                        width: totalTableWidth,
+                        child: Column(
+                          children: [
+                            // HEADER
+                            Table(
+                              columnWidths: tableWidthMap,
+                              border: TableBorder(
+                                horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                               ),
-                              3.width,
-                              GestureDetector(
-                                onTap: (){
-                                  if(controllers.sortFieldCallActivity.value=='qno' && controllers.sortOrderCallActivity.value=='asc'){
-                                    controllers.sortOrderCallActivity.value='desc';
-                                  }else{
-                                    controllers.sortOrderCallActivity.value='asc';
-                                  }
-                                  controllers.sortFieldCallActivity.value='qno';
-                                  productCtr.filterAndSortQuotations(
-                                    searchText: controllers.searchText.value.toLowerCase(),
-                                    sortField: controllers.sortFieldCallActivity.value,
-                                    sortOrder: controllers.sortOrderCallActivity.value,
-                                    selectedMonth: productCtr.selectedCallMonth.value,
-                                    selectedRange: productCtr.selectedCallRange.value,
-                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                  );
-                                },
-                                child: Obx(() => Image.asset(
-                                  controllers.sortFieldCallActivity.value.isEmpty
-                                      ? "assets/images/arrow.png"
-                                      : controllers.sortOrderCallActivity.value == 'asc'
-                                      ? "assets/images/arrow_up.png"
-                                      : "assets/images/arrow_down.png",
-                                  width: 15,
-                                  height: 15,
-                                ),
-                                ),
-                              ),
+                              children: [
+                                TableRow(
+                                    decoration: BoxDecoration(
+                                        color: colorsConst.primary,
+                                        borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(5),
+                                            topRight: Radius.circular(5))),
+                                    children: [
+                                      headerCell(2,  CustomText(
+                                        textAlign: TextAlign.left,
+                                        text: "S.No",
+                                        size: 15,
+                                        isBold: true,
+                                        isCopy: true,
+                                        colors: Colors.white,
+                                      ),),
+                                      headerCell(2,  CustomText(
+                                        textAlign: TextAlign.left,
+                                        text: "Action",
+                                        size: 15,
+                                        isBold: true,
+                                        isCopy: true,
+                                        colors: Colors.white,
+                                      ),),
+                                      headerCell(2,  Row(
+                                        children: [
+                                          CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: "Quotation No",
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: Colors.white,
+                                          ),
+                                          3.width,
+                                          GestureDetector(
+                                            onTap: (){
+                                              if(controllers.sortFieldCallActivity.value=='qno' && controllers.sortOrderCallActivity.value=='asc'){
+                                                controllers.sortOrderCallActivity.value='desc';
+                                              }else{
+                                                controllers.sortOrderCallActivity.value='asc';
+                                              }
+                                              controllers.sortFieldCallActivity.value='qno';
+                                              productCtr.filterAndSortQuotations(
+                                                searchText: controllers.searchText.value.toLowerCase(),
+                                                sortField: controllers.sortFieldCallActivity.value,
+                                                sortOrder: controllers.sortOrderCallActivity.value,
+                                                selectedMonth: productCtr.selectedCallMonth.value,
+                                                selectedRange: productCtr.selectedCallRange.value,
+                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                              );
+                                            },
+                                            child: Obx(() => Image.asset(
+                                              controllers.sortFieldCallActivity.value.isEmpty
+                                                  ? "assets/images/arrow.png"
+                                                  : controllers.sortOrderCallActivity.value == 'asc'
+                                                  ? "assets/images/arrow_up.png"
+                                                  : "assets/images/arrow_down.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
+                                            ),
+                                          ),
 
-                            ],
-                          ),),
-                          headerCell(3, Row(
-                            children: [
-                              CustomText(//2
-                                textAlign: TextAlign.left,
-                                text: "Customer",
-                                size: 15,
-                                isBold: true,
-                                isCopy: true,
-                                colors: Colors.white,
-                              ),
-                              3.width,
-                              GestureDetector(
-                                onTap: (){
-                                  if(controllers.sortFieldCallActivity.value=='name' && controllers.sortOrderCallActivity.value=='asc'){
-                                    controllers.sortOrderCallActivity.value='desc';
-                                  }else{
-                                    controllers.sortOrderCallActivity.value='asc';
-                                  }
-                                  controllers.sortFieldCallActivity.value='name';
-                                  productCtr.filterAndSortQuotations(
-                                    searchText: controllers.searchText.value.toLowerCase(),
-                                    sortField: controllers.sortFieldCallActivity.value,
-                                    sortOrder: controllers.sortOrderCallActivity.value,
-                                    selectedMonth: productCtr.selectedCallMonth.value,
-                                    selectedRange: productCtr.selectedCallRange.value,
-                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                  );
-                                },
-                                child: Obx(() => Image.asset(
-                                  controllers.sortFieldCallActivity.value.isEmpty
-                                      ? "assets/images/arrow.png"
-                                      : controllers.sortOrderCallActivity.value == 'asc'
-                                      ? "assets/images/arrow_up.png"
-                                      : "assets/images/arrow_down.png",
-                                  width: 15,
-                                  height: 15,
-                                ),
-                                ),
-                              ),
-                            ],
-                          ),),
-                          headerCell(3, Row(
-                            children: [
-                              CustomText(//2
-                                textAlign: TextAlign.left,
-                                text: "Company",
-                                size: 15,
-                                isBold: true,
-                                isCopy: true,
-                                colors: Colors.white,
-                              ),
-                              3.width,
-                              GestureDetector(
-                                onTap: (){
-                                  if(controllers.sortFieldCallActivity.value=='company' && controllers.sortOrderCallActivity.value=='asc'){
-                                    controllers.sortOrderCallActivity.value='desc';
-                                  }else{
-                                    controllers.sortOrderCallActivity.value='asc';
-                                  }
-                                  controllers.sortFieldCallActivity.value='company';
-                                  productCtr.filterAndSortQuotations(
-                                    searchText: controllers.searchText.value.toLowerCase(),
-                                    sortField: controllers.sortFieldCallActivity.value,
-                                    sortOrder: controllers.sortOrderCallActivity.value,
-                                    selectedMonth: productCtr.selectedCallMonth.value,
-                                    selectedRange: productCtr.selectedCallRange.value,
-                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                  );
-                                },
-                                child: Obx(() => Image.asset(
-                                  controllers.sortFieldCallActivity.value.isEmpty
-                                      ? "assets/images/arrow.png"
-                                      : controllers.sortOrderCallActivity.value == 'asc'
-                                      ? "assets/images/arrow_up.png"
-                                      : "assets/images/arrow_down.png",
-                                  width: 15,
-                                  height: 15,
-                                ),
-                                ),
-                              ),
-                            ],
-                          ),),
-                          headerCell(4, Row(
-                            children: [
-                              CustomText(
-                                textAlign: TextAlign.left,
-                                text: "Phone No",
-                                size: 15,
-                                isBold: true,
-                                isCopy: true,
-                                colors: Colors.white,
-                              ),
-                              3.width,
-                              GestureDetector(
-                                onTap: (){
-                                  if(controllers.sortFieldCallActivity.value=='number' && controllers.sortOrderCallActivity.value=='asc'){
-                                    controllers.sortOrderCallActivity.value='desc';
-                                  }else{
-                                    controllers.sortOrderCallActivity.value='asc';
-                                  }
-                                  controllers.sortFieldCallActivity.value='number';
-                                  productCtr.filterAndSortQuotations(
-                                    searchText: controllers.searchText.value.toLowerCase(),
-                                    sortField: controllers.sortFieldCallActivity.value,
-                                    sortOrder: controllers.sortOrderCallActivity.value,
-                                    selectedMonth: productCtr.selectedCallMonth.value,
-                                    selectedRange: productCtr.selectedCallRange.value,
-                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                  );
-                                },
-                                child: Obx(() => Image.asset(
-                                  controllers.sortFieldCallActivity.value.isEmpty
-                                      ? "assets/images/arrow.png"
-                                      : controllers.sortOrderCallActivity.value == 'asc'
-                                      ? "assets/images/arrow_up.png"
-                                      : "assets/images/arrow_down.png",
-                                  width: 15,
-                                  height: 15,
-                                ),
-                                ),
-                              ),
-                            ],
-                          ),),
-                          headerCell(2, Row(
-                            children: [
-                              CustomText(
-                                textAlign: TextAlign.left,
-                                text: "Tot Products",
-                                size: 15,
-                                isBold: true,
-                                isCopy: true,
-                                colors: Colors.white,
-                              ),
-                              3.width,
-                              GestureDetector(
-                                onTap: (){
-                                  if(controllers.sortFieldCallActivity.value=='products' && controllers.sortOrderCallActivity.value=='asc'){
-                                    controllers.sortOrderCallActivity.value='desc';
-                                  }else{
-                                    controllers.sortOrderCallActivity.value='asc';
-                                  }
-                                  controllers.sortFieldCallActivity.value='products';
-                                  productCtr.filterAndSortQuotations(
-                                    searchText: controllers.searchText.value.toLowerCase(),
-                                    sortField: controllers.sortFieldCallActivity.value,
-                                    sortOrder: controllers.sortOrderCallActivity.value,
-                                    selectedMonth: productCtr.selectedCallMonth.value,
-                                    selectedRange: productCtr.selectedCallRange.value,
-                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                  );
-                                },
-                                child: Obx(() => Image.asset(
-                                  controllers.sortFieldCallActivity.value.isEmpty
-                                      ? "assets/images/arrow.png"
-                                      : controllers.sortOrderCallActivity.value == 'asc'
-                                      ? "assets/images/arrow_up.png"
-                                      : "assets/images/arrow_down.png",
-                                  width: 15,
-                                  height: 15,
-                                ),
-                                ),
-                              ),
-                            ],
-                          ),),
-                          headerCell(2, Row(
-                            children: [
-                              CustomText(
-                                textAlign: TextAlign.left,
-                                text: "Tot Item",
-                                size: 15,
-                                isBold: true,
-                                isCopy: true,
-                                colors: Colors.white,
-                              ),
-                              3.width,
-                              GestureDetector(
-                                onTap: (){
-                                  if(controllers.sortFieldCallActivity.value=='item' && controllers.sortOrderCallActivity.value=='asc'){
-                                    controllers.sortOrderCallActivity.value='desc';
-                                  }else{
-                                    controllers.sortOrderCallActivity.value='asc';
-                                  }
-                                  controllers.sortFieldCallActivity.value='item';
-                                  productCtr.filterAndSortQuotations(
-                                    searchText: controllers.searchText.value.toLowerCase(),
-                                    sortField: controllers.sortFieldCallActivity.value,
-                                    sortOrder: controllers.sortOrderCallActivity.value,
-                                    selectedMonth: productCtr.selectedCallMonth.value,
-                                    selectedRange: productCtr.selectedCallRange.value,
-                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                  );
-                                },
-                                child: Obx(() => Image.asset(
-                                  controllers.sortFieldCallActivity.value.isEmpty
-                                      ? "assets/images/arrow.png"
-                                      : controllers.sortOrderCallActivity.value == 'asc'
-                                      ? "assets/images/arrow_up.png"
-                                      : "assets/images/arrow_down.png",
-                                  width: 15,
-                                  height: 15,
-                                ),
-                                ),
-                              ),
-                            ],
-                          ),),
-                          headerCell(5, Row(
-                            children: [
-                              CustomText(
-                                textAlign: TextAlign.left,
-                                text: "Tot Amt",
-                                size: 15,
-                                isBold: true,
-                                isCopy: true,
-                                colors: Colors.white,
-                              ),
-                              3.width,
-                              GestureDetector(
-                                onTap: (){
-                                  if(controllers.sortFieldCallActivity.value=='amt' && controllers.sortOrderCallActivity.value=='asc'){
-                                    controllers.sortOrderCallActivity.value='desc';
-                                  }else{
-                                    controllers.sortOrderCallActivity.value='asc';
-                                  }
-                                  controllers.sortFieldCallActivity.value='amt';
-                                  productCtr.filterAndSortQuotations(
-                                    searchText: controllers.searchText.value.toLowerCase(),
-                                    sortField: controllers.sortFieldCallActivity.value,
-                                    sortOrder: controllers.sortOrderCallActivity.value,
-                                    selectedMonth: productCtr.selectedCallMonth.value,
-                                    selectedRange: productCtr.selectedCallRange.value,
-                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                  );
-                                },
-                                child: Obx(() => Image.asset(
-                                  controllers.sortFieldCallActivity.value.isEmpty
-                                      ? "assets/images/arrow.png"
-                                      : controllers.sortOrderCallActivity.value == 'asc'
-                                      ? "assets/images/arrow_up.png"
-                                      : "assets/images/arrow_down.png",
-                                  width: 15,
-                                  height: 15,
-                                ),
-                                ),
-                              ),
-                            ],
-                          ),),
-                          headerCell(6, Row(
-                            children: [
-                              CustomText(//4
-                                textAlign: TextAlign.left,
-                                text: "Sent Date",
-                                size: 15,
-                                isBold: true,
-                                isCopy: true,
-                                colors: Colors.white,
-                              ),
-                              3.width,
-                              GestureDetector(
-                                onTap: (){
-                                  if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
-                                    controllers.sortOrderCallActivity.value='desc';
-                                  }else{
-                                    controllers.sortOrderCallActivity.value='asc';
-                                  }
-                                  controllers.sortFieldCallActivity.value='date';
-                                  productCtr.filterAndSortQuotations(
-                                    searchText: controllers.searchText.value.toLowerCase(),
-                                    sortField: controllers.sortFieldCallActivity.value,
-                                    sortOrder: controllers.sortOrderCallActivity.value,
-                                    selectedMonth: productCtr.selectedCallMonth.value,
-                                    selectedRange: productCtr.selectedCallRange.value,
-                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                  );
-                                },
-                                child: Obx(() => Image.asset(
-                                  controllers.sortFieldCallActivity.value.isEmpty
-                                      ? "assets/images/arrow.png"
-                                      : controllers.sortOrderCallActivity.value == 'asc'
-                                      ? "assets/images/arrow_up.png"
-                                      : "assets/images/arrow_down.png",
-                                  width: 15,
-                                  height: 15,
-                                ),
-                                ),
-                              ),
-                            ],
-                          ),),
-                          headerCell(7, Row(
-                            children: [
-                              CustomText(//4
-                                textAlign: TextAlign.left,
-                                text: "Status",
-                                size: 15,
-                                isBold: true,
-                                isCopy: true,
-                                colors: Colors.white,
-                              ),
-                              3.width,
-                              GestureDetector(
-                                onTap: (){
-                                  if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
-                                    controllers.sortOrderCallActivity.value='desc';
-                                  }else{
-                                    controllers.sortOrderCallActivity.value='asc';
-                                  }
-                                  controllers.sortFieldCallActivity.value='status';
-                                  productCtr.filterAndSortQuotations(
-                                    searchText: controllers.searchText.value.toLowerCase(),
-                                    sortField: controllers.sortFieldCallActivity.value,
-                                    sortOrder: controllers.sortOrderCallActivity.value,
-                                    selectedMonth: productCtr.selectedCallMonth.value,
-                                    selectedRange: productCtr.selectedCallRange.value,
-                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                  );
-                                },
-                                child: Obx(() => Image.asset(
-                                  controllers.sortFieldCallActivity.value.isEmpty
-                                      ? "assets/images/arrow.png"
-                                      : controllers.sortOrderCallActivity.value == 'asc'
-                                      ? "assets/images/arrow_up.png"
-                                      : "assets/images/arrow_down.png",
-                                  width: 15,
-                                  height: 15,
-                                ),
-                                ),
-                              ),
-                            ],
-                          ),),
-                          headerCell(8, CustomText(
-                            textAlign: TextAlign.left,
-                            text: "Quotation",
-                            size: 15,
-                            isBold: true,
-                            isCopy: true,
-                            colors: Colors.white,
-                          ),),
-                          headerCell(9, CustomText(
-                            textAlign: TextAlign.left,
-                            text: "Confirm Order",
-                            size: 15,
-                            isBold: true,
-                            isCopy: true,
-                            colors: Colors.white,
-                          ),)
-                        ]),
-                  ],
+                                        ],
+                                      ),),
+                                      headerCell(3, Row(
+                                        children: [
+                                          CustomText(//2
+                                            textAlign: TextAlign.left,
+                                            text: "Customer",
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: Colors.white,
+                                          ),
+                                          3.width,
+                                          GestureDetector(
+                                            onTap: (){
+                                              if(controllers.sortFieldCallActivity.value=='name' && controllers.sortOrderCallActivity.value=='asc'){
+                                                controllers.sortOrderCallActivity.value='desc';
+                                              }else{
+                                                controllers.sortOrderCallActivity.value='asc';
+                                              }
+                                              controllers.sortFieldCallActivity.value='name';
+                                              productCtr.filterAndSortQuotations(
+                                                searchText: controllers.searchText.value.toLowerCase(),
+                                                sortField: controllers.sortFieldCallActivity.value,
+                                                sortOrder: controllers.sortOrderCallActivity.value,
+                                                selectedMonth: productCtr.selectedCallMonth.value,
+                                                selectedRange: productCtr.selectedCallRange.value,
+                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                              );
+                                            },
+                                            child: Obx(() => Image.asset(
+                                              controllers.sortFieldCallActivity.value.isEmpty
+                                                  ? "assets/images/arrow.png"
+                                                  : controllers.sortOrderCallActivity.value == 'asc'
+                                                  ? "assets/images/arrow_up.png"
+                                                  : "assets/images/arrow_down.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),),
+                                      headerCell(3, Row(
+                                        children: [
+                                          CustomText(//2
+                                            textAlign: TextAlign.left,
+                                            text: "Company",
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: Colors.white,
+                                          ),
+                                          3.width,
+                                          GestureDetector(
+                                            onTap: (){
+                                              if(controllers.sortFieldCallActivity.value=='company' && controllers.sortOrderCallActivity.value=='asc'){
+                                                controllers.sortOrderCallActivity.value='desc';
+                                              }else{
+                                                controllers.sortOrderCallActivity.value='asc';
+                                              }
+                                              controllers.sortFieldCallActivity.value='company';
+                                              productCtr.filterAndSortQuotations(
+                                                searchText: controllers.searchText.value.toLowerCase(),
+                                                sortField: controllers.sortFieldCallActivity.value,
+                                                sortOrder: controllers.sortOrderCallActivity.value,
+                                                selectedMonth: productCtr.selectedCallMonth.value,
+                                                selectedRange: productCtr.selectedCallRange.value,
+                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                              );
+                                            },
+                                            child: Obx(() => Image.asset(
+                                              controllers.sortFieldCallActivity.value.isEmpty
+                                                  ? "assets/images/arrow.png"
+                                                  : controllers.sortOrderCallActivity.value == 'asc'
+                                                  ? "assets/images/arrow_up.png"
+                                                  : "assets/images/arrow_down.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),),
+                                      headerCell(4, Row(
+                                        children: [
+                                          CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: "Phone No",
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: Colors.white,
+                                          ),
+                                          3.width,
+                                          GestureDetector(
+                                            onTap: (){
+                                              if(controllers.sortFieldCallActivity.value=='number' && controllers.sortOrderCallActivity.value=='asc'){
+                                                controllers.sortOrderCallActivity.value='desc';
+                                              }else{
+                                                controllers.sortOrderCallActivity.value='asc';
+                                              }
+                                              controllers.sortFieldCallActivity.value='number';
+                                              productCtr.filterAndSortQuotations(
+                                                searchText: controllers.searchText.value.toLowerCase(),
+                                                sortField: controllers.sortFieldCallActivity.value,
+                                                sortOrder: controllers.sortOrderCallActivity.value,
+                                                selectedMonth: productCtr.selectedCallMonth.value,
+                                                selectedRange: productCtr.selectedCallRange.value,
+                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                              );
+                                            },
+                                            child: Obx(() => Image.asset(
+                                              controllers.sortFieldCallActivity.value.isEmpty
+                                                  ? "assets/images/arrow.png"
+                                                  : controllers.sortOrderCallActivity.value == 'asc'
+                                                  ? "assets/images/arrow_up.png"
+                                                  : "assets/images/arrow_down.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),),
+                                      headerCell(2, Row(
+                                        children: [
+                                          CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: "Tot Products",
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: Colors.white,
+                                          ),
+                                          3.width,
+                                          GestureDetector(
+                                            onTap: (){
+                                              if(controllers.sortFieldCallActivity.value=='products' && controllers.sortOrderCallActivity.value=='asc'){
+                                                controllers.sortOrderCallActivity.value='desc';
+                                              }else{
+                                                controllers.sortOrderCallActivity.value='asc';
+                                              }
+                                              controllers.sortFieldCallActivity.value='products';
+                                              productCtr.filterAndSortQuotations(
+                                                searchText: controllers.searchText.value.toLowerCase(),
+                                                sortField: controllers.sortFieldCallActivity.value,
+                                                sortOrder: controllers.sortOrderCallActivity.value,
+                                                selectedMonth: productCtr.selectedCallMonth.value,
+                                                selectedRange: productCtr.selectedCallRange.value,
+                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                              );
+                                            },
+                                            child: Obx(() => Image.asset(
+                                              controllers.sortFieldCallActivity.value.isEmpty
+                                                  ? "assets/images/arrow.png"
+                                                  : controllers.sortOrderCallActivity.value == 'asc'
+                                                  ? "assets/images/arrow_up.png"
+                                                  : "assets/images/arrow_down.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),),
+                                      headerCell(2, Row(
+                                        children: [
+                                          CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: "Tot Item",
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: Colors.white,
+                                          ),
+                                          3.width,
+                                          GestureDetector(
+                                            onTap: (){
+                                              if(controllers.sortFieldCallActivity.value=='item' && controllers.sortOrderCallActivity.value=='asc'){
+                                                controllers.sortOrderCallActivity.value='desc';
+                                              }else{
+                                                controllers.sortOrderCallActivity.value='asc';
+                                              }
+                                              controllers.sortFieldCallActivity.value='item';
+                                              productCtr.filterAndSortQuotations(
+                                                searchText: controllers.searchText.value.toLowerCase(),
+                                                sortField: controllers.sortFieldCallActivity.value,
+                                                sortOrder: controllers.sortOrderCallActivity.value,
+                                                selectedMonth: productCtr.selectedCallMonth.value,
+                                                selectedRange: productCtr.selectedCallRange.value,
+                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                              );
+                                            },
+                                            child: Obx(() => Image.asset(
+                                              controllers.sortFieldCallActivity.value.isEmpty
+                                                  ? "assets/images/arrow.png"
+                                                  : controllers.sortOrderCallActivity.value == 'asc'
+                                                  ? "assets/images/arrow_up.png"
+                                                  : "assets/images/arrow_down.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),),
+                                      headerCell(5, Row(
+                                        children: [
+                                          CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: "Tot Amt",
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: Colors.white,
+                                          ),
+                                          3.width,
+                                          GestureDetector(
+                                            onTap: (){
+                                              if(controllers.sortFieldCallActivity.value=='amt' && controllers.sortOrderCallActivity.value=='asc'){
+                                                controllers.sortOrderCallActivity.value='desc';
+                                              }else{
+                                                controllers.sortOrderCallActivity.value='asc';
+                                              }
+                                              controllers.sortFieldCallActivity.value='amt';
+                                              productCtr.filterAndSortQuotations(
+                                                searchText: controllers.searchText.value.toLowerCase(),
+                                                sortField: controllers.sortFieldCallActivity.value,
+                                                sortOrder: controllers.sortOrderCallActivity.value,
+                                                selectedMonth: productCtr.selectedCallMonth.value,
+                                                selectedRange: productCtr.selectedCallRange.value,
+                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                              );
+                                            },
+                                            child: Obx(() => Image.asset(
+                                              controllers.sortFieldCallActivity.value.isEmpty
+                                                  ? "assets/images/arrow.png"
+                                                  : controllers.sortOrderCallActivity.value == 'asc'
+                                                  ? "assets/images/arrow_up.png"
+                                                  : "assets/images/arrow_down.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),),
+                                      headerCell(6, Row(
+                                        children: [
+                                          CustomText(//4
+                                            textAlign: TextAlign.left,
+                                            text: "Sent Date",
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: Colors.white,
+                                          ),
+                                          3.width,
+                                          GestureDetector(
+                                            onTap: (){
+                                              if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
+                                                controllers.sortOrderCallActivity.value='desc';
+                                              }else{
+                                                controllers.sortOrderCallActivity.value='asc';
+                                              }
+                                              controllers.sortFieldCallActivity.value='date';
+                                              productCtr.filterAndSortQuotations(
+                                                searchText: controllers.searchText.value.toLowerCase(),
+                                                sortField: controllers.sortFieldCallActivity.value,
+                                                sortOrder: controllers.sortOrderCallActivity.value,
+                                                selectedMonth: productCtr.selectedCallMonth.value,
+                                                selectedRange: productCtr.selectedCallRange.value,
+                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                              );
+                                            },
+                                            child: Obx(() => Image.asset(
+                                              controllers.sortFieldCallActivity.value.isEmpty
+                                                  ? "assets/images/arrow.png"
+                                                  : controllers.sortOrderCallActivity.value == 'asc'
+                                                  ? "assets/images/arrow_up.png"
+                                                  : "assets/images/arrow_down.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),),
+                                      headerCell(6, Row(
+                                        children: [
+                                          CustomText(//4
+                                            textAlign: TextAlign.left,
+                                            text: "Validity",
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: Colors.white,
+                                          ),
+                                          3.width,
+                                          GestureDetector(
+                                            onTap: (){
+                                              if(controllers.sortFieldCallActivity.value=='validity' && controllers.sortOrderCallActivity.value=='asc'){
+                                                controllers.sortOrderCallActivity.value='desc';
+                                              }else{
+                                                controllers.sortOrderCallActivity.value='asc';
+                                              }
+                                              controllers.sortFieldCallActivity.value='validity';
+                                              productCtr.filterAndSortQuotations(
+                                                searchText: controllers.searchText.value.toLowerCase(),
+                                                sortField: controllers.sortFieldCallActivity.value,
+                                                sortOrder: controllers.sortOrderCallActivity.value,
+                                                selectedMonth: productCtr.selectedCallMonth.value,
+                                                selectedRange: productCtr.selectedCallRange.value,
+                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                              );
+                                            },
+                                            child: Obx(() => Image.asset(
+                                              controllers.sortFieldCallActivity.value.isEmpty
+                                                  ? "assets/images/arrow.png"
+                                                  : controllers.sortOrderCallActivity.value == 'asc'
+                                                  ? "assets/images/arrow_up.png"
+                                                  : "assets/images/arrow_down.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),),
+                                      headerCell(8, CustomText(
+                                        textAlign: TextAlign.left,
+                                        text: "Quotation",
+                                        size: 15,
+                                        isBold: true,
+                                        isCopy: true,
+                                        colors: Colors.white,
+                                      ),),
+                                      headerCell(7, Row(
+                                        children: [
+                                          CustomText(//4
+                                            textAlign: TextAlign.left,
+                                            text: "Status",
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: Colors.white,
+                                          ),
+                                          3.width,
+                                          GestureDetector(
+                                            onTap: (){
+                                              if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
+                                                controllers.sortOrderCallActivity.value='desc';
+                                              }else{
+                                                controllers.sortOrderCallActivity.value='asc';
+                                              }
+                                              controllers.sortFieldCallActivity.value='status';
+                                              productCtr.filterAndSortQuotations(
+                                                searchText: controllers.searchText.value.toLowerCase(),
+                                                sortField: controllers.sortFieldCallActivity.value,
+                                                sortOrder: controllers.sortOrderCallActivity.value,
+                                                selectedMonth: productCtr.selectedCallMonth.value,
+                                                selectedRange: productCtr.selectedCallRange.value,
+                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                              );
+                                            },
+                                            child: Obx(() => Image.asset(
+                                              controllers.sortFieldCallActivity.value.isEmpty
+                                                  ? "assets/images/arrow.png"
+                                                  : controllers.sortOrderCallActivity.value == 'asc'
+                                                  ? "assets/images/arrow_up.png"
+                                                  : "assets/images/arrow_down.png",
+                                              width: 15,
+                                              height: 15,
+                                            ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),),
+                                      // headerCell(9, CustomText(
+                                      //   textAlign: TextAlign.left,
+                                      //   text: "Confirm Order",
+                                      //   size: 15,
+                                      //   isBold: true,
+                                      //   isCopy: true,
+                                      //   colors: Colors.white,
+                                      // ),)
+                                    ]),
+                              ],
+                            ),
+                            // BODY LIST
+                            Expanded(
+                              child: Obx(() {
+                                if (productCtr.quotationsList.isEmpty) return const Center(child: Text("No Data Found"));
+                                return ListView.builder(
+                                  controller: _controller,
+                                  itemCount: productCtr.quotationsList.length,
+                                  itemBuilder: (context, index) {
+                                    var data = productCtr.quotationsList[index];
+                                    return Table(
+                                      columnWidths: tableWidthMap,
+                                      border: TableBorder(
+                                        horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                        verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                        bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                      ),
+                                      children: [
+                                        TableRow(
+                                            decoration: BoxDecoration(
+                                              color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                            ),
+                                            children:[
+                                              Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child: CustomText(
+                                                  textAlign: TextAlign.left,
+                                                  text: "${index+1}",
+                                                  size: 14,
+                                                  isCopy: true,
+                                                  colors:colorsConst.textColor,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child: Container(
+                                                  height:40,
+                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius.circular(8),
+                                                    border: Border.all(color: Colors.grey.shade400, width: 1.2),
+                                                  ),
+                                                  child: DropdownButtonHideUnderline(
+                                                    child: DropdownButton<String>(
+                                                      value: data.dropValue,
+                                                      hint: CustomText(text: "Select Status",isCopy: false,colors: Colors.grey,),
+                                                      isExpanded: true,
+                                                      icon: const Icon(Icons.keyboard_arrow_down),
+                                                      items: statusList.map((status) {
+                                                        return DropdownMenuItem(
+                                                          value: status,
+                                                          child: CustomText(text: status,isCopy: false),
+                                                        );
+                                                      }).toList(),
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          data.dropValue = value;
+                                                          if(data.status!="Order Confirmed"&&data.dropValue=="Confirm Order"){
+                                                            showDialog(
+                                                                context: context,
+                                                                barrierDismissible: false,
+                                                                builder: (context) {
+                                                                  return AlertDialog(
+                                                                    content: CustomText(
+                                                                      text: "Are you sure confirm this order?",
+                                                                      size: 16,
+                                                                      isCopy: false,
+                                                                      isBold: true,
+                                                                      colors: colorsConst.textColor,
+                                                                    ),
+                                                                    actions: [
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                        children: [
+                                                                          Container(
+                                                                            decoration: BoxDecoration(
+                                                                                border: Border.all(color: colorsConst.primary),
+                                                                                color: Colors.white),
+                                                                            width: 80,
+                                                                            height: 25,
+                                                                            child: ElevatedButton(
+                                                                                style: ElevatedButton.styleFrom(
+                                                                                  shape: const RoundedRectangleBorder(
+                                                                                    borderRadius: BorderRadius.zero,
+                                                                                  ),
+                                                                                  backgroundColor: Colors.white,
+                                                                                ),
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                child: CustomText(
+                                                                                  text: "Cancel",
+                                                                                  isCopy: false,
+                                                                                  colors: colorsConst.primary,
+                                                                                  size: 14,
+                                                                                )),
+                                                                          ),
+                                                                          10.width,
+                                                                          CustomLoadingButton(
+                                                                            callback: (){
+                                                                              apiService.confirmOrderAPI(context,data.id.toString(),data.cusId.toString(),data.totalAmt.toString(),data.name.toString(),data.number.toString());
+                                                                            },
+                                                                            height: 35,
+                                                                            isLoading: true,
+                                                                            backgroundColor: colorsConst.primary,
+                                                                            radius: 2,
+                                                                            width: 80,
+                                                                            controller: controllers.productCtr,
+                                                                            isImage: false,
+                                                                            text: "Confirm",
+                                                                            textColor: Colors.white,
+                                                                          ),
+                                                                          5.width
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                });
+                                                          }else if(data.status=="Order Confirmed"&&data.dropValue=="Confirm Order"){
+                                                            utils.snackBar(context: context, msg: "Already order confirmed", color: Colors.red);
+                                                          }
+                                                        });
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child: CustomText(
+                                                  textAlign: TextAlign.left,
+                                                  text: data.quotationNo,
+                                                  size: 14,
+                                                  isCopy: true,
+                                                  colors:colorsConst.textColor,
+                                                ),
+                                              ),
+                                              Tooltip(
+                                                message: data.name.toString()=="null"?"":data.name.toString(),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text:data.name.toString()=="null"?"":data.name.toString(),
+                                                    size: 14,
+                                                    isCopy: true,
+                                                    colors: colorsConst.textColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              Tooltip(
+                                                message: data.company.toString()=="null"?"":data.company.toString(),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text:data.company.toString()=="null"?"":data.company.toString(),
+                                                    size: 14,
+                                                    isCopy: true,
+                                                    colors: colorsConst.textColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              Tooltip(
+                                                message: data.number.toString()=="null"?"":data.number.toString(),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: data.number.toString(),
+                                                    size: 14,
+                                                    isCopy: true,
+                                                    colors:colorsConst.textColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              Tooltip(
+                                                message: data.totalProduct.toString(),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: data.totalProduct.toString(),
+                                                    size: 14,
+                                                    isCopy: true,
+                                                    colors:colorsConst.textColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              Tooltip(
+                                                message: data.totalItem.toString(),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: data.totalItem.toString(),
+                                                    size: 14,
+                                                    isCopy: true,
+                                                    colors:colorsConst.textColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              Tooltip(
+                                                message: productCtr.formatAmount(data.totalAmt.toString()),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: productCtr.formatAmount(data.totalAmt.toString()),
+                                                    size: 14,
+                                                    isCopy: true,
+                                                    colors:colorsConst.textColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child: CustomText(
+                                                  textAlign: TextAlign.left,
+                                                  text: productCtr.fixedDateTime(data.createdTs.toString()),
+                                                  size: 14,
+                                                  isCopy: true,
+                                                  colors:colorsConst.textColor,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child: CustomText(
+                                                  textAlign: TextAlign.left,
+                                                  text: data.validityDate.toString(),
+                                                  size: 14,
+                                                  isCopy: true,
+                                                  colors:colorsConst.textColor,
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    String url = "$getImage?path=${Uri.encodeComponent(data.invoicePdf)}";
+                                                    showPdfDialog(context, url);
+                                                  },
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+                                                    child: CustomText(text: "View Quotation", isCopy: false,colors: colorsConst.primary,),
+                                                  ),
+                                                ),
+                                              ),
+                                              Tooltip(
+                                                message: data.status,
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(10.0),
+                                                  child: CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: data.status,
+                                                    size: 14,
+                                                    isCopy: true,
+                                                    colors:colorsConst.textColor,
+                                                  ),
+                                                ),
+                                              ),
+                                              // Padding(
+                                              //   padding: const EdgeInsets.all(10.0),
+                                              //   child: InkWell(
+                                              //       onTap: data.status=="Order Confirmed"?null:(){
+                                              //         apiService.confirmOrderAPI(context,data.id.toString(),data.cusId.toString(),data.totalAmt.toString(),data.name.toString(),data.number.toString());
+                                              //     }, child: Padding(
+                                              //       padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+                                              //       child: CustomText(text: "CONFIRM ORDER", isCopy: false,isBold: true,colors: data.status=="Order Confirmed"?Colors.grey:Colors.green,),
+                                              //     ),),
+                                              // ),
+                                            ]
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
-              Expanded(
-                  child: Obx((){
-                    return productCtr.quotationsList.isEmpty? Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height/2,
-                        alignment: Alignment.center,
-                        child: SvgPicture.asset(
-                            "assets/images/noDataFound.svg"))
-                        :RawKeyboardListener(
-                      focusNode: _focusNode,
-                      autofocus: true,
-                      onKey: (event) {
-                        if (event is RawKeyDownEvent) {
-                          if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                            _controller.animateTo(
-                              _controller.offset + 100,
-                              duration: const Duration(milliseconds: 200),
-                              curve: Curves.easeInOut,
-                            );
-                          } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                            _controller.animateTo(
-                              _controller.offset - 100,
-                              duration: const Duration(milliseconds: 200),
-                              curve: Curves.easeInOut,
-                            );
-                          }
-                        }
-                      },
-                      child: ListView.builder(
-                        controller: _controller,
-                        shrinkWrap: true,
-                        physics: const ScrollPhysics(),
-                        itemCount: productCtr.quotationsList.length,
-                        itemBuilder: (context, index) {
-                          final data = productCtr.quotationsList[index];
-                          return Table(
-                            columnWidths: const {
-                              0: FixedColumnWidth(70),//s no
-                              1: FlexColumnWidth(1.3),//q no
-                              2: FlexColumnWidth(1.7),//cus
-                              3: FlexColumnWidth(1.7),//com
-                              4: FlexColumnWidth(1.2),//com no
-                              5: FlexColumnWidth(1.2),//prd
-                              6: FlexColumnWidth(0.9),//ite
-                              7: FlexColumnWidth(0.9),//amt
-                              8: FlexColumnWidth(1),//date
-                              9: FlexColumnWidth(1.5),//stat
-                              10: FlexColumnWidth(1.5),//quo
-                              11:FlexColumnWidth(1.5),//con order
-                            },
-                            border: TableBorder(
-                              horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                              verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                              bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
-                            ),
-                            children:[
-                              TableRow(
-                                  decoration: BoxDecoration(
-                                    color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                  ),
-                                  children:[
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: CustomText(
-                                        textAlign: TextAlign.left,
-                                        text: "${index+1}",
-                                        size: 14,
-                                        isCopy: true,
-                                        colors:colorsConst.textColor,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: CustomText(
-                                        textAlign: TextAlign.left,
-                                        text: data.quotationNo,
-                                        size: 14,
-                                        isCopy: true,
-                                        colors:colorsConst.textColor,
-                                      ),
-                                    ),
-                                    Tooltip(
-                                      message: data.name.toString()=="null"?"":data.name.toString(),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CustomText(
-                                          textAlign: TextAlign.left,
-                                          text:data.name.toString()=="null"?"":data.name.toString(),
-                                          size: 14,
-                                          isCopy: true,
-                                          colors: colorsConst.textColor,
-                                        ),
-                                      ),
-                                    ),
-                                    Tooltip(
-                                      message: data.company.toString()=="null"?"":data.company.toString(),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CustomText(
-                                          textAlign: TextAlign.left,
-                                          text:data.company.toString()=="null"?"":data.company.toString(),
-                                          size: 14,
-                                          isCopy: true,
-                                          colors: colorsConst.textColor,
-                                        ),
-                                      ),
-                                    ),
-                                    Tooltip(
-                                      message: data.number.toString()=="null"?"":data.number.toString(),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CustomText(
-                                          textAlign: TextAlign.left,
-                                          text: data.number.toString(),
-                                          size: 14,
-                                          isCopy: true,
-                                          colors:colorsConst.textColor,
-                                        ),
-                                      ),
-                                    ),
-                                    Tooltip(
-                                      message: data.totalProduct.toString(),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CustomText(
-                                          textAlign: TextAlign.left,
-                                          text: data.totalProduct.toString(),
-                                          size: 14,
-                                          isCopy: true,
-                                          colors:colorsConst.textColor,
-                                        ),
-                                      ),
-                                    ),
-                                    Tooltip(
-                                      message: data.totalItem.toString(),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CustomText(
-                                          textAlign: TextAlign.left,
-                                          text: data.totalItem.toString(),
-                                          size: 14,
-                                          isCopy: true,
-                                          colors:colorsConst.textColor,
-                                        ),
-                                      ),
-                                    ),
-                                    Tooltip(
-                                      message: productCtr.formatAmount(data.totalAmt.toString()),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CustomText(
-                                          textAlign: TextAlign.left,
-                                          text: productCtr.formatAmount(data.totalAmt.toString()),
-                                          size: 14,
-                                          isCopy: true,
-                                          colors:colorsConst.textColor,
-                                        ),
-                                      ),
-                                    ),
 
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: CustomText(
-                                        textAlign: TextAlign.left,
-                                        text: productCtr.fixedDateTime(data.createdTs.toString()),
-                                        size: 14,
-                                        isCopy: true,
-                                        colors:colorsConst.textColor,
-                                      ),
-                                    ),
-                                    Tooltip(
-                                      message: data.status,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CustomText(
-                                          textAlign: TextAlign.left,
-                                          text: data.status,
-                                          size: 14,
-                                          isCopy: true,
-                                          colors:colorsConst.textColor,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: InkWell(
-                                        onTap: () {
-                                          String url = "$getImage?path=${Uri.encodeComponent(data.invoicePdf)}";
-                                          showPdfDialog(context, url);
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
-                                          child: CustomText(text: "View Quotation", isCopy: false,colors: colorsConst.primary,),
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: InkWell(
-                                          onTap: data.status=="Order Confirmed"?null:(){
-                                            apiService.confirmOrderAPI(context,data.id.toString(),data.cusId.toString(),data.totalAmt.toString(),data.name.toString(),data.number.toString());
-                                        }, child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
-                                          child: CustomText(text: "CONFIRM ORDER", isCopy: false,isBold: true,colors: data.status=="Order Confirmed"?Colors.grey:Colors.green,),
-                                        ),),
-                                    ),
-                                  ]
-                              ),
-
-                            ],
-                          );
-                        },
-                      ),
-                    );
-                  })
-              ),
+              // SizedBox(
+              //   width: controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+              //   child: Table(
+              //     columnWidths: const {
+              //       0: FixedColumnWidth(60),//s no
+              //       1: FlexColumnWidth(1.5),//Action
+              //       2: FlexColumnWidth(1.3),//q no
+              //       3: FlexColumnWidth(1.7),//cus
+              //       4: FlexColumnWidth(1.7),//com
+              //       5: FlexColumnWidth(1.2),//com no
+              //       6: FlexColumnWidth(1.3),//prd
+              //       7: FlexColumnWidth(1),//ite
+              //       8: FlexColumnWidth(1),//amt
+              //       9: FlexColumnWidth(1),//date
+              //       10: FlexColumnWidth(1),//vali
+              //       11: FlexColumnWidth(1),//quo
+              //       12: FlexColumnWidth(0.9),//stat
+              //     },
+              //     border: TableBorder(
+              //       horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+              //       verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+              //     ),
+              //     children: [
+              //       TableRow(
+              //           decoration: BoxDecoration(
+              //               color: colorsConst.primary,
+              //               borderRadius: const BorderRadius.only(
+              //                   topLeft: Radius.circular(5),
+              //                   topRight: Radius.circular(5))),
+              //           children: [
+              //             headerCell(2,  CustomText(
+              //               textAlign: TextAlign.left,
+              //               text: "S.No",
+              //               size: 15,
+              //               isBold: true,
+              //               isCopy: true,
+              //               colors: Colors.white,
+              //             ),),
+              //             headerCell(2,  CustomText(
+              //               textAlign: TextAlign.left,
+              //               text: "Action",
+              //               size: 15,
+              //               isBold: true,
+              //               isCopy: true,
+              //               colors: Colors.white,
+              //             ),),
+              //             headerCell(2,  Row(
+              //               children: [
+              //                 CustomText(
+              //                   textAlign: TextAlign.left,
+              //                   text: "Quotation No",
+              //                   size: 15,
+              //                   isBold: true,
+              //                   isCopy: true,
+              //                   colors: Colors.white,
+              //                 ),
+              //                 3.width,
+              //                 GestureDetector(
+              //                   onTap: (){
+              //                     if(controllers.sortFieldCallActivity.value=='qno' && controllers.sortOrderCallActivity.value=='asc'){
+              //                       controllers.sortOrderCallActivity.value='desc';
+              //                     }else{
+              //                       controllers.sortOrderCallActivity.value='asc';
+              //                     }
+              //                     controllers.sortFieldCallActivity.value='qno';
+              //                     productCtr.filterAndSortQuotations(
+              //                       searchText: controllers.searchText.value.toLowerCase(),
+              //                       sortField: controllers.sortFieldCallActivity.value,
+              //                       sortOrder: controllers.sortOrderCallActivity.value,
+              //                       selectedMonth: productCtr.selectedCallMonth.value,
+              //                       selectedRange: productCtr.selectedCallRange.value,
+              //                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+              //                     );
+              //                   },
+              //                   child: Obx(() => Image.asset(
+              //                     controllers.sortFieldCallActivity.value.isEmpty
+              //                         ? "assets/images/arrow.png"
+              //                         : controllers.sortOrderCallActivity.value == 'asc'
+              //                         ? "assets/images/arrow_up.png"
+              //                         : "assets/images/arrow_down.png",
+              //                     width: 15,
+              //                     height: 15,
+              //                   ),
+              //                   ),
+              //                 ),
+              //
+              //               ],
+              //             ),),
+              //             headerCell(3, Row(
+              //               children: [
+              //                 CustomText(//2
+              //                   textAlign: TextAlign.left,
+              //                   text: "Customer",
+              //                   size: 15,
+              //                   isBold: true,
+              //                   isCopy: true,
+              //                   colors: Colors.white,
+              //                 ),
+              //                 3.width,
+              //                 GestureDetector(
+              //                   onTap: (){
+              //                     if(controllers.sortFieldCallActivity.value=='name' && controllers.sortOrderCallActivity.value=='asc'){
+              //                       controllers.sortOrderCallActivity.value='desc';
+              //                     }else{
+              //                       controllers.sortOrderCallActivity.value='asc';
+              //                     }
+              //                     controllers.sortFieldCallActivity.value='name';
+              //                     productCtr.filterAndSortQuotations(
+              //                       searchText: controllers.searchText.value.toLowerCase(),
+              //                       sortField: controllers.sortFieldCallActivity.value,
+              //                       sortOrder: controllers.sortOrderCallActivity.value,
+              //                       selectedMonth: productCtr.selectedCallMonth.value,
+              //                       selectedRange: productCtr.selectedCallRange.value,
+              //                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+              //                     );
+              //                   },
+              //                   child: Obx(() => Image.asset(
+              //                     controllers.sortFieldCallActivity.value.isEmpty
+              //                         ? "assets/images/arrow.png"
+              //                         : controllers.sortOrderCallActivity.value == 'asc'
+              //                         ? "assets/images/arrow_up.png"
+              //                         : "assets/images/arrow_down.png",
+              //                     width: 15,
+              //                     height: 15,
+              //                   ),
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),),
+              //             headerCell(3, Row(
+              //               children: [
+              //                 CustomText(//2
+              //                   textAlign: TextAlign.left,
+              //                   text: "Company",
+              //                   size: 15,
+              //                   isBold: true,
+              //                   isCopy: true,
+              //                   colors: Colors.white,
+              //                 ),
+              //                 3.width,
+              //                 GestureDetector(
+              //                   onTap: (){
+              //                     if(controllers.sortFieldCallActivity.value=='company' && controllers.sortOrderCallActivity.value=='asc'){
+              //                       controllers.sortOrderCallActivity.value='desc';
+              //                     }else{
+              //                       controllers.sortOrderCallActivity.value='asc';
+              //                     }
+              //                     controllers.sortFieldCallActivity.value='company';
+              //                     productCtr.filterAndSortQuotations(
+              //                       searchText: controllers.searchText.value.toLowerCase(),
+              //                       sortField: controllers.sortFieldCallActivity.value,
+              //                       sortOrder: controllers.sortOrderCallActivity.value,
+              //                       selectedMonth: productCtr.selectedCallMonth.value,
+              //                       selectedRange: productCtr.selectedCallRange.value,
+              //                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+              //                     );
+              //                   },
+              //                   child: Obx(() => Image.asset(
+              //                     controllers.sortFieldCallActivity.value.isEmpty
+              //                         ? "assets/images/arrow.png"
+              //                         : controllers.sortOrderCallActivity.value == 'asc'
+              //                         ? "assets/images/arrow_up.png"
+              //                         : "assets/images/arrow_down.png",
+              //                     width: 15,
+              //                     height: 15,
+              //                   ),
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),),
+              //             headerCell(4, Row(
+              //               children: [
+              //                 CustomText(
+              //                   textAlign: TextAlign.left,
+              //                   text: "Phone No",
+              //                   size: 15,
+              //                   isBold: true,
+              //                   isCopy: true,
+              //                   colors: Colors.white,
+              //                 ),
+              //                 3.width,
+              //                 GestureDetector(
+              //                   onTap: (){
+              //                     if(controllers.sortFieldCallActivity.value=='number' && controllers.sortOrderCallActivity.value=='asc'){
+              //                       controllers.sortOrderCallActivity.value='desc';
+              //                     }else{
+              //                       controllers.sortOrderCallActivity.value='asc';
+              //                     }
+              //                     controllers.sortFieldCallActivity.value='number';
+              //                     productCtr.filterAndSortQuotations(
+              //                       searchText: controllers.searchText.value.toLowerCase(),
+              //                       sortField: controllers.sortFieldCallActivity.value,
+              //                       sortOrder: controllers.sortOrderCallActivity.value,
+              //                       selectedMonth: productCtr.selectedCallMonth.value,
+              //                       selectedRange: productCtr.selectedCallRange.value,
+              //                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+              //                     );
+              //                   },
+              //                   child: Obx(() => Image.asset(
+              //                     controllers.sortFieldCallActivity.value.isEmpty
+              //                         ? "assets/images/arrow.png"
+              //                         : controllers.sortOrderCallActivity.value == 'asc'
+              //                         ? "assets/images/arrow_up.png"
+              //                         : "assets/images/arrow_down.png",
+              //                     width: 15,
+              //                     height: 15,
+              //                   ),
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),),
+              //             headerCell(2, Row(
+              //               children: [
+              //                 CustomText(
+              //                   textAlign: TextAlign.left,
+              //                   text: "Tot Products",
+              //                   size: 15,
+              //                   isBold: true,
+              //                   isCopy: true,
+              //                   colors: Colors.white,
+              //                 ),
+              //                 3.width,
+              //                 GestureDetector(
+              //                   onTap: (){
+              //                     if(controllers.sortFieldCallActivity.value=='products' && controllers.sortOrderCallActivity.value=='asc'){
+              //                       controllers.sortOrderCallActivity.value='desc';
+              //                     }else{
+              //                       controllers.sortOrderCallActivity.value='asc';
+              //                     }
+              //                     controllers.sortFieldCallActivity.value='products';
+              //                     productCtr.filterAndSortQuotations(
+              //                       searchText: controllers.searchText.value.toLowerCase(),
+              //                       sortField: controllers.sortFieldCallActivity.value,
+              //                       sortOrder: controllers.sortOrderCallActivity.value,
+              //                       selectedMonth: productCtr.selectedCallMonth.value,
+              //                       selectedRange: productCtr.selectedCallRange.value,
+              //                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+              //                     );
+              //                   },
+              //                   child: Obx(() => Image.asset(
+              //                     controllers.sortFieldCallActivity.value.isEmpty
+              //                         ? "assets/images/arrow.png"
+              //                         : controllers.sortOrderCallActivity.value == 'asc'
+              //                         ? "assets/images/arrow_up.png"
+              //                         : "assets/images/arrow_down.png",
+              //                     width: 15,
+              //                     height: 15,
+              //                   ),
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),),
+              //             headerCell(2, Row(
+              //               children: [
+              //                 CustomText(
+              //                   textAlign: TextAlign.left,
+              //                   text: "Tot Item",
+              //                   size: 15,
+              //                   isBold: true,
+              //                   isCopy: true,
+              //                   colors: Colors.white,
+              //                 ),
+              //                 3.width,
+              //                 GestureDetector(
+              //                   onTap: (){
+              //                     if(controllers.sortFieldCallActivity.value=='item' && controllers.sortOrderCallActivity.value=='asc'){
+              //                       controllers.sortOrderCallActivity.value='desc';
+              //                     }else{
+              //                       controllers.sortOrderCallActivity.value='asc';
+              //                     }
+              //                     controllers.sortFieldCallActivity.value='item';
+              //                     productCtr.filterAndSortQuotations(
+              //                       searchText: controllers.searchText.value.toLowerCase(),
+              //                       sortField: controllers.sortFieldCallActivity.value,
+              //                       sortOrder: controllers.sortOrderCallActivity.value,
+              //                       selectedMonth: productCtr.selectedCallMonth.value,
+              //                       selectedRange: productCtr.selectedCallRange.value,
+              //                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+              //                     );
+              //                   },
+              //                   child: Obx(() => Image.asset(
+              //                     controllers.sortFieldCallActivity.value.isEmpty
+              //                         ? "assets/images/arrow.png"
+              //                         : controllers.sortOrderCallActivity.value == 'asc'
+              //                         ? "assets/images/arrow_up.png"
+              //                         : "assets/images/arrow_down.png",
+              //                     width: 15,
+              //                     height: 15,
+              //                   ),
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),),
+              //             headerCell(5, Row(
+              //               children: [
+              //                 CustomText(
+              //                   textAlign: TextAlign.left,
+              //                   text: "Tot Amt",
+              //                   size: 15,
+              //                   isBold: true,
+              //                   isCopy: true,
+              //                   colors: Colors.white,
+              //                 ),
+              //                 3.width,
+              //                 GestureDetector(
+              //                   onTap: (){
+              //                     if(controllers.sortFieldCallActivity.value=='amt' && controllers.sortOrderCallActivity.value=='asc'){
+              //                       controllers.sortOrderCallActivity.value='desc';
+              //                     }else{
+              //                       controllers.sortOrderCallActivity.value='asc';
+              //                     }
+              //                     controllers.sortFieldCallActivity.value='amt';
+              //                     productCtr.filterAndSortQuotations(
+              //                       searchText: controllers.searchText.value.toLowerCase(),
+              //                       sortField: controllers.sortFieldCallActivity.value,
+              //                       sortOrder: controllers.sortOrderCallActivity.value,
+              //                       selectedMonth: productCtr.selectedCallMonth.value,
+              //                       selectedRange: productCtr.selectedCallRange.value,
+              //                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+              //                     );
+              //                   },
+              //                   child: Obx(() => Image.asset(
+              //                     controllers.sortFieldCallActivity.value.isEmpty
+              //                         ? "assets/images/arrow.png"
+              //                         : controllers.sortOrderCallActivity.value == 'asc'
+              //                         ? "assets/images/arrow_up.png"
+              //                         : "assets/images/arrow_down.png",
+              //                     width: 15,
+              //                     height: 15,
+              //                   ),
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),),
+              //             headerCell(6, Row(
+              //               children: [
+              //                 CustomText(//4
+              //                   textAlign: TextAlign.left,
+              //                   text: "Sent Date",
+              //                   size: 15,
+              //                   isBold: true,
+              //                   isCopy: true,
+              //                   colors: Colors.white,
+              //                 ),
+              //                 3.width,
+              //                 GestureDetector(
+              //                   onTap: (){
+              //                     if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
+              //                       controllers.sortOrderCallActivity.value='desc';
+              //                     }else{
+              //                       controllers.sortOrderCallActivity.value='asc';
+              //                     }
+              //                     controllers.sortFieldCallActivity.value='date';
+              //                     productCtr.filterAndSortQuotations(
+              //                       searchText: controllers.searchText.value.toLowerCase(),
+              //                       sortField: controllers.sortFieldCallActivity.value,
+              //                       sortOrder: controllers.sortOrderCallActivity.value,
+              //                       selectedMonth: productCtr.selectedCallMonth.value,
+              //                       selectedRange: productCtr.selectedCallRange.value,
+              //                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+              //                     );
+              //                   },
+              //                   child: Obx(() => Image.asset(
+              //                     controllers.sortFieldCallActivity.value.isEmpty
+              //                         ? "assets/images/arrow.png"
+              //                         : controllers.sortOrderCallActivity.value == 'asc'
+              //                         ? "assets/images/arrow_up.png"
+              //                         : "assets/images/arrow_down.png",
+              //                     width: 15,
+              //                     height: 15,
+              //                   ),
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),),
+              //             headerCell(6, Row(
+              //               children: [
+              //                 CustomText(//4
+              //                   textAlign: TextAlign.left,
+              //                   text: "Validity",
+              //                   size: 15,
+              //                   isBold: true,
+              //                   isCopy: true,
+              //                   colors: Colors.white,
+              //                 ),
+              //                 3.width,
+              //                 GestureDetector(
+              //                   onTap: (){
+              //                     if(controllers.sortFieldCallActivity.value=='validity' && controllers.sortOrderCallActivity.value=='asc'){
+              //                       controllers.sortOrderCallActivity.value='desc';
+              //                     }else{
+              //                       controllers.sortOrderCallActivity.value='asc';
+              //                     }
+              //                     controllers.sortFieldCallActivity.value='validity';
+              //                     productCtr.filterAndSortQuotations(
+              //                       searchText: controllers.searchText.value.toLowerCase(),
+              //                       sortField: controllers.sortFieldCallActivity.value,
+              //                       sortOrder: controllers.sortOrderCallActivity.value,
+              //                       selectedMonth: productCtr.selectedCallMonth.value,
+              //                       selectedRange: productCtr.selectedCallRange.value,
+              //                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+              //                     );
+              //                   },
+              //                   child: Obx(() => Image.asset(
+              //                     controllers.sortFieldCallActivity.value.isEmpty
+              //                         ? "assets/images/arrow.png"
+              //                         : controllers.sortOrderCallActivity.value == 'asc'
+              //                         ? "assets/images/arrow_up.png"
+              //                         : "assets/images/arrow_down.png",
+              //                     width: 15,
+              //                     height: 15,
+              //                   ),
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),),
+              //             headerCell(8, CustomText(
+              //               textAlign: TextAlign.left,
+              //               text: "Quotation",
+              //               size: 15,
+              //               isBold: true,
+              //               isCopy: true,
+              //               colors: Colors.white,
+              //             ),),
+              //             headerCell(7, Row(
+              //               children: [
+              //                 CustomText(//4
+              //                   textAlign: TextAlign.left,
+              //                   text: "Status",
+              //                   size: 15,
+              //                   isBold: true,
+              //                   isCopy: true,
+              //                   colors: Colors.white,
+              //                 ),
+              //                 3.width,
+              //                 GestureDetector(
+              //                   onTap: (){
+              //                     if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
+              //                       controllers.sortOrderCallActivity.value='desc';
+              //                     }else{
+              //                       controllers.sortOrderCallActivity.value='asc';
+              //                     }
+              //                     controllers.sortFieldCallActivity.value='status';
+              //                     productCtr.filterAndSortQuotations(
+              //                       searchText: controllers.searchText.value.toLowerCase(),
+              //                       sortField: controllers.sortFieldCallActivity.value,
+              //                       sortOrder: controllers.sortOrderCallActivity.value,
+              //                       selectedMonth: productCtr.selectedCallMonth.value,
+              //                       selectedRange: productCtr.selectedCallRange.value,
+              //                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+              //                     );
+              //                   },
+              //                   child: Obx(() => Image.asset(
+              //                     controllers.sortFieldCallActivity.value.isEmpty
+              //                         ? "assets/images/arrow.png"
+              //                         : controllers.sortOrderCallActivity.value == 'asc'
+              //                         ? "assets/images/arrow_up.png"
+              //                         : "assets/images/arrow_down.png",
+              //                     width: 15,
+              //                     height: 15,
+              //                   ),
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),),
+              //             // headerCell(9, CustomText(
+              //             //   textAlign: TextAlign.left,
+              //             //   text: "Confirm Order",
+              //             //   size: 15,
+              //             //   isBold: true,
+              //             //   isCopy: true,
+              //             //   colors: Colors.white,
+              //             // ),)
+              //           ]),
+              //     ],
+              //   ),
+              // ),
+              // Expanded(
+              //     child: Obx((){
+              //       return productCtr.quotationsList.isEmpty? Container(
+              //           width: MediaQuery.of(context).size.width,
+              //           height: MediaQuery.of(context).size.height/2,
+              //           alignment: Alignment.center,
+              //           child: SvgPicture.asset(
+              //               "assets/images/noDataFound.svg"))
+              //           :RawKeyboardListener(
+              //         focusNode: _focusNode,
+              //         autofocus: true,
+              //         onKey: (event) {
+              //           if (event is RawKeyDownEvent) {
+              //             if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+              //               _controller.animateTo(
+              //                 _controller.offset + 100,
+              //                 duration: const Duration(milliseconds: 200),
+              //                 curve: Curves.easeInOut,
+              //               );
+              //             } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+              //               _controller.animateTo(
+              //                 _controller.offset - 100,
+              //                 duration: const Duration(milliseconds: 200),
+              //                 curve: Curves.easeInOut,
+              //               );
+              //             }
+              //           }
+              //         },
+              //         child: ListView.builder(
+              //           controller: _controller,
+              //           shrinkWrap: true,
+              //           physics: const ScrollPhysics(),
+              //           itemCount: productCtr.quotationsList.length,
+              //           itemBuilder: (context, index) {
+              //             final data = productCtr.quotationsList[index];
+              //             return Table(
+              //               columnWidths: const {
+              //                 0: FixedColumnWidth(60),//s no
+              //                 1: FlexColumnWidth(1.5),//Action
+              //                 2: FlexColumnWidth(1.3),//q no
+              //                 3: FlexColumnWidth(1.7),//cus
+              //                 4: FlexColumnWidth(1.7),//com
+              //                 5: FlexColumnWidth(1.2),//com no
+              //                 6: FlexColumnWidth(1.3),//prd
+              //                 7: FlexColumnWidth(1),//ite
+              //                 8: FlexColumnWidth(1),//amt
+              //                 9: FlexColumnWidth(1),//date
+              //                 10: FlexColumnWidth(1),//vali
+              //                 11: FlexColumnWidth(1),//quo
+              //                 12: FlexColumnWidth(0.9),//stat
+              //               },
+              //               border: TableBorder(
+              //                 horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+              //                 verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+              //                 bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+              //               ),
+              //               children:[
+              //                 TableRow(
+              //                     decoration: BoxDecoration(
+              //                       color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+              //                     ),
+              //                     children:[
+              //                       Padding(
+              //                         padding: const EdgeInsets.all(10.0),
+              //                         child: CustomText(
+              //                           textAlign: TextAlign.left,
+              //                           text: "${index+1}",
+              //                           size: 14,
+              //                           isCopy: true,
+              //                           colors:colorsConst.textColor,
+              //                         ),
+              //                       ),
+              //                       Padding(
+              //                         padding: const EdgeInsets.all(10.0),
+              //                         child: Container(
+              //                           height:40,
+              //                           padding: const EdgeInsets.symmetric(horizontal: 10),
+              //                           decoration: BoxDecoration(
+              //                             color: Colors.white,
+              //                             borderRadius: BorderRadius.circular(8),
+              //                             border: Border.all(color: Colors.grey.shade400, width: 1.2),
+              //                           ),
+              //                           child: DropdownButtonHideUnderline(
+              //                             child: DropdownButton<String>(
+              //                               value: data.dropValue,
+              //                               hint: CustomText(text: "Select Status",isCopy: false,colors: Colors.grey,),
+              //                               isExpanded: true,
+              //                               icon: const Icon(Icons.keyboard_arrow_down),
+              //                               items: statusList.map((status) {
+              //                                 return DropdownMenuItem(
+              //                                   value: status,
+              //                                   child: CustomText(text: status,isCopy: false),
+              //                                 );
+              //                               }).toList(),
+              //                               onChanged: (value) {
+              //                                 setState(() {
+              //                                   data.dropValue = value;
+              //                                   if(data.status!="Order Confirmed"&&data.dropValue=="Confirm Order"){
+              //                                     showDialog(
+              //                                         context: context,
+              //                                         barrierDismissible: false,
+              //                                         builder: (context) {
+              //                                           return AlertDialog(
+              //                                             content: CustomText(
+              //                                               text: "Are you sure confirm this order?",
+              //                                               size: 16,
+              //                                               isCopy: false,
+              //                                               isBold: true,
+              //                                               colors: colorsConst.textColor,
+              //                                             ),
+              //                                             actions: [
+              //                                               Row(
+              //                                                 mainAxisAlignment: MainAxisAlignment.end,
+              //                                                 children: [
+              //                                                   Container(
+              //                                                     decoration: BoxDecoration(
+              //                                                         border: Border.all(color: colorsConst.primary),
+              //                                                         color: Colors.white),
+              //                                                     width: 80,
+              //                                                     height: 25,
+              //                                                     child: ElevatedButton(
+              //                                                         style: ElevatedButton.styleFrom(
+              //                                                           shape: const RoundedRectangleBorder(
+              //                                                             borderRadius: BorderRadius.zero,
+              //                                                           ),
+              //                                                           backgroundColor: Colors.white,
+              //                                                         ),
+              //                                                         onPressed: () {
+              //                                                           Navigator.pop(context);
+              //                                                         },
+              //                                                         child: CustomText(
+              //                                                           text: "Cancel",
+              //                                                           isCopy: false,
+              //                                                           colors: colorsConst.primary,
+              //                                                           size: 14,
+              //                                                         )),
+              //                                                   ),
+              //                                                   10.width,
+              //                                                   CustomLoadingButton(
+              //                                                     callback: (){
+              //                                                     apiService.confirmOrderAPI(context,data.id.toString(),data.cusId.toString(),data.totalAmt.toString(),data.name.toString(),data.number.toString());
+              //                                                     },
+              //                                                     height: 35,
+              //                                                     isLoading: true,
+              //                                                     backgroundColor: colorsConst.primary,
+              //                                                     radius: 2,
+              //                                                     width: 80,
+              //                                                     controller: controllers.productCtr,
+              //                                                     isImage: false,
+              //                                                     text: "Confirm",
+              //                                                     textColor: Colors.white,
+              //                                                   ),
+              //                                                   5.width
+              //                                                 ],
+              //                                               ),
+              //                                             ],
+              //                                           );
+              //                                         });
+              //                                   }else if(data.status=="Order Confirmed"&&data.dropValue=="Confirm Order"){
+              //                                     utils.snackBar(context: context, msg: "Already order confirmed", color: Colors.red);
+              //                                   }
+              //                                 });
+              //                               },
+              //                             ),
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       Padding(
+              //                         padding: const EdgeInsets.all(10.0),
+              //                         child: CustomText(
+              //                           textAlign: TextAlign.left,
+              //                           text: data.quotationNo,
+              //                           size: 14,
+              //                           isCopy: true,
+              //                           colors:colorsConst.textColor,
+              //                         ),
+              //                       ),
+              //                       Tooltip(
+              //                         message: data.name.toString()=="null"?"":data.name.toString(),
+              //                         child: Padding(
+              //                           padding: const EdgeInsets.all(10.0),
+              //                           child: CustomText(
+              //                             textAlign: TextAlign.left,
+              //                             text:data.name.toString()=="null"?"":data.name.toString(),
+              //                             size: 14,
+              //                             isCopy: true,
+              //                             colors: colorsConst.textColor,
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       Tooltip(
+              //                         message: data.company.toString()=="null"?"":data.company.toString(),
+              //                         child: Padding(
+              //                           padding: const EdgeInsets.all(10.0),
+              //                           child: CustomText(
+              //                             textAlign: TextAlign.left,
+              //                             text:data.company.toString()=="null"?"":data.company.toString(),
+              //                             size: 14,
+              //                             isCopy: true,
+              //                             colors: colorsConst.textColor,
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       Tooltip(
+              //                         message: data.number.toString()=="null"?"":data.number.toString(),
+              //                         child: Padding(
+              //                           padding: const EdgeInsets.all(10.0),
+              //                           child: CustomText(
+              //                             textAlign: TextAlign.left,
+              //                             text: data.number.toString(),
+              //                             size: 14,
+              //                             isCopy: true,
+              //                             colors:colorsConst.textColor,
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       Tooltip(
+              //                         message: data.totalProduct.toString(),
+              //                         child: Padding(
+              //                           padding: const EdgeInsets.all(10.0),
+              //                           child: CustomText(
+              //                             textAlign: TextAlign.left,
+              //                             text: data.totalProduct.toString(),
+              //                             size: 14,
+              //                             isCopy: true,
+              //                             colors:colorsConst.textColor,
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       Tooltip(
+              //                         message: data.totalItem.toString(),
+              //                         child: Padding(
+              //                           padding: const EdgeInsets.all(10.0),
+              //                           child: CustomText(
+              //                             textAlign: TextAlign.left,
+              //                             text: data.totalItem.toString(),
+              //                             size: 14,
+              //                             isCopy: true,
+              //                             colors:colorsConst.textColor,
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       Tooltip(
+              //                         message: productCtr.formatAmount(data.totalAmt.toString()),
+              //                         child: Padding(
+              //                           padding: const EdgeInsets.all(10.0),
+              //                           child: CustomText(
+              //                             textAlign: TextAlign.left,
+              //                             text: productCtr.formatAmount(data.totalAmt.toString()),
+              //                             size: 14,
+              //                             isCopy: true,
+              //                             colors:colorsConst.textColor,
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       Padding(
+              //                         padding: const EdgeInsets.all(10.0),
+              //                         child: CustomText(
+              //                           textAlign: TextAlign.left,
+              //                           text: productCtr.fixedDateTime(data.createdTs.toString()),
+              //                           size: 14,
+              //                           isCopy: true,
+              //                           colors:colorsConst.textColor,
+              //                         ),
+              //                       ),
+              //                       Padding(
+              //                         padding: const EdgeInsets.all(10.0),
+              //                         child: CustomText(
+              //                           textAlign: TextAlign.left,
+              //                           text: data.validityDate.toString(),
+              //                           size: 14,
+              //                           isCopy: true,
+              //                           colors:colorsConst.textColor,
+              //                         ),
+              //                       ),
+              //                       Padding(
+              //                         padding: const EdgeInsets.all(10.0),
+              //                         child: InkWell(
+              //                           onTap: () {
+              //                             String url = "$getImage?path=${Uri.encodeComponent(data.invoicePdf)}";
+              //                             showPdfDialog(context, url);
+              //                           },
+              //                           child: Padding(
+              //                             padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+              //                             child: CustomText(text: "View Quotation", isCopy: false,colors: colorsConst.primary,),
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       Tooltip(
+              //                         message: data.status,
+              //                         child: Padding(
+              //                           padding: const EdgeInsets.all(10.0),
+              //                           child: CustomText(
+              //                             textAlign: TextAlign.left,
+              //                             text: data.status,
+              //                             size: 14,
+              //                             isCopy: true,
+              //                             colors:colorsConst.textColor,
+              //                           ),
+              //                         ),
+              //                       ),
+              //                       // Padding(
+              //                       //   padding: const EdgeInsets.all(10.0),
+              //                       //   child: InkWell(
+              //                       //       onTap: data.status=="Order Confirmed"?null:(){
+              //                       //         apiService.confirmOrderAPI(context,data.id.toString(),data.cusId.toString(),data.totalAmt.toString(),data.name.toString(),data.number.toString());
+              //                       //     }, child: Padding(
+              //                       //       padding: const EdgeInsets.fromLTRB(8, 10, 8, 10),
+              //                       //       child: CustomText(text: "CONFIRM ORDER", isCopy: false,isBold: true,colors: data.status=="Order Confirmed"?Colors.grey:Colors.green,),
+              //                       //     ),),
+              //                       // ),
+              //                     ]
+              //                 ),
+              //
+              //               ],
+              //             );
+              //           },
+              //         ),
+              //       );
+              //     })
+              // ),
             ],
           ),
         )),

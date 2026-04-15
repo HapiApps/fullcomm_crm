@@ -746,7 +746,7 @@ var isSelectAll=false.obs;
         return DateTime(1900);
       }
     }
-
+print("selectedDateFilter $selectedDateFilter");
     // final now = DateTime.now();
 
     final filtered = ordersList2.where((activity) {
@@ -1014,6 +1014,13 @@ var isSelectAll=false.obs;
         filtered.sort((a, b) {
           final dateA = parseDate(a.createdTs);
           final dateB = parseDate(b.createdTs);
+          final comparison = dateA.compareTo(dateB);
+          return sortOrder == 'asc' ? comparison : -comparison;
+        });
+    }else if (sortField == 'validity') {
+        filtered.sort((a, b) {
+          final dateA = parseDate(a.validityDate);
+          final dateB = parseDate(b.validityDate);
           final comparison = dateA.compareTo(dateB);
           return sortOrder == 'asc' ? comparison : -comparison;
         });

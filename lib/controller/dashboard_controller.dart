@@ -34,6 +34,9 @@ class DashboardController extends GetxController {
   var totalQualified   = "0".obs;
   var totalUnQualified = "0".obs;
   var totalCustomers   = "0".obs;
+  var totalQuotations   = "0".obs;
+  var totalOrders   = "0".obs;
+  var totalAmt   = "0".obs;
   var dayReport = <CustomerDayData>[].obs;
   RxBool isLoading = false.obs;
 
@@ -458,9 +461,15 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
           dashController.totalQualified.value    = response["total_qualified"]?.toString() ?? "0";
           dashController.totalUnQualified.value  = response["total_disqualified"]?.toString() ?? "0";
           dashController.totalCustomers.value    = response["total_customers"]?.toString() ?? "0";
+          dashController.totalQuotations.value    = response["total_quotations"]?.toString() ?? "0";
+          dashController.totalOrders.value    = response["total_orders"]?.toString() ?? "0";
+          dashController.totalAmt.value    = response["total_amount"]?.toString() ?? "0";
         } else {
           // handle empty response gracefully
           print("Dashboard API returned empty billing_data");
+          dashController.totalQuotations.value        = "0";
+          dashController.totalOrders.value        = "0";
+          dashController.totalAmt.value        = "0";
           dashController.totalMails.value        = "0";
           dashController.totalReminders.value    = "0";
           dashController.totalMeetings.value     = "0";
@@ -488,10 +497,16 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         dashController.totalQualified.value    = "0";
         dashController.totalUnQualified.value  = "0";
         dashController.totalCustomers.value    = "0";
+        dashController.totalQuotations.value        = "0";
+        dashController.totalOrders.value        = "0";
+        dashController.totalAmt.value        = "0";
         timestamp.value="${DateTime.now()}";
         throw Exception('Failed to load dashboard report');
       }
     } catch (e) {
+      dashController.totalQuotations.value        = "0";
+      dashController.totalOrders.value        = "0";
+      dashController.totalAmt.value        = "0";
       dashController.totalMails.value        = "0";
       dashController.totalReminders.value    = "0";
       dashController.totalMeetings.value     = "0";

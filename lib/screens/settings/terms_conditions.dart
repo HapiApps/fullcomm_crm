@@ -275,16 +275,16 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                 height: 30,
                                 child: CustomSearchTextField(
                                   // focusNode:focusNode,
-                                  hintText: "Search Categories... ",
+                                  hintText: "Search Conditions... ",
                                   controller: controllers.notesController,
                                   onChanged: (value) {
-                                    // final suggestions=productCtr.termsAndConditionsList2.where(
-                                    //         (user){
-                                    //       final customerName = user.value.toString().toLowerCase();
-                                    //       final input = value.toString().toLowerCase().trim();
-                                    //       return customerName.contains(input);
-                                    //     }).toList();
-                                    // productCtr.termsAndConditionsList.value=suggestions;
+                                    final suggestions=productCtr.termsAndConditionsList2.where(
+                                            (user){
+                                          final customerName = user["name"].toString().toLowerCase();
+                                          final input = value.toString().toLowerCase().trim();
+                                          return customerName.contains(input);
+                                        }).toList();
+                                    productCtr.termsAndConditionsList.value=suggestions;
                                   },
                                   //onChanged: onSearchChanged,
                                 ),
@@ -323,15 +323,12 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                               width:MediaQuery.of(context).size.width*0.55,
                               child:Row(
                                 children: [
-                                  SizedBox(
-                                    width: 50,
-                                  ),
                                   10.width,
                                   SizedBox(
                                     width: 240,
                                     child: Row(
                                       children: [
-                                        CustomText(text: "NAME", isCopy: false,isBold: true,colors: Colors.white),
+                                        CustomText(text: "TERMS AND CONDITIONS", isCopy: false,isBold: true,colors: Colors.white),
                                         Icon(Icons.arrow_downward_sharp,color: Colors.white,size: 15,)
                                       ],
                                     ),
@@ -381,20 +378,25 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                           child: ReorderableListView.builder(
                             buildDefaultDragHandles: false, // default icon hide
                             itemCount: productCtr.termsAndConditionsList.length,
-                            onReorder: (oldIndex, newIndex) async {
-                              if (newIndex > oldIndex) {
-                                newIndex -= 1;
-                              }
-                              final item =
-                              productCtr.termsAndConditionsList.removeAt(oldIndex);
-                              productCtr.termsAndConditionsList.insert(newIndex, item);
-                              for (int i = 0; i < productCtr.termsAndConditionsList.length; i++) {
-                                productCtr.termsAndConditionsList[i]["display_order"] = i + 1;
-                              }
-                              isEdit.value = true;
-                              controllers.update();
-                            },
-                            itemBuilder: (context, index) {
+                        onReorder: (oldIndex, newIndex) {
+                          if (newIndex > oldIndex) newIndex--;
+
+                          final list = productCtr.termsAndConditionsList;
+
+                          final item = list.removeAt(oldIndex);
+                          list.insert(newIndex, item);
+
+                          // update display order
+                          for (int i = 0; i < list.length; i++) {
+                            list[i]["display_order"] = i + 1;
+                          }
+
+                          isEdit.value = true;
+
+                          productCtr.termsAndConditionsList.refresh(); // ✅ IMPORTANT (if RxList)
+                          controllers.update(); // if using GetBuilder
+                        },
+                        itemBuilder: (context, index) {
                               var data = productCtr.termsAndConditionsList[index];
 
                               return Padding(
@@ -423,15 +425,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                               if (controllers.emailMessageCtr.text.trim().isEmpty) {
                                                 utils.snackBar(
                                                   context: context,
-                                                  msg: "Please enter lead category",
-                                                  color: Colors.red,
-                                                );
-                                                controllers.productCtr.reset();
-                                                return;
-                                              }else if (controllers.emailMessageCtr.text.length>15) {
-                                                utils.snackBar(
-                                                  context: context,
-                                                  msg: "Category must be 15 chars only",
+                                                  msg: "Please enter terms and conditions",
                                                   color: Colors.red,
                                                 );
                                                 controllers.productCtr.reset();
@@ -466,7 +460,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                                   if (controllers.emailMessageCtr.text.trim().isEmpty) {
                                                     utils.snackBar(
                                                       context: context,
-                                                      msg: "Please enter lead category",
+                                                      msg: "Please enter terms and conditions",
                                                       color: Colors.red,
                                                     );
                                                     controllers.productCtr.reset();
@@ -550,7 +544,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                 focusNode: name,
                                 width: MediaQuery.of(context).size.width*0.4,
                                 text: "",isOptional:false,
-                                hintText: "Category Name",
+                                hintText: "Conditions",
                                 controller: controllers.emailMessageCtr,
                                 onChanged: (value){
                                   if (value.toString().isNotEmpty) {
@@ -575,15 +569,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                       if (controllers.emailMessageCtr.text.trim().isEmpty) {
                                         utils.snackBar(
                                           context: context,
-                                          msg: "Please enter lead category",
-                                          color: Colors.red,
-                                        );
-                                        controllers.productCtr.reset();
-                                        return;
-                                      }else if (controllers.emailMessageCtr.text.length>15) {
-                                        utils.snackBar(
-                                          context: context,
-                                          msg: "Category must be 15 chars only",
+                                          msg: "Please enter terms and conditions",
                                           color: Colors.red,
                                         );
                                         controllers.productCtr.reset();

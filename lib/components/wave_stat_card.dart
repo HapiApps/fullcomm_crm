@@ -112,6 +112,8 @@ class WaveStatCard extends StatefulWidget {
   final int maxValue;
   final String iconPath;
   final Color valueColor;
+  final double? iconSize;
+  final String? amt;
   final VoidCallback callback;
 
   const WaveStatCard({
@@ -120,7 +122,7 @@ class WaveStatCard extends StatefulWidget {
     required this.numericValue,
     required this.maxValue,
     required this.iconPath,
-    required this.valueColor, required this.callback,
+    required this.valueColor, required this.callback, this.iconSize=20, this.amt,
   });
 
   @override
@@ -162,7 +164,7 @@ class _WaveStatCardState extends State<WaveStatCard>
       onTap:widget.callback,
       child: Container(
         height: 120,
-        width: screenWidth/7,
+        width: MediaQuery.of(context).size.width*0.1,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -219,19 +221,30 @@ class _WaveStatCardState extends State<WaveStatCard>
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Image.asset(
-                          widget.iconPath,
-                          width: 20,
-                          height: 20,
-                        ),
+                        Container(
+                          color: Colors.yellow,
+                          child: Image.asset(
+                            widget.iconPath,
+                            width: widget.iconSize,
+                          ),
+                        )
                       ],
                     ),
                   ),
                   5.height,
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                    child: CustomText(
-                      text:widget.numericValue.toString(),size: 20,colors: widget.valueColor,isCopy: false,isBold: true,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CustomText(
+                          text:widget.numericValue.toString(),size: 20,colors: widget.valueColor,isCopy: false,isBold: true,
+                        ),
+                        if(widget.amt!="")
+                        CustomText(
+                          text:widget.amt.toString(),size: 20,colors: widget.valueColor,isCopy: false,isBold: true,
+                        ),
+                      ],
                     ),
                   ),
                 ],

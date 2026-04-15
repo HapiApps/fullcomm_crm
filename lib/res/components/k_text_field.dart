@@ -30,7 +30,7 @@ class MyTextField extends StatelessWidget {
     this.textAlign,
     this.maxLines,
     this.minLines,
-    this.labelRedText,
+    this.labelRedText, this.callback,
   });
 
   final TextEditingController controller;
@@ -57,6 +57,7 @@ class MyTextField extends StatelessWidget {
   final void Function()? onTap;   // ✅ ADD HERE
   final Iterable<String>? autofillHints;
   final TextAlign? textAlign;
+  final VoidCallback? callback;
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +118,9 @@ class MyTextField extends StatelessWidget {
               fontSize: 15),
           labelStyle:  GoogleFonts.lato(color: Colors.black,
               fontSize: 15),
-          suffixIcon: suffixIcon,
+          suffixIcon: InkWell(
+            onTap: callback,
+              child: suffixIcon),
           prefixIcon: prefixIcon,
           contentPadding: const EdgeInsets.fromLTRB(10, 30, 5, 0),
           enabledBorder: OutlineInputBorder(

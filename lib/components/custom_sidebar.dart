@@ -8,6 +8,7 @@ import '../common/constant/colors_constant.dart';
 import '../common/constant/default_constant.dart';
 import '../common/widgets/log_in.dart';
 import '../controller/controller.dart';
+import '../controller/product_controller.dart';
 import '../controller/reminder_controller.dart';
 import '../screens/DashboardPage.dart';
 import '../screens/leads/new_lead_page.dart';
@@ -561,6 +562,7 @@ class SidebarItem extends StatelessWidget {
             remController.selectedMailSortBy.value="All";
             remController.selectedMeetSortBy.value="All";
             remController.selectedReminderSortBy.value="All";
+            productCtr.selectedCallSortBy.value ="All";
             controllers.changeTab(0);
             Navigator.push(
               context,

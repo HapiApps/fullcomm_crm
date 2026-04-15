@@ -73,14 +73,14 @@ class _MeetingCommentsState extends State<MeetingComments> {
   List<double> colWidths = [
     50,   // 0 Checkbox
     80,  // 1 Actions
-    100,  // 2 Event Name
-    100,  // 3 Type
-    100,  // 3 Type
-    100,  // 4 Location
-    100,  // 5 Employee Name
-    100,  // 6 Customer Name
-    100,  // 7 Start Date
-    100,  // 7 Start Date
+    100,  // 2 cus Name
+    120,  // 3 com
+    100,  // 3 emp
+    100,  // 4 tit
+    100,  // 5 ven
+    100,  // 6 st
+    100,  // 7 note
+    100,  // 8 Date
   ];
   Widget headerCell(int index, Widget child) {
     return Stack(
@@ -1277,7 +1277,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               children: [
                                 CustomText(//2
                                   textAlign: TextAlign.left,
-                                  text: "Employee name",
+                                  text: "Employee",
                                   isCopy: true,
                                   size: 15,
                                   isBold: true,

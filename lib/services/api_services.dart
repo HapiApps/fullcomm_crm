@@ -3496,6 +3496,7 @@ class ApiService {
         productCtr.getOrderDetails();
         remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
         controllers.changeTab(0);
+        controllers.selectedIndex.value=106;
         Navigator.push(context,
           PageRouteBuilder(
             pageBuilder: (context,animation1,animation2) =>

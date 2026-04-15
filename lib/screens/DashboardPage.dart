@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/controller/product_controller.dart';
+import 'package:fullcomm_crm/screens/quotation/quotation_page.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -33,6 +34,7 @@ import 'dart:html' as html;
 import '../view_models/billing_provider.dart';
 import 'leads/new_lead_page.dart';
 import 'leads/rating_customer_page.dart';
+import 'order/order_page.dart';
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -80,96 +82,133 @@ class _DashboardPageState extends State<DashboardPage>
     }
   }
   @override
+  // void initState() {
+  //   super.initState();
+  //   _focusNode = FocusNode();
+  //   dashController.getToken();
+  //   apiService.getHeading();
+  //   // Timer.periodic(const Duration(seconds: 30), (timer) {
+  //   //   dashController.refreshTime.value++;
+  //   // });
+  //
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     _focusNode.requestFocus();
+  //     if(controllers.leadCategoryList.isEmpty){
+  //       apiService.getLeadCategories();
+  //     }
+  //     if(controllers.allLeadList.isEmpty){
+  //       apiService.getCustomLeads();
+  //     }
+  //     if(controllers.allLeadCategoryList.isEmpty){
+  //       apiService.getAllLeadCategories();
+  //     }
+  //     apiService.getAllEmployees();
+  //     if(dashController.customerStatusReport.isEmpty){
+  //       dashController.getCustomerStatus();
+  //     }
+  //     if(Provider.of<BillingProvider>(context, listen: false).productsList.isEmpty){
+  //       Provider.of<BillingProvider>(context, listen: false).getProducts();
+  //     }
+  //     if(productCtr.products.isEmpty){
+  //       productCtr.getProducts();
+  //     }
+  //     final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
+  //     employeeData.staffRoleDetailsData(context: context);
+  //     if(controllers.hCallStatusList.isEmpty){
+  //       controllers.getCallStatus();
+  //     }
+  //     controllers.getRangeStatus();
+  //     controllers.getIndustries();
+  //     // productCtr.getProducts();
+  //     productCtr.getOrderDetails();
+  //     productCtr.getQuotationDetails();
+  //     productCtr.getTermsAndConditions();
+  //     apiService.currentVersion();
+  //     controllers.selectedIndex.value = 100;
+  //     // final prefs = await SharedPreferences.getInstance();
+  //     // controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
+  //     DateTime now = DateTime.now();
+  //     // dashController.selectedSortBy.value = "Today";
+  //     // dashController.selectedSortBy.value = controllers.storage.read("selectedSortBy") ?? "Today";
+  //     checkDate();
+  //     remController.selectedMeetSortBy.value=dashController.selectedSortBy.value;
+  //     remController.selectedCallSortBy.value=dashController.selectedSortBy.value;
+  //     remController.selectedReminderSortBy.value=dashController.selectedSortBy.value;
+  //     // controllers.selectedProspectSortBy.value = "Today";
+  //     // controllers.selectedQualifiedSortBy.value = "Today";
+  //     // controllers.selectedCustomerSortBy.value = "Today";
+  //     // remController.selectedMeetSortBy.value = "Today";
+  //     // remController.selectedReminderSortBy.value = "Today";
+  //     remController.dashboardMeetings(
+  //       searchText: controllers.searchText.value.toLowerCase(),
+  //       callType: controllers.selectMeetingType.value,
+  //       sortField: controllers.sortFieldMeetingActivity.value,
+  //       sortOrder: controllers.sortOrderMeetingActivity.value,
+  //     );
+  //     if(remController.reminderList.isEmpty){
+  //       remController.allReminders("2");
+  //     }
+  //     if(remController.callMailsDetailsList.isEmpty){
+  //       apiService.getMailCallActivity();
+  //     }
+  //     remController.dashboardCommunicationFilterList(
+  //       dataList: remController.callMailsDetailsList2,
+  //       searchText: controllers.searchText.value.toLowerCase(),
+  //       callType: controllers.selectCallType.value,
+  //       sortField: controllers.sortFieldCallActivity.value,
+  //       sortOrder: controllers.sortOrderCallActivity.value,
+  //       selectedMonth: remController.selectedCallMonth.value,
+  //       selectedRange: remController.selectedCallRange.value,
+  //       selectedDateFilter: remController.selectedCallSortBy.value,
+  //     );
+  //     String today =
+  //         "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+  //     var last7days = DateTime.now().subtract(Duration(days: 7));
+  //     dashController.getCustomerReport(
+  //         "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
+  //         today);
+  //     dashController.getDashboardReport();
+  //     dashController.getLeadReport();
+  //     dashController.getStatusWiseReport();
+  //     dashController.getRatingReport();
+  //   });
+  //
+  //   _leadItemController = AnimationController(
+  //     vsync: this,
+  //     duration: const Duration(milliseconds: 2200),
+  //   );
+  //
+  //   _leadItemAnimations = [
+  //     // Suspect
+  //     CurvedAnimation(
+  //       parent: _leadItemController,
+  //       curve: const Interval(0.0, 0.20, curve: Curves.easeOut),
+  //     ),
+  //
+  //     // Prospect
+  //     CurvedAnimation(
+  //       parent: _leadItemController,
+  //       curve: const Interval(0.35, 0.55, curve: Curves.easeOut),
+  //     ),
+  //
+  //     // Qualified
+  //     CurvedAnimation(
+  //       parent: _leadItemController,
+  //       curve: const Interval(0.70, 0.90, curve: Curves.easeOut),
+  //     ),
+  //
+  //     // Customer
+  //     CurvedAnimation(
+  //       parent: _leadItemController,
+  //       curve: const Interval(1.00, 1.0, curve: Curves.easeOut),
+  //     ),
+  //   ];
+  // }
+  @override
   void initState() {
     super.initState();
-    _focusNode = FocusNode();
-    dashController.getToken();
-    apiService.getHeading();
-    // Timer.periodic(const Duration(seconds: 30), (timer) {
-    //   dashController.refreshTime.value++;
-    // });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
-      if(controllers.leadCategoryList.isEmpty){
-        apiService.getLeadCategories();
-      }
-      if(controllers.allLeadList.isEmpty){
-        apiService.getCustomLeads();
-      }
-      if(controllers.allLeadCategoryList.isEmpty){
-        apiService.getAllLeadCategories();
-      }
-      apiService.getAllEmployees();
-      if(dashController.customerStatusReport.isEmpty){
-        dashController.getCustomerStatus();
-      }
-      if(Provider.of<BillingProvider>(context, listen: false).productsList.isEmpty){
-        Provider.of<BillingProvider>(context, listen: false).getProducts();
-      }
-      if(productCtr.products.isEmpty){
-        productCtr.getProducts();
-      }
-      final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
-      employeeData.staffRoleDetailsData(context: context);
-      if(controllers.hCallStatusList.isEmpty){
-        controllers.getCallStatus();
-      }
-      controllers.getRangeStatus();
-      controllers.getIndustries();
-      // productCtr.getProducts();
-      productCtr.getOrderDetails();
-      productCtr.getQuotationDetails();
-      productCtr.getTermsAndConditions();
-      apiService.currentVersion();
-      controllers.selectedIndex.value = 100;
-      // final prefs = await SharedPreferences.getInstance();
-      // controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
-      DateTime now = DateTime.now();
-      // dashController.selectedSortBy.value = "Today";
-      // dashController.selectedSortBy.value = controllers.storage.read("selectedSortBy") ?? "Today";
-      checkDate();
-      remController.selectedMeetSortBy.value=dashController.selectedSortBy.value;
-      remController.selectedCallSortBy.value=dashController.selectedSortBy.value;
-      remController.selectedReminderSortBy.value=dashController.selectedSortBy.value;
-      // controllers.selectedProspectSortBy.value = "Today";
-      // controllers.selectedQualifiedSortBy.value = "Today";
-      // controllers.selectedCustomerSortBy.value = "Today";
-      // remController.selectedMeetSortBy.value = "Today";
-      // remController.selectedReminderSortBy.value = "Today";
-      remController.dashboardMeetings(
-        searchText: controllers.searchText.value.toLowerCase(),
-        callType: controllers.selectMeetingType.value,
-        sortField: controllers.sortFieldMeetingActivity.value,
-        sortOrder: controllers.sortOrderMeetingActivity.value,
-      );
-      if(remController.reminderList.isEmpty){
-        remController.allReminders("2");
-      }
-      if(remController.callMailsDetailsList.isEmpty){
-        apiService.getMailCallActivity();
-      }
-      remController.dashboardCommunicationFilterList(
-        dataList: remController.callMailsDetailsList2,
-        searchText: controllers.searchText.value.toLowerCase(),
-        callType: controllers.selectCallType.value,
-        sortField: controllers.sortFieldCallActivity.value,
-        sortOrder: controllers.sortOrderCallActivity.value,
-        selectedMonth: remController.selectedCallMonth.value,
-        selectedRange: remController.selectedCallRange.value,
-        selectedDateFilter: remController.selectedCallSortBy.value,
-      );
-      String today =
-          "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-      var last7days = DateTime.now().subtract(Duration(days: 7));
-      dashController.getCustomerReport(
-          "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
-          today);
-      dashController.getDashboardReport();
-      dashController.getLeadReport();
-      dashController.getStatusWiseReport();
-      dashController.getRatingReport();
-    });
+    _focusNode = FocusNode();
 
     _leadItemController = AnimationController(
       vsync: this,
@@ -177,30 +216,154 @@ class _DashboardPageState extends State<DashboardPage>
     );
 
     _leadItemAnimations = [
-      // Suspect
       CurvedAnimation(
         parent: _leadItemController,
         curve: const Interval(0.0, 0.20, curve: Curves.easeOut),
       ),
-
-      // Prospect
       CurvedAnimation(
         parent: _leadItemController,
         curve: const Interval(0.35, 0.55, curve: Curves.easeOut),
       ),
-
-      // Qualified
       CurvedAnimation(
         parent: _leadItemController,
         curve: const Interval(0.70, 0.90, curve: Curves.easeOut),
       ),
-
-      // Customer
       CurvedAnimation(
         parent: _leadItemController,
-        curve: const Interval(1.00, 1.0, curve: Curves.easeOut),
+        curve: const Interval(0.90, 1.0, curve: Curves.easeOut),
       ),
     ];
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _focusNode.requestFocus();
+
+      /// 🔹 SMALL DELAY (avoid UI freeze)
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      /// ===============================
+      /// 🔥 FIRST PRIORITY (FAST LOAD)
+      /// ===============================
+      await Future.wait([
+        dashController.getToken(),
+        apiService.getHeading(),
+        apiService.getAllEmployees(),
+        dashController.getDashboardReport(),
+      ]);
+
+      /// ===============================
+      /// 🔥 SECOND PRIORITY
+      /// ===============================
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (controllers.leadCategoryList.isEmpty) {
+          apiService.getLeadCategories();
+        }
+
+        if (controllers.allLeadList.isEmpty) {
+          apiService.getCustomLeads();
+        }
+
+        if (controllers.allLeadCategoryList.isEmpty) {
+          apiService.getAllLeadCategories();
+        }
+
+        if (dashController.customerStatusReport.isEmpty) {
+          dashController.getCustomerStatus();
+        }
+
+        if (controllers.hCallStatusList.isEmpty) {
+          controllers.getCallStatus();
+        }
+
+        controllers.getRangeStatus();
+        controllers.getIndustries();
+
+        final billing =
+        Provider.of<BillingProvider>(context, listen: false);
+        if (billing.productsList.isEmpty) {
+          billing.getProducts();
+        }
+
+        if (productCtr.products.isEmpty) {
+          productCtr.getProducts();
+        }
+
+        productCtr.getTermsAndConditions();
+      });
+
+      /// ===============================
+      /// 🔥 THIRD PRIORITY (BACKGROUND)
+      /// ===============================
+      Future.delayed(const Duration(seconds: 1), () {
+        productCtr.getOrderDetails();
+        productCtr.getQuotationDetails();
+
+        dashController.getLeadReport();
+        dashController.getStatusWiseReport();
+        dashController.getRatingReport();
+
+        apiService.currentVersion();
+      });
+
+      /// ===============================
+      /// 🔥 DATE & FILTER SETUP
+      /// ===============================
+      DateTime now = DateTime.now();
+      controllers.selectedIndex.value = 100;
+
+      checkDate();
+
+      remController.selectedMeetSortBy.value =
+          dashController.selectedSortBy.value;
+      remController.selectedCallSortBy.value =
+          dashController.selectedSortBy.value;
+      remController.selectedReminderSortBy.value =
+          dashController.selectedSortBy.value;
+
+      /// 🔹 Meetings
+      remController.dashboardMeetings(
+        searchText: controllers.searchText.value.toLowerCase(),
+        callType: controllers.selectMeetingType.value,
+        sortField: controllers.sortFieldMeetingActivity.value,
+        sortOrder: controllers.sortOrderMeetingActivity.value,
+      );
+
+      /// 🔹 Reminder
+      if (remController.reminderList.isEmpty) {
+        remController.allReminders("2");
+      }
+
+      /// 🔹 Call / Mail
+      if (remController.callMailsDetailsList.isEmpty) {
+        apiService.getMailCallActivity();
+      }
+
+      /// 🔹 Delay filter (IMPORTANT 🔥)
+      Future.delayed(const Duration(milliseconds: 500), () {
+        remController.dashboardSortReminders();
+        remController.dashboardCommunicationFilterList(
+          dataList: remController.callMailsDetailsList2,
+          searchText: controllers.searchText.value.toLowerCase(),
+          callType: controllers.selectCallType.value,
+          sortField: controllers.sortFieldCallActivity.value,
+          sortOrder: controllers.sortOrderCallActivity.value,
+          selectedMonth: remController.selectedCallMonth.value,
+          selectedRange: remController.selectedCallRange.value,
+          selectedDateFilter:
+          remController.selectedCallSortBy.value,
+        );
+      });
+
+      /// 🔹 Reports (Last 7 Days)
+      String today =
+          "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+
+      var last7days = now.subtract(const Duration(days: 7));
+
+      dashController.getCustomerReport(
+        "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
+        today,
+      );
+    });
   }
 void checkDate(){
   DateTime now = DateTime.now();
@@ -693,7 +856,7 @@ void checkDate(){
                                           controllers.selectedIndex.value;
                                       controllers.selectedIndex.value = 101;
                                     }
-                                ),SizedBox(width: screenWidth/75,),
+                                ),SizedBox(width: screenWidth/85,),
                                 WaveStatCard(
                                     title: "Calls",
                                     // numericValue: int.parse(dashController.totalCalls.value.toString()),
@@ -722,7 +885,7 @@ void checkDate(){
                                       controllers.oldIndex.value = controllers.selectedIndex.value;
                                       controllers.selectedIndex.value = 101;
                                     }
-                                ),SizedBox(width: screenWidth/75,),
+                                ),SizedBox(width: screenWidth/85,),
                                 WaveStatCard(
                                   callback: () {
                                     remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
@@ -747,7 +910,7 @@ void checkDate(){
                                   maxValue: maxValue,
                                   iconPath: DashboardAssets.date,
                                   valueColor: const Color(0xff8B2CF5),
-                                ),SizedBox(width: screenWidth/75,),
+                                ),SizedBox(width: screenWidth/85,),
                                 WaveStatCard(
                                   callback: () {
                                     controllers.isLeadsExpanded.value=true;
@@ -773,7 +936,7 @@ void checkDate(){
                                   maxValue: maxValue,
                                   iconPath: DashboardAssets.people,
                                   valueColor: const Color(0xffF29D38),
-                                ),SizedBox(width: screenWidth/75,),
+                                ),SizedBox(width: screenWidth/85,),
                                 WaveStatCard(
                                   callback: () {
                                     remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
@@ -802,6 +965,58 @@ void checkDate(){
                                   maxValue: maxValue,
                                   iconPath: DashboardAssets.alarm,
                                   valueColor: const Color(0xffBB271A),
+                                ),
+                                SizedBox(width: screenWidth/85,),
+                                WaveStatCard(
+                                  callback: () {
+                                    productCtr.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context,
+                                            animation1,
+                                            animation2) =>
+                                        const OrderPage(),
+                                        transitionDuration:
+                                        Duration.zero,
+                                        reverseTransitionDuration:
+                                        Duration.zero,
+                                      ),
+                                    );
+                                    controllers.oldIndex.value =controllers.selectedIndex.value;
+                                    controllers.selectedIndex.value =106;
+                                  },
+                                  title: "Orders",
+                                  numericValue: int.parse(dashController.totalOrders.value.toString()),
+                                  maxValue: maxValue,iconSize: 30,
+                                  iconPath: DashboardAssets.cart,amt: dashController.totalAmt.value,
+                                  valueColor: Colors.pink,
+                                ),
+                                SizedBox(width: screenWidth/85,),
+                                WaveStatCard(
+                                  callback: () {
+                                    productCtr.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                                    Navigator.push(
+                                      context,
+                                      PageRouteBuilder(
+                                        pageBuilder: (context,
+                                            animation1,
+                                            animation2) =>
+                                        const QuotationPage(),
+                                        transitionDuration:
+                                        Duration.zero,
+                                        reverseTransitionDuration:
+                                        Duration.zero,
+                                      ),
+                                    );
+                                    controllers.oldIndex.value =controllers.selectedIndex.value;
+                                    controllers.selectedIndex.value =107;
+                                  },
+                                  title: "Quotations",
+                                  numericValue: int.parse(dashController.totalQuotations.value.toString()),
+                                  maxValue: maxValue,iconSize: 30,
+                                  iconPath: DashboardAssets.quo,
+                                  valueColor: Colors.brown,
                                 ),
                                 SizedBox(
                                   width: screenWidth/7.5,
@@ -2729,17 +2944,35 @@ void checkDate(){
                 color: colorsConst.primary,
                 radius: 10,
               ),
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.center,
+              child: Column(
                 children: [
-                  20.width,
-                  CustomText(
-                    text: "${controllers.leadCategoryList.fold(0, (sum, item) => sum + (item.list2.length ?? 0))-controllers.leadCategoryList.value.last.list2.length}",size: 18,
-                    isCopy: false,colors: Colors.white,isBold: true,
-                  ),10.width,
-                  CustomText(
-                    text: "total leads",
-                    isCopy: false,colors: Colors.white,
+                  Row(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      20.width,
+                      CustomText(
+                        text: "${controllers.leadCategoryList.fold(0, (sum, item) => sum + (item.list2.length ?? 0))-controllers.leadCategoryList.value.last.list2.length}",size: 18,
+                        isCopy: false,colors: Colors.white,isBold: true,
+                      ),10.width,
+                      CustomText(
+                        text: "total leads",
+                        isCopy: false,colors: Colors.white,
+                      ),
+                    ],
+                  ),
+                  Row(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      20.width,
+                      CustomText(
+                        text: "${controllers.leadCategoryList.value.last.list2.length}",size: 18,
+                        isCopy: false,colors: Colors.white,isBold: true,
+                      ),10.width,
+                      CustomText(
+                        text: "total customers",
+                        isCopy: false,colors: Colors.white,
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -2854,7 +3087,8 @@ void checkDate(){
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: [
                                   SizedBox(
-                                    width: MediaQuery.of(context).size.width*0.06,
+                                    // color:Colors.cyanAccent,
+                                    width: MediaQuery.of(context).size.width*0.05,
                                     child: CustomText(
                                       text: controllers.leadCategoryList[i].value.toUpperCase(),
                                       isCopy: false,
