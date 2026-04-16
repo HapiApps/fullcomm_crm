@@ -44,118 +44,6 @@ class AddReminderModel {
 
 final remController = Get.put(ReminderController());
 
-// void showMeetingDialog(
-//     BuildContext context,
-//     List<MeetingObj> meetings,
-//     int index,
-//     ) {
-//   PageController controller = PageController(initialPage: index);
-//   if(meetings.isEmpty)
-//   return ;
-//   showDialog(
-//     context: context,
-//     builder: (context) {
-//       return Dialog(
-//         backgroundColor: Colors.white,
-//         insetPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-//         child: Container(
-//           width: 400,height: 400,
-//           decoration: BoxDecoration(
-//             color: Colors.white,
-//             borderRadius: BorderRadius.circular(16),
-//           ),
-//           padding: EdgeInsets.all(8),
-//           child: Column(
-//             children: [
-//               Expanded(
-//                 child: PageView.builder(
-//                   controller: controller,
-//                   itemCount: meetings.length,
-//                   itemBuilder: (context, i) {
-//                     final meeting = meetings[i];
-//
-//                     return Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         Align(
-//                           alignment: Alignment.centerRight,
-//                           child: IconButton(
-//                             onPressed: () => Navigator.pop(context),
-//                             icon: Icon(Icons.clear),
-//                           ),
-//                         ),5.height,
-//                         Center(
-//                           child: CustomText(
-//                             text: "Appointment Details",
-//                             size: 18,
-//                             isBold: true,isCopy: false,
-//                           ),
-//                         ),
-//                         15.height,
-//                         Container(
-//                           padding: EdgeInsets.all(12),
-//                           decoration: BoxDecoration(
-//                             color: Colors.white,
-//                             borderRadius: BorderRadius.circular(12),
-//                           ),
-//                           child: Column(
-//                             children: [
-//                               buildRow("Company Name", meeting.comName),
-//                               buildRow("Customer Name", meeting.cusName),
-//                               buildRow("Title", meeting.title),
-//                               buildRow("Venue", meeting.venue),
-//                               buildRow("Date", meeting.dates.toString().split("||")[0]),
-//                               buildRow("Time", meeting.time.toString().split("||")[0]),
-//                               buildRow("Notes", meeting.notes),
-//                               buildRow("Status", meeting.status,color: meeting.status=="Scheduled"?Colors.blue:meeting.status=="Cancelled"?Colors.red:Colors.green),
-//                               10.height,
-//                               ElevatedButton(
-//                                 style: ElevatedButton.styleFrom(
-//                                   backgroundColor: colorsConst.primary
-//                                 ),
-//                                   onPressed: (){
-//                                 remController.selectedMeetingIds.add(meeting.id);
-//                                 Navigator.pop(context);
-//                                 utils.appointmentStatus(context,meeting.status);
-//                               }, child: CustomText(text: "Update Status", isCopy: false,colors: Colors.white,))
-//                               ],
-//                           ),
-//                         ),
-//                       ],
-//                     );
-//                   },
-//                 ),
-//               ),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   IconButton(
-//                     icon: Icon(Icons.arrow_left,size: 30),
-//                     onPressed: () {
-//                       controller.previousPage(
-//                         duration: Duration(milliseconds: 300),
-//                         curve: Curves.ease,
-//                       );
-//                     },
-//                   ),
-//                   IconButton(
-//                     icon: Icon(Icons.arrow_right,size: 30),
-//                     onPressed: () {
-//                       controller.nextPage(
-//                         duration: Duration(milliseconds: 300),
-//                         curve: Curves.ease,
-//                       );
-//                     },
-//                   ),
-//                 ],
-//               )
-//             ],
-//           ),
-//         ),
-//       );
-//     },
-//   );
-// }
 void showMeetingDialog(
     BuildContext context,
     List<MeetingObj> meetings,
@@ -168,21 +56,21 @@ void showMeetingDialog(
   showDialog(
     context: context,
     builder: (context) {
+      int currentPage = index;
       return StatefulBuilder(
         builder: (context, setState) {
-          int currentPage = index;
-
           return Dialog(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
             child: Container(
               width: 420,
-              height: 400,
+              // height: 400,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 color: Colors.white,
               ),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   /// 🔵 HEADER
                   Container(
@@ -247,217 +135,218 @@ void showMeetingDialog(
                       ],
                     ),
                   ),
-
                   /// 📄 BODY
                   SizedBox(
-                    height: 330,
+                    height: 350, // ✅ மட்டும் இங்க height
                     child: PageView.builder(
                       controller: controller,
                       itemCount: meetings.length,
                       onPageChanged: (i) {
-                        setState(() => currentPage = i);
+                        setState((){
+                          currentPage = i;
+                        });
                       },
                       itemBuilder: (context, i) {
                         final m = meetings[i];
                         String? selectedValue=m.status;
 
-                        return Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    // color: Colors.pink,
-                                    width:MediaQuery.of(context).size.width*0.05,
-                                    child: CustomText(text: "COMPANY", isCopy: false,size: 12,isBold: true,
-                                    textAlign: TextAlign.start,),
-                                  ),
-                                  SizedBox(
-                                    // color: Colors.yellow,
-                                    width:MediaQuery.of(context).size.width*0.15,
-                                    child: Row(
-                                      children: [
-                                        Image.asset("assets/images/alert2.png",width: 20,height: 20,),10.width,
-                                        CustomText(text: m.comName, isCopy: false,size: 12,textAlign: TextAlign.start,),
-                                      ],
+                        return SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "COMPANY", isCopy: false,isBold: true,
+                                      textAlign: TextAlign.start,),
                                     ),
-                                  ),
-                                ],
-                              ),10.height,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    // color: Colors.pink,
-                                    width:MediaQuery.of(context).size.width*0.05,
-                                    child: CustomText(text: "CUSTOMER", isCopy: false,size: 12,isBold: true,
-                                    textAlign: TextAlign.start,),
-                                  ),
-                                  SizedBox(
-                                    // color: Colors.yellow,
-                                    width:MediaQuery.of(context).size.width*0.15,
-                                    child: Row(
-                                      children: [
-                                        Image.asset("assets/images/alert.png",width: 20,height: 20,),10.width,
-                                        CustomText(text: m.cusName, isCopy: false,size: 12,textAlign: TextAlign.start,),
-                                      ],
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: Row(
+                                        children: [
+                                          Image.asset("assets/images/alert2.png",width: 20,height: 20,),10.width,
+                                          CustomText(text: m.comName, isCopy: false,textAlign: TextAlign.start,),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),10.height,
-                              Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    // color: Colors.pink,
-                                    width:MediaQuery.of(context).size.width*0.05,
-                                    child: CustomText(text: "TITLE", isCopy: false,size: 12,isBold: true,
-                                    textAlign: TextAlign.start,),
-                                  ),10.width,
-                                  SizedBox(
-                                    // color: Colors.yellow,
-                                    // width:MediaQuery.of(context).size.width*0.15,
-                                    child: Container(
+                                  ],
+                                ),10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "CUSTOMER", isCopy: false,isBold: true,
+                                      textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: Row(
+                                        children: [
+                                          Image.asset("assets/images/alert.png",width: 20,height: 20,),10.width,
+                                          CustomText(text: m.cusName, isCopy: false,textAlign: TextAlign.start,),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "TITLE", isCopy: false,isBold: true,
+                                      textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width*0.005,
+                                    ),
+                                    Container(
                                       // alignment: Alignment.centerLeft,
                                       decoration: customDecoration.baseBackgroundDecoration(
                                         color: Color(0xFFE2E8F0),radius: 5
                                       ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(5.0),
-                                          child: CustomText(text: m.title, isCopy: false,size: 12,textAlign: TextAlign.start,),
+                                          child: CustomText(text: m.title, isCopy: false,textAlign: TextAlign.start,),
                                         )),
-                                  ),
-                                ],
-                              ),10.height,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    // color: Colors.pink,
-                                    width:MediaQuery.of(context).size.width*0.05,
-                                    child: CustomText(text: "VENUE", isCopy: false,size: 12,isBold: true,
-                                    textAlign: TextAlign.start,),
-                                  ),
-                                  SizedBox(
-                                    // color: Colors.yellow,
-                                    width:MediaQuery.of(context).size.width*0.15,
-                                    child: CustomText(text: m.venue, isCopy: false,size: 12,textAlign: TextAlign.start,),
-                                  ),
-                                ],
-                              ),10.height,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    // color: Colors.pink,
-                                    width:MediaQuery.of(context).size.width*0.05,
-                                    child: CustomText(text: "DATE & TIME", isCopy: false,size: 12,isBold: true,
-                                    textAlign: TextAlign.start,),
-                                  ),
-                                  SizedBox(
-                                    // color: Colors.yellow,
-                                    width:MediaQuery.of(context).size.width*0.15,
-                                    child: CustomText(text: "${m.dates.split("||")[0]}   ${m.time.split("||")[0]}", isBold: true,
-                                      isCopy: false,size: 12,textAlign: TextAlign.start,),
-                                  ),
-                                ],
-                              ),
-                              10.height,
-                              if(m.notes!="")
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    // color: Colors.pink,
-                                    width:MediaQuery.of(context).size.width*0.05,
-                                    child: CustomText(text: "NOTES", isCopy: false,size: 12,isBold: true,
-                                    textAlign: TextAlign.start,),
-                                  ),
-                                  SizedBox(
-                                    // color: Colors.yellow,
-                                    width:MediaQuery.of(context).size.width*0.15,
-                                    child: Container(
-                                      width: double.infinity,
-                                      margin: const EdgeInsets.only(top: 10),
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFF4F6F8),
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border(
-                                          left: BorderSide(color: colorsConst.primary, width: 3),
-                                        ),
-                                      ),
-                                      child: CustomText(
-                                        text: m.notes ?? "",
-                                        size: 13,
-                                        isCopy: false,
-                                      ),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "VENUE", isCopy: false,isBold: true,
+                                      textAlign: TextAlign.start,),
                                     ),
-                                  ),
-                                ],
-                              ),
-                              if(m.notes!="")
-                              10.height,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  SizedBox(
-                                    // color: Colors.pink,
-                                    width:MediaQuery.of(context).size.width*0.05,
-                                    child: CustomText(text: "STATUS", isCopy: false,size: 12,isBold: true,
-                                    textAlign: TextAlign.start,),
-                                  ),
-                                  Container(
-                                    decoration: customDecoration.baseBackgroundDecoration(
-                                      color: Color(0xFFF4F6F8),radius: 5,shadowColor: Colors.grey.shade50,isShadow: true
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: CustomText(text: m.venue, isCopy: false,textAlign: TextAlign.start,),
                                     ),
-                                    height: 35,
-                                    width:MediaQuery.of(context).size.width*0.15,
-                                    child: DropdownButtonFormField<String>(
-                                      value: selectedValue,icon:Icon(Icons.keyboard_arrow_down_outlined),
-                                      hint: CustomText(text: "Select",isCopy: false,),
-                                      isExpanded: true,
-                                      items: ["Scheduled", "Completed", "Cancelled"]
-                                          .map((e) => DropdownMenuItem(
-                                        value: e,
-                                        child: CustomText(text: e,isCopy: false,),
-                                      ))
-                                          .toList(),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          selectedValue = value;
-                                        });
-                                      },
-                                      decoration: InputDecoration(
-                                        contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-                                        enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.grey.shade50),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "DATE & TIME", isCopy: false,isBold: true,
+                                      textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: CustomText(text: utils.formatDateTime(m.dates,m.time), isBold: true,
+                                        isCopy: false,textAlign: TextAlign.start,),
+                                    ),
+                                  ],
+                                ),
+                                10.height,
+                                if(m.notes!="")
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "NOTES", isCopy: false,isBold: true,
+                                      textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: Container(
+                                        width: double.infinity,
+                                        margin: const EdgeInsets.only(top: 10),
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFF4F6F8),
+                                          borderRadius: BorderRadius.circular(10),
+                                          border: Border(
+                                            left: BorderSide(color: colorsConst.primary, width: 3),
+                                          ),
                                         ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.grey.shade50),
-                                        ),
-                                        errorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.grey.shade50),
-                                        ),
-                                        focusedErrorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(color: Colors.grey.shade50),
+                                        child: CustomText(
+                                          textAlign: TextAlign.start,
+                                          text: m.notes ?? "",isStyle: true,
+                                          isCopy: false,
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),10.height,
-                              Divider(
-                                color: Colors.grey.shade100,
-                              ),
-                              10.height,
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: InkWell(
+                                  ],
+                                ),
+                                if(m.notes!="")
+                                10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "STATUS", isCopy: false,isBold: true,
+                                      textAlign: TextAlign.start,),
+                                    ),
+                                    Container(
+                                      decoration: customDecoration.baseBackgroundDecoration(
+                                        color: Color(0xFFF4F6F8),radius: 5,shadowColor: Colors.grey.shade50,isShadow: true
+                                      ),
+                                      height: 35,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: DropdownButtonFormField<String>(
+                                        value: selectedValue,icon:Icon(Icons.keyboard_arrow_down_outlined),
+                                        hint: CustomText(text: "Select",isCopy: false,),
+                                        isExpanded: true,
+                                        items: ["Scheduled", "Completed", "Cancelled"]
+                                            .map((e) => DropdownMenuItem(
+                                          value: e,
+                                          child: CustomText(text: e,isCopy: false,),
+                                        ))
+                                            .toList(),
+                                        onChanged: (value) {
+                                          setState(() {
+                                            selectedValue = value;
+                                          });
+                                        },
+                                        decoration: InputDecoration(
+                                          contentPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.grey.shade50),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.grey.shade50),
+                                          ),
+                                          errorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.grey.shade50),
+                                          ),
+                                          focusedErrorBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(color: Colors.grey.shade50),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),10.height,
+                                Divider(
+                                  color: Colors.grey.shade100,
+                                ),
+                                10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    InkWell(
                                       onTap: () => Navigator.pop(context),
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -467,10 +356,8 @@ void showMeetingDialog(
                                           isCopy: false,colors: Colors.grey,
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: ElevatedButton(
+                                    ),10.width,
+                                    ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: colorsConst.primary,
                                         shape: RoundedRectangleBorder(
@@ -484,17 +371,22 @@ void showMeetingDialog(
                                       },
                                       child: Padding(
                                         padding: const EdgeInsets.all(8.0),
-                                        child: CustomText(
-                                          text: "Update Status",
-                                          colors: Colors.white,
-                                          isCopy: false,
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.done_all,size: 15,),5.width,
+                                            CustomText(
+                                              text: "Update Status",
+                                              colors: Colors.white,
+                                              isCopy: false,
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                  )
-                                ],
-                              )
-                            ],
+                                    )
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -510,312 +402,533 @@ void showMeetingDialog(
   );
 }
 
-Widget buildRow(String label, String? value, {bool? isBold=false}) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6),
-    child: Row(
-      children: [
-        SizedBox(
-          width: 120,
-          child: CustomText(
-            text: label,
-            size: 12,
-            isBold: true,
-            isCopy: false,
-          ),
-        ),
-        Expanded(
-          child: CustomText(
-            text: value ?? "-",
-            isCopy: false,isBold: isBold??false,
-          ),
-        )
-      ],
-    ),
-  );
-}
-
-Widget buildChipRow(String label, String? value) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(vertical: 6),
-    child: Row(
-      children: [
-        SizedBox(
-          width: 120,
-          child: CustomText(
-            text: label,
-            size: 12,
-            isBold: true,
-            isCopy: false,
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          decoration: BoxDecoration(
-            color: Color(0xFFE2E8F0),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: CustomText(
-            text: value ?? "",
-            size: 12,
-            isCopy: false,
-          ),
-        )
-      ],
-    ),
-  );
-}
-
-Color _statusColor(String? status) {
-  switch (status) {
-    case "Scheduled":
-      return Colors.blue;
-    case "Cancelled":
-      return Colors.red;
-    default:
-      return Colors.green;
-  }
-}
-
-void showCallDialog(
-    BuildContext context,
-    List<CustomerActivity> calls,
-    int index,
-    ) {
-  PageController controller = PageController(initialPage: index);
-  if(calls.isEmpty)
-  return ;
-  showDialog(
-    context: context,
-    builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.white,
-        insetPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-        child: Container(
-          width: 400,height: 400,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Expanded(
-                child: PageView.builder(
-                  controller: controller,
-                  itemCount: calls.length,
-                  itemBuilder: (context, i) {
-                    final meeting = calls[i];
-                    final leadStatus = meeting.leadStatus == "1"
-                        ? "Suspects"
-                        : meeting.leadStatus == "2"
-                        ? "Prospects"
-                        : meeting.leadStatus == "3"
-                        ? "Qualified"
-                        : "Customers";
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: IconButton(
-                            onPressed: () => Navigator.pop(context),
-                            icon: Icon(Icons.clear),
-                          ),
-                        ),5.height,
-                        Center(
-                          child: CustomText(
-                            text: "Call Records",
-                            size: 18,
-                            isBold: true,isCopy: false,
-                          ),
-                        ),
-                        15.height,
-                        Container(
-                          padding: EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Column(
-                            children: [
-                              // buildRow("Company Name", meeting.comName),
-                              buildRow("Lead Name", meeting.customerName),
-                              buildRow("Mobile Number", meeting.toData.toString()=="null"?"":meeting.toData.toString()),
-                              buildRow("Call Type", meeting.callType),
-                              buildRow("Message", meeting.message),
-                              buildRow("Status", meeting.callStatus),
-                              buildRow("Lead Status", leadStatus),
-                              buildRow("Date", meeting.sentDate),
-                            ],
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_left,size: 30),
-                    onPressed: () {
-                      controller.previousPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.ease,
-                      );
-                    },
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_right,size: 30),
-                    onPressed: () {
-                      controller.nextPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.ease,
-                      );
-                    },
-                  ),
-                ],
-              )
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
 void showReminderDialog(
     BuildContext context,
-    List<ReminderModel> calls,
+    List<ReminderModel> list,
     int index,
     ) {
   PageController controller = PageController(initialPage: index);
-  if(calls.isEmpty)
-  return ;
+
+  if (list.isEmpty) return;
+
   showDialog(
     context: context,
     builder: (context) {
-      return Dialog(
-        backgroundColor: Colors.white,
-        insetPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-        child: Container(
-          width: 400,height: 400,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          padding: EdgeInsets.all(8),
-          child: Column(
-            children: [
-              Expanded(
-                child: PageView.builder(
-                  controller: controller,
-                  itemCount: calls.length,
-                  itemBuilder: (context, i) {
-                    final meeting = calls[i];
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+      int currentPage = index;
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Container(
+              width: 420,
+              // height: 400,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  /// 🔵 HEADER
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: colorsConst.primary,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    ),
+                    child: Row(
                       children: [
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: IconButton(
-                            onPressed: () => Navigator.pop(context),
-                            icon: Icon(Icons.clear),
-                          ),
-                        ),5.height,
-                        Center(
+                        Expanded(
                           child: CustomText(
                             text: "Reminders Details",
-                            size: 18,
-                            isBold: true,isCopy: false,
+                            size: 16,
+                            isBold: true,
+                            colors: Colors.white,
+                            isCopy: false,
                           ),
                         ),
-                        15.height,
+
                         Container(
-                          padding: EdgeInsets.all(12),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(12),
+                            color: Color(0XFFE2E8F0),
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          child: Column(
+                          child: Row(
                             children: [
-                              buildRow("Event Name", meeting.title),
-                              buildRow("Type", meeting.type.toString()=="1"?"Follow-up":"Appointment"),
-                              buildRow("Location", meeting.location.toString()=="null"?"":meeting.location.toString()),
-                              buildRow("Employee Name", meeting.employeeName),
-                              buildRow("Lead Name", meeting.customerName),
-                              buildRow("Start Date", meeting.startDt),
-                              buildRow("End Date", meeting.endDt),
-                              buildRow("Details", meeting.details),
+                              InkWell(
+                                child: const Icon(Icons.arrow_back_ios, size: 15),
+                                onTap: () {
+                                  controller.previousPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.ease,
+                                  );
+                                },
+                              ),5.width,
+                              CustomText(
+                                text: "${currentPage + 1} / ${list.length}",
+                                size: 14,isBold: true,
+                                isCopy: false,
+                              ),5.width,
+                              InkWell(
+                                child: const Icon(Icons.arrow_forward_ios_sharp, size: 15),
+                                onTap: () {
+                                  controller.nextPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.ease,
+                                  );
+                                },
+                              ),
                             ],
                           ),
                         ),
+
+                        8.width,
+
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: const Icon(Icons.close, color: Colors.white),
+                        )
                       ],
-                    );
-                  },
-                ),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.arrow_left,size: 30),
-                    onPressed: () {
-                      controller.previousPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.ease,
-                      );
-                    },
+                    ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_right,size: 30),
-                    onPressed: () {
-                      controller.nextPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.ease,
-                      );
-                    },
+                  /// 📄 BODY
+                  SizedBox(
+                    height: 350,
+                    child: PageView.builder(
+                      controller: controller,
+                      itemCount: list.length,
+                      onPageChanged: (i) {
+                        setState((){
+                          currentPage = i;
+                        });
+                      },
+                      itemBuilder: (context, i) {
+                        final m = list[i];
+
+                        return SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "CUSTOMER", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: Row(
+                                        children: [
+                                          Image.asset("assets/images/alert.png",width: 20,height: 20,),10.width,
+                                          CustomText(text: m.customerName, isCopy: false,textAlign: TextAlign.start,),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "EVENT NAME", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width*0.005,
+                                    ),
+                                    Container(
+                                      // alignment: Alignment.centerLeft,
+                                        decoration: customDecoration.baseBackgroundDecoration(
+                                            color: Color(0xFFE2E8F0),radius: 5
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: CustomText(text: m.title, isCopy: false,textAlign: TextAlign.start,),
+                                        )),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "TYPE", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: CustomText(text: m.type.toString()=="1"?"Follow-up":"Appointment", isCopy: false,textAlign: TextAlign.start,),
+                                    ),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "EMPLOYEE", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: CustomText(text: m.employeeName,
+                                        isCopy: false,textAlign: TextAlign.start,),
+                                    ),
+                                  ],
+                                ),
+                                10.height,
+                                if(m.location!="")
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      SizedBox(
+                                        // color: Colors.pink,
+                                        width:MediaQuery.of(context).size.width*0.05,
+                                        child: CustomText(text: "LOCATION", isCopy: false,isBold: true,
+                                          textAlign: TextAlign.start,),
+                                      ),
+                                      SizedBox(
+                                        // color: Colors.yellow,
+                                        width:MediaQuery.of(context).size.width*0.15,
+                                        child: Container(
+                                          width: double.infinity,
+                                          margin: const EdgeInsets.only(top: 10),
+                                          padding: const EdgeInsets.all(12),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFF4F6F8),
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border(
+                                              left: BorderSide(color: colorsConst.primary, width: 3),
+                                            ),
+                                          ),
+                                          child: CustomText(
+                                            textAlign: TextAlign.start,
+                                            text: m.location ?? "",isStyle: true,
+                                            isCopy: false,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                if(m.location!="")
+                                10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "START DATE", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: CustomText(text: m.startDt,
+                                        isCopy: false,textAlign: TextAlign.start,),
+                                    ),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "END DATE", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: CustomText(text: m.endDt,
+                                        isCopy: false,textAlign: TextAlign.start,),
+                                    ),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "DETAILS", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: CustomText(text: m.details,
+                                        isCopy: false,textAlign: TextAlign.start,),
+                                    ),
+                                  ],
+                                ),10.height,
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
-              )
-            ],
-          ),
-        ),
+              ),
+            ),
+          );
+        },
       );
     },
   );
 }
-// Widget buildRow(String label, String value, {Color? color = Colors.black}) {
-//   return Padding(
-//     padding: const EdgeInsets.symmetric(vertical: 4),
-//     child: Row(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       mainAxisAlignment: MainAxisAlignment.start,
-//       children: [
-//         Expanded(
-//           flex: 3,
-//           child: CustomText(
-//             textAlign: TextAlign.start,
-//             text: label,
-//             size: 14,
-//             isBold: true,
-//             colors: Colors.grey, isCopy: false,
-//           ),
-//         ),
-//         Expanded(
-//           flex: 5,
-//           child: CustomText(
-//             textAlign: TextAlign.start,
-//             text: value,colors: color,
-//             size: 14,
-//             isBold: true,isCopy: false,
-//           ),
-//         ),
-//       ],
-//     ),
-//   );
-// }
+
+void showCallDialog(BuildContext context,List<CustomerActivity> list,int index) {
+  PageController controller = PageController(initialPage: index);
+  if (list.isEmpty) return;
+  showDialog(
+    context: context,
+    builder: (context) {
+      int currentPage = index;
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Container(
+              width: 420,
+              // height: 400,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  /// 🔵 HEADER
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: colorsConst.primary,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: CustomText(
+                            text: "Communication Details",
+                            size: 16,
+                            isBold: true,
+                            colors: Colors.white,
+                            isCopy: false,
+                          ),
+                        ),
+
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Color(0XFFE2E8F0),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              InkWell(
+                                child: const Icon(Icons.arrow_back_ios, size: 15),
+                                onTap: () {
+                                  controller.previousPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.ease,
+                                  );
+                                },
+                              ),5.width,
+                              CustomText(
+                                text: "${currentPage + 1} / ${list.length}",
+                                size: 14,isBold: true,
+                                isCopy: false,
+                              ),5.width,
+                              InkWell(
+                                child: const Icon(Icons.arrow_forward_ios_sharp, size: 15),
+                                onTap: () {
+                                  controller.nextPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.ease,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        8.width,
+
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: const Icon(Icons.close, color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ),
+                  /// 📄 BODY
+                  SizedBox(
+                    height: 350,
+                    child: PageView.builder(
+                      controller: controller,
+                      itemCount: list.length,
+                      onPageChanged: (i) {
+                        setState((){
+                          currentPage = i;
+                        });
+                      },
+                      itemBuilder: (context, i) {
+                        final m = list[i];
+
+                        return SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "CUSTOMER", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: Row(
+                                        children: [
+                                          Image.asset("assets/images/alert.png",width: 20,height: 20,),10.width,
+                                          CustomText(text: m.customerName, isCopy: false,textAlign: TextAlign.start,),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "COMPANY", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width*0.005,
+                                    ),
+                                    Container(
+                                      // alignment: Alignment.centerLeft,
+                                        decoration: customDecoration.baseBackgroundDecoration(
+                                            color: Color(0xFFE2E8F0),radius: 5
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: CustomText(text: m.companyName.toString(), isCopy: false,textAlign: TextAlign.start,),
+                                        )),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "CALL DATA", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: CustomText(text: "${m.sentDate.toString().split(" ")[1]} ${m.sentDate.toString().split(" ")[2]}", isCopy: false,textAlign: TextAlign.start,),
+                                    ),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "CALL TYPE", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: CustomText(text: m.callType,
+                                        isCopy: false,textAlign: TextAlign.start,),
+                                    ),
+                                  ],
+                                ),
+                                10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "TYPE", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: CustomText(text: m.callStatus=="null"||m.callStatus==""?"Mail":"Call",
+                                        isCopy: false,textAlign: TextAlign.start,colors: Colors.green,),
+                                    ),
+                                  ],
+                                ),10.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      // color: Colors.pink,
+                                      width:MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(text: "ADDED BY", isCopy: false,isBold: true,
+                                        textAlign: TextAlign.start,),
+                                    ),
+                                    SizedBox(
+                                      // color: Colors.yellow,
+                                      width:MediaQuery.of(context).size.width*0.15,
+                                      child: CustomText(text: m.name,
+                                        isCopy: false,textAlign: TextAlign.start,),
+                                    ),
+                                  ],
+                                ),
+                                10.height,
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
 class ReminderController extends GetxController with GetSingleTickerProviderStateMixin {
   // late CalendarDataSource dataSource;
   late CalendarDataSource dataSource;
@@ -3427,9 +3540,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
     mailFilteredList.assignAll(filteredList);
 
- debugPrint("remController.selectedMailSortBy.value ${remController.selectedMailSortBy.value}");
- debugPrint("controllers.mailActivity ${controllers.mailActivity}");
- debugPrint("mailFilteredList ${mailFilteredList.length}");
+ // debugPrint("remController.selectedMailSortBy.value ${remController.selectedMailSortBy.value}");
+ // debugPrint("controllers.mailActivity ${controllers.mailActivity}");
+ // debugPrint("mailFilteredList ${mailFilteredList.length}");
   }
 
   DateTime _parseMailDate(String? date, DateFormat formatter) {

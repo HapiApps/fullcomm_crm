@@ -3092,13 +3092,14 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                         borderRadius: BorderRadius.circular(5),
                                       ),
                                       child: Padding(
-                                        padding: const EdgeInsets.all(5.0),
+                                        padding: const EdgeInsets.all(8.0),
                                         child: DropdownButtonHideUnderline(
                                           child: DropdownButton<String>(
+                                            dropdownColor: Colors.green,
                                             value: dropValue,
                                             hint: CustomText(text: "Select Status",isCopy: false,colors: Colors.white,),
                                             isExpanded: true,
-                                            icon: const Icon(Icons.keyboard_arrow_down),
+                                            icon: const Icon(Icons.keyboard_arrow_down,color: Colors.white,),
                                             items: statusList.map((status) {
                                               return DropdownMenuItem(
                                                 value: status,
@@ -3110,14 +3111,14 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                 dropValue = value.toString();
                                                 if(dropValue=="Send Quotation"){
                                                   if(controllers.selectedCustomerId.value==""){
-                                                    utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
+                                                    utils.showToast("Please select customer",Colors.red);
                                                   }else if(billingProvider.billingItems.isEmpty){
-                                                    utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
+                                                    utils.showToast("Please select products",Colors.red);
                                                   }else{
                                                     setState(() {
                                                       controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
                                                       controllers.isTemplate.value=false;
-                                                      controllers.emailSubjectCtr.clear();
+                                                      controllers.emailSubjectCtr.text="Quotation";
                                                       controllers.emailMessageCtr.clear();
                                                     });
                                                     showDialog(
@@ -3144,7 +3145,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                   settingsController.showAddTemplateDialog(context);
                                                                                 },
                                                                                 child: CustomText(
-                                                                                  text: "Add Template",
+                                                                                  text: "Create Template",
                                                                                   isCopy: false,
                                                                                   colors: colorsConst.third,
                                                                                   size: 18,
@@ -3156,26 +3157,22 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                       CustomLoadingButton(
                                                                         callback: () {
                                                                           if(controllers.emailToCtr.text.trim().isEmpty){
-                                                                            utils.snackBar(context: context, msg: "To is empty!", color: Colors.red);
+                                                                            utils.showToast("To is empty!",Colors.red);
                                                                             controllers.emailCtr.reset();
                                                                             return;
                                                                           }
-                                                                          if(!controllers.emailToCtr.text.trim().isEmail){
-                                                                            utils.snackBar(
-                                                                              context: context,
-                                                                              msg: "Invalid mail!",
-                                                                              color: Colors.red,
-                                                                            );
+                                                                          if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
+                                                                            utils.showToast("Invalid mail!",Colors.red);
                                                                             controllers.emailCtr.reset();
                                                                             return;
                                                                           }
                                                                           if(controllers.emailSubjectCtr.text.trim().isEmpty){
-                                                                            utils.snackBar(context: context, msg: "Quotation is empty!", color: Colors.red);
+                                                                            utils.showToast("Subject is empty!",Colors.red);
                                                                             controllers.emailCtr.reset();
                                                                             return;
                                                                           }
                                                                           if(controllers.emailMessageCtr.text.trim().isEmpty){
-                                                                            utils.snackBar(context: context, msg: "Message is empty!", color: Colors.red);
+                                                                            utils.showToast("Message is empty!",Colors.red);
                                                                             controllers.emailCtr.reset();
                                                                             return;
                                                                           }
@@ -3220,7 +3217,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                               controllers.isTemplate.value = !controllers.isTemplate.value;
                                                                             },
                                                                             child: CustomText(
-                                                                              text: "Get Form Template",
+                                                                              text: "Get From Template",
                                                                               colors: colorsConst.third,
                                                                               size: 18,
                                                                               isCopy: false,
@@ -3264,7 +3261,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                   children: [
                                                                                     15.height,
                                                                                     CustomText(
-                                                                                      text: "Quotation",
+                                                                                      text: "Subject",
                                                                                       colors: colorsConst.textColor,
                                                                                       size: 14,
                                                                                       isCopy: false,
@@ -3385,7 +3382,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                 ))),
                                                                                 CustomText(
                                                                                     textAlign: TextAlign.start,isBold: true,size: 15,
-                                                                                    text: "The quotation has been sent for ${billingProvider.calculatedTotalProducts()} items with a total amount of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.", isCopy: true),
+                                                                                    text: "The quotation is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.", isCopy: true),
                                                                                 10.height,
                                                                                 SizedBox(
                                                                                   width: 600,
@@ -3428,17 +3425,22 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                   ),
                                                                                 ),
                                                                                 10.height,
-                                                                                Container(
-                                                                                  width: MediaQuery.of(context).size.width*0.6,
-                                                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                                                    color: Colors.grey.shade50,radius: 5,
-                                                                                  ),
-                                                                                  child: Padding(
-                                                                                    padding: const EdgeInsets.all(8.0),
-                                                                                    child: CustomText(
-                                                                                      textAlign: TextAlign.start,
-                                                                                      text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
-                                                                                      isCopy: false,colors: colorsConst.primary,isBold: true,),
+                                                                                InkWell(
+                                                                                  onTap:(){
+                                                                                    printInvoice(billingProvider);
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    width: MediaQuery.of(context).size.width*0.6,
+                                                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                                                      color: Colors.grey.shade50,radius: 5,
+                                                                                    ),
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.all(8.0),
+                                                                                      child: CustomText(
+                                                                                        textAlign: TextAlign.start,
+                                                                                        text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
+                                                                                        isCopy: false,colors: colorsConst.primary,isBold: true,),
+                                                                                    ),
                                                                                   ),
                                                                                 )
                                                                               ],

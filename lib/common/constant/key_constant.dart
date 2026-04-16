@@ -75,6 +75,13 @@ class InputFormatters {
     FilteringTextInputFormatter.allow(
         RegExp("[a-zA-Z0-9 _/. !@#%^&*()/?:;+=_-]"))
   ];
+  final List<TextInputFormatter> textInput2 = [
+    LengthLimitingTextInputFormatter(200),
+
+    //UpperCaseTextFormatter(),
+    FilteringTextInputFormatter.allow(
+        RegExp("[a-zA-Z0-9 _/. !@#%^&*()/?:,;+=_-]"))
+  ];
 
   final List<TextInputFormatter> addressInput = [
     FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9/. ]"))

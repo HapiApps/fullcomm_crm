@@ -2884,8 +2884,8 @@ class ApiService {
         body: jsonEncode(data),
       );
       controllers.isMailLoading.value = false;
-      print("getting mails");
-      print(request.body);
+      // print("getting mails");
+      // print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3403,6 +3403,61 @@ class ApiService {
       controllers.emailCtr.reset();
     }
   }
+  Future insertPOAPI(BuildContext context,String email,String cId,String qId,String cName) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
+      request.fields['action'] = 'send_po';
+      request.fields['customer_id'] = cId;
+      request.fields['q_id'] = qId;
+      request.fields['created_by'] = controllers.storage.read("id").toString();
+      request.fields['clientMail'] = email;
+      request.fields['subject'] = controllers.emailSubjectCtr.text;
+      request.fields['body'] = controllers.emailMessageCtr.text;
+      request.fields['customer_name'] = cName;
+      request.fields['notes'] = controllers.notesCtr.text;
+      request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
+      request.headers.addAll({
+        'X-API-TOKEN': "${TokenStorage().readToken()}",
+        'Content-Type': 'application/json'
+      });
+      if (imageController.empFileName.value.isNotEmpty) {
+        var picture1 = http.MultipartFile.fromBytes(
+          "attachment",
+          imageController.empMediaData,
+          filename: imageController.empFileName.value,
+        );
+        request.files.add(picture1);
+      }
+      var response = await request.send();
+      var body = await response.stream.bytesToString();
+      print("body");
+      print(request.fields);
+      print(body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertPOAPI(context,email,cId,qId,cName);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        utils.snackBar(
+            msg: "Purchase Order sent successfully",
+            color: Colors.green,
+            context: Get.context!);
+        productCtr.getQuotationDetails();
+        Navigator.pop(Get.context!);
+        controllers.emailCtr.reset();
+      } else {
+        controllers.emailCtr.reset();
+        errorDialog(Get.context!, "Mail has been not sent");
+      }
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.emailCtr.reset();
+    }
+  }
   Future updateAppointmentStatus(BuildContext context,String status) async {
     try {
       Map data ={
@@ -3547,7 +3602,16 @@ class ApiService {
       var response = await request.send();
       var body = await response.stream.bytesToString();
       print("body");
+      print(request.fields);
       print(body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertEmailAPI(context,id,image);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (response.statusCode == 200 && body == "Message has been sent") {
         utils.snackBar(
             msg: "Mail has been sent",

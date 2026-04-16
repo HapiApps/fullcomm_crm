@@ -112,7 +112,6 @@ class WaveStatCard extends StatefulWidget {
   final int maxValue;
   final String iconPath;
   final Color valueColor;
-  final double? iconSize;
   final String? amt;
   final VoidCallback callback;
 
@@ -122,7 +121,7 @@ class WaveStatCard extends StatefulWidget {
     required this.numericValue,
     required this.maxValue,
     required this.iconPath,
-    required this.valueColor, required this.callback, this.iconSize=20, this.amt,
+    required this.valueColor, required this.callback, this.amt,
   });
 
   @override
@@ -221,12 +220,9 @@ class _WaveStatCardState extends State<WaveStatCard>
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Container(
-                          color: Colors.yellow,
-                          child: Image.asset(
-                            widget.iconPath,
-                            width: widget.iconSize,
-                          ),
+                        Image.asset(
+                          widget.iconPath,
+                          width: 20,
                         )
                       ],
                     ),

@@ -87,6 +87,7 @@ class Quotations {
   final String createdTs;
   final String status;
   final String validityDate;
+  final String email;
   String? dropValue;
   final int totalAmt;
   final int cusId;
@@ -106,6 +107,7 @@ class Quotations {
     required this.totalProduct,
     required this.totalItem,
     required this.company,
+    required this.email,
     required this.validityDate, this.dropValue,
   });
 
@@ -121,6 +123,7 @@ class Quotations {
       status: json['status'] ?? '',
       createdTs: json['created_ts'] ?? '',
       validityDate: json['validity_date'] ?? '',
+      email: json['email'] ?? '',
       dropValue: 'Confirm Order',
       totalAmt: int.tryParse(json['total_amt']?.toString() ?? "0") ?? 0,
       totalProduct: int.tryParse(json['total_product']?.toString() ?? "0") ?? 0,

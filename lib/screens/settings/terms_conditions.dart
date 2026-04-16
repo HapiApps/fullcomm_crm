@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart'as http;
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -414,6 +415,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                           TextField(
                                             focusNode: nameFocusList[editIndex.value],
                                             controller: controllers.emailMessageCtr,
+                                            inputFormatters: constInputFormatters.textInput2,
                                             decoration: InputDecoration(
                                               border: UnderlineInputBorder(),
                                               contentPadding: const EdgeInsets.symmetric(
@@ -491,7 +493,8 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                                   editIndex.value=index;
                                                   controllers.emailMessageCtr.text=data["name"];
                                                   FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
-                                                }else if (value == "status") {
+                                                }else if (value == "delete") {
+                                                  addCategories(context,"delete",data["id"].toString(),index);
                                                 }
                                               },
                                               itemBuilder: (context) => [
@@ -513,15 +516,15 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                                     ],
                                                   ),
                                                 ),
-                                                // PopupMenuItem(
-                                                //   value: "status",
-                                                //   child: Row(
-                                                //     children: [
-                                                //       Image.asset("assets/images/lead7.png"),10.width,
-                                                //       Text("Toggle Status"),
-                                                //     ],
-                                                //   ),
-                                                // ),
+                                                PopupMenuItem(
+                                                  value: "delete",
+                                                  child: Row(
+                                                    children: [
+                                                      SvgPicture.asset("assets/images/delete.svg",width: 20,height: 20,),10.width,
+                                                      Text("Delete"),
+                                                    ],
+                                                  ),
+                                                ),
                                               ],
                                             ),
                                           ],
@@ -559,7 +562,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                 },
                                 keyboardType: TextInputType.name,
                                 textInputAction: TextInputAction.next,
-                                inputFormatters: constInputFormatters.textInput,
+                                inputFormatters: constInputFormatters.textInput2,
                               ),
                               Row(
                                 children: [

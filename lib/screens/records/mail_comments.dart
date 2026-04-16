@@ -169,7 +169,7 @@ class _MailCommentsState extends State<MailComments> {
                 20.height,
                 Row(
                   children: [
-                    Obx(()=> utils.selectHeatingType("Sent", controllers.isSent.value, (){
+                    Obx(()=> utils.selectHeatingType("To", controllers.isSent.value, (){
                       apiService.getAllMailActivity();
                     }, false,controllers.allSentMails),),
                     10.width,

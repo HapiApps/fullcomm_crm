@@ -181,7 +181,7 @@ class _SendQuotationState extends State<SendQuotation> {
                                                             settingsController.showAddTemplateDialog(context);
                                                           },
                                                           child: CustomText(
-                                                            text: "Add Template",
+                                                            text: "Create Template",
                                                             isCopy: false,
                                                             colors: colorsConst.third,
                                                             size: 18,
@@ -264,7 +264,7 @@ class _SendQuotationState extends State<SendQuotation> {
                                                         controllers.isTemplate.value = !controllers.isTemplate.value;
                                                       },
                                                       child: CustomText(
-                                                        text: "Get Form Template",
+                                                        text: "Get From Template",
                                                         colors: colorsConst.third,
                                                         size: 18,
                                                         isCopy: false,
