@@ -198,3 +198,192 @@ class _KeyboardDropdownFieldState<T extends Object>
     );
   }
 }
+
+
+
+class KeyboardDropdownField2<T extends Object> extends StatefulWidget {
+  final List<T> items;
+  final Widget Function(T item) itemBuilder;
+  final String Function(T item) labelBuilder;
+  final void Function(T item)? onSelected;
+  final String? initialText;
+  final FocusNode? focusNode;
+  final String? hintText;
+  final String? labelText;
+  final double borderRadius;
+  final Color borderColor;
+  final TextEditingController? textEditingController;
+  final bool Function(String input, T item)? filterFn;
+  final VoidCallback? onClear;
+
+
+  const KeyboardDropdownField2({
+    super.key,
+    required this.items,
+    required this.itemBuilder,
+    required this.labelBuilder,
+    this.onSelected,
+    this.initialText,
+    this.filterFn,
+    this.focusNode,
+    this.hintText,
+    this.labelText,
+    this.textEditingController,
+    this.onClear, required this.borderRadius, required this.borderColor,
+  });
+
+  @override
+  _KeyboardDropdownFieldState2<T> createState() =>
+      _KeyboardDropdownFieldState2<T>();
+}
+
+class _KeyboardDropdownFieldState2<T extends Object>
+    extends State<KeyboardDropdownField2<T>> {
+  late TextEditingController controller;
+  late FocusNode focusNode;
+  late ScrollController scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = widget.textEditingController ?? TextEditingController();
+    focusNode = widget.focusNode ?? FocusNode();
+    scrollController = ScrollController();
+
+    if (widget.initialText != null && controller.text.isEmpty) {
+      controller.text = widget.initialText!;
+    }
+  }
+
+  @override
+  void dispose() {
+    if (widget.textEditingController == null) controller.dispose();
+    if (widget.focusNode == null) focusNode.dispose();
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RawAutocomplete<T>(
+      textEditingController: controller,
+      focusNode: focusNode,
+      optionsBuilder: (TextEditingValue value) {
+        final input = value.text.trim().toLowerCase();
+        List<T> results = widget.items.toList();
+        results.sort((a, b) => widget.labelBuilder(a).toLowerCase().compareTo(
+          widget.labelBuilder(b).toLowerCase(),
+        ));
+        if (input.isEmpty) return results;
+        results = results.where((item) {
+          final label = widget.labelBuilder(item).toLowerCase();
+
+          if (widget.filterFn != null) {
+            return widget.filterFn!(input, item);
+          }
+          return label.contains(input);
+        }).toList();
+
+        return results;
+      },
+      displayStringForOption: widget.labelBuilder,
+      onSelected: widget.onSelected,
+      fieldViewBuilder: (context, ctrl, focus, onSubmit) {
+        return SizedBox(
+          height: 40,
+          child: TextField(
+            controller: ctrl,
+            focusNode: focus,
+            onSubmitted: (_) => onSubmit(),
+            style: GoogleFonts.lato(fontSize: 15),
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+              filled: true,
+              fillColor: Colors.white,
+              focusColor: Colors.white,
+              hintText: widget.hintText,
+              border: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey),
+              ),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey),
+              ),
+              focusedBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.blue, width: 2),
+              ),
+              errorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.red),
+              ),
+              focusedErrorBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.red, width: 2),
+              ),
+              // suffixIcon: IconButton(
+              //     onPressed: () {
+              //       setState(() {
+              //         ctrl.clear();
+              //         controller.clear();
+              //       });
+              //       if (widget.onClear != null) {
+              //         widget.onClear!();
+              //       }
+              //     },
+              //     icon: Icon(
+              //       controller.text.isEmpty?Icons.arrow_drop_down:Icons.clear,
+              //       color: Colors.black,
+              //       size: 25,
+              //     )
+              // ),
+            ),
+          ),
+        );
+      },
+      optionsViewBuilder: (context, onSelected, options) {
+        final highlightedIndex = AutocompleteHighlightedOption.of(context);
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (scrollController.hasClients && highlightedIndex >= 0) {
+            scrollController.animateTo(
+              highlightedIndex * 48.0,
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut,
+            );
+          }
+        });
+
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            elevation: 4,
+            child: Container(
+              constraints: const BoxConstraints(maxHeight: 200),
+              width: 450,
+              child: options.isEmpty
+                  ? const ListTile(title: Text("No results found"))
+                  : ListView.builder(
+                controller: scrollController,
+                itemCount: options.length,
+                itemBuilder: (context, index) {
+                  final option = options.elementAt(index);
+                  final isHighlighted = index == highlightedIndex;
+                  return InkWell(
+                    onTap: () => onSelected(option),
+                    child: Container(
+                      color: isHighlighted
+                        ? Theme.of(context).highlightColor
+                        : null,
+                      height: 45,
+                      width: 450,
+                      alignment: Alignment.topLeft,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: widget.itemBuilder(option),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

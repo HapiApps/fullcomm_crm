@@ -2594,6 +2594,8 @@ print("sortField ${sortField}");
   var noteActivity    = <CustomerActivity>[].obs;
   var fields          = <CustomerField>[].obs;
   var headingFields   = <String>[].obs;
+  List<AllCustomersObj> selectedCustomers = [];
+  final TextEditingController mailers =TextEditingController();
   final defaultFields = [
     {"id": "1", "system_field": "name", "user_heading": "Name", "is_required": "1"},
     {"id": "8", "system_field": "company_name", "user_heading": "Company Name", "is_required": "1"},
@@ -2831,10 +2833,10 @@ print("sortField ${sortField}");
       final decoded = jsonDecode(response.body);
 
       // ✅ Safety check
-      if (decoded["status"] == "success" && decoded["billing_data"] != null) {
+      if (decoded["status"] == "success" && decoded["data"] != null) {
 
         List<Map<String, dynamic>> list =
-        List<Map<String, dynamic>>.from(decoded["billing_data"]);
+        List<Map<String, dynamic>>.from(decoded["data"]);
 
         // ✅ Store into RxList
         hCallStatusList.assignAll(list);
@@ -2965,10 +2967,10 @@ var refreshValue=true.obs;
       final decoded = jsonDecode(response.body);
 
       // ✅ Safety check
-      if (decoded["status"] == "success" && decoded["billing_data"] != null) {
+      if (decoded["status"] == "success" && decoded["data"] != null) {
 
         List<Map<String, dynamic>> list =
-        List<Map<String, dynamic>>.from(decoded["billing_data"]);
+        List<Map<String, dynamic>>.from(decoded["data"]);
 
         // ✅ Store into RxList
         industriesList.assignAll(list);
@@ -3103,7 +3105,7 @@ var refreshValue=true.obs;
     "assets/image/itinerary2.jpeg",
     "assets/image/itinerary1.jpeg"
   ];
-var otp = "".obs;
+var otp = "".obs,sentOtp = "".obs;
   Future<List>? imageListFuture;
   late List<String> userdata = [];
   List contactsID = [];
@@ -3798,7 +3800,7 @@ var otp = "".obs;
         "owner": "",
 
         /// ✅ IMPORTANT: SEND ARRAY, NOT STRING
-        "billing_data": customersList,
+        "data": customersList,
       };
 
       final response = await http.post(

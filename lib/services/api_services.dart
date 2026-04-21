@@ -111,8 +111,8 @@ class ApiService {
   //         break;
   //       }
   //     }
-  //     Map billing_data = {
-  //       "billing_data": jsonString,
+  //     Map data = {
+  //       "data": jsonString,
   //       "lead_status": leadId,
   //       "cos_id": controllers.storage.read("cos_id"),
   //       "main_name": controllers.mainLeadName.value,
@@ -170,7 +170,7 @@ class ApiService {
   //         'X-API-TOKEN': "${TokenStorage().readToken()}",
   //         'Content-Type': 'application/json',
   //       },
-  //       body: jsonEncode(billing_data),
+  //       body: jsonEncode(data),
   //     );
   //     Map<String, dynamic> response = json.decode(request.body);
   //     if (request.statusCode == 401) {
@@ -1702,7 +1702,7 @@ class ApiService {
         "owner": controllers.leadTitleCrt[0].text.trim(),
 
         /// ✅ IMPORTANT: SEND ARRAY, NOT STRING
-        "billing_data": customersList,
+        "data": customersList,
       };
 
       final response = await http.post(
@@ -2182,7 +2182,7 @@ class ApiService {
   // Future insertPromoteAPI(BuildContext context,String id,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
   //   try {
   //     print("insertQualifiedAPI");
-  //     Map<String, dynamic> billing_data ={
+  //     Map<String, dynamic> data ={
   //       "id": id,
   //       "lead_status": status,
   //       "created_by": controllers.storage.read("id"),
@@ -2194,10 +2194,10 @@ class ApiService {
   //           'X-API-TOKEN': "${TokenStorage().readToken()}",
   //           'Content-Type': 'application/json',
   //         },
-  //         body: jsonEncode(billing_data),
+  //         body: jsonEncode(data),
   //         encoding: Encoding.getByName("utf-8"));
   //     Map<String, dynamic> response = json.decode(request.body);
-  //     debugPrint(billing_data.toString());
+  //     debugPrint(data.toString());
   //     debugPrint(request.body);
   //     if (request.statusCode == 401) {
   //       final refreshed = await controllers.refreshToken();
@@ -3025,7 +3025,7 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      // print(billing_data);
+      // print(data);
       // print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -3298,7 +3298,7 @@ class ApiService {
   ///
   // Future getUserHeading2() async {
   //   try {
-  //     Map billing_data = {
+  //     Map data = {
   //       "search_type": "user_field_head",
   //       "cos_id": controllers.storage.read("cos_id"),
   //       "action": "get_data"};
@@ -3307,7 +3307,7 @@ class ApiService {
   //           'X-API-TOKEN': "${TokenStorage().readToken()}",
   //           'Content-Type': 'application/json',
   //         },
-  //         body: jsonEncode(billing_data),
+  //         body: jsonEncode(data),
   //         encoding: Encoding.getByName("utf-8"));
   //     if (request.statusCode == 401) {
   //       final refreshed = await controllers.refreshToken();
@@ -3411,8 +3411,8 @@ class ApiService {
       request.fields['q_id'] = qId;
       request.fields['created_by'] = controllers.storage.read("id").toString();
       request.fields['clientMail'] = email;
-      request.fields['subject'] = controllers.emailSubjectCtr.text;
-      request.fields['body'] = controllers.emailMessageCtr.text;
+      request.fields['po_number'] = controllers.emailToCtr.text;
+      request.fields['po_date'] = controllers.emailSubjectCtr.text;
       request.fields['customer_name'] = cName;
       request.fields['notes'] = controllers.notesCtr.text;
       request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
@@ -3636,23 +3636,22 @@ class ApiService {
       controllers.emailCtr.reset();
     }
   }
-
-  Future insertMeetEmailAPI(BuildContext context, String id, String image) async {
+  Future insertMultipleEmailAPI(BuildContext context, List sendList, List nameList, List idList, String image) async {
     try {
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
 
       // Body values
-      request.fields['clientMail'] = controllers.selectedCustomerEmail.value;
-      request.fields['subject'] = "Meeting Reminder: ${controllers.meetingTitleCrt.text}";
+      request.fields['clientMail'] = sendList.join(',');
+      request.fields['subject'] = controllers.emailSubjectCtr.text;
       request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
       request.fields['count'] = '${controllers.emailCount.value + 1}';
       request.fields['quotation_name'] = controllers.emailQuotationCtr.text;
-      request.fields['body'] =  "Meeting Notes: ${controllers.callCommentCont.text}";
+      request.fields['body'] = controllers.emailMessageCtr.text;
       request.fields['user_id'] = controllers.storage.read("id").toString();
-      request.fields['id'] = id;
+      request.fields['id'] = idList.join(',');
       request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
       request.fields['action'] = 'mail_receive';
-      request.fields['customer_name'] = controllers.selectedCustomerName.value;
+      request.fields['customer_name'] = nameList.join(',');
       request.headers.addAll({
         'X-API-TOKEN': "${TokenStorage().readToken()}",
         'Content-Type': 'application/json'
@@ -3668,8 +3667,29 @@ class ApiService {
       }
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      if (response.statusCode == 200 && body == "Message has been sent") {
-        log("Mail sent successfully");
+      print("body");
+      print(request.fields);
+      print(body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertMultipleEmailAPI(context,sendList,nameList,idList,image);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        utils.snackBar(
+            msg: "Mail has been sent",
+            color: Colors.green,
+            context: Get.context!);
+        controllers.emailMessageCtr.clear();
+        controllers.emailToCtr.clear();
+        controllers.emailSubjectCtr.clear();
+        getAllMailActivity();
+        await Future.delayed(const Duration(milliseconds: 100));
+        Navigator.pop(Get.context!);
+        controllers.emailCtr.reset();
       } else {
         controllers.emailCtr.reset();
         errorDialog(Get.context!, "Mail has been not sent");
@@ -3679,6 +3699,7 @@ class ApiService {
       controllers.emailCtr.reset();
     }
   }
+
   void errorDialog(BuildContext context, String text) {
     showDialog(
         context: context,
@@ -4236,7 +4257,7 @@ class ApiService {
           if (data is Map<String, dynamic>) {
             return CustomerFullDetails.fromJson(data);
           } else {
-            throw Exception('Unexpected billing_data payload format');
+            throw Exception('Unexpected data payload format');
           }
         } else {
           throw Exception('API error: ${decoded['responseMsg'] ?? response.body}');
@@ -4966,11 +4987,11 @@ class ApiService {
       }
       if (request.statusCode == 200) {
         log("res $response");
-        controllers.storage.write("f_name", response["billing_data"]["s_name"]);
-        controllers.storage.write("role", response["billing_data"]["permission"]);
+        controllers.storage.write("f_name", response["data"]["s_name"]);
+        controllers.storage.write("role", response["data"]["permission"]);
         controllers.storage.write("role_name", "Admin");
-        controllers.storage.write("id", response["billing_data"]["id"]);
-        controllers.storage.write("cos_id", response["billing_data"]["cos_id"]);
+        controllers.storage.write("id", response["data"]["id"]);
+        controllers.storage.write("cos_id", response["data"]["cos_id"]);
         final prefs = await SharedPreferences.getInstance();
         prefs.setBool("loginScreen${versionNum}", true);
         String input = "Admin";
@@ -5248,7 +5269,7 @@ class ApiService {
         final data = jsonDecode(response.body) as List;
         // newLeadList.clear();
         controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-        // controllers.searchNewLeadList.value = billing_data.map((json) => NewLeadObj.fromJson(json)).toList();
+        // controllers.searchNewLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         for (var e in controllers.leadCategoryList) { e.list.clear(); e.list2.clear(); }
         for (int i = 0; i < controllers.leadCategoryList.length; i++) {
           for (int j = 0; j < controllers.allLeadList.length; j++) {

@@ -238,7 +238,7 @@ class _WaveStatCardState extends State<WaveStatCard>
                         ),
                         if(widget.amt!="")
                         CustomText(
-                          text:widget.amt.toString(),size: 20,colors: widget.valueColor,isCopy: false,isBold: true,
+                          text:widget.amt.toString(),size: 15,isCopy: false,isBold: true,
                         ),
                       ],
                     ),

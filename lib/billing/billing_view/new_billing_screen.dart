@@ -3117,6 +3117,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                   }else{
                                                     setState(() {
                                                       controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
+                                                      controllers.notesCtr.text="The quotation is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
                                                       controllers.isTemplate.value=false;
                                                       controllers.emailSubjectCtr.text="Quotation";
                                                       controllers.emailMessageCtr.clear();
@@ -3380,12 +3381,10 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                     ),
                                                                                   ),
                                                                                 ))),
-                                                                                CustomText(
-                                                                                    textAlign: TextAlign.start,isBold: true,size: 15,
-                                                                                    text: "The quotation is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.", isCopy: true),
                                                                                 10.height,
                                                                                 SizedBox(
                                                                                   width: 600,
+                                                                                  height: 50,
                                                                                   child: TextField(
                                                                                     textInputAction: TextInputAction.newline,
                                                                                     controller: controllers.notesCtr,
@@ -3396,35 +3395,16 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                       color: colorsConst.textColor,
                                                                                     ),
                                                                                     decoration: InputDecoration(
-                                                                                      hintText: "Notes",
+                                                                                      hintText: "",
                                                                                       hintStyle: TextStyle(
                                                                                           color: colorsConst.textColor,
                                                                                           fontSize: 14,
                                                                                           fontFamily: "Lato"),
-                                                                                      border: OutlineInputBorder(),
-                                                                                      enabledBorder: OutlineInputBorder(
-                                                                                          borderSide: BorderSide(
-                                                                                            color: Colors.grey.shade400,
-                                                                                          ),
-                                                                                          borderRadius: BorderRadius.circular(5)),
-                                                                                      focusedBorder: OutlineInputBorder(
-                                                                                          borderSide: BorderSide(
-                                                                                            color: colorsConst.primary,
-                                                                                          ),
-                                                                                          borderRadius: BorderRadius.circular(5)),
-                                                                                      focusedErrorBorder: OutlineInputBorder(
-                                                                                          borderSide: BorderSide(
-                                                                                              color: const Color(0xffE1E5FA)),
-                                                                                          borderRadius: BorderRadius.circular(5)),
+                                                                                      border: InputBorder.none,
                                                                                       contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                                                                      errorBorder: OutlineInputBorder(
-                                                                                          borderSide: BorderSide(
-                                                                                              color: const Color(0xffE1E5FA)),
-                                                                                          borderRadius: BorderRadius.circular(5)),
                                                                                     ),
                                                                                   ),
                                                                                 ),
-                                                                                10.height,
                                                                                 InkWell(
                                                                                   onTap:(){
                                                                                     printInvoice(billingProvider);
@@ -3943,7 +3923,8 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                       child: pw.Column(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                          rowText("Quotation No:", (10000 + Random().nextInt(90000)).toString()),
+                          // rowText("Quotation No:", (10000 + Random().nextInt(90000)).toString()),
+                          rowText("Quotation No:", getNextQuotationNo(productCtr.quotationsList2.first.quotationNo ?? "")),
                           rowText("Quotation Date:", DateFormat("dd-MM-yyyy").format(DateTime.now())),
                           // rowText("OrderNo:", data.id),
                         ],
@@ -3998,7 +3979,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                           tableCell(p.productTitle.toString()),
                           tableCell(p.quantity.toString()),
                           tableCell(p.p_mrp.toString()),
-                          tableCell("Rs. ${billProduct.calculateSubtotal()}"),
+                          tableCell("Rs. ${TextFormat.formattedAmount(billProduct.calculateSubtotal())}"),
                         ],
                       );
                     }),
@@ -4075,6 +4056,22 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
       ),
     );
     return pdf;
+  }
+  String getNextQuotationNo(String lastQuotationNo) {
+    if (lastQuotationNo.isEmpty) return "CQ001";
+
+    // Extract numeric part
+    final numberPart = lastQuotationNo.replaceAll(RegExp(r'[^0-9]'), '');
+
+    int number = int.tryParse(numberPart) ?? 0;
+
+    // Increment
+    number++;
+
+    // Format with leading zeros (3 digits)
+    String newNumber = number.toString().padLeft(3, '0');
+
+    return "CQ$newNumber";
   }
   pw.Widget totalRows(String title, String value,{bool isBold = false}) {
     return pw.Container(

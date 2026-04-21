@@ -93,6 +93,15 @@ class Quotations {
   final int cusId;
   final int totalProduct;
   final int totalItem;
+  final String subTotal;
+  final String dis;
+  final String gst;
+  final String amount;
+  final String price;
+  final String mrp;
+  final String qty;
+  final String pName;
+  final String pId;
 
   Quotations({
     required this.id,
@@ -108,7 +117,17 @@ class Quotations {
     required this.totalItem,
     required this.company,
     required this.email,
-    required this.validityDate, this.dropValue,
+    required this.subTotal,
+    required this.validityDate,
+    required this.dis,
+    required this.gst,
+    required this.amount,
+    required this.price,
+    required this.mrp,
+    required this.qty,
+    required this.pName,
+    required this.pId,
+    this.dropValue,
   });
 
   factory Quotations.fromJson(Map<String, dynamic> json) {
@@ -124,6 +143,15 @@ class Quotations {
       createdTs: json['created_ts'] ?? '',
       validityDate: json['validity_date'] ?? '',
       email: json['email'] ?? '',
+      pId: json['p_id'] ?? '',
+      pName: json['name'] ?? '',
+      qty: json['qty'] ?? '',
+      mrp: json['mrp'] ?? '',
+      price: json['price'] ?? '',
+      amount: json['amount'] ?? '',
+      gst: json['gst'] ?? '',
+      dis: json['dis'] ?? '',
+      subTotal: json['subTotal'] ?? '',
       dropValue: 'Confirm Order',
       totalAmt: int.tryParse(json['total_amt']?.toString() ?? "0") ?? 0,
       totalProduct: int.tryParse(json['total_product']?.toString() ?? "0") ?? 0,

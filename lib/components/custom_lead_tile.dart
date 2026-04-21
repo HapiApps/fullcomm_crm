@@ -291,8 +291,8 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
         final w = tableController.colWidth[h] ?? 155;
         columnWidths[idx++] = FixedColumnWidth(w.toDouble());
       }
-      print("displayHeadings.length");
-      print(displayHeadings.length);
+      // print("displayHeadings.length");
+      // print(displayHeadings.length);
       if (tableController.isTableLoading.value) {
         return SizedBox(
           height: 60,

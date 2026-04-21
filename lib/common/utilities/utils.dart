@@ -937,7 +937,7 @@ class Utils {
         });
   }
 
-  void showComposeMail(BuildContext context) {
+  void showComposeMail2(BuildContext context) {
     controllers.emailToCtr.clear();
     controllers.emailSubjectCtr.clear();
     controllers.emailMessageCtr.clear();
@@ -958,404 +958,894 @@ class Utils {
                   return Container(
                     width: 650,
                     padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            CustomText(
-                              text: "Compose Mail",
-                              size: 16,isCopy: false,isBold: true,
-                              colors: Colors.black87,
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.close, size: 15, color: Colors.black),
-                              onPressed: () => Navigator.pop(context),
-                            ),
-                          ],
-                        ),
-                        Divider(color: Colors.grey),
-                        const SizedBox(height: 10),
-                        KeyboardDropdownField<AllCustomersObj>(
-                          items: controllers.customers,
-                          borderRadius: 5,
-                          borderColor: Colors.grey.shade400,
-                          hintText: "Search leads / customers",
-                          labelText: "Search leads / customers",
-                          labelBuilder: (customer) =>
-                          '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
-                          itemBuilder: (customer) {
-                            return Container(
-                              alignment: Alignment.centerLeft,
-                              padding: const EdgeInsets.symmetric(horizontal: 10),
-                              child: CustomText(
-                                text:
-                                '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
-                                size: 14,
-                                isCopy: false,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              CustomText(
+                                text: "Compose Mail",
+                                size: 16,isCopy: false,isBold: true,
+                                colors: Colors.black87,
                               ),
-                            );
-                          },
-
-                          textEditingController: controllers.cusController,
-
-                          onSelected: (value) {
-                            setState((){
-                              controllers.emailToCtr.text=value.email.toString()=="null"?"":value.email;
-                            });
-                            controllers.selectCustomer(value);
-                          },
-
-                          onClear: () {
-                            controllers.clearSelectedCustomer();
-                          },
-                        ),10.height,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 70,
-                              child: CustomText(text:"To",size: 14,
-                                textAlign: TextAlign.start,
-                                isCopy: false,isBold: true,),
-                            ),
-                            Expanded(
-                              child: TextFormField(
-                                readOnly: true,
-                                controller: controllers.emailToCtr,
-                                style: const TextStyle(fontSize: 14),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.all(10),
-                                  border: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.blue, width: 2),
-                                  ),
-                                  errorBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red),
-                                  ),
-                                  focusedErrorBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red, width: 2),
-                                  ),
-                                ),
+                              IconButton(
+                                icon: const Icon(Icons.close, size: 15, color: Colors.black),
+                                onPressed: () => Navigator.pop(context),
                               ),
-                            ),
-                          ],
-                        ),
-                        // 10.height,
-                        // Divider(color: Colors.grey.shade300),
-                        20.height,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: 70,
-                              child: CustomText(text:"CC",
-                                textAlign: TextAlign.start,
-                                size: 14, isCopy: false,isBold: true,),
-                            ),
-                            Expanded(
-                              child: TextFormField(
-                                style: const TextStyle(fontSize: 14),
-                                decoration: InputDecoration(
-                                  isDense: true,
-                                  contentPadding: EdgeInsets.all(10),
-                                  border: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                  enabledBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.blue, width: 2),
-                                  ),
-                                  errorBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red),
-                                  ),
-                                  focusedErrorBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.red, width: 2),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        // 10.height,
-                        // Divider(color: Colors.grey.shade300),
-                        20.height,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                                width: 70,
+                            ],
+                          ),
+                          Divider(color: Colors.grey),
+                          const SizedBox(height: 10),
+                          KeyboardDropdownField2<AllCustomersObj>(
+                            items: controllers.customers,
+                            borderRadius: 5,
+                            borderColor: Colors.grey.shade400,
+                            hintText: "Search leads / customers",
+                            labelBuilder: (customer) =>customer.email,
+                            itemBuilder: (customer) {
+                              return Container(
+                                alignment: Alignment.centerLeft,
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
                                 child: CustomText(
-                                  textAlign: TextAlign.start,
-                                  text:"Subject",size: 14, isCopy: false,isBold: true,)),
-                            Expanded(
-                              child: Stack(
-                                alignment: Alignment.centerRight,
-                                children: [
-                                  TextFormField(
-                                    controller: controllers.emailSubjectCtr,
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.all(10),
-                                      border: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.grey),
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.grey),
-                                      ),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.blue, width: 2),
-                                      ),
-                                      errorBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.red),
-                                      ),
-                                      focusedErrorBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.red, width: 2),
-                                      ),
-                                    ),
-                                    // decoration: const InputDecoration(
-                                    //   fillColor: Colors.white,
-                                    //   focusColor: Colors.white,
-                                    //   hoverColor: Colors.white,
-                                    //   isDense: true,
-                                    //   border: InputBorder.none,
-                                    //   hintText: "",
-                                    //   contentPadding: EdgeInsets.only(right: 30),
-                                    // ),
-                                  ),
-                                  // if (formatProvider.isLink)
-                                  //   IconButton(
-                                  //     icon: const Icon(Icons.close, size: 18, color: Colors.red),
-                                  //     onPressed: () {
-                                  //       controllers.emailMessageCtr.clear();
-                                  //       formatProvider.removeLink();
-                                  //     },
-                                  //   ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        10.height,
-                        // Divider(color: Colors.grey.shade300),
-                        Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                Icons.format_bold,
-                                size: 20,
-                                color: Colors.black87, // always black
-                              ),
-                              onPressed: () {
-                                formatProvider.toggleBold();
-                              },
-                            ),
-
-                            IconButton(
-                              icon: Icon(
-                                Icons.format_italic,
-                                size: 20,
-                                color: Colors.black87,
-                              ),
-                              onPressed: () => formatProvider.toggleItalic(),
-                            ),
-
-                            IconButton(
-                              icon: Icon(
-                                Icons.format_underline,
-                                size: 20,
-                                color: Colors.black87,
-                              ),
-                              onPressed: () => formatProvider.toggleUnderline(),
-                            ),
-
-                            IconButton(
-                              icon: const Icon(Icons.link, size: 20, color: Colors.black87),
-                              onPressed: () {
-                                if (controllers.emailMessageCtr.text.trim().isEmpty) {
-                                  showToast("Subject is empty!",Colors.red);
-                                  return;
-                                }
-                                formatProvider.toggleLink();
-                              },
-                            ),
-
-                          ],
-                        ),
-                        10.height,
-                        Container(
-                          height: 120,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.grey.shade300),
-                          ),
-                          child: InkWell(
-                            onTap: () async {
-                              if (formatProvider.isLink && controllers.emailMessageCtr.text.isNotEmpty) {
-                                final text = controllers.emailMessageCtr.text.trim();
-                                final url = text.startsWith("http") ? text : "https://$text";
-                                final uri = Uri.parse(url);
-                                if (await canLaunchUrl(uri)) {
-                                  await launchUrl(uri, mode: LaunchMode.externalApplication);
-                                }
-                              }
+                                  text:'${customer.name} - ${customer.email} - ${customer.category}',
+                                  size: 14,
+                                  isCopy: false,
+                                ),
+                              );
                             },
-                            child: IgnorePointer(
-                              ignoring: formatProvider.isLink,
-                              child: TextFormField(
-                                maxLines: null,
-                                expands: true,
-                                readOnly: formatProvider.isLink,
-                                style: formatProvider.subjectTextStyle,
-                                controller: controllers.emailMessageCtr,
-                                decoration: InputDecoration(
-                                  fillColor: Colors.white,
-                                  focusColor: Colors.white,
-                                  hoverColor: Colors.white,
-                                  contentPadding: EdgeInsets.all(8),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(color: Colors.grey),
+                            textEditingController: controllers.cusController,
+                            onSelected: (value) {
+                              setState((){
+                                if(value.email.toString()=="null"||value.email.toString()==""){
+                                  controllers.emailToCtr.clear();
+                                  showToast("No Email Provided", Colors.red);
+                                }else{
+                                  controllers.emailToCtr.text=value.email.toString()=="null"?"":value.email;
+                                }
+                              });
+                              controllers.selectCustomer(value);
+                            },
+
+                            onClear: () {
+                              controllers.clearSelectedCustomer();
+                            },
+                          ),
+                          10.height,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: 70,
+                                child: CustomText(text:"To",size: 14,
+                                  textAlign: TextAlign.start,
+                                  isCopy: false,isBold: true,),
+                              ),
+                              Expanded(
+                                // child: TextFormField(
+                                //   readOnly: true,
+                                //   controller: controllers.emailToCtr,
+                                //   style: const TextStyle(fontSize: 14),
+                                //   decoration: InputDecoration(
+                                //     isDense: true,
+                                //     contentPadding: EdgeInsets.all(10),
+                                //     border: UnderlineInputBorder(
+                                //       borderSide: BorderSide(color: Colors.grey),
+                                //     ),
+                                //     enabledBorder: UnderlineInputBorder(
+                                //       borderSide: BorderSide(color: Colors.grey),
+                                //     ),
+                                //     focusedBorder: UnderlineInputBorder(
+                                //       borderSide: BorderSide(color: Colors.blue, width: 2),
+                                //     ),
+                                //     errorBorder: UnderlineInputBorder(
+                                //       borderSide: BorderSide(color: Colors.red),
+                                //     ),
+                                //     focusedErrorBorder: UnderlineInputBorder(
+                                //       borderSide: BorderSide(color: Colors.red, width: 2),
+                                //     ),
+                                //   ),
+                                // ),
+                                child: KeyboardDropdownField2<AllCustomersObj>(
+                                  items: controllers.customers
+                                      .where((c) =>
+                                  c.email != null &&
+                                      c.email.toString().trim().isNotEmpty &&
+                                      c.email.toString() != "null")
+                                      .toList(),
+
+                                  borderRadius: 5,
+                                  borderColor: Colors.grey.shade400,
+
+                                  labelBuilder: (customer) => customer.email,
+
+                                  itemBuilder: (customer) {
+                                    return Container(
+                                      alignment: Alignment.centerLeft,
+                                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                                      child: CustomText(
+                                        text: '${customer.name} - ${customer.email} - ${customer.category}',
+                                        size: 14,
+                                        isCopy: false,
+                                      ),
+                                    );
+                                  },
+
+                                  textEditingController: controllers.cusController,
+
+                                  onSelected: (value) {
+                                    setState(() {
+                                      controllers.emailToCtr.text = value.email ?? "";
+                                    });
+                                    controllers.selectCustomer(value);
+                                  },
+
+                                  onClear: () {
+                                    controllers.clearSelectedCustomer();
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          // 10.height,
+                          // Divider(color: Colors.grey.shade300),
+                          20.height,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                width: 70,
+                                child: CustomText(text:"CC",
+                                  textAlign: TextAlign.start,
+                                  size: 14, isCopy: false,isBold: true,),
+                              ),
+                              Expanded(
+                                child: KeyboardDropdownField2<AllCustomersObj>(
+                                  items: controllers.customers.where((c) =>c.email != null &&c.email.toString().trim().isNotEmpty &&c.email.toString() != "null").toList(),
+                                  borderRadius: 5,
+                                  borderColor: Colors.grey.shade400,
+                                  labelBuilder: (customer) => customer.email,
+                                  itemBuilder: (customer) {
+                                    final isSelected = controllers.selectedCustomers.contains(customer);
+                                    return StatefulBuilder(
+                                      builder: (context, setInnerState) {
+                                        return InkWell(
+                                          onTap: () {
+                                            setInnerState(() {
+                                              if (isSelected) {
+                                                controllers.selectedCustomers.remove(customer);
+                                              } else {
+                                                controllers.selectedCustomers.add(customer);
+                                              }
+                                              controllers.mailers.text = controllers.selectedCustomers
+                                                  .map((e) => e.email)
+                                                  .join(", ");
+                                            });
+                                          },
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                                            child: Row(
+                                              children: [
+                                                Checkbox(
+                                                  value: isSelected,
+                                                  onChanged: (val) {
+                                                    setInnerState(() {
+                                                      if (val == true) {
+                                                        controllers.selectedCustomers.add(customer);
+                                                      } else {
+                                                        controllers.selectedCustomers.remove(customer);
+                                                      }
+
+                                                      controllers.mailers.text = controllers.selectedCustomers
+                                                          .map((e) => e.email)
+                                                          .join(", ");
+                                                    });
+                                                  },
+                                                ),
+                                                Expanded(
+                                                  child: CustomText(
+                                                    text:
+                                                    '${customer.name} - ${customer.email} - ${customer.category}',
+                                                    size: 14,
+                                                    isCopy: false,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+
+                                  textEditingController: controllers.mailers,
+
+                                  onSelected: (value) {}, // Not needed now
+
+                                  onClear: () {
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                          // 10.height,
+                          // Divider(color: Colors.grey.shade300),
+                          20.height,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              SizedBox(
+                                  width: 70,
+                                  child: CustomText(
+                                    textAlign: TextAlign.start,
+                                    text:"Subject",size: 14, isCopy: false,isBold: true,)),
+                              Expanded(
+                                child: Stack(
+                                  alignment: Alignment.centerRight,
+                                  children: [
+                                    TextFormField(
+                                      controller: controllers.emailSubjectCtr,
+                                      decoration: InputDecoration(
+                                        isDense: true,
+                                        contentPadding: EdgeInsets.all(10),
+                                        border: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.grey),
+                                        ),
+                                        enabledBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.grey),
+                                        ),
+                                        focusedBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.blue, width: 2),
+                                        ),
+                                        errorBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.red),
+                                        ),
+                                        focusedErrorBorder: UnderlineInputBorder(
+                                          borderSide: BorderSide(color: Colors.red, width: 2),
+                                        ),
+                                      ),
+                                      // decoration: const InputDecoration(
+                                      //   fillColor: Colors.white,
+                                      //   focusColor: Colors.white,
+                                      //   hoverColor: Colors.white,
+                                      //   isDense: true,
+                                      //   border: InputBorder.none,
+                                      //   hintText: "",
+                                      //   contentPadding: EdgeInsets.only(right: 30),
+                                      // ),
+                                    ),
+                                    // if (formatProvider.isLink)
+                                    //   IconButton(
+                                    //     icon: const Icon(Icons.close, size: 18, color: Colors.red),
+                                    //     onPressed: () {
+                                    //       controllers.emailMessageCtr.clear();
+                                    //       formatProvider.removeLink();
+                                    //     },
+                                    //   ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          10.height,
+                          // Divider(color: Colors.grey.shade300),
+                          Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.format_bold,
+                                  size: 20,
+                                  color: Colors.black87, // always black
+                                ),
+                                onPressed: () {
+                                  formatProvider.toggleBold();
+                                },
+                              ),
+
+                              IconButton(
+                                icon: Icon(
+                                  Icons.format_italic,
+                                  size: 20,
+                                  color: Colors.black87,
+                                ),
+                                onPressed: () => formatProvider.toggleItalic(),
+                              ),
+
+                              IconButton(
+                                icon: Icon(
+                                  Icons.format_underline,
+                                  size: 20,
+                                  color: Colors.black87,
+                                ),
+                                onPressed: () => formatProvider.toggleUnderline(),
+                              ),
+
+                              IconButton(
+                                icon: const Icon(Icons.link, size: 20, color: Colors.black87),
+                                onPressed: () {
+                                  if (controllers.emailMessageCtr.text.trim().isEmpty) {
+                                    showToast("Subject is empty!",Colors.red);
+                                    return;
+                                  }
+                                  formatProvider.toggleLink();
+                                },
+                              ),
+
+                            ],
+                          ),
+                          10.height,
+                          Container(
+                            height: 120,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.grey.shade300),
+                            ),
+                            child: InkWell(
+                              onTap: () async {
+                                if (formatProvider.isLink && controllers.emailMessageCtr.text.isNotEmpty) {
+                                  final text = controllers.emailMessageCtr.text.trim();
+                                  final url = text.startsWith("http") ? text : "https://$text";
+                                  final uri = Uri.parse(url);
+                                  if (await canLaunchUrl(uri)) {
+                                    await launchUrl(uri, mode: LaunchMode.externalApplication);
+                                  }
+                                }
+                              },
+                              child: IgnorePointer(
+                                ignoring: formatProvider.isLink,
+                                child: TextFormField(
+                                  maxLines: null,
+                                  expands: true,
+                                  readOnly: formatProvider.isLink,
+                                  style: formatProvider.subjectTextStyle,
+                                  controller: controllers.emailMessageCtr,
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    focusColor: Colors.white,
+                                    hoverColor: Colors.white,
+                                    contentPadding: EdgeInsets.all(8),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(color: Colors.grey),
+                                    ),
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(color: Colors.blue, width: 2),
+                                    ),
+                                    errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(color: Colors.red),
+                                    ),
+                                    focusedErrorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                      borderSide: BorderSide(color: Colors.red, width: 2),
+                                    ),
+                                    hintText: "Message",
                                   ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(color: Colors.grey),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(color: Colors.blue, width: 2),
-                                  ),
-                                  errorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(color: Colors.red),
-                                  ),
-                                  focusedErrorBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: BorderSide(color: Colors.red, width: 2),
-                                  ),
-                                  hintText: "Message",
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        14.height,
-                        InkWell(
-                          onTap: (){
-                            utils.chooseFile(
-                                mediaDataV: imageController.empMediaData,
-                                fileName: imageController.empFileName,
-                                pathName: imageController.photo1);
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.attach_file, size: 18, color: Colors.black),
-                              SizedBox(width: 6),
-                              Text("Attach Quotation",
-                                  style: TextStyle(
-                                      fontSize: 14, fontWeight: FontWeight.bold)),
-                            ],
-                          ),
-                        ),
-                        10.height,
-                        Obx(() => imageController.photo1.value.isEmpty
-                            ? 0.height
-                            :  Container( padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: Color(0xff86BAE3FF),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Obx(()=>CustomText(text: imageController.empFileName.value,isCopy: false,)),
-                              SizedBox(width: 10,),
-                              IconButton( padding: EdgeInsets.zero,
-                                constraints: const BoxConstraints(),
-                                onPressed: () {
-                                  imageController.photo1.value = "";
-                                }, icon: const Icon(Icons.close, size: 10),
-                              ),
-                            ],
-                          ),
-                        ),),
-                        Divider(color: Colors.grey),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            10.width,
-                            Row(
+                          14.height,
+                          InkWell(
+                            onTap: (){
+                              utils.chooseFile(
+                                  mediaDataV: imageController.empMediaData,
+                                  fileName: imageController.empFileName,
+                                  pathName: imageController.photo1);
+                            },
+                            child: Row(
                               children: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  style: TextButton.styleFrom(
-                                    foregroundColor: Colors.black87,
-                                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                                  ),
-                                  child: const Text("Discard",
-                                      style: TextStyle(
-                                          fontSize: 13, fontWeight: FontWeight.bold)),
-                                ),
-                                8.width,
-                                CustomLoadingButton(
-                                  callback: () {
-                                    if (controllers.emailToCtr.text.trim().isEmpty) {
-                                      showToast("To is empty!", Colors.red);
-                                      controllers.emailCtr.reset();
-                                      return;
-                                    }
-
-                                    if (!isValidEmail(controllers.emailToCtr.text.trim())) {
-                                      showToast("Invalid mail!", Colors.red);
-                                      controllers.emailCtr.reset();
-                                      return;
-                                    }
-                                    if(controllers.emailSubjectCtr.text.trim().isEmpty){
-                                      showToast("Subject is empty!",Colors.red);
-                                      controllers.emailCtr.reset();
-                                      return;
-                                    }
-                                    if(controllers.emailMessageCtr.text.trim().isEmpty){
-                                      showToast("Message is empty!",Colors.red);
-                                      controllers.emailCtr.reset();
-                                      return;
-                                    }
-                                    apiService.insertEmailAPI(context, controllers.selectedCustomerId.value??"0",imageController.photo1.value);
-                                  },
-                                  controller: controllers.emailCtr,
-                                  isImage: false,
-                                  isLoading: true,
-                                  backgroundColor: colorsConst.primary,
-                                  radius: 5,
-                                  width: controllers.emailCount.value == 0 ||
-                                      controllers.emailCount.value == 1
-                                      ? 90
-                                      : 200,
-                                  height: 50,
-                                  text:"Send",
-                                  textColor: Colors.white,
+                                Icon(Icons.attach_file, size: 18, color: Colors.black),
+                                SizedBox(width: 6),
+                                Text("Attach Quotation",
+                                    style: TextStyle(
+                                        fontSize: 14, fontWeight: FontWeight.bold)),
+                              ],
+                            ),
+                          ),
+                          10.height,
+                          Obx(() => imageController.photo1.value.isEmpty
+                              ? 0.height
+                              :  Container( padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Color(0xff86BAE3FF),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Obx(()=>CustomText(text: imageController.empFileName.value,isCopy: false,)),
+                                SizedBox(width: 10,),
+                                IconButton( padding: EdgeInsets.zero,
+                                  constraints: const BoxConstraints(),
+                                  onPressed: () {
+                                    imageController.photo1.value = "";
+                                  }, icon: const Icon(Icons.close, size: 10),
                                 ),
                               ],
-                            )
-                          ],
-                        ),
-                      ],
+                            ),
+                          ),),
+                          Divider(color: Colors.grey),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              10.width,
+                              Row(
+                                children: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: Colors.black87,
+                                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                                    ),
+                                    child: const Text("Discard",
+                                        style: TextStyle(
+                                            fontSize: 13, fontWeight: FontWeight.bold)),
+                                  ),
+                                  8.width,
+                                  CustomLoadingButton(
+                                    callback: () {
+                                      if (controllers.emailToCtr.text.trim().isEmpty) {
+                                        showToast("To is empty!", Colors.red);
+                                        controllers.emailCtr.reset();
+                                        return;
+                                      }
+
+                                      if (!isValidEmail(controllers.emailToCtr.text.trim())) {
+                                        showToast("Invalid mail!", Colors.red);
+                                        controllers.emailCtr.reset();
+                                        return;
+                                      }
+                                      if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                        showToast("Subject is empty!",Colors.red);
+                                        controllers.emailCtr.reset();
+                                        return;
+                                      }
+                                      if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                        showToast("Message is empty!",Colors.red);
+                                        controllers.emailCtr.reset();
+                                        return;
+                                      }
+                                      apiService.insertEmailAPI(context, controllers.selectedCustomerId.value??"0",imageController.photo1.value);
+                                    },
+                                    controller: controllers.emailCtr,
+                                    isImage: false,
+                                    isLoading: true,
+                                    backgroundColor: colorsConst.primary,
+                                    radius: 5,
+                                    width: controllers.emailCount.value == 0 ||
+                                        controllers.emailCount.value == 1
+                                        ? 90
+                                        : 200,
+                                    height: 50,
+                                    text:"Send",
+                                    textColor: Colors.white,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
               ),
             );
           }
+        );
+      },
+    );
+  }
+  void showComposeMail(BuildContext context) {
+    List<String> toEmails = [];
+    List<String> ccEmails = [];
+    List<String> nameList = [];
+    List<String> idList = [];
+
+    controllers.emailToCtr.clear();
+    controllers.emailSubjectCtr.clear();
+    controllers.emailMessageCtr.clear();
+    imageController.photo1.value="";
+    final formatProvider = Provider.of<ReminderProvider>(context, listen: false);
+    formatProvider.resetFormatting();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+
+            /// 🔹 Email Field Widget
+            Widget buildEmailField({
+              required String label,
+              required List<String> emailList,
+            }) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    width: 70,
+                    child: Text(label,
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  Expanded(
+                    child: Wrap(
+                      spacing: 6,
+                      runSpacing: 6,
+                      children: [
+
+                        /// 🔹 Chips
+                        ...emailList.map((email) => Chip(
+                          label: Text(email),
+                          onDeleted: () {
+                            setState(() => emailList.remove(email));
+                          },
+                        )),
+
+                        /// 🔹 Autocomplete
+                        SizedBox(
+                          // width: 220,
+                          child: Autocomplete<AllCustomersObj>(
+
+                            /// 🔥 FILTER + SEARCH
+                            optionsBuilder: (text) {
+                              final query = text.text.toLowerCase();
+
+                              return controllers.customers.where((c) {
+                                final email = (c.email ?? "").toLowerCase().trim();
+                                final name = (c.name ?? "").toLowerCase();
+
+                                if (email.isEmpty || email == "null") return false;
+
+                                return email.contains(query) || name.contains(query);
+                              });
+                            },
+
+                            displayStringForOption: (c) => '${c.name} - ${c.email} - ${c.category}',
+
+                            fieldViewBuilder:
+                                (context, controller, focusNode, onSubmit) {
+                              return TextField(
+                                controller: controller,
+                                focusNode: focusNode,
+                                decoration: InputDecoration(
+                                  hintText: emailList.isEmpty?"Search email":"Add email",
+                                  border: UnderlineInputBorder(),
+                                ),
+                                // onSubmitted: (val) {
+                                //   final email = val.trim();
+                                //   if (email.isNotEmpty) {
+                                //     setState(() {
+                                //       if (!emailList.contains(email)) {
+                                //         emailList.add(email);
+                                //       }
+                                //     });
+                                //     controller.clear(); // ✅ clear
+                                //   }
+                                // },
+                              );
+                            },
+
+                            /// 🔥 SELECT → EMAIL மட்டும் add
+                            onSelected: (c) {
+                              final email = c.email ?? "";
+                              if (email.isEmpty) return;
+
+                              setState(() {
+                                if (!emailList.contains(email)) {
+                                  emailList.add(email);
+                                  nameList.add(c.name);
+                                  idList.add(c.id);
+                                }
+                              });
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6)),
+              child: Container(
+                width: 650,
+                padding: EdgeInsets.all(16),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                      /// 🔹 HEADER
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Compose Mail",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
+                          IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () => Navigator.pop(context),
+                          )
+                        ],
+                      ),
+                      Divider(),
+
+                      /// 🔹 TO
+                      buildEmailField(label: "To", emailList: toEmails),
+                      SizedBox(height: 10),
+
+                      /// 🔹 CC
+                      buildEmailField(label: "Cc", emailList: ccEmails),
+                      SizedBox(height: 10),
+
+                      /// 🔹 SUBJECT
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 70,
+                            child: Text("Subject",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                          ),
+                          Expanded(
+                            child: TextField(
+                              controller: controllers.emailSubjectCtr,
+                              decoration: InputDecoration(
+                                border: UnderlineInputBorder(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      10.height,
+                      /// 🔹 ATTACH
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.format_bold,
+                              size: 20,
+                              color: Colors.black87, // always black
+                            ),
+                            onPressed: () {
+                              setState((){
+                                formatProvider.toggleBold();
+                              });
+                            },
+                          ),
+
+                          IconButton(
+                            icon: Icon(
+                              Icons.format_italic,
+                              size: 20,
+                              color: Colors.black87,
+                            ),
+                            onPressed: () {
+                              setState((){
+                                formatProvider.toggleItalic();
+                              });
+                            },
+                          ),
+
+                          IconButton(
+                            icon: Icon(
+                              Icons.format_underline,
+                              size: 20,
+                              color: Colors.black87,
+                            ),
+                            onPressed: () {
+                              setState((){
+                                formatProvider.toggleUnderline();
+                              });
+                            },
+                          ),
+
+                          IconButton(
+                            icon: const Icon(Icons.link, size: 20, color: Colors.black87),
+                            onPressed: () {
+                              if (controllers.emailMessageCtr.text.trim().isEmpty) {
+                                showToast("Message is empty!",Colors.red);
+                                return;
+                              }
+                              setState((){
+                                formatProvider.toggleLink();
+                              });
+                            },
+                          ),
+
+                        ],
+                      ),
+                      10.height,
+                      Container(
+                        height: 120,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: InkWell(
+                          onTap: () async {
+                            if (formatProvider.isLink && controllers.emailMessageCtr.text.isNotEmpty) {
+                              final text = controllers.emailMessageCtr.text.trim();
+                              final url = text.startsWith("http") ? text : "https://$text";
+                              final uri = Uri.parse(url);
+                              if (await canLaunchUrl(uri)) {
+                                await launchUrl(uri, mode: LaunchMode.externalApplication);
+                              }
+                            }
+                          },
+                          child: IgnorePointer(
+                            ignoring: formatProvider.isLink,
+                            child: TextFormField(
+                              maxLines: null,
+                              expands: true,
+                              readOnly: formatProvider.isLink,
+                              style: formatProvider.subjectTextStyle,
+                              controller: controllers.emailMessageCtr,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                focusColor: Colors.white,
+                                hoverColor: Colors.white,
+                                contentPadding: EdgeInsets.all(8),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.grey),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.blue, width: 2),
+                                ),
+                                errorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.red),
+                                ),
+                                focusedErrorBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(color: Colors.red, width: 2),
+                                ),
+                                hintText: "Message",
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      14.height,
+                      InkWell(
+                        onTap: (){
+                          utils.chooseFile(
+                              mediaDataV: imageController.empMediaData,
+                              fileName: imageController.empFileName,
+                              pathName: imageController.photo1);
+                        },
+                        child: Row(
+                          children: [
+                            Icon(Icons.attach_file, size: 18, color: Colors.black),
+                            SizedBox(width: 6),
+                            Text("Attach Quotation",
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ),
+                      10.height,
+                      Obx(() => imageController.photo1.value.isEmpty
+                          ? 0.height
+                          :  Container( padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Color(0xff86BAE3FF),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Obx(()=>CustomText(text: imageController.empFileName.value,isCopy: false,)),
+                            SizedBox(width: 10,),
+                            IconButton( padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                              onPressed: () {
+                                imageController.photo1.value = "";
+                              }, icon: const Icon(Icons.close, size: 10),
+                            ),
+                          ],
+                        ),
+                      ),),
+                      /// 🔹 ACTIONS
+                      Divider(color: Colors.grey),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          10.width,
+                          Row(
+                            children: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.black87,
+                                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                                ),
+                                child: const Text("Discard",
+                                    style: TextStyle(
+                                        fontSize: 13, fontWeight: FontWeight.bold)),
+                              ),
+                              8.width,
+                              CustomLoadingButton(
+                                callback: () {
+                                  var inValid=false;
+                                  for(var i=0;i<toEmails.length;i++){
+                                    if(!isValidEmail(toEmails[i])){
+                                      setState((){
+                                        inValid=true;
+                                      });
+                                      break;
+                                    }
+                                  }
+                                  for(var i=0;i<ccEmails.length;i++){
+                                    if(!isValidEmail(ccEmails[i])){
+                                      setState((){
+                                        inValid=true;
+                                      });
+                                      break;
+                                    }
+                                  }
+
+                                  if (inValid==true) {
+                                    showToast("Invalid mail!", Colors.red);
+                                    controllers.emailCtr.reset();
+                                    return;
+                                  }
+
+                                  if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                    showToast("Subject is empty!",Colors.red);
+                                    controllers.emailCtr.reset();
+                                    return;
+                                  }
+                                  if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                    showToast("Message is empty!",Colors.red);
+                                    controllers.emailCtr.reset();
+                                    return;
+                                  }
+                                  var sendList=[];
+                                  sendList.addAll(toEmails);
+                                  sendList.addAll(ccEmails);
+                                  apiService.insertMultipleEmailAPI(context, sendList, nameList,idList,imageController.photo1.value);
+                                },
+                                controller: controllers.emailCtr,
+                                isImage: false,
+                                isLoading: true,
+                                backgroundColor: colorsConst.primary,
+                                radius: 5,
+                                width: controllers.emailCount.value == 0 ||
+                                    controllers.emailCount.value == 1
+                                    ? 90
+                                    : 200,
+                                height: 50,
+                                text:"Send",
+                                textColor: Colors.white,
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
         );
       },
     );
@@ -2084,7 +2574,7 @@ class Utils {
         int minutes = diff.inMinutes % 60;
 
         String duration = "";
-        if (hours > 0) duration += "$hours hr ";
+        if (hours > 0) duration += "$hours hr";
         if (minutes > 0) duration += "$minutes min";
         if (duration.isEmpty) duration = "0 min";
 

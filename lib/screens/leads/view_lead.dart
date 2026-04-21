@@ -168,7 +168,10 @@ void checkType(){
                       final displayName = primaryPerson?.name ?? cust?.companyName ?? widget.name ?? "";
                       final displayMobile = primaryPerson?.phone ?? widget.mobileNumber ?? "";
                       final displayEmail = primaryPerson?.email ?? widget.email ?? "";
-
+                      // print("data.customer ${data.customer}");
+                      // print("primaryPerson?.name ${primaryPerson?.name}");
+                      // print("cust?.companyName ${cust?.companyName}");
+                      // print("widget.name ${widget.name}");
                       return GestureDetector(
                         onTap: () {
                           _focusNode.requestFocus();
@@ -864,7 +867,7 @@ void checkType(){
                                                           ),
                                                           20.height,
                                                           utils.leadText(
-                                                              text: displayName,
+                                                              text: widget.name,
                                                               color: colorsConst.textColor),
                                                           20.height,
                                                           utils.leadText(

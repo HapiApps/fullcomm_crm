@@ -1167,8 +1167,8 @@ void checkDate(){
                                           //   3: FixedColumnWidth(100),
                                           // },
                                           border: TableBorder(
-                                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                            verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey),
+                                            verticalInside:BorderSide(width: 0.5, color: Colors.grey),
                                           ),
                                           children: [
                                             TableRow(
@@ -1373,6 +1373,9 @@ void checkDate(){
                                                 TableRow(
                                                     decoration: BoxDecoration(
                                                       color: int.parse(index.toString()) % 2 == 0 ? Colors.white : Colors.grey.shade100,
+                                                      border: Border.all(
+                                                        color: Colors.grey.shade200
+                                                      )
                                                     ),
                                                     children:[
                                                       InkWell(
@@ -1787,6 +1790,9 @@ void checkDate(){
                                                 TableRow(
                                                     decoration: BoxDecoration(
                                                       color: int.parse(index.toString()) % 2 == 0 ? Colors.white : Colors.grey.shade100,
+                                                        border: Border.all(
+                                                            color: Colors.grey.shade200
+                                                        )
                                                     ),
                                                     children:[
                                                       InkWell(
@@ -2563,6 +2569,9 @@ void checkDate(){
                                                 TableRow(
                                                     decoration: BoxDecoration(
                                                       color: int.parse(index.toString()) % 2 == 0 ? Colors.white : Colors.grey.shade100,
+                                                        border: Border.all(
+                                                            color: Colors.grey.shade200
+                                                        )
                                                     ),
                                                     children:[
                                                       InkWell(
@@ -2884,253 +2893,253 @@ void checkDate(){
     );
   }
   Widget _leadStagesPanel() {
-    return Container(
-      width: MediaQuery.of(context).size.width*0.12,
-      height: MediaQuery.of(context).size.height - 140,
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        // borderRadius: BorderRadius.all(154),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 14,
-            offset: Offset(-6, 0),
-          ),
-        ],
-      ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            // ================= HEADER =================
-            SizedBox(
-              height: 28,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  //  Centered Title
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const CustomText(
-                        text:"LEAD STAGES",
-                        isCopy: false,
-                        size: 14,
-                        isBold: true,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            isLeadPanelOpen = false;
-                          });
-                        },
-                        child: Image.asset(DashboardAssets.leadStage),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+    return InkWell(
+      onTap: () {
+        setState(() {
+          isLeadPanelOpen = false;
+        });
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width*0.12,
+        height: MediaQuery.of(context).size.height - 140,
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          // borderRadius: BorderRadius.all(154),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 14,
+              offset: Offset(-6, 0),
             ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // ================= HEADER =================
+              SizedBox(
+                height: 28,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    //  Centered Title
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        const CustomText(
+                          text:"LEAD STAGES",
+                          isCopy: false,
+                          size: 14,
+                          isBold: true,
+                        ),
+                        Image.asset(DashboardAssets.leadStage)
+                      ],
+                    ),
+                  ],
+                ),
+              ),
 
-            10.height,
-            CustomText(
-              text: "Life Time Customer Journey",
-              isCopy: false,colors: Colors.blue,
-            ),
-            10.height,
-            Container(
-              height: 50,
-              width: MediaQuery.of(context).size.width*0.1,
-              decoration: customDecoration.baseBackgroundDecoration(
-                color: colorsConst.primary,
-                radius: 10,
+              10.height,
+              CustomText(
+                text: "Life Time Customer Journey",
+                isCopy: false,colors: Colors.blue,
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text: "${controllers.leadCategoryList.isEmpty?0:controllers.leadCategoryList.fold(0, (sum, item) => sum + (item.list2.length ?? 0))-controllers.leadCategoryList.value.last.list2.length}",
-                            size: 16,
-                            isCopy: false,colors: Colors.white,isBold: true,
-                          ),5.height,
-                          CustomText(
-                            text: "${controllers.leadCategoryList.value.last.list2.length}",size: 16,
-                            isCopy: false,colors: Colors.white,isBold: true,
-                          )
-                        ],
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(
-                            text: "total leads",
-                            isCopy: false,colors: Colors.white,
-                          ),5.height,
-                          CustomText(
-                            text: "total customers",
-                            isCopy: false,colors: Colors.white,
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-            10.height,
-            // ================= FUNNEL ITEMS =================
-            for (int i = 0; i < controllers.leadCategoryList.length; i++)
-              _animatedLeadItem(
-                index: 0,
-                // child: Column(
-                //   crossAxisAlignment: CrossAxisAlignment.start,
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [
-                //     Row(
-                //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //       children: [
-                //         Row(
-                //           children: [
-                //             Container(
-                //               height: 30,
-                //               width: 30,
-                //               alignment: Alignment.center,
-                //               decoration: BoxDecoration(
-                //                 color: controllers.leadColors[i].withOpacity(0.10),
-                //                 shape: BoxShape.circle,
-                //               ),
-                //               child: Container(
-                //                 height: 12,
-                //                 width: 12,
-                //                 decoration: BoxDecoration(
-                //                   color: controllers.leadColors[i],
-                //                   shape: BoxShape.circle,
-                //                 ),
-                //               ),
-                //             ),10.width,
-                //             CustomText(
-                //               text:  controllers.leadCategoryList[i].value.toUpperCase(),
-                //               isCopy: false,
-                //               size: 11,
-                //               isBold: true,
-                //               colors: controllers.leadColors[i],
-                //             ),
-                //           ],
-                //         ),
-                //         CustomText(
-                //           text: controllers.leadCategoryList[i].list.length.toString(),
-                //           isCopy: false,
-                //           size: 14,
-                //           isBold: true,
-                //           colors: controllers.leadColors[i],
-                //         ),
-                //       ],
-                //     ),
-                //     if(i!=controllers.leadCategoryList.length-1)
-                //     Padding(
-                //       padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                //       child: Container(
-                //         height: 25,color: Colors.grey.shade300,width: 2,
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                child: MouseRegion(
-                  onEnter: (_) {
-                    setState(() {
-                      hoverIndex = i;
-                    });
-                  },
-                  onExit: (_) {
-                    setState(() {
-                      hoverIndex = -1;
-                    });
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            height: 40,
-                            width: 40,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: controllers.leadColors[i].withOpacity(0.10),
-                              shape: BoxShape.circle,
+              10.height,
+              Container(
+                height: 50,
+                width: MediaQuery.of(context).size.width*0.1,
+                decoration: customDecoration.baseBackgroundDecoration(
+                  color: colorsConst.primary,
+                  radius: 10,
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(
+                              text: "${controllers.leadCategoryList.isEmpty?0:controllers.leadCategoryList.fold(0, (sum, item) => sum + (item.list2.length ?? 0))-controllers.leadCategoryList.value.last.list2.length}",
+                              size: 16,
+                              isCopy: false,colors: Colors.white,isBold: true,
+                            ),5.height,
+                            CustomText(
+                              text: "${controllers.leadCategoryList.value.last.list2.length}",size: 16,
+                              isCopy: false,colors: Colors.white,isBold: true,
+                            )
+                          ],
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CustomText(
+                              text: "total leads",
+                              isCopy: false,colors: Colors.white,
+                            ),5.height,
+                            CustomText(
+                              text: "total customers",
+                              isCopy: false,colors: Colors.white,
                             ),
-                            child: Container(
-                              height: 20,
-                              width: 20,
+                          ],
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+              10.height,
+              // ================= FUNNEL ITEMS =================
+              for (int i = 0; i < controllers.leadCategoryList.length; i++)
+                _animatedLeadItem(
+                  index: 0,
+                  // child: Column(
+                  //   crossAxisAlignment: CrossAxisAlignment.start,
+                  //   mainAxisAlignment: MainAxisAlignment.start,
+                  //   children: [
+                  //     Row(
+                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //       children: [
+                  //         Row(
+                  //           children: [
+                  //             Container(
+                  //               height: 30,
+                  //               width: 30,
+                  //               alignment: Alignment.center,
+                  //               decoration: BoxDecoration(
+                  //                 color: controllers.leadColors[i].withOpacity(0.10),
+                  //                 shape: BoxShape.circle,
+                  //               ),
+                  //               child: Container(
+                  //                 height: 12,
+                  //                 width: 12,
+                  //                 decoration: BoxDecoration(
+                  //                   color: controllers.leadColors[i],
+                  //                   shape: BoxShape.circle,
+                  //                 ),
+                  //               ),
+                  //             ),10.width,
+                  //             CustomText(
+                  //               text:  controllers.leadCategoryList[i].value.toUpperCase(),
+                  //               isCopy: false,
+                  //               size: 11,
+                  //               isBold: true,
+                  //               colors: controllers.leadColors[i],
+                  //             ),
+                  //           ],
+                  //         ),
+                  //         CustomText(
+                  //           text: controllers.leadCategoryList[i].list.length.toString(),
+                  //           isCopy: false,
+                  //           size: 14,
+                  //           isBold: true,
+                  //           colors: controllers.leadColors[i],
+                  //         ),
+                  //       ],
+                  //     ),
+                  //     if(i!=controllers.leadCategoryList.length-1)
+                  //     Padding(
+                  //       padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                  //       child: Container(
+                  //         height: 25,color: Colors.grey.shade300,width: 2,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  child: MouseRegion(
+                    onEnter: (_) {
+                      setState(() {
+                        hoverIndex = i;
+                      });
+                    },
+                    onExit: (_) {
+                      setState(() {
+                        hoverIndex = -1;
+                      });
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              height: 40,
+                              width: 40,
+                              alignment: Alignment.center,
                               decoration: BoxDecoration(
-                                color: controllers.leadColors[i],
+                                color: controllers.leadColors[i].withOpacity(0.10),
                                 shape: BoxShape.circle,
                               ),
-                              child: Center(
-                                child: CustomText(text: controllers.leadCategoryList[i].displayOrder.toString(),
-                                  isCopy: false,isBold: true,colors: Colors.white,textAlign: TextAlign.center,),
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  color: controllers.leadColors[i],
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Center(
+                                  child: CustomText(text: controllers.leadCategoryList[i].displayOrder.toString(),
+                                    isCopy: false,isBold: true,colors: Colors.white,textAlign: TextAlign.center,),
+                                ),
                               ),
                             ),
-                          ),
-                          10.width,
-                          Container(
-                            height: 40,
-                            decoration: BoxDecoration(
-                              color: hoverIndex == i
-                                  ? controllers.leadColors[i].withOpacity(0.08) // 🔥 hover color
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(5),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  SizedBox(
-                                    // color:Colors.cyanAccent,
-                                    width: MediaQuery.of(context).size.width*0.05,
-                                    child: CustomText(
-                                      text: controllers.leadCategoryList[i].value.toUpperCase(),
+                            10.width,
+                            Container(
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: hoverIndex == i
+                                    ? controllers.leadColors[i].withOpacity(0.08) // 🔥 hover color
+                                    : Colors.transparent,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    SizedBox(
+                                      // color:Colors.cyanAccent,
+                                      width: MediaQuery.of(context).size.width*0.05,
+                                      child: CustomText(
+                                        text: controllers.leadCategoryList[i].value.toUpperCase(),
+                                        isCopy: false,
+                                        textAlign: TextAlign.start,
+                                        size: 11,
+                                        isBold: true,
+                                        colors: controllers.leadColors[i],
+                                      ),
+                                    ),
+                                    CustomText(
+                                      text: controllers.leadCategoryList[i].list.length.toString(),
                                       isCopy: false,
-                                      textAlign: TextAlign.start,
-                                      size: 11,
+                                      size: 14,
                                       isBold: true,
                                       colors: controllers.leadColors[i],
                                     ),
-                                  ),
-                                  CustomText(
-                                    text: controllers.leadCategoryList[i].list.length.toString(),
-                                    isCopy: false,
-                                    size: 14,
-                                    isBold: true,
-                                    colors: controllers.leadColors[i],
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      if (i != controllers.leadCategoryList.length - 1)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                          child: Container(
-                            height: 20,
-                            color: Colors.grey.shade300,
-                            width: 2,
-                          ),
+                          ],
                         ),
-                    ],
+                        if (i != controllers.leadCategoryList.length - 1)
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                            child: Container(
+                              height: 20,
+                              color: Colors.grey.shade300,
+                              width: 2,
+                            ),
+                          ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -3150,35 +3159,35 @@ void checkDate(){
   );
 
   Widget _leadStagesRail(BuildContext context) {
-    return Container(
-      width: 64,
-      height: MediaQuery.of(context).size.height - 140,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 12,
-            spreadRadius: 1,
-            offset: Offset(-4, 0),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          16.height,
+    return InkWell(
+      onTap: () {
+        setState(() {
+          isLeadPanelOpen = !isLeadPanelOpen;
+          if (isLeadPanelOpen) {
+            _leadItemController.forward(from: 0);
+          }
+        });
+      },
+      child: Container(
+        width: 64,
+        height: MediaQuery.of(context).size.height - 140,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 12,
+              spreadRadius: 1,
+              offset: Offset(-4, 0),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            16.height,
 
-          // 🔹 ICON (PNG)
-          InkWell(
-            onTap: () {
-              setState(() {
-                isLeadPanelOpen = !isLeadPanelOpen;
-                if (isLeadPanelOpen) {
-                  _leadItemController.forward(from: 0);
-                }
-              });
-            },
-            child: Container(
+            // 🔹 ICON (PNG)
+            Container(
               width: 38,
               height: 38,
               decoration: BoxDecoration(
@@ -3187,34 +3196,34 @@ void checkDate(){
               ),
               child: Center(child: Image.asset(DashboardAssets.leadStage)),
             ),
-          ),
 
-          24.height,
+            24.height,
 
-          // 🔹 TEXT (TOP → BOTTOM)
-          const Expanded(
-            child: RotatedBox(
-              quarterTurns: 1,
-              child:
-              // CustomText(
-              //   text:   "LEAD STAGES",
-              //   isCopy: false,
-              //   size: 14,
-              //   isBold: true,
-              //   colors: Colors.black,
-              // ),
-              Text(
-                "LEAD STAGES",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 2,
-                  color: Colors.black,
+            // 🔹 TEXT (TOP → BOTTOM)
+            const Expanded(
+              child: RotatedBox(
+                quarterTurns: 1,
+                child:
+                // CustomText(
+                //   text:   "LEAD STAGES",
+                //   isCopy: false,
+                //   size: 14,
+                //   isBold: true,
+                //   colors: Colors.black,
+                // ),
+                Text(
+                  "LEAD STAGES",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 2,
+                    color: Colors.black,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

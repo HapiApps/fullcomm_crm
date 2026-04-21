@@ -1305,8 +1305,7 @@ class _AddLeadState extends State<AddLead> {
                                                 children: [
                                                   Row(
                                                     children: [
-                                                      CustomText(text: "Company Phone No.", isCopy: false),
-                                                      CustomText(text: "*",size: 18,colors: Colors.red, isCopy: false),
+                                                      CustomText(text: "Company Phone No", isCopy: false),
                                                     ],
                                                   ),
                                                   InkWell(

@@ -103,7 +103,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
                 child: SfDateRangePicker(
                   backgroundColor: const Color(0xffFFFCF9),
                   minDate: DateTime(2023),
-                  maxDate: DateTime.now(),
+                  maxDate: DateTime(2050),
                   selectionMode: DateRangePickerSelectionMode.range,
                   selectionColor: const Color(0xFF004AAD),
                   startRangeSelectionColor: const Color(0xFF004AAD),
@@ -466,7 +466,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
           dashController.totalAmt.value    = response["total_amount"]?.toString() ?? "0";
         } else {
           // handle empty response gracefully
-          print("Dashboard API returned empty billing_data");
+          print("Dashboard API returned empty data");
           dashController.totalQuotations.value        = "0";
           dashController.totalOrders.value        = "0";
           dashController.totalAmt.value        = "0";

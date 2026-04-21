@@ -729,34 +729,6 @@ class BillingProvider with ChangeNotifier{
           return;
         }
         // ✅ Print success → refresh products
-        if (isWChecked) {
-          await getWholeSaleProducts();
-        } else {
-          await getProducts();
-        }
-        // 3️⃣ CLOSE POPUP (IF OPEN)
-        if (Navigator.canPop(context)) {
-          Navigator.pop(context);
-        }
-
-        // 4️⃣ CLEAR BILL ITEMS AFTER SMALL DELAY
-        Future.delayed(const Duration(seconds: 2), () {
-          _billingItems = [];
-          calculateTotalDiscount();
-          calculateTotalItems();
-          calculatedGrandTotal();
-          final customerProvider =
-          Provider.of<CustomersProvider>(context, listen: false);
-          customerProvider.clearSelectedCustomer();
-          // Clear customer fields
-          order.customerName = '';
-          order.customerMobile = '';
-          order.customerAddress = '';
-          paymentReceived.clear();
-          quantityControllers.clear();
-          dropdownFocusNode.requestFocus();
-          notifyListeners();
-        });
       }
       else {
         Toasts.showToastBar(

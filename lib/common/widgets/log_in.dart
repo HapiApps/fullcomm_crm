@@ -12,6 +12,7 @@ import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:otp_text_field_v2/otp_field_v2.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_textfield.dart';
@@ -67,6 +68,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
     readValue();
   }
+  OtpFieldControllerV2 otpbox = OtpFieldControllerV2();
 
   //santhiya2
   @override
@@ -334,14 +336,6 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       log("res ${request.body}");
 
       Map<String, dynamic> response = json.decode(request.body.trim());
-      if (request.statusCode == 401) {
-        final refreshed = await controllers.refreshToken();
-        if (refreshed) {
-          return checkMobileAPI(mobile: mobile);
-        } else {
-          controllers.setLogOut();
-        }
-      }
       if (request.statusCode == 200 && response.containsKey("s_name")) {
         // log("res $response");
         isLoading.value=false;

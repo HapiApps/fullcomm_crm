@@ -122,7 +122,6 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                                           editIndex.value=100;
                                                         }else{
                                                           isEdit.value=false;
-                                                          productCtr.termsAndConditionsList.assignAll(controllers.allLead);
                                                         }
                                                         Navigator.pop(context);
                                                       },
@@ -437,10 +436,22 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                               }
                                             },
                                           ):
-                                          CustomText(
-                                            textAlign: TextAlign.start,
-                                            text: "${index+1} . ${data["name"].toString()}",
-                                            isCopy: false,
+                                          Row(
+                                            children: [
+                                              SizedBox(
+                                                width:50,
+                                                child: ReorderableDragStartListener(
+                                                  index: index,
+                                                  child: const Icon(Icons.menu),
+                                                ),
+                                              ),
+                                              10.width,
+                                              CustomText(
+                                                textAlign: TextAlign.start,
+                                                text: "${index+1} . ${data["name"].toString()}",
+                                                isCopy: false,
+                                              ),
+                                            ],
                                           ),)
                                       ),
                                       SizedBox(
