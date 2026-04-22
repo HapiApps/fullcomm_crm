@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/billing_utils/sized_box.dart';
+import 'package:fullcomm_crm/common/constant/colors_constant.dart';
+import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'Customtext.dart';
 
 
 class KeyboardDropdownField<T extends Object> extends StatefulWidget {
@@ -168,7 +173,7 @@ class _KeyboardDropdownFieldState<T extends Object>
             child: Container(
               constraints: const BoxConstraints(maxHeight: 200),
               width: 450,
-              child: options.isEmpty
+              child: options.isEmpty && controller.text.isNotEmpty
                   ? const ListTile(title: Text("No results found"))
                   : ListView.builder(
                       controller: scrollController,
@@ -387,3 +392,4 @@ class _KeyboardDropdownFieldState2<T extends Object>
     );
   }
 }
+

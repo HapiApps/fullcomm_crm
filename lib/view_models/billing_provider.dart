@@ -494,6 +494,7 @@ class BillingProvider with ChangeNotifier{
       quantityControllers.add(
           TextEditingController(text: newItem.quantity.toString()));
     }
+    print("_billingItems $_billingItems");
 
     notifyListeners();
   }

@@ -509,140 +509,146 @@ class _OrderPageState extends State<OrderPage> {
                               }
                             }
                           },
-                          child: ListView.builder(
-                            controller: _controller,
-                            shrinkWrap: true,
-                            physics: const ScrollPhysics(),
-                            itemCount: productCtr.ordersList.length,
-                            itemBuilder: (context, index) {
-                              final data = productCtr.ordersList[index];
-                              return Table(
-                                columnWidths: const {
-                                  0: FixedColumnWidth(150),//o no
-                                  1: FlexColumnWidth(2),//com
-                                  2: FlexColumnWidth(2),//cus
-                                  3: FlexColumnWidth(1),//amt
-                                  4: FlexColumnWidth(1),//o date
-                                  5: FlexColumnWidth(1),//invo
-                                  6: FlexColumnWidth(1),//status
-                                },
-                                border: TableBorder(
-                                  horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                  verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                  bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                ),
-                                children:[
-                                  TableRow(
-                                      decoration: BoxDecoration(
-                                        color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                      ),
-                                      children:[
-                                        Tooltip(
-                                          message: data.orderId.toString()=="null"?"":data.orderId.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text:data.orderId.toString()=="null"?"":data.orderId.toString(),
-                                              size: 14,
-                                              isCopy: true,
-                                              colors: colorsConst.textColor,
-                                            ),
-                                          ),
+                          child: NotificationListener<ScrollNotification>(
+                            onNotification: (scrollNotification) {
+                              _focusNode.requestFocus();
+                              return false;
+                            },
+                            child: ListView.builder(
+                              controller: _controller,
+                              shrinkWrap: true,
+                              physics: const ScrollPhysics(),
+                              itemCount: productCtr.ordersList.length,
+                              itemBuilder: (context, index) {
+                                final data = productCtr.ordersList[index];
+                                return Table(
+                                  columnWidths: const {
+                                    0: FixedColumnWidth(150),//o no
+                                    1: FlexColumnWidth(2),//com
+                                    2: FlexColumnWidth(2),//cus
+                                    3: FlexColumnWidth(1),//amt
+                                    4: FlexColumnWidth(1),//o date
+                                    5: FlexColumnWidth(1),//invo
+                                    6: FlexColumnWidth(1),//status
+                                  },
+                                  border: TableBorder(
+                                    horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                    verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                    bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                  ),
+                                  children:[
+                                    TableRow(
+                                        decoration: BoxDecoration(
+                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                         ),
-                                        Tooltip(
-                                          message: data.companyName.toString()=="null"?"":data.companyName.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: data.companyName.toString(),
-                                              size: 14,
-                                              isCopy: true,
-                                              colors:colorsConst.textColor,
-                                            ),
-                                          ),
-                                        ),
-                                        Tooltip(
-                                          message: data.customerName.toString()=="null"?"":data.customerName.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: data.customerName.toString(),
-                                              size: 14,
-                                              isCopy: true,
-                                              colors:colorsConst.textColor,
-                                            ),
-                                          ),
-                                        ),
-                                        Tooltip(
-                                          message: productCtr.formatAmount(data.totalAmt.toString()),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: productCtr.formatAmount(data.totalAmt.toString()),
-                                              size: 14,
-                                              isCopy: true,
-                                              colors:colorsConst.textColor,
-                                            ),
-                                          ),
-                                        ),
-                                        Tooltip(
-                                          message: productCtr.formatDateTime(data.createdTs.toString()),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: productCtr.fixedDateTime(data.createdTs.toString()),
-                                              size: 14,
-                                              isCopy: true,
-                                              colors:colorsConst.textColor,
-                                            ),
-                                          ),
-                                        ),
-                                        InkWell(
-                                          onTap:(){
-                                            showDialog(
-                                              context: context,
-                                              builder: (_) => OrderInvoiceDialog(order: data),
-                                            );
-                                          },
-                                          child: SizedBox(
-                                            // decoration: customDecoration.baseBackgroundDecoration(
-                                            //   color: colorsConst.primary,radius: 10
-                                            // ),
-                                            height: 50,
-                                            width:50,
+                                        children:[
+                                          Tooltip(
+                                            message: data.orderId.toString()=="null"?"":data.orderId.toString(),
                                             child: Padding(
-                                              padding: const EdgeInsets.all(8.0),
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(Icons.print,color: colorsConst.primary),5.width,
-                                                  CustomText(text: "View Order", isCopy: false,colors: colorsConst.primary),
-                                                ],
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: CustomText(
+                                                textAlign: TextAlign.left,
+                                                text:"${index+1} - ${data.orderId.toString()=="null"?"":data.orderId.toString()}",
+                                                size: 14,
+                                                isCopy: true,
+                                                colors: colorsConst.textColor,
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            text: data.status.toString(),
-                                            size: 14,
-                                            isCopy: true,
-                                            colors:data.status.toString()=="Completed"?Colors.green:colorsConst.textColor,
+                                          Tooltip(
+                                            message: data.companyName.toString()=="null"?"":data.companyName.toString(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: data.companyName.toString(),
+                                                size: 14,
+                                                isCopy: true,
+                                                colors:colorsConst.textColor,
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ]
-                                  ),
+                                          Tooltip(
+                                            message: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: data.customerName.toString(),
+                                                size: 14,
+                                                isCopy: true,
+                                                colors:colorsConst.textColor,
+                                              ),
+                                            ),
+                                          ),
+                                          Tooltip(
+                                            message: productCtr.formatAmount(data.totalAmt.toString()),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: productCtr.formatAmount(data.totalAmt.toString()),
+                                                size: 14,
+                                                isCopy: true,
+                                                colors:colorsConst.textColor,
+                                              ),
+                                            ),
+                                          ),
+                                          Tooltip(
+                                            message: productCtr.formatDateTime(data.createdTs.toString()),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(10.0),
+                                              child: CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: productCtr.fixedDateTime(data.createdTs.toString()),
+                                                size: 14,
+                                                isCopy: true,
+                                                colors:colorsConst.textColor,
+                                              ),
+                                            ),
+                                          ),
+                                          InkWell(
+                                            onTap:(){
+                                              showDialog(
+                                                context: context,
+                                                builder: (_) => OrderInvoiceDialog(order: data),
+                                              );
+                                            },
+                                            child: SizedBox(
+                                              // decoration: customDecoration.baseBackgroundDecoration(
+                                              //   color: colorsConst.primary,radius: 10
+                                              // ),
+                                              height: 50,
+                                              width:50,
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Icon(Icons.print,color: colorsConst.primary),5.width,
+                                                    CustomText(text: "View Order", isCopy: false,colors: colorsConst.primary),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              text: data.status.toString(),
+                                              size: 14,
+                                              isCopy: true,
+                                              colors:data.status.toString()=="Completed"?Colors.green:colorsConst.textColor,
+                                            ),
+                                          ),
+                                        ]
+                                    ),
 
-                                ],
-                              );
-                            },
+                                  ],
+                                );
+                              },
+                            ),
                           ),
                         );
                       })

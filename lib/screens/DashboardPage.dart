@@ -503,56 +503,94 @@ void checkDate(){
               ),
               SizedBox(
                 width: screenWidth/4,
-                child: KeyboardDropdownField<AllCustomersObj>(
+                // child: KeyboardDropdownField<AllCustomersObj>(
+                //   items: controllers.customers,
+                //   borderRadius: 5,
+                //   borderColor: Colors.grey.shade300,
+                //   hintText: "Global Search By Mobile Number",
+                //   // labelText: "",
+                //   labelBuilder: (customer) =>
+                //   // '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                //   '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+                //   itemBuilder: (customer) {
+                //     return Container(
+                //       width: screenWidth/2.5,
+                //       alignment: Alignment.topLeft,
+                //       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                //       child: CustomText(
+                //         text:
+                //         '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+                //         colors: Colors.black,
+                //         size: 14,
+                //         isCopy: false,
+                //         textAlign: TextAlign.start,
+                //       ),
+                //     );
+                //   },
+                //   textEditingController: controllers.cusController,
+                //   onSelected: (value) {
+                //     controllers.search.text = value.name.toString();
+                //     for (var i = 0; i < controllers.leadCategoryList.length; i++) {
+                //       var item = controllers.leadCategoryList[i];
+                //       if (item.leadStatus == value.leadStatus) {
+                //         controllers.selectedIndex.value =
+                //             int.tryParse(value.leadStatus.toString()) ?? 0;
+                //         Get.off(
+                //               () => NewLeadPage(
+                //             index: item.leadStatus,
+                //             name: item.value,
+                //             list: item.list,
+                //             list2: item.list2,
+                //             listIndex: i,
+                //           ),
+                //           preventDuplicates: false,
+                //         );
+                //         break;
+                //       }
+                //     }
+                //   },
+                //   onClear: () {
+                //     // if (onSearchChanged != null) onSearchChanged!("");
+                //     controllers.clearSelectedCustomer();
+                //   },
+                // ),
+                child: CDropdownField<AllCustomersObj>(
                   items: controllers.customers,
-                  borderRadius: 5,
-                  borderColor: Colors.grey.shade300,
-                  hintText: "Global Search By Mobile Number",
-                  // labelText: "",
-                  labelBuilder: (customer) =>
-                  // '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
-                  '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
-                  itemBuilder: (customer) {
-                    return Container(
-                      width: screenWidth/2.5,
-                      alignment: Alignment.topLeft,
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: CustomText(
-                        text:
-                        '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
-                        colors: Colors.black,
-                        size: 14,
-                        isCopy: false,
-                        textAlign: TextAlign.start,
-                      ),
-                    );
+                  labelBuilder: (item) => item.name,
+                  leadBuilder: (item) => item.category,
+                  subLabelBuilder: (item) => item.phoneNo, // 🔥 optional
+                  itemBuilder: (item) => SizedBox(), // not used now
+                  onSelected: (item) {
+                    print(item.name);
+                    //     controllers.search.text = value.name.toString();
+                    //     for (var i = 0; i < controllers.leadCategoryList.length; i++) {
+                    //       var item = controllers.leadCategoryList[i];
+                    //       if (item.leadStatus == value.leadStatus) {
+                    //         controllers.selectedIndex.value =
+                    //             int.tryParse(value.leadStatus.toString()) ?? 0;
+                    //         Get.off(
+                    //               () => NewLeadPage(
+                    //             index: item.leadStatus,
+                    //             name: item.value,
+                    //             list: item.list,
+                    //             list2: item.list2,
+                    //             listIndex: i,
+                    //           ),
+                    //           preventDuplicates: false,
+                    //         );
+                    //         break;
+                    //       }
+                    //     }
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (_) => AlertDialog(
+                    //     title: Text("Customer"),
+                    //     content: Text(item.name),
+                    //   ),
+                    // );
                   },
-                  textEditingController: controllers.cusController,
-                  onSelected: (value) {
-                    controllers.search.text = value.name.toString();
-                    for (var i = 0; i < controllers.leadCategoryList.length; i++) {
-                      var item = controllers.leadCategoryList[i];
-                      if (item.leadStatus == value.leadStatus) {
-                        controllers.selectedIndex.value =
-                            int.tryParse(value.leadStatus.toString()) ?? 0;
-                        Get.off(
-                              () => NewLeadPage(
-                            index: item.leadStatus,
-                            name: item.value,
-                            list: item.list,
-                            list2: item.list2,
-                            listIndex: i,
-                          ),
-                          preventDuplicates: false,
-                        );
-                        break;
-                      }
-                    }
-                  },
-                  onClear: () {
-                    // if (onSearchChanged != null) onSearchChanged!("");
-                    controllers.clearSelectedCustomer();
-                  },
+                  borderRadius: 8,
+                  borderColor: Colors.grey,
                 ),
               ),
               /// ---------- CENTER ----------
@@ -3236,3 +3274,363 @@ BoxDecoration _whiteCard() => BoxDecoration(
     BoxShadow(color: Color(0x14000000), blurRadius: 10, offset: Offset(0, 4)),
   ],
 );
+
+
+
+class CDropdownField<T extends Object> extends StatefulWidget {
+  final List<T> items;
+  final Widget Function(T item) itemBuilder;
+  final String Function(T item) labelBuilder;
+  final String Function(T item)? subLabelBuilder; // 🔥 NEW
+  final String Function(T item)? leadBuilder; // 🔥 NEW
+  final void Function(T item)? onSelected;
+  final String? initialText;
+  final FocusNode? focusNode;
+  final String? hintText;
+  final String? labelText;
+  final double borderRadius;
+  final Color borderColor;
+  final TextEditingController? textEditingController;
+  final bool Function(String input, T item)? filterFn;
+  final VoidCallback? onClear;
+
+  const CDropdownField({
+    super.key,
+    required this.items,
+    required this.itemBuilder,
+    required this.labelBuilder,
+    this.subLabelBuilder,
+    this.onSelected,
+    this.initialText,
+    this.filterFn,
+    this.focusNode,
+    this.hintText,
+    this.labelText,
+    this.textEditingController,
+    this.onClear,
+    required this.borderRadius,
+    required this.borderColor, this.leadBuilder,
+  });
+
+  @override
+  State<CDropdownField<T>> createState() =>
+      _CDropdownFieldState<T>();
+}
+
+class _CDropdownFieldState<T extends Object>
+    extends State<CDropdownField<T>> {
+  late TextEditingController controller;
+  late FocusNode focusNode;
+  late ScrollController scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = widget.textEditingController ?? TextEditingController();
+    focusNode = widget.focusNode ?? FocusNode();
+    scrollController = ScrollController();
+
+    if (widget.initialText != null && controller.text.isEmpty) {
+      controller.text = widget.initialText!;
+    }
+  }
+
+  @override
+  void dispose() {
+    if (widget.textEditingController == null) controller.dispose();
+    if (widget.focusNode == null) focusNode.dispose();
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RawAutocomplete<T>(
+      textEditingController: controller,
+      focusNode: focusNode,
+
+      /// ✅ FIX 1: mobile + name search
+      optionsBuilder: (TextEditingValue value) {
+        final input = value.text.trim().toLowerCase();
+
+        List<T> results = widget.items.toList();
+
+        results.sort((a, b) => widget.labelBuilder(a)
+            .toLowerCase()
+            .compareTo(widget.labelBuilder(b).toLowerCase()));
+
+        if (input.isEmpty) return results;
+
+        final filtered = results.where((item) {
+          if (widget.filterFn != null) {
+            return widget.filterFn!(input, item);
+          }
+
+          final name = widget.labelBuilder(item).toLowerCase();
+
+          final phone = widget.subLabelBuilder != null
+              ? widget.subLabelBuilder!(item).toLowerCase()
+              : "";
+
+          return name.contains(input) || phone.contains(input);
+        }).toList();
+
+        return filtered;
+      },
+
+      displayStringForOption: widget.labelBuilder,
+
+      /// ✅ FIX 2: value select ஆகணும்
+      onSelected: (T item) {
+        controller.text = widget.labelBuilder(item); // 🔥 முக்கியம்
+        widget.onSelected?.call(item);
+      },
+
+      fieldViewBuilder: (context, ctrl, focus, onSubmit) {
+        return SizedBox(
+          height: 40,
+          child: TextField(
+            controller: ctrl,
+            focusNode: focus,
+            onSubmitted: (_) => onSubmit(),
+            decoration: InputDecoration(
+              prefixIcon: Image.asset("assets/images/search.png"),
+              contentPadding:
+              const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+              filled: true,
+              fillColor: Colors.white,
+              hintText: "Search Leads",
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(widget.borderRadius),
+                borderSide: BorderSide(color: widget.borderColor),
+              ),
+              suffixIcon: OutlinedButton(
+                onPressed: () {
+                  setState(() {
+                    ctrl.clear();
+                  });
+                  widget.onClear?.call();
+                },
+                child: Icon(
+                  controller.text.isEmpty
+                      ? Icons.arrow_drop_down
+                      : Icons.clear,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+
+      optionsViewBuilder: (context, onSelected, options) {
+        final highlightedIndex = AutocompleteHighlightedOption.of(context);
+        final inputText = controller.text;
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (scrollController.hasClients && highlightedIndex >= 0) {
+            scrollController.animateTo(
+              highlightedIndex * 60,
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut,
+            );
+          }
+        });
+
+        return Align(
+          alignment: Alignment.topLeft,
+          child: Material(
+            elevation: 4,
+            child: Container(
+              width: MediaQuery.of(context).size.width / 4,
+              constraints: const BoxConstraints(maxHeight: 250),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+
+              /// ✅ FIX 3: proper "No results"
+              child: options.isEmpty && inputText.isNotEmpty
+                  ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: CustomText(
+                    text: "No results found",
+                    size: 13,
+                    isCopy: false,
+                  ),
+                ),
+              )
+                  : Column(
+                children: [
+                  /// 👉 உங்க existing UI untouched
+                  if (inputText.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Row(
+                        children: [
+                          Image.asset("assets/images/search.png"),
+                          10.width,
+                          CustomText(
+                            text: "Results for",
+                            size: 12,
+                            isCopy: false,
+                            colors: Colors.grey.shade500,
+                          ),
+                          10.width,
+                          Container(
+                            decoration: customDecoration
+                                .baseBackgroundDecoration(
+                                color: Colors.grey.shade100,
+                                radius: 5,
+                                borderColor: Colors.black54),
+                            child: Padding(
+                              padding: const EdgeInsets.all(5),
+                              child: CustomText(
+                                text: inputText,
+                                isBold: true,
+                                size: 12,
+                                isCopy: false,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  Divider(color: Colors.grey.shade200),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                            height: 30,
+                            width: 30,
+                            child: Image.asset("assets/images/people2.png")),
+                        10.width,
+                        CustomText(
+                          isCopy: false,
+                          text: "LEADS",
+                          size: 12,
+                          isBold: true,
+                        ),
+                        10.width,
+                        Container(
+                          decoration: customDecoration
+                              .baseBackgroundDecoration(
+                              color: Colors.grey.shade100,
+                              radius: 5,
+                              borderColor: Colors.grey.shade400),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: CustomText(
+                              text: options.length.toString(),
+                              colors: Colors.grey,
+                              size: 12,
+                              isCopy: false,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  5.height,
+                  Expanded(
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: options.length,
+                      itemBuilder: (context, index) {
+                        final option = options.elementAt(index);
+                        final isHighlighted =
+                            index == highlightedIndex;
+
+                        final name =
+                        widget.labelBuilder(option);
+
+                        final subText = widget.subLabelBuilder != null
+                            ? widget.subLabelBuilder!(option)
+                            : "";
+
+                        final status = widget.leadBuilder != null
+                            ? widget.leadBuilder!(option)
+                            : "";
+
+                        return InkWell(
+                          onTap: () => onSelected(option),
+                          child: Container(
+                            color: isHighlighted
+                                ? Colors.blue.withOpacity(0.1)
+                                : Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 8),
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: 30,
+                                  width: 30,
+                                  decoration: customDecoration
+                                      .baseBackgroundDecoration(
+                                      color: colorsConst.primary,
+                                      radius: 10),
+                                  child: Image.asset(
+                                      "assets/images/people1.png"),
+                                ),
+                                10.width,
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      CustomText(
+                                        text: name,
+                                        size: 14,
+                                        isCopy: false,
+                                        isBold: true,
+                                      ),
+                                      if (subText.isNotEmpty)
+                                        CustomText(
+                                          text: subText,
+                                          size: 12,
+                                          isCopy: false,
+                                          colors: Colors.grey,
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                                CustomText(
+                                  text: status,
+                                  size: 12,
+                                  isCopy: false,
+                                  colors: Colors.blue,
+                                ),
+                                10.width,
+                                Icon(Icons.arrow_forward,
+                                    size: 15,
+                                    color: colorsConst.primary)
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  if (inputText.isNotEmpty)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                        child: CustomText(text: "${options.length} result found", isCopy: false,colors: Colors.grey,),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/screens/reminder/reminder_calendar.dart';
@@ -23,17 +24,20 @@ class ReminderPage extends StatefulWidget {
 }
 
 class _ReminderPageState extends State<ReminderPage> {
+  late FocusNode _focusNode;
+  final ScrollController _controller = ScrollController();
+  final ScrollController _horizontalController = ScrollController();
   List<double> colWidths = [
     50,   // 0 Checkbox
-    80,  // 1 Actions
-    150,  // 2 Event Name
+    100,  // 1 Actions
+    170,  // 2 Event Name
     150,  // 3 Type
     150,  // 4 Location
-    150,  // 5 Employee Name
-    150,  // 6 Customer Name
-    150,  // 7 Start Date
-    150,  // 8 End Date
-    150,  // 9 Details
+    170,  // 5 Employee Name
+    170,  // 6 Customer Name
+    170,  // 7 Start Date
+    170,  // 8 End Date
+    300,  // 9 Details
   ];
   Widget headerCell(int index, Widget child) {
     return Stack(
@@ -71,14 +75,63 @@ class _ReminderPageState extends State<ReminderPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    _focusNode = FocusNode();
+
     // initialize santhiya
     Future.delayed(Duration.zero,() {
       remController.sortReminders();
     });
   }
+  void _handleKeyEvent(KeyEvent event) {
+    if (event is KeyDownEvent) {
+      const double horizontalScrollAmount = 60.0;
+      const double verticalScrollAmount = 50.0; // Adjust for row height
 
+      // --- HORIZONTAL SCROLLING ---
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        _horizontalController.animateTo(
+          (_horizontalController.offset + horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        _horizontalController.animateTo(
+          (_horizontalController.offset - horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      }
+
+      // --- VERTICAL SCROLLING (Add this part) ---
+      else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+        _controller.animateTo(
+          (_controller.offset + verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+        _controller.animateTo(
+          (_controller.offset - verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      }
+    }
+  }
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _controller.dispose();
+    _horizontalController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
+    final Map<int, TableColumnWidth> tableWidthMap = {
+      for (int i = 0; i < colWidths.length; i++) i: FixedColumnWidth(colWidths[i])
+    };
+
+    double totalTableWidth = colWidths.reduce((a, b) => a + b);
     return Scaffold(
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -427,593 +480,615 @@ class _ReminderPageState extends State<ReminderPage> {
                  ],
                ),
                10.height,
-               SizedBox(
-                 width: controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
-                 child: Table(
-                   columnWidths: {
-                     for (int i = 0; i < colWidths.length; i++)
-                       i: FixedColumnWidth(colWidths[i]),
-                   },
-                   border: TableBorder(
-                     horizontalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
-                     verticalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
-                   ),
-                   children: [
-                     TableRow(
-                       decoration: BoxDecoration(
-                         color: colorsConst.primary,
-                         borderRadius: const BorderRadius.only(
-                           topLeft: Radius.circular(5),
-                           topRight: Radius.circular(5),
-                         ),
-                       ),
-                       children: [
-                         headerCell(0,
-                           Checkbox(
-                             shape: RoundedRectangleBorder(
-                               borderRadius: BorderRadius.circular(2.0),
-                             ),
-                             side: WidgetStateBorderSide.resolveWith(
-                                   (states) => const BorderSide(width: 1.0, color: Colors.white),
-                             ),
-                             value: remController.selectedReminderIds.length == remController.reminderFilteredList.length &&
-                                 remController.reminderFilteredList.isNotEmpty,
-                             onChanged: (value) => remController.toggleSelectAllReminder(),
-                             activeColor: Colors.white,
-                             checkColor: colorsConst.primary,
-                           ),
-                         ),
-                         headerCell(1,
-                           CustomText(
-                             textAlign: TextAlign.left,
-                             text: "Actions",
-                             size: 15,
-                             isBold: true,
-                             isCopy: true,
-                             colors: Colors.white,
-                           ),
-                         ),
-                         headerCell(2,
-                           Row(
-                             children: [
-                               CustomText(
-                                 text: "Event Name",
-                                 size: 15,
-                                 isCopy: true,
-                                 isBold: true,
-                                 colors: Colors.white,
-                               ),
-                               const SizedBox(width: 3),
-                               GestureDetector(
-                                 onTap: () {
-                                   if (remController.sortFieldCallActivity.value == 'title' &&
-                                       remController.sortOrderCallActivity.value == 'asc') {
-                                     remController.sortOrderCallActivity.value = 'desc';
-                                   } else {
-                                     remController.sortOrderCallActivity.value = 'asc';
-                                   }
-                                   remController.sortFieldCallActivity.value = 'title';
-                                   remController.sortReminders();
-                                 },
-                                 child: Obx(() => Image.asset(
-                                   controllers.sortFieldCallActivity.value.isEmpty
-                                       ? "assets/images/arrow.png"
-                                       : controllers.sortOrderCallActivity.value == 'asc'
-                                       ? "assets/images/arrow_up.png"
-                                       : "assets/images/arrow_down.png",
-                                   width: 15,
-                                   height: 15,
-                                 )),
-                               ),
-                             ],
-                           ),
-                         ),
-                         headerCell(3,
-                           Row(
-                             children: [
-                               CustomText(
-                                 text: "Type",
-                                 size: 15,
-                                 isBold: true,
-                                 isCopy: true,
-                                 colors: Colors.white,
-                               ),
-                               const SizedBox(width: 3),
-                               GestureDetector(
-                                 onTap: () {
-                                   if (remController.sortFieldCallActivity.value == 'type' &&
-                                       remController.sortOrderCallActivity.value == 'asc') {
-                                     remController.sortOrderCallActivity.value = 'desc';
-                                   } else {
-                                     remController.sortOrderCallActivity.value = 'asc';
-                                   }
-                                   remController.sortFieldCallActivity.value = 'type';
-                                   remController.sortReminders();
-                                 },
-                                 child: Obx(() => Image.asset(
-                                   controllers.sortFieldCallActivity.value.isEmpty
-                                       ? "assets/images/arrow.png"
-                                       : controllers.sortOrderCallActivity.value == 'asc'
-                                       ? "assets/images/arrow_up.png"
-                                       : "assets/images/arrow_down.png",
-                                   width: 15,
-                                   height: 15,
-                                 )),
-                               ),
-                             ],
-                           ),
-                         ),
-                         headerCell(4,
-                           Row(
-                             children: [
-                               CustomText(
-                                 text: "Location",
-                                 size: 15,
-                                 isBold: true,
-                                 isCopy: true,
-                                 colors: Colors.white,
-                               ),
-                               const SizedBox(width: 3),
-                               GestureDetector(
-                                 onTap: () {
-                                   if (remController.sortFieldCallActivity.value == 'location' &&
-                                       remController.sortOrderCallActivity.value == 'asc') {
-                                     remController.sortOrderCallActivity.value = 'desc';
-                                   } else {
-                                     remController.sortOrderCallActivity.value = 'asc';
-                                   }
-                                   remController.sortFieldCallActivity.value = 'location';
-                                   remController.sortReminders();
-                                 },
-                                 child: Obx(() => Image.asset(
-                                   controllers.sortFieldCallActivity.value.isEmpty
-                                       ? "assets/images/arrow.png"
-                                       : controllers.sortOrderCallActivity.value == 'asc'
-                                       ? "assets/images/arrow_up.png"
-                                       : "assets/images/arrow_down.png",
-                                   width: 15,
-                                   height: 15,
-                                 )),
-                               ),
-                             ],
-                           ),
-                         ),
-                         headerCell(5,
-                           Row(
-                             children: [
-                               CustomText(
-                                 text: "Employee Name",
-                                 size: 15,
-                                 isCopy: true,
-                                 isBold: true,
-                                 colors: Colors.white,
-                               ),
-                               const SizedBox(width: 3),
-                               GestureDetector(
-                                 onTap: () {
-                                   if (remController.sortFieldCallActivity.value == 'employeeName' &&
-                                       remController.sortOrderCallActivity.value == 'asc') {
-                                     remController.sortOrderCallActivity.value = 'desc';
-                                   } else {
-                                     remController.sortOrderCallActivity.value = 'asc';
-                                   }
-                                   remController.sortFieldCallActivity.value = 'employeeName';
-                                   remController.sortReminders();
-                                 },
-                                 child: Obx(() => Image.asset(
-                                   controllers.sortFieldCallActivity.value.isEmpty
-                                       ? "assets/images/arrow.png"
-                                       : controllers.sortOrderCallActivity.value == 'asc'
-                                       ? "assets/images/arrow_up.png"
-                                       : "assets/images/arrow_down.png",
-                                   width: 15,
-                                   height: 15,
-                                 )),
-                               ),
-                             ],
-                           ),
-                         ),
-                         headerCell(6,
-                           Row(
-                             children: [
-                               CustomText(
-                                 text: "Lead Name",
-                                 size: 15,
-                                 isBold: true,
-                                 isCopy: true,
-                                 colors: Colors.white,
-                               ),
-                               const SizedBox(width: 3),
-                               GestureDetector(
-                                 onTap: () {
-                                   if (remController.sortBy.value == 'customerName' &&
-                                       remController.sortOrderCallActivity.value == 'asc') {
-                                     remController.sortOrderCallActivity.value = 'desc';
-                                   } else {
-                                     remController.sortOrderCallActivity.value = 'asc';
-                                   }
-                                   remController.sortBy.value = 'customerName';
-                                   remController.sortReminders();
-                                 },
-                                 child: Obx(() => Image.asset(
-                                   remController.sortBy.value.isEmpty
-                                       ? "assets/images/arrow.png"
-                                       : controllers.sortOrderCallActivity.value == 'asc'
-                                       ? "assets/images/arrow_up.png"
-                                       : "assets/images/arrow_down.png",
-                                   width: 15,
-                                   height: 15,
-                                 )),
-                               ),
-                             ],
-                           ),
-                         ),
-                         headerCell(7,
-                           Row(
-                             children: [
-                               CustomText(
-                                 text: "Start Date",
-                                 size: 15,
-                                 isBold: true,
-                                 isCopy: true,
-                                 colors: Colors.white,
-                               ),
-                               const SizedBox(width: 3),
-                               GestureDetector(
-                                 onTap: () {
-                                   if (remController.sortFieldCallActivity.value == 'startDate' &&
-                                       remController.sortOrderCallActivity.value == 'asc') {
-                                     remController.sortOrderCallActivity.value = 'desc';
-                                   } else {
-                                     remController.sortOrderCallActivity.value = 'asc';
-                                   }
-                                   remController.sortFieldCallActivity.value = 'startDate';
-                                   remController.sortReminders();
-                                 },
-                                 child: Obx(() => Image.asset(
-                                   controllers.sortFieldCallActivity.value.isEmpty
-                                       ? "assets/images/arrow.png"
-                                       : controllers.sortOrderCallActivity.value == 'asc'
-                                       ? "assets/images/arrow_up.png"
-                                       : "assets/images/arrow_down.png",
-                                   width: 15,
-                                   height: 15,
-                                 )),
-                               ),
-                             ],
-                           ),
-                         ),
-                         headerCell(8,
-                           Row(
-                             children: [
-                               CustomText(
-                                 text: "End Date",
-                                 size: 15,
-                                 isBold: true,
-                                 isCopy: true,
-                                 colors: Colors.white,
-                               ),
-                               const SizedBox(width: 3),
-                               GestureDetector(
-                                 onTap: () {
-                                   if (remController.sortFieldCallActivity.value == 'endDate' &&
-                                       remController.sortOrderCallActivity.value == 'asc') {
-                                     remController.sortOrderCallActivity.value = 'desc';
-                                   } else {
-                                     remController.sortOrderCallActivity.value = 'asc';
-                                   }
-                                   remController.sortFieldCallActivity.value = 'endDate';
-                                   remController.sortReminders();
-                                 },
-                                 child: Obx(() => Image.asset(
-                                   controllers.sortFieldCallActivity.value.isEmpty
-                                       ? "assets/images/arrow.png"
-                                       : controllers.sortOrderCallActivity.value == 'asc'
-                                       ? "assets/images/arrow_up.png"
-                                       : "assets/images/arrow_down.png",
-                                   width: 15,
-                                   height: 15,
-                                 )),
-                               ),
-                             ],
-                           ),
-                         ),
-                         headerCell(9,
-                           Row(
-                             children: [
-                               CustomText(
-                                 text: "Details",
-                                 size: 15,
-                                 isBold: true,
-                                 isCopy: true,
-                                 colors: Colors.white,
-                               ),
-                               const SizedBox(width: 3),
-                               GestureDetector(
-                                 onTap: () {
-                                   if (remController.sortFieldCallActivity.value == 'details' &&
-                                       remController.sortOrderCallActivity.value == 'asc') {
-                                     remController.sortOrderCallActivity.value = 'desc';
-                                   } else {
-                                     remController.sortOrderCallActivity.value = 'asc';
-                                   }
-                                   remController.sortFieldCallActivity.value = 'details';
-                                   remController.sortReminders();
-                                 },
-                                 child: Obx(() => Image.asset(
-                                   controllers.sortFieldCallActivity.value.isEmpty
-                                       ? "assets/images/arrow.png"
-                                       : controllers.sortOrderCallActivity.value == 'asc'
-                                       ? "assets/images/arrow_up.png"
-                                       : "assets/images/arrow_down.png",
-                                   width: 15,
-                                   height: 15,
-                                 )),
-                               ),
-                             ],
-                           ),
-                         ),
-
-                       ],
-                     ),
-                   ],
-                 ),
-               ),
                Expanded(
-                 child: Obx(() {
-                   final searchText = remController.searchText.value.toLowerCase();
-                   final filteredList = remController.reminderFilteredList.where((activity) {
-                     final matchesSearch = searchText.isEmpty ||
-                         (activity.customerName.toString().toLowerCase().contains(searchText)) ||
-                         (activity.employeeName.toString().toLowerCase().contains(searchText)) ||
-                         (activity.title.toString().toLowerCase().contains(searchText));
-                     return matchesSearch;
-                   }).toList();
-                   if (remController.isLoadingReminders.value) {
-                     return const Center(child: CircularProgressIndicator());
-                   }
-                   if (filteredList.isEmpty) {
-                     return const Center(child: Text("No reminders found"));
-                   }
-                   return ListView.builder(
-                     itemCount: filteredList.length,
-                     itemBuilder: (context, index) {
-                       final reminder = filteredList[index];
-                       return Table(
-                         columnWidths: {
-                           for (int i = 0; i < colWidths.length; i++)
-                             i: FixedColumnWidth(colWidths[i]),
-                         },
-                         border: TableBorder(
-                           horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                           verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                           bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
-                         ),
-                         children:[
-                           TableRow(
-                               decoration: BoxDecoration(
-                                 color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                               ),
-                               children:[
-                                 Padding(
-                                   padding: const EdgeInsets.all(10.0),
-                                   child: Checkbox(
-                                     value: remController.isCheckedReminder(reminder.id),
-                                     onChanged: (value) {
-                                       setState(() {
-                                         remController.toggleReminderSelection(reminder.id);
-                                       });
-                                     },
-                                   ),
+                 child: KeyboardListener(
+                   focusNode: _focusNode,
+                   autofocus: true,
+                   onKeyEvent: _handleKeyEvent,
+                   child: Scrollbar(
+                     controller: _horizontalController,
+                     thumbVisibility: true,
+                     child: NotificationListener<ScrollNotification>(
+                       onNotification: (scrollNotification) {
+                         _focusNode.requestFocus();
+                         return false;
+                       },
+                       child: SingleChildScrollView(
+                         controller: _horizontalController,
+                         scrollDirection: Axis.horizontal,
+                         child: SizedBox(
+                           width: totalTableWidth,
+                           child: Column(
+                             children: [
+                               // HEADER
+                               Table(
+                                 columnWidths: tableWidthMap,
+                                 border: TableBorder(
+                                   horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                   verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                                  ),
-                                 Padding(
-                                   padding: const EdgeInsets.all(3.0),
-                                   child: Row(
-                                     mainAxisAlignment: MainAxisAlignment.start,
+                                 children: [
+                                   TableRow(
+                                     decoration: BoxDecoration(
+                                       color: colorsConst.primary,
+                                       borderRadius: const BorderRadius.only(
+                                         topLeft: Radius.circular(5),
+                                         topRight: Radius.circular(5),
+                                       ),
+                                     ),
                                      children: [
-                                       IconButton(
-                                           onPressed: (){
-                                             remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
-                                             remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
-                                             remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                             remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                             remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-                                             reminderUtils.showUpdateReminderDialog(reminder.id.toString(),context);
-                                           },
-                                           icon:  SvgPicture.asset(
-                                             "assets/images/a_edit.svg",
-                                             width: 16,
-                                             height: 16,
-                                           )),
-                                       IconButton(
-                                           onPressed: (){
-                                             showDialog(
-                                               context: context,
-                                               builder: (BuildContext context) {
-                                                 return AlertDialog(
-                                                   content: CustomText(
-                                                     isCopy: true,
-                                                     text: "Are you sure delete this reminder?",
-                                                     size: 16,
-                                                     isBold: true,
-                                                     colors: colorsConst.textColor,
-                                                   ),
-                                                   actions: [
-                                                   Row(
-                                                     mainAxisAlignment: MainAxisAlignment.end,
-                                                     children: [
-                                                       Container(
-                                                         decoration: BoxDecoration(
-                                                             border: Border.all(color: colorsConst.primary),
-                                                             color: Colors.white),
-                                                         width: 80,
-                                                         height: 25,
-                                                         child: ElevatedButton(
-                                                             style: ElevatedButton.styleFrom(
-                                                               shape: const RoundedRectangleBorder(
-                                                                 borderRadius: BorderRadius.zero,
-                                                               ),
-                                                               backgroundColor: Colors.white,
-                                                             ),
-                                                             onPressed: () {
-                                                               Navigator.pop(context);
-                                                             },
-                                                             child: CustomText(
-                                                               text: "Cancel",
-                                                               isCopy: false,
-                                                               colors: colorsConst.primary,
-                                                               size: 14,
-                                                             )),
-                                                       ),
-                                                       10.width,
-                                                       CustomLoadingButton(
-                                                         callback: ()async{
-                                                           remController.selectedReminderIds.add(reminder.id.toString());
-                                                            remController.deleteReminderAPI(context);
-                                                         },
-                                                         height: 35,
-                                                         isLoading: true,
-                                                         backgroundColor: colorsConst.primary,
-                                                         radius: 2,
-                                                         width: 80,
-                                                         controller: controllers.productCtr,
-                                                         isImage: false,
-                                                         text: "Delete",
-                                                         textColor: Colors.white,
-                                                       ),
-                                                     ],
-                                                   ),
-                                                 ],
-                                                 );
+                                       headerCell(0,
+                                         Checkbox(
+                                           shape: RoundedRectangleBorder(
+                                             borderRadius: BorderRadius.circular(2.0),
+                                           ),
+                                           side: WidgetStateBorderSide.resolveWith(
+                                                 (states) => const BorderSide(width: 1.0, color: Colors.white),
+                                           ),
+                                           value: remController.selectedReminderIds.length == remController.reminderFilteredList.length &&
+                                               remController.reminderFilteredList.isNotEmpty,
+                                           onChanged: (value) => remController.toggleSelectAllReminder(),
+                                           activeColor: Colors.white,
+                                           checkColor: colorsConst.primary,
+                                         ),
+                                       ),
+                                       headerCell(1,
+                                         CustomText(
+                                           textAlign: TextAlign.left,
+                                           text: "Actions",
+                                           size: 15,
+                                           isBold: true,
+                                           isCopy: true,
+                                           colors: Colors.white,
+                                         ),
+                                       ),
+                                       headerCell(2,
+                                         Row(
+                                           children: [
+                                             CustomText(
+                                               text: "Event Name",
+                                               size: 15,
+                                               isCopy: true,
+                                               isBold: true,
+                                               colors: Colors.white,
+                                             ),
+                                             const SizedBox(width: 3),
+                                             GestureDetector(
+                                               onTap: () {
+                                                 if (remController.sortFieldCallActivity.value == 'title' &&
+                                                     remController.sortOrderCallActivity.value == 'asc') {
+                                                   remController.sortOrderCallActivity.value = 'desc';
+                                                 } else {
+                                                   remController.sortOrderCallActivity.value = 'asc';
+                                                 }
+                                                 remController.sortFieldCallActivity.value = 'title';
+                                                 remController.sortReminders();
                                                },
-                                             );
-                                           },
-                                           icon: SvgPicture.asset(
-                                             "assets/images/a_delete.svg",
-                                             width: 16,
-                                             height: 16,
-                                           ))
+                                               child: Obx(() => Image.asset(
+                                                 controllers.sortFieldCallActivity.value.isEmpty
+                                                     ? "assets/images/arrow.png"
+                                                     : controllers.sortOrderCallActivity.value == 'asc'
+                                                     ? "assets/images/arrow_up.png"
+                                                     : "assets/images/arrow_down.png",
+                                                 width: 15,
+                                                 height: 15,
+                                               )),
+                                             ),
+                                           ],
+                                         ),
+                                       ),
+                                       headerCell(3,
+                                         Row(
+                                           children: [
+                                             CustomText(
+                                               text: "Type",
+                                               size: 15,
+                                               isBold: true,
+                                               isCopy: true,
+                                               colors: Colors.white,
+                                             ),
+                                             const SizedBox(width: 3),
+                                             GestureDetector(
+                                               onTap: () {
+                                                 if (remController.sortFieldCallActivity.value == 'type' &&
+                                                     remController.sortOrderCallActivity.value == 'asc') {
+                                                   remController.sortOrderCallActivity.value = 'desc';
+                                                 } else {
+                                                   remController.sortOrderCallActivity.value = 'asc';
+                                                 }
+                                                 remController.sortFieldCallActivity.value = 'type';
+                                                 remController.sortReminders();
+                                               },
+                                               child: Obx(() => Image.asset(
+                                                 controllers.sortFieldCallActivity.value.isEmpty
+                                                     ? "assets/images/arrow.png"
+                                                     : controllers.sortOrderCallActivity.value == 'asc'
+                                                     ? "assets/images/arrow_up.png"
+                                                     : "assets/images/arrow_down.png",
+                                                 width: 15,
+                                                 height: 15,
+                                               )),
+                                             ),
+                                           ],
+                                         ),
+                                       ),
+                                       headerCell(4,
+                                         Row(
+                                           children: [
+                                             CustomText(
+                                               text: "Location",
+                                               size: 15,
+                                               isBold: true,
+                                               isCopy: true,
+                                               colors: Colors.white,
+                                             ),
+                                             const SizedBox(width: 3),
+                                             GestureDetector(
+                                               onTap: () {
+                                                 if (remController.sortFieldCallActivity.value == 'location' &&
+                                                     remController.sortOrderCallActivity.value == 'asc') {
+                                                   remController.sortOrderCallActivity.value = 'desc';
+                                                 } else {
+                                                   remController.sortOrderCallActivity.value = 'asc';
+                                                 }
+                                                 remController.sortFieldCallActivity.value = 'location';
+                                                 remController.sortReminders();
+                                               },
+                                               child: Obx(() => Image.asset(
+                                                 controllers.sortFieldCallActivity.value.isEmpty
+                                                     ? "assets/images/arrow.png"
+                                                     : controllers.sortOrderCallActivity.value == 'asc'
+                                                     ? "assets/images/arrow_up.png"
+                                                     : "assets/images/arrow_down.png",
+                                                 width: 15,
+                                                 height: 15,
+                                               )),
+                                             ),
+                                           ],
+                                         ),
+                                       ),
+                                       headerCell(5,
+                                         Row(
+                                           children: [
+                                             CustomText(
+                                               text: "Employee Name",
+                                               size: 15,
+                                               isCopy: true,
+                                               isBold: true,
+                                               colors: Colors.white,
+                                             ),
+                                             const SizedBox(width: 3),
+                                             GestureDetector(
+                                               onTap: () {
+                                                 if (remController.sortFieldCallActivity.value == 'employeeName' &&
+                                                     remController.sortOrderCallActivity.value == 'asc') {
+                                                   remController.sortOrderCallActivity.value = 'desc';
+                                                 } else {
+                                                   remController.sortOrderCallActivity.value = 'asc';
+                                                 }
+                                                 remController.sortFieldCallActivity.value = 'employeeName';
+                                                 remController.sortReminders();
+                                               },
+                                               child: Obx(() => Image.asset(
+                                                 controllers.sortFieldCallActivity.value.isEmpty
+                                                     ? "assets/images/arrow.png"
+                                                     : controllers.sortOrderCallActivity.value == 'asc'
+                                                     ? "assets/images/arrow_up.png"
+                                                     : "assets/images/arrow_down.png",
+                                                 width: 15,
+                                                 height: 15,
+                                               )),
+                                             ),
+                                           ],
+                                         ),
+                                       ),
+                                       headerCell(6,
+                                         Row(
+                                           children: [
+                                             CustomText(
+                                               text: "Lead Name",
+                                               size: 15,
+                                               isBold: true,
+                                               isCopy: true,
+                                               colors: Colors.white,
+                                             ),
+                                             const SizedBox(width: 3),
+                                             GestureDetector(
+                                               onTap: () {
+                                                 if (remController.sortBy.value == 'customerName' &&
+                                                     remController.sortOrderCallActivity.value == 'asc') {
+                                                   remController.sortOrderCallActivity.value = 'desc';
+                                                 } else {
+                                                   remController.sortOrderCallActivity.value = 'asc';
+                                                 }
+                                                 remController.sortBy.value = 'customerName';
+                                                 remController.sortReminders();
+                                               },
+                                               child: Obx(() => Image.asset(
+                                                 remController.sortBy.value.isEmpty
+                                                     ? "assets/images/arrow.png"
+                                                     : controllers.sortOrderCallActivity.value == 'asc'
+                                                     ? "assets/images/arrow_up.png"
+                                                     : "assets/images/arrow_down.png",
+                                                 width: 15,
+                                                 height: 15,
+                                               )),
+                                             ),
+                                           ],
+                                         ),
+                                       ),
+                                       headerCell(7,
+                                         Row(
+                                           children: [
+                                             CustomText(
+                                               text: "Start Date",
+                                               size: 15,
+                                               isBold: true,
+                                               isCopy: true,
+                                               colors: Colors.white,
+                                             ),
+                                             const SizedBox(width: 3),
+                                             GestureDetector(
+                                               onTap: () {
+                                                 if (remController.sortFieldCallActivity.value == 'startDate' &&
+                                                     remController.sortOrderCallActivity.value == 'asc') {
+                                                   remController.sortOrderCallActivity.value = 'desc';
+                                                 } else {
+                                                   remController.sortOrderCallActivity.value = 'asc';
+                                                 }
+                                                 remController.sortFieldCallActivity.value = 'startDate';
+                                                 remController.sortReminders();
+                                               },
+                                               child: Obx(() => Image.asset(
+                                                 controllers.sortFieldCallActivity.value.isEmpty
+                                                     ? "assets/images/arrow.png"
+                                                     : controllers.sortOrderCallActivity.value == 'asc'
+                                                     ? "assets/images/arrow_up.png"
+                                                     : "assets/images/arrow_down.png",
+                                                 width: 15,
+                                                 height: 15,
+                                               )),
+                                             ),
+                                           ],
+                                         ),
+                                       ),
+                                       headerCell(8,
+                                         Row(
+                                           children: [
+                                             CustomText(
+                                               text: "End Date",
+                                               size: 15,
+                                               isBold: true,
+                                               isCopy: true,
+                                               colors: Colors.white,
+                                             ),
+                                             const SizedBox(width: 3),
+                                             GestureDetector(
+                                               onTap: () {
+                                                 if (remController.sortFieldCallActivity.value == 'endDate' &&
+                                                     remController.sortOrderCallActivity.value == 'asc') {
+                                                   remController.sortOrderCallActivity.value = 'desc';
+                                                 } else {
+                                                   remController.sortOrderCallActivity.value = 'asc';
+                                                 }
+                                                 remController.sortFieldCallActivity.value = 'endDate';
+                                                 remController.sortReminders();
+                                               },
+                                               child: Obx(() => Image.asset(
+                                                 controllers.sortFieldCallActivity.value.isEmpty
+                                                     ? "assets/images/arrow.png"
+                                                     : controllers.sortOrderCallActivity.value == 'asc'
+                                                     ? "assets/images/arrow_up.png"
+                                                     : "assets/images/arrow_down.png",
+                                                 width: 15,
+                                                 height: 15,
+                                               )),
+                                             ),
+                                           ],
+                                         ),
+                                       ),
+                                       headerCell(9,
+                                         Row(
+                                           children: [
+                                             CustomText(
+                                               text: "Details",
+                                               size: 15,
+                                               isBold: true,
+                                               isCopy: true,
+                                               colors: Colors.white,
+                                             ),
+                                             const SizedBox(width: 3),
+                                             GestureDetector(
+                                               onTap: () {
+                                                 if (remController.sortFieldCallActivity.value == 'details' &&
+                                                     remController.sortOrderCallActivity.value == 'asc') {
+                                                   remController.sortOrderCallActivity.value = 'desc';
+                                                 } else {
+                                                   remController.sortOrderCallActivity.value = 'asc';
+                                                 }
+                                                 remController.sortFieldCallActivity.value = 'details';
+                                                 remController.sortReminders();
+                                               },
+                                               child: Obx(() => Image.asset(
+                                                 controllers.sortFieldCallActivity.value.isEmpty
+                                                     ? "assets/images/arrow.png"
+                                                     : controllers.sortOrderCallActivity.value == 'asc'
+                                                     ? "assets/images/arrow_up.png"
+                                                     : "assets/images/arrow_down.png",
+                                                 width: 15,
+                                                 height: 15,
+                                               )),
+                                             ),
+                                           ],
+                                         ),
+                                       ),
+
                                      ],
                                    ),
-                                 ),
-                                 Tooltip(
-                                   message: reminder.title.toString()=="null"?"":reminder.title.toString(),
-                                   child: Padding(
-                                     padding: const EdgeInsets.all(10.0),
-                                     child: CustomText(
-                                       isCopy: true,
-                                       textAlign: TextAlign.left,
-                                       text: reminder.title.toString()=="null"?"":reminder.title.toString(),
-                                       size: 14,
-                                       colors:colorsConst.textColor,
-                                     ),
-                                   ),
-                                 ),
-                                 Padding(
-                                     padding: const EdgeInsets.all(10.0),
-                                     child: CustomText(
-                                       isCopy: true,
-                                       textAlign: TextAlign.left,
-                                       text: reminder.type.toString()=="1"?"Follow-up":"Appointment",
-                                       size: 14,
-                                       colors:colorsConst.textColor,
-                                     ),
-                                   ),
-                                 Padding(
-                                   padding: const EdgeInsets.all(10.0),
-                                   child: CustomText(
-                                     isCopy: true,
-                                     textAlign: TextAlign.left,
-                                     text:reminder.location.toString()=="null"?"":reminder.location.toString(),
-                                     size: 14,
-                                     colors: colorsConst.textColor,
-                                   ),
-                                 ),
-                                 // Tooltip(
-                                 //   message: reminder.repeatType.toString()=="null"?"":reminder.repeatType.toString(),
-                                 //   child: Padding(
-                                 //     padding: const EdgeInsets.all(10.0),
-                                 //     child: CustomText(
-                                 //       textAlign: TextAlign.left,
-                                 //       text: reminder.repeatType.toString(),
-                                 //       size: 14,
-                                 //       colors:colorsConst.textColor,
-                                 //     ),
-                                 //   ),
-                                 // ),
-                                 Tooltip(
-                                   message: reminder.employeeName.toString()=="null"?"":reminder.employeeName.toString(),
-                                   child: Padding(
-                                     padding: const EdgeInsets.all(10.0),
-                                     child: CustomText(
-                                       isCopy: true,
-                                       textAlign: TextAlign.left,
-                                       text: reminder.employeeName.toString(),
-                                       size: 14,
-                                       colors:colorsConst.textColor,
-                                     ),
-                                   ),
-                                 ),
-                                 Tooltip(
-                                  message: reminder.customerName.toString()=="null"?"":reminder.customerName.toString(),
-                                   child: Padding(
-                                     padding: const EdgeInsets.all(10.0),
-                                     child: CustomText(
-                                       isCopy: true,
-                                       textAlign: TextAlign.left,
-                                       text: reminder.customerName.toString(),
-                                       size: 14,
-                                       colors:colorsConst.textColor,
-                                     ),
-                                   ),
-                                 ),
-                                 Tooltip(
-                                   message: reminder.startDt.toString()=="null"?"":reminder.startDt.toString(),
-                                   child: Padding(
-                                     padding: const EdgeInsets.all(10.0),
-                                     child: CustomText(
-                                       isCopy: true,
-                                       textAlign: TextAlign.left,
-                                       text: controllers.formatDate(reminder.startDt.toString()),
-                                       size: 14,
-                                       colors:colorsConst.textColor,
-                                     ),
-                                   ),
-                                 ),
-                                 Tooltip(
-                                   message: reminder.endDt.toString()=="null"?"":reminder.endDt.toString(),
-                                   child: Padding(
-                                     padding: const EdgeInsets.all(10.0),
-                                     child: CustomText(
-                                       isCopy: true,
-                                       textAlign: TextAlign.left,
-                                       text: controllers.formatDate(reminder.endDt.toString()),
-                                       size: 14,
-                                       colors: colorsConst.textColor,
-                                     ),
-                                   ),
-                                 ),
-                                 Tooltip(
-                                   message: reminder.details.toString()=="null"?"":reminder.details.toString(),
-                                   child: Padding(
-                                     padding: const EdgeInsets.all(10.0),
-                                     child: CustomText(
-                                       isCopy: true,
-                                       textAlign: TextAlign.left,
-                                       text: reminder.details.toString(),
-                                       size: 14,
-                                       colors: colorsConst.textColor,
-                                     ),
-                                   ),
-                                 ),
-                               ]
+                                 ],
+                               ),
+                               // BODY LIST
+                               Expanded(
+                                 child: Obx(() {
+                                   final searchText = remController.searchText.value.toLowerCase();
+                                   final filteredList = remController.reminderFilteredList.where((activity) {
+                                     final matchesSearch = searchText.isEmpty ||
+                                         (activity.customerName.toString().toLowerCase().contains(searchText)) ||
+                                         (activity.employeeName.toString().toLowerCase().contains(searchText)) ||
+                                         (activity.title.toString().toLowerCase().contains(searchText));
+                                     return matchesSearch;
+                                   }).toList();
+                                   if (remController.isLoadingReminders.value) {
+                                     return const Center(child: CircularProgressIndicator());
+                                   }
+                                   if (filteredList.isEmpty) {
+                                     return const Center(child: Text("No reminders found"));
+                                   }
+                                   return ListView.builder(
+                                     controller: _controller,
+                                     itemCount: filteredList.length,
+                                     itemBuilder: (context, index) {
+                                       final reminder = filteredList[index];
+                                       return Table(
+                                         columnWidths: tableWidthMap,
+                                         border: TableBorder(
+                                           horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                           verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                           bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                         ),
+                                         children:[
+                                           TableRow(
+                                               decoration: BoxDecoration(
+                                                 color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                               ),
+                                               children:[
+                                                 Padding(
+                                                   padding: const EdgeInsets.all(10.0),
+                                                   child: Checkbox(
+                                                     value: remController.isCheckedReminder(reminder.id),
+                                                     onChanged: (value) {
+                                                       setState(() {
+                                                         remController.toggleReminderSelection(reminder.id);
+                                                       });
+                                                     },
+                                                   ),
+                                                 ),
+                                                 Padding(
+                                                   padding: const EdgeInsets.all(3.0),
+                                                   child: Row(
+                                                     mainAxisAlignment: MainAxisAlignment.start,
+                                                     children: [
+                                                       IconButton(
+                                                           onPressed: (){
+                                                             remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
+                                                             remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
+                                                             remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
+                                                             remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
+                                                             remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
+                                                             reminderUtils.showUpdateReminderDialog(reminder.id.toString(),context);
+                                                           },
+                                                           icon:  SvgPicture.asset(
+                                                             "assets/images/a_edit.svg",
+                                                             width: 16,
+                                                             height: 16,
+                                                           )),
+                                                       IconButton(
+                                                           onPressed: (){
+                                                             showDialog(
+                                                               context: context,
+                                                               builder: (BuildContext context) {
+                                                                 return AlertDialog(
+                                                                   content: CustomText(
+                                                                     isCopy: true,
+                                                                     text: "Are you sure delete this reminder?",
+                                                                     size: 16,
+                                                                     isBold: true,
+                                                                     colors: colorsConst.textColor,
+                                                                   ),
+                                                                   actions: [
+                                                                     Row(
+                                                                       mainAxisAlignment: MainAxisAlignment.end,
+                                                                       children: [
+                                                                         Container(
+                                                                           decoration: BoxDecoration(
+                                                                               border: Border.all(color: colorsConst.primary),
+                                                                               color: Colors.white),
+                                                                           width: 80,
+                                                                           height: 25,
+                                                                           child: ElevatedButton(
+                                                                               style: ElevatedButton.styleFrom(
+                                                                                 shape: const RoundedRectangleBorder(
+                                                                                   borderRadius: BorderRadius.zero,
+                                                                                 ),
+                                                                                 backgroundColor: Colors.white,
+                                                                               ),
+                                                                               onPressed: () {
+                                                                                 Navigator.pop(context);
+                                                                               },
+                                                                               child: CustomText(
+                                                                                 text: "Cancel",
+                                                                                 isCopy: false,
+                                                                                 colors: colorsConst.primary,
+                                                                                 size: 14,
+                                                                               )),
+                                                                         ),
+                                                                         10.width,
+                                                                         CustomLoadingButton(
+                                                                           callback: ()async{
+                                                                             remController.selectedReminderIds.add(reminder.id.toString());
+                                                                             remController.deleteReminderAPI(context);
+                                                                           },
+                                                                           height: 35,
+                                                                           isLoading: true,
+                                                                           backgroundColor: colorsConst.primary,
+                                                                           radius: 2,
+                                                                           width: 80,
+                                                                           controller: controllers.productCtr,
+                                                                           isImage: false,
+                                                                           text: "Delete",
+                                                                           textColor: Colors.white,
+                                                                         ),
+                                                                       ],
+                                                                     ),
+                                                                   ],
+                                                                 );
+                                                               },
+                                                             );
+                                                           },
+                                                           icon: SvgPicture.asset(
+                                                             "assets/images/a_delete.svg",
+                                                             width: 16,
+                                                             height: 16,
+                                                           ))
+                                                     ],
+                                                   ),
+                                                 ),
+                                                 Tooltip(
+                                                   message: reminder.title.toString()=="null"?"":reminder.title.toString(),
+                                                   child: Padding(
+                                                     padding: const EdgeInsets.all(10.0),
+                                                     child: CustomText(
+                                                       isCopy: true,
+                                                       textAlign: TextAlign.left,
+                                                       text: reminder.title.toString()=="null"?"":reminder.title.toString(),
+                                                       size: 14,
+                                                       colors:colorsConst.textColor,
+                                                     ),
+                                                   ),
+                                                 ),
+                                                 Padding(
+                                                   padding: const EdgeInsets.all(10.0),
+                                                   child: CustomText(
+                                                     isCopy: true,
+                                                     textAlign: TextAlign.left,
+                                                     text: reminder.type.toString()=="1"?"Follow-up":"Appointment",
+                                                     size: 14,
+                                                     colors:colorsConst.textColor,
+                                                   ),
+                                                 ),
+                                                 Padding(
+                                                   padding: const EdgeInsets.all(10.0),
+                                                   child: CustomText(
+                                                     isCopy: true,
+                                                     textAlign: TextAlign.left,
+                                                     text:reminder.location.toString()=="null"?"":reminder.location.toString(),
+                                                     size: 14,
+                                                     colors: colorsConst.textColor,
+                                                   ),
+                                                 ),
+                                                 // Tooltip(
+                                                 //   message: reminder.repeatType.toString()=="null"?"":reminder.repeatType.toString(),
+                                                 //   child: Padding(
+                                                 //     padding: const EdgeInsets.all(10.0),
+                                                 //     child: CustomText(
+                                                 //       textAlign: TextAlign.left,
+                                                 //       text: reminder.repeatType.toString(),
+                                                 //       size: 14,
+                                                 //       colors:colorsConst.textColor,
+                                                 //     ),
+                                                 //   ),
+                                                 // ),
+                                                 Tooltip(
+                                                   message: reminder.employeeName.toString()=="null"?"":reminder.employeeName.toString(),
+                                                   child: Padding(
+                                                     padding: const EdgeInsets.all(10.0),
+                                                     child: CustomText(
+                                                       isCopy: true,
+                                                       textAlign: TextAlign.left,
+                                                       text: reminder.employeeName.toString(),
+                                                       size: 14,
+                                                       colors:colorsConst.textColor,
+                                                     ),
+                                                   ),
+                                                 ),
+                                                 Tooltip(
+                                                   message: reminder.customerName.toString()=="null"?"":reminder.customerName.toString(),
+                                                   child: Padding(
+                                                     padding: const EdgeInsets.all(10.0),
+                                                     child: CustomText(
+                                                       isCopy: true,
+                                                       textAlign: TextAlign.left,
+                                                       text: reminder.customerName.toString(),
+                                                       size: 14,
+                                                       colors:colorsConst.textColor,
+                                                     ),
+                                                   ),
+                                                 ),
+                                                 Tooltip(
+                                                   message: reminder.startDt.toString()=="null"?"":reminder.startDt.toString(),
+                                                   child: Padding(
+                                                     padding: const EdgeInsets.all(10.0),
+                                                     child: CustomText(
+                                                       isCopy: true,
+                                                       textAlign: TextAlign.left,
+                                                       text: controllers.formatDate(reminder.startDt.toString()),
+                                                       size: 14,
+                                                       colors:colorsConst.textColor,
+                                                     ),
+                                                   ),
+                                                 ),
+                                                 Tooltip(
+                                                   message: reminder.endDt.toString()=="null"?"":reminder.endDt.toString(),
+                                                   child: Padding(
+                                                     padding: const EdgeInsets.all(10.0),
+                                                     child: CustomText(
+                                                       isCopy: true,
+                                                       textAlign: TextAlign.left,
+                                                       text: controllers.formatDate(reminder.endDt.toString()),
+                                                       size: 14,
+                                                       colors: colorsConst.textColor,
+                                                     ),
+                                                   ),
+                                                 ),
+                                                 Tooltip(
+                                                   message: reminder.details.toString()=="null"?"":reminder.details.toString(),
+                                                   child: Padding(
+                                                     padding: const EdgeInsets.all(10.0),
+                                                     child: CustomText(
+                                                       isCopy: true,
+                                                       textAlign: TextAlign.left,
+                                                       text: reminder.details.toString(),
+                                                       size: 14,
+                                                       colors: colorsConst.textColor,
+                                                     ),
+                                                   ),
+                                                 ),
+                                               ]
+                                           ),
+                                         ],
+                                       );
+                                     },
+                                   );
+                                 }),
+                               ),
+                             ],
                            ),
-                         ],
-                       );
-                     },
-                   );
-                 }),
-               )
+                         ),
+                       ),
+                     ),
+                   ),
+                 ),
+               ),
              ],
            ),
          ),)

@@ -1004,149 +1004,155 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                 }
                                 return KeyEventResult.ignored;
                               },
-                              child: SingleChildScrollView(
-                                controller: _horizontalController,
-                                scrollDirection: Axis.horizontal,
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 45,
-                                      width: tableWidth,
-                                      child: DynamicTableHeader(
-                                        onSortName: () {
-                                          controllers.sortField.value = 'name';
-                                          controllers.sortOrderN.value =
-                                          controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
-                                        },
-                                        onSortDate: () {
-                                          setState(() {
-                                            controllers.sortField.value = 'date';
-                                            controllers.sortOrder.value =
-                                            controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
-                                            // if(controllers.sortOrder.value=="asc"){
-                                            //   widget.list.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                            //   widget.list2.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                            // }else{
-                                            //   widget.list.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                            //   widget.list2.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                            // }
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.topLeft,
-                                      height: MediaQuery.of(context).size.height - 345,
-                                      width: tableWidth,
-                                      child: Obx(() {
-                                        if (controllers.isLead.value == false) {
-                                          return Container(
-                                              alignment: Alignment.centerLeft,
-                                              width: MediaQuery.of(context).size.width,
-                                              height: MediaQuery.of(context).size.height,
-                                              padding: EdgeInsets.fromLTRB(160, 0, 0, 0),
-                                              child: const Center(child: CircularProgressIndicator()));
-                                        }
-
-                                        if (widget.list.isEmpty) {
-                                          return CustomNoData();
-                                        }
-
-                                        // sortedList.sort((a, b) {
-                                        //   DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
-                                        //   DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
-                                        //   return dateB.compareTo(dateA);
-                                        // });
-                                        return ListView.builder(
-                                          controller: _rightController,
-                                          shrinkWrap: true,
-                                          physics: const ScrollPhysics(),
-                                          itemCount: widget.list.length,
-                                          itemBuilder: (context, index) {
-                                            NewLeadObj data = widget.list[index];
-                                            return CustomLeadTile(
-                                              leadIndex: widget.index,
-                                              key: ValueKey(data.userId),
-                                              listIndex: index,
-                                              list: widget.list,list2: widget.list2,
-                                              pageName: widget.name,
-                                              saveValue: data.select==true?true:false,
-                                              onChanged: (value) {
-                                                controllers.isAllSelected.value = false;
-                                                final lead = data;
-                                                if (lead.select == true) {
-                                                  lead.select = false;
-                                                  controllers.idList.remove(lead.userId);
-                                                } else {
-                                                  lead.select = true;
-                                                  controllers.idList.add(lead.userId);
-                                                }
-                                                setState(() {});
-                                                debugPrint("...${controllers.idList}");
-                                              },
-                                              visitType: data.visitType.toString(),
-                                              detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
-                                              statusUpdate: data.statusUpdate.toString(),
-                                              department: data.department.toString(),
-                                              designation: data.designation.toString(),
-                                              index: index,
-                                              points: data.points.toString(),
-                                              quotationStatus: data.quotationStatus.toString(),
-                                              quotationRequired: data.quotationRequired.toString(),
-                                              productDiscussion: data.productDiscussion.toString(),
-                                              discussionPoint: data.discussionPoint.toString(),
-                                              notes: data.notes.toString(),
-                                              linkedin: data.linkedin,
-                                              x: data.x,
-                                              name: data.firstname.toString().split("||")[0],
-                                              mobileNumber: data.mobileNumber.toString().split("||")[0],
-                                              email: data.email.toString().split("||")[0],
-                                              companyName: data.companyName.toString(),
-                                              mainWhatsApp: data.whatsapp.toString().split("||")[0],
-                                              emailUpdate: data.quotationUpdate.toString(),
-                                              id: data.userId.toString(),
-                                              status: data.status,
-                                              rating: data.rating ?? "Warm",
-                                              mainName: data.firstname.toString().split("||")[0],
-                                              mainMobile: data.mobileNumber.toString().split("||")[0],
-                                              mainEmail: data.email.toString().split("||")[0],
-                                              title: "",
-                                              whatsappNumber: data.whatsapp.toString().split("||")[0],
-                                              mainTitle: "",
-                                              addressId: data.addressId ?? "",
-                                              companyWebsite: data.companyWebsite ?? "",
-                                              companyNumber: data.companyNumber ?? "",
-                                              companyEmail: data.companyEmail ?? "",
-                                              industry: data.industry ?? "",
-                                              productServices: data.product ?? "",
-                                              source:data.source ?? "",
-                                              owner: data.owner ?? "",
-                                              timelineDecision: "",
-                                              serviceInterest: "",
-                                              description: "",
-                                              leadStatus: data.leadStatus ?? "",
-                                              active: data.active ?? "",
-                                              addressLine1: data.doorNo ?? "",
-                                              addressLine2: data.landmark1 ?? "",
-                                              area: data.area ?? "",
-                                              city: data.city ?? "",
-                                              state: data.state ?? "",
-                                              country: data.country ?? "",
-                                              pinCode: data.pincode ?? "",
-                                              prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
-                                              expectedConvertionDate: data.expectedConvertionDate ?? "",
-                                              numOfHeadcount: data.numOfHeadcount ?? "",
-                                              expectedBillingValue: data.expectedBillingValue ?? "",
-                                              arpuValue: data.arpuValue ?? "",
-                                              updatedTs: data.updatedTs ?? "",
-                                              sourceDetails: data.sourceDetails ?? "",
-                                            );
+                              child: NotificationListener<ScrollNotification>(
+                                onNotification: (scrollNotification) {
+                                  _focusNode.requestFocus();
+                                  return false;
+                                },
+                                child: SingleChildScrollView(
+                                  controller: _horizontalController,
+                                  scrollDirection: Axis.horizontal,
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 45,
+                                        width: tableWidth,
+                                        child: DynamicTableHeader(
+                                          onSortName: () {
+                                            controllers.sortField.value = 'name';
+                                            controllers.sortOrderN.value =
+                                            controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
                                           },
-                                        );
-                                      }
+                                          onSortDate: () {
+                                            setState(() {
+                                              controllers.sortField.value = 'date';
+                                              controllers.sortOrder.value =
+                                              controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
+                                              // if(controllers.sortOrder.value=="asc"){
+                                              //   widget.list.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
+                                              //   widget.list2.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
+                                              // }else{
+                                              //   widget.list.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
+                                              //   widget.list2.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
+                                              // }
+                                            });
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      Container(
+                                        alignment: Alignment.topLeft,
+                                        height: MediaQuery.of(context).size.height - 345,
+                                        width: tableWidth,
+                                        child: Obx(() {
+                                          if (controllers.isLead.value == false) {
+                                            return Container(
+                                                alignment: Alignment.centerLeft,
+                                                width: MediaQuery.of(context).size.width,
+                                                height: MediaQuery.of(context).size.height,
+                                                padding: EdgeInsets.fromLTRB(160, 0, 0, 0),
+                                                child: const Center(child: CircularProgressIndicator()));
+                                          }
+
+                                          if (widget.list.isEmpty) {
+                                            return CustomNoData();
+                                          }
+
+                                          // sortedList.sort((a, b) {
+                                          //   DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
+                                          //   DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
+                                          //   return dateB.compareTo(dateA);
+                                          // });
+                                          return ListView.builder(
+                                            controller: _rightController,
+                                            shrinkWrap: true,
+                                            physics: const ScrollPhysics(),
+                                            itemCount: widget.list.length,
+                                            itemBuilder: (context, index) {
+                                              NewLeadObj data = widget.list[index];
+                                              return CustomLeadTile(
+                                                leadIndex: widget.index,
+                                                key: ValueKey(data.userId),
+                                                listIndex: index,
+                                                list: widget.list,list2: widget.list2,
+                                                pageName: widget.name,
+                                                saveValue: data.select==true?true:false,
+                                                onChanged: (value) {
+                                                  controllers.isAllSelected.value = false;
+                                                  final lead = data;
+                                                  if (lead.select == true) {
+                                                    lead.select = false;
+                                                    controllers.idList.remove(lead.userId);
+                                                  } else {
+                                                    lead.select = true;
+                                                    controllers.idList.add(lead.userId);
+                                                  }
+                                                  setState(() {});
+                                                  debugPrint("...${controllers.idList}");
+                                                },
+                                                visitType: data.visitType.toString(),
+                                                detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
+                                                statusUpdate: data.statusUpdate.toString(),
+                                                department: data.department.toString(),
+                                                designation: data.designation.toString(),
+                                                index: index,
+                                                points: data.points.toString(),
+                                                quotationStatus: data.quotationStatus.toString(),
+                                                quotationRequired: data.quotationRequired.toString(),
+                                                productDiscussion: data.productDiscussion.toString(),
+                                                discussionPoint: data.discussionPoint.toString(),
+                                                notes: data.notes.toString(),
+                                                linkedin: data.linkedin,
+                                                x: data.x,
+                                                name: data.firstname.toString().split("||")[0],
+                                                mobileNumber: data.mobileNumber.toString().split("||")[0],
+                                                email: data.email.toString().split("||")[0],
+                                                companyName: data.companyName.toString(),
+                                                mainWhatsApp: data.whatsapp.toString().split("||")[0],
+                                                emailUpdate: data.quotationUpdate.toString(),
+                                                id: data.userId.toString(),
+                                                status: data.status,
+                                                rating: data.rating ?? "Warm",
+                                                mainName: data.firstname.toString().split("||")[0],
+                                                mainMobile: data.mobileNumber.toString().split("||")[0],
+                                                mainEmail: data.email.toString().split("||")[0],
+                                                title: "",
+                                                whatsappNumber: data.whatsapp.toString().split("||")[0],
+                                                mainTitle: "",
+                                                addressId: data.addressId ?? "",
+                                                companyWebsite: data.companyWebsite ?? "",
+                                                companyNumber: data.companyNumber ?? "",
+                                                companyEmail: data.companyEmail ?? "",
+                                                industry: data.industry ?? "",
+                                                productServices: data.product ?? "",
+                                                source:data.source ?? "",
+                                                owner: data.owner ?? "",
+                                                timelineDecision: "",
+                                                serviceInterest: "",
+                                                description: "",
+                                                leadStatus: data.leadStatus ?? "",
+                                                active: data.active ?? "",
+                                                addressLine1: data.doorNo ?? "",
+                                                addressLine2: data.landmark1 ?? "",
+                                                area: data.area ?? "",
+                                                city: data.city ?? "",
+                                                state: data.state ?? "",
+                                                country: data.country ?? "",
+                                                pinCode: data.pincode ?? "",
+                                                prospectEnrollmentDate: data.prospectEnrollmentDate ?? "",
+                                                expectedConvertionDate: data.expectedConvertionDate ?? "",
+                                                numOfHeadcount: data.numOfHeadcount ?? "",
+                                                expectedBillingValue: data.expectedBillingValue ?? "",
+                                                arpuValue: data.arpuValue ?? "",
+                                                updatedTs: data.updatedTs ?? "",
+                                                sourceDetails: data.sourceDetails ?? "",
+                                              );
+                                            },
+                                          );
+                                        }
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

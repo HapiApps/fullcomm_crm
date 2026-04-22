@@ -144,7 +144,7 @@ class Quotations {
       validityDate: json['validity_date'] ?? '',
       email: json['email'] ?? '',
       pId: json['p_id'] ?? '',
-      pName: json['name'] ?? '',
+      pName: json['productname'] ?? '',
       qty: json['qty'] ?? '',
       mrp: json['mrp'] ?? '',
       price: json['price'] ?? '',

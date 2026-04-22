@@ -2726,6 +2726,10 @@ print("sortField ${sortField}");
   RxString selectedCustomerEmail = ''.obs;
   RxString selectedCompanyName = ''.obs;
 
+  RxBool directNavigate = false.obs;
+  RxString qId = "".obs;
+  RxString type = "1".obs;
+
   RxString selectedEmployeeId = ''.obs;
   RxString selectedEmployeeName = ''.obs;
   RxString selectedEmployeeMobile = ''.obs;

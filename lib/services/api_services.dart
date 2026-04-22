@@ -3403,6 +3403,76 @@ class ApiService {
       controllers.emailCtr.reset();
     }
   }
+  Future insertInvoiceAPI(BuildContext context,pw.Document pdf,String productListJson) async {
+    try {
+      var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
+      request.fields['clientMail'] = controllers.selectedCustomerEmail.value;
+      request.fields['subject'] = controllers.emailSubjectCtr.text;
+      request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
+      request.fields['count'] = '${controllers.emailCount.value + 1}';
+      request.fields['quotation_name'] = "Product Quotation";
+      request.fields['body'] = controllers.emailMessageCtr.text;
+      request.fields['cus_id'] = controllers.storage.read("id").toString();
+      request.fields['customer_id'] = controllers.selectedCustomerId.value;
+      request.fields['notes'] = controllers.notesCtr.text;
+      request.fields['type'] = controllers.type.value;
+      request.fields['q_id'] = controllers.qId.value;
+      request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
+      request.fields['action'] = 'send_invoice';
+      request.fields['total_amt'] = '${Provider.of<BillingProvider>(context, listen: false).calculatedGrandTotal()}';
+      request.fields['productList'] = productListJson;
+      request.fields['total_product'] = Provider.of<BillingProvider>(context, listen: false).calculatedTotalProducts().toString();
+      request.fields['total_item'] = Provider.of<BillingProvider>(context, listen: false).calculatedTotalQuantity().toString();
+      request.headers.addAll({
+        'X-API-TOKEN': "${TokenStorage().readToken()}",
+        'Content-Type': 'application/json'
+      });
+      final bytes = await pdf.save();
+
+
+
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'invoice',
+          bytes,
+          filename: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
+        ),
+      );
+      var response = await request.send();
+      var body = await response.stream.bytesToString();
+      print("body");
+      print(body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertInvoiceAPI(context,pdf,productListJson);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        utils.snackBar(
+            msg: "Invoice sent successfully",
+            color: Colors.green,
+            context: Get.context!);
+        controllers.emailMessageCtr.clear();
+        controllers.emailToCtr.clear();
+        controllers.emailSubjectCtr.clear();
+        productCtr.productsList.clear();
+        Provider.of<BillingProvider>(context, listen: false).billingItems.clear();
+        productCtr.getQuotationDetails();
+        Navigator.pop(Get.context!);
+        controllers.changeTab(0);
+        controllers.emailCtr.reset();
+      } else {
+        controllers.emailCtr.reset();
+        errorDialog(Get.context!, "Mail has been not sent");
+      }
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.emailCtr.reset();
+    }
+  }
   Future insertPOAPI(BuildContext context,String email,String cId,String qId,String cName) async {
     try {
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
