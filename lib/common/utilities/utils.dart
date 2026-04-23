@@ -1511,8 +1511,7 @@ class Utils {
 
                             displayStringForOption: (c) => '${c.name} - ${c.email} - ${c.category}',
 
-                            fieldViewBuilder:
-                                (context, controller, focusNode, onSubmit) {
+                            fieldViewBuilder:(context, controller, focusNode, onSubmit) {
                               return TextField(
                                 controller: controller,
                                 focusNode: focusNode,
@@ -1520,17 +1519,27 @@ class Utils {
                                   hintText: emailList.isEmpty?"Search email":"Add email",
                                   border: UnderlineInputBorder(),
                                 ),
-                                // onSubmitted: (val) {
-                                //   final email = val.trim();
-                                //   if (email.isNotEmpty) {
-                                //     setState(() {
-                                //       if (!emailList.contains(email)) {
-                                //         emailList.add(email);
-                                //       }
-                                //     });
-                                //     controller.clear(); // ✅ clear
-                                //   }
-                                // },
+                                onSubmitted: (value) {
+                                  print("input $value");
+                                  final input = value.toLowerCase();
+
+                                  final match = controllers.customers.firstWhere(
+                                        (c) =>
+                                    (c.email ?? "").toLowerCase() == input ||
+                                        (c.name ?? "").toLowerCase() == input,
+                                    orElse: () => AllCustomersObj(id: '', name: '', companyName: '', phoneNo: '', email: '', leadStatus: '', category: ''),
+                                  );
+
+                                  if ((match.email ?? "").isEmpty) return;
+
+                                  setState(() {
+                                    if (!emailList.contains(match.email)) {
+                                      emailList.add(match.email);
+                                      nameList.add(match.name);
+                                      idList.add(match.id);
+                                    }
+                                  });
+                                },
                               );
                             },
 

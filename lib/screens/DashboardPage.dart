@@ -898,8 +898,8 @@ void checkDate(){
                                 ),SizedBox(width: screenWidth/85,),
                                 WaveStatCard(
                                     title: "Calls",
-                                    // numericValue: int.parse(dashController.totalCalls.value.toString()),
-                                    numericValue: remController.callFilteredList.length,
+                                    numericValue: int.parse(dashController.totalCalls.value.toString()),
+                                    // numericValue: remController.callFilteredList.length,
                                     maxValue: maxValue,
                                     iconPath: DashboardAssets.phone,
                                     valueColor: const Color(0xff53922A),

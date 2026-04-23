@@ -171,7 +171,8 @@ class _MailCommentsState extends State<MailComments> {
                   children: [
                     Obx(()=> utils.selectHeatingType("To", controllers.isSent.value, (){
                       apiService.getAllMailActivity();
-                    }, false,controllers.allSentMails),),
+                    // }, false,controllers.allSentMails),),
+                    }, false,remController.mailFilteredList.length.toString().obs),),
                     10.width,
                     Obx(()=>utils.selectHeatingType("Opened", controllers.isOpened.value, (){
                       apiService.getOpenedMailActivity(false);
