@@ -2421,6 +2421,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //
   //   meetingFilteredList.assignAll(filtered);
   // }
+  ///
   List<DateTime> _parseMeetingDateRange(String input) {
     try {
       if (input.isEmpty) return [];
@@ -2636,159 +2637,224 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     }
 
     meetingFilteredList.assignAll(filtered);
+
+    final scheduled = meetingFilteredList.where((e) => e.status.isNotEmpty && e.status.trim() == "Scheduled").toList();
+    final completed = meetingFilteredList
+        .where((e) => e.status.isNotEmpty && e.status.trim() == "Completed")
+        .toList();
+    final cancelled = meetingFilteredList
+        .where((e) => e.status.isNotEmpty && e.status.trim() == "Cancelled")
+        .toList();
+
+    controllers.allScheduleMeet.value = scheduled.length.toString();
+    controllers.allCompletedMeet.value = completed.length.toString();
+    controllers.allCancelled.value = cancelled.length.toString();
+
   }
-  ///
-  DateTime _parseMeetingDate(String dateStr) {
-    try {
-      final parts = dateStr.split('||');
-      final mainPart = parts.first.trim();
-      if (mainPart.contains(RegExp(r'[APMapm]'))) {
-        return DateFormat("dd.MM.yyyy hh:mm a").parse(mainPart);
-      } else {
-        return DateFormat("dd.MM.yyyy").parse(mainPart);
-      }
-    } catch (e) {
-      return DateTime(1900);
+
+  void sortMeetings({
+    required String searchText,
+    required String callType,
+    required String sortField,
+    required String sortOrder,
+  }) {
+    var filtered = [...controllers.meetingActivity];
+
+    final now = DateTime.now();
+
+    // ✅ Normalize date (remove time)
+    DateTime normalize(DateTime d) {
+      return DateTime(d.year, d.month, d.day);
     }
+
+    // ✅ Safe Date Parsing
+    DateTime _parseMeetingDate(String input) {
+      print("input");
+      print(input);
+      try {
+        // ✅ 24-hour format (your current data)
+        return DateFormat("dd-MM-yyyy HH:mm").parse(input);
+      } catch (e) {
+        try {
+          // ✅ fallback (if AM/PM data வந்தா)
+          return DateFormat("dd-MM-yyyy hh:mm a").parse(input);
+        } catch (e) {
+          try {
+            // ✅ another fallback (dot format)
+            return DateFormat("dd-MM-yyyy hh.mm a").parse(input);
+          } catch (e) {
+            print("❌ Date parse error: $input");
+            return DateTime(2000);
+          }
+        }
+      }
+    }
+    // ✅ DATE FILTER
+    if (selectedMeetSortBy.value.isNotEmpty) {
+      filtered = filtered.where((activity) {
+
+        final dates = _parseMeetingDateRange(activity.dates ?? '');
+        final today = normalize(now);
+
+        bool match = false;
+
+        for (var rawDate in dates) {
+          final date = normalize(rawDate);
+
+          switch (selectedMeetSortBy.value) {
+
+            case 'Today':
+              if (date == today) match = true;
+              break;
+
+            case 'Yesterday':
+              final yesterday = normalize(now.subtract(const Duration(days: 1)));
+              if (date == yesterday) match = true;
+              break;
+
+          /// ✅ FUTURE 7 DAYS
+            case 'Last 7 Days':
+              final start = today;
+              final end = normalize(now.add(const Duration(days: 7)));
+
+              if (!date.isBefore(start) && !date.isAfter(end)) {
+                match = true;
+              }
+              break;
+
+          /// ✅ FUTURE 30 DAYS
+            case 'Last 30 Days':
+              final start = today;
+              final end = normalize(now.add(const Duration(days: 30)));
+
+              if (!date.isBefore(start) && !date.isAfter(end)) {
+                match = true;
+              }
+              break;
+
+            case 'Custom Month':
+              if (selectedMeetMonth.value != null) {
+                final selected = selectedMeetMonth.value!;
+                if (date.year == selected.year &&
+                    date.month == selected.month) {
+                  match = true;
+                }
+              }
+              break;
+
+            case 'Custom Range':
+              if (selectedMeetRange.value != null) {
+                final range = selectedMeetRange.value!;
+                final start = normalize(range.start);
+                final end = normalize(range.end);
+
+                if (!date.isBefore(start) && !date.isAfter(end)) {
+                  match = true;
+                }
+              }
+              break;
+
+            default:
+              match = true;
+          }
+
+          if (match) break; // ✅ stop early if matched
+        }
+
+        return match;
+
+      }).toList();
+    }
+    // 🔍 SEARCH + FILTER
+    filtered = filtered.where((activity) {
+      final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
+          activity.status == controllers.selectMeetingType.value;
+
+      final matchesFilterType =
+          filterApp.value == "All" ||
+              (filterApp.value == "Mine" &&
+                  (activity.employeeName ?? '')
+                      .toLowerCase()
+                      .contains((controllers.storage.read("f_name") ?? '')
+                      .toLowerCase())) ||
+              (filterApp.value == "Team" &&
+                  !(activity.employeeName ?? '')
+                      .toLowerCase()
+                      .contains((controllers.storage.read("f_name") ?? '')
+                      .toLowerCase()));
+
+      final search = searchText.toLowerCase();
+
+      final matchesSearch = search.isEmpty ||
+          (activity.comName ?? '').toLowerCase().contains(search) ||
+          (activity.employeeName ?? '').toLowerCase().contains(search) ||
+          (activity.title ?? '').toLowerCase().contains(search) ||
+          (activity.venue ?? '').toLowerCase().contains(search) ||
+          (activity.notes ?? '').toLowerCase().contains(search) ||
+          (activity.cusName ?? '').toLowerCase().contains(search);
+
+      return matchesCallType && matchesSearch && matchesFilterType;
+    }).toList();
+
+    // 🔃 SORTING
+    String field = controllers.sortFieldMeetingActivity.value;
+    String order = controllers.sortOrderMeetingActivity.value;
+
+    int compareString(String a, String b) {
+      final comparison = a.toLowerCase().compareTo(b.toLowerCase());
+      return order == 'asc' ? comparison : -comparison;
+    }
+
+    if (field == 'customerName') {
+      filtered.sort((a, b) =>
+          compareString(a.cusName ?? '', b.cusName ?? ''));
+    } else if (field == 'companyName') {
+      filtered.sort((a, b) =>
+          compareString(a.comName ?? '', b.comName ?? ''));
+    } else if (field == 'title') {
+      filtered.sort((a, b) =>
+          compareString(a.title ?? '', b.title ?? ''));
+    } else if (field == 'venue') {
+      filtered.sort((a, b) =>
+          compareString(a.venue ?? '', b.venue ?? ''));
+    } else if (field == 'notes') {
+      filtered.sort((a, b) =>
+          compareString(a.notes ?? '', b.notes ?? ''));
+    } else if (field == 'emp') {
+      filtered.sort((a, b) =>
+          compareString(a.employeeName ?? '', b.employeeName ?? ''));
+    } else if (field == 'status') {
+      filtered.sort((a, b) =>
+          compareString(a.status ?? '', b.status ?? ''));
+    } else if (field == 'date') {
+      filtered.sort((a, b) {
+        final dateA = normalize(_parseMeetingDate(a.dates ?? ''));
+        final dateB = normalize(_parseMeetingDate(b.dates ?? ''));
+        final comparison = dateA.compareTo(dateB);
+        return order == 'asc' ? comparison : -comparison;
+      });
+    }
+    filtered.sort((a, b) => b.dates.compareTo(a.dates));
+
+    meetingFilteredList.assignAll(filtered);
+
+    final scheduled = meetingFilteredList.where((e) => e.status.isNotEmpty && e.status.trim() == "Scheduled").toList();
+    final completed = meetingFilteredList
+        .where((e) => e.status.isNotEmpty && e.status.trim() == "Completed")
+        .toList();
+    final cancelled = meetingFilteredList
+        .where((e) => e.status.isNotEmpty && e.status.trim() == "Cancelled")
+        .toList();
+
+    controllers.allScheduleMeet.value = scheduled.length.toString();
+    controllers.allCompletedMeet.value = completed.length.toString();
+    controllers.allCancelled.value = cancelled.length.toString();
+
   }
 
   var sortBy = ''.obs;
   var ascending = true.obs;
-  void sortReminders() {
-    var filteredList = [...reminderList];
-    final dateFormatter = DateFormat("dd-MM-yyyy h:mm a");
-    final now = DateTime.now();
-    if (selectedReminderSortBy.value.isNotEmpty) {
-      switch (selectedReminderSortBy.value) {
-        case 'All':
-          filteredList = [...reminderList];
-          break;
-        case 'Today':
-          filteredList = filteredList.where((r) {
-            // print("r.updatedTs ${r.updatedTs}");
-            final date = _parseReminderDate(r.updatedTs, dateFormatter);
-            return _isSameDay(date, now);
-          }).toList();
-          break;
-
-        case 'Yesterday':
-          final yesterday = now.subtract(const Duration(days: 1));
-          filteredList = filteredList.where((r) {
-            final date = _parseReminderDate(r.updatedTs, dateFormatter);
-            return _isSameDay(date, yesterday);
-          }).toList();
-          break;
-
-        case 'Last 7 Days':
-          final last7 = now.subtract(const Duration(days: 7));
-          filteredList = filteredList.where((r) {
-            final date = _parseReminderDate(r.updatedTs, dateFormatter);
-            return date.isAfter(last7);
-          }).toList();
-          break;
-
-        case 'Last 30 Days':
-          final last30 = now.subtract(const Duration(days: 30));
-          filteredList = filteredList.where((r) {
-            final date = _parseReminderDate(r.updatedTs, dateFormatter);
-            return date.isAfter(last30);
-          }).toList();
-          break;
-
-        case 'Custom Month':
-          if (selectedReminderMonth.value != null) {
-            final selected = selectedReminderMonth.value!;
-            filteredList = filteredList.where((r) {
-              final date = _parseReminderDate(r.startDt, dateFormatter);
-              return date.year == selected.year && date.month == selected.month;
-            }).toList();
-          }
-          break;
-
-        case 'Custom Range':
-          if (selectedReminderRange.value != null) {
-            final range = selectedReminderRange.value!;
-            filteredList = filteredList.where((r) {
-              final date = _parseReminderDate(r.startDt, dateFormatter);
-              return date.isAfter(range.start.subtract(const Duration(days: 1))) &&
-                  date.isBefore(range.end.add(const Duration(days: 1)));
-            }).toList();
-          }
-          break;
-      }
-    }
-    filteredList = filteredList.where((a) {
-      return filterReminder.value == "All" ||
-          (filterReminder.value == "Follow" && a.type == "1") ||
-          (filterReminder.value == "Appointment" && a.type == "2");
-    }).toList();
-    filteredList = filteredList.where((a) {
-      String currentUser = controllers.storage.read("f_name") ?? "";
-
-      return filterRem.value == "All" ||
-          (filterRem.value == "Mine" &&
-              (a.employeeName ?? "").toLowerCase().contains(currentUser.toLowerCase())) ||
-          (filterRem.value == "Team" &&
-              !(a.employeeName ?? "").toLowerCase().contains(currentUser.toLowerCase()));
-    }).toList();
-
-    filteredList.sort((a, b) {
-      dynamic aValue;
-      dynamic bValue;
-
-      switch (sortFieldCallActivity.value) {
-        case 'customerName':
-          aValue = a.customerName.toLowerCase();
-          bValue = b.customerName.toLowerCase();
-          break;
-        case 'employeeName':
-          aValue = a.employeeName.toLowerCase();
-          bValue = b.employeeName.toLowerCase();
-          break;
-        case 'details':
-          aValue = a.details.toLowerCase();
-          bValue = b.details.toLowerCase();
-          break;
-        case 'location':
-          aValue = a.location.toLowerCase();
-          bValue = b.location.toLowerCase();
-          break;
-        case 'type':
-          aValue = a.type.toLowerCase();
-          bValue = b.type.toLowerCase();
-          break;
-        case 'title':
-          aValue = a.title.toLowerCase();
-          bValue = b.title.toLowerCase();
-          break;
-        case 'startDate':
-          aValue = _parseReminderDate(a.startDt, dateFormatter);
-          bValue = _parseReminderDate(b.startDt, dateFormatter);
-          break;
-        case 'endDate':
-          aValue = _parseReminderDate(a.endDt, dateFormatter);
-          bValue = _parseReminderDate(b.endDt, dateFormatter);
-          break;
-        default:
-          aValue = '';
-          bValue = '';
-      }
-
-      int result;
-      if (aValue is String && bValue is String) {
-        result = aValue.compareTo(bValue);
-      } else if (aValue is DateTime && bValue is DateTime) {
-        result = aValue.compareTo(bValue);
-      } else {
-        result = 0;
-      }
-
-      return sortOrderCallActivity.value == 'asc' ? result : -result;
-    });
-
-    reminderFilteredList.assignAll(filteredList);
-  }
-  // void dashboardSortReminders() {
+  // void sortReminders() {
   //   var filteredList = [...reminderList];
   //   final dateFormatter = DateFormat("dd-MM-yyyy h:mm a");
   //   final now = DateTime.now();
@@ -2799,7 +2865,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //         break;
   //       case 'Today':
   //         filteredList = filteredList.where((r) {
-  //           print("r.updatedTs ${r.updatedTs}");
+  //           // print("r.updatedTs ${r.updatedTs}");
   //           final date = _parseReminderDate(r.updatedTs, dateFormatter);
   //           return _isSameDay(date, now);
   //         }).toList();
@@ -2813,38 +2879,19 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //         }).toList();
   //         break;
   //
-  //     // case 'Last 7 Days':
-  //     //   final last7 = now.subtract(const Duration(days: 7));
-  //     //   filteredList = filteredList.where((r) {
-  //     //     final date = _parseReminderDate(r.updatedTs, dateFormatter);
-  //     //     return date.isAfter(last7);
-  //     //   }).toList();
-  //     //   break;
-  //     //
-  //     // case 'Last 30 Days':
-  //     //   final last30 = now.subtract(const Duration(days: 30));
-  //     //   filteredList = filteredList.where((r) {
-  //     //     final date = _parseReminderDate(r.updatedTs, dateFormatter);
-  //     //     return date.isAfter(last30);
-  //     //   }).toList();
-  //     //   break;
   //       case 'Last 7 Days':
-  //         final start = DateTime(now.year, now.month, now.day); // today start
-  //         final end = start.add(const Duration(days: 7));
-  //
+  //         final last7 = now.subtract(const Duration(days: 7));
   //         filteredList = filteredList.where((r) {
   //           final date = _parseReminderDate(r.updatedTs, dateFormatter);
-  //           return !date.isBefore(start) && !date.isAfter(end);
+  //           return date.isAfter(last7);
   //         }).toList();
   //         break;
   //
   //       case 'Last 30 Days':
-  //         final start = DateTime(now.year, now.month, now.day);
-  //         final end = start.add(const Duration(days: 30));
-  //
+  //         final last30 = now.subtract(const Duration(days: 30));
   //         filteredList = filteredList.where((r) {
   //           final date = _parseReminderDate(r.updatedTs, dateFormatter);
-  //           return !date.isBefore(start) && !date.isAfter(end);
+  //           return date.isAfter(last30);
   //         }).toList();
   //         break;
   //
@@ -2940,21 +2987,242 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //   });
   //
   //   reminderFilteredList.assignAll(filteredList);
+  //
+  //   followUpReminderCount.value =
+  //       reminderFilteredList.where((r) => r.type.toString() == '1').length;
+  //
+  //   meetingReminderCount.value =
+  //       reminderFilteredList.where((r) => r.type.toString() == '2').length;
   // }
+  ///
+  // void dashboardSortReminders() {
+  //
+  //   print("reminderList.....length ${reminderList.toJson()}");
+  //   var filteredList = [...reminderList];
+  //   final dateFormatter = DateFormat("dd-MM-yyyy h:mm a");
+  //   final now = DateTime.now();
+  //
+  //   DateTime _startOfDay(DateTime date) {
+  //     return DateTime(date.year, date.month, date.day);
+  //   }
+  //
+  //   DateTime _endOfDay(DateTime date) {
+  //     return DateTime(date.year, date.month, date.day, 23, 59, 59);
+  //   }
+  //
+  //   if (selectedReminderSortBy.value.isNotEmpty) {
+  //     switch (selectedReminderSortBy.value) {
+  //
+  //       case 'All':
+  //         filteredList = [...reminderList];
+  //         break;
+  //
+  //       case 'Today':
+  //         filteredList = filteredList.where((r) {
+  //           final date = _parseReminderDate(r.updatedTs, dateFormatter);
+  //           return _isSameDay(date, now);
+  //         }).toList();
+  //         break;
+  //
+  //       case 'Yesterday':
+  //         final yesterday = now.subtract(const Duration(days: 1));
+  //         filteredList = filteredList.where((r) {
+  //           final date = _parseReminderDate(r.updatedTs, dateFormatter);
+  //           return _isSameDay(date, yesterday);
+  //         }).toList();
+  //         break;
+  //
+  //       case 'Last 7 Days': // 👉 future 7 days
+  //         final start = _startOfDay(now);
+  //         final end = _endOfDay(now.add(const Duration(days: 7)));
+  //
+  //         filteredList = filteredList.where((r) {
+  //           final date = _parseReminderDate(r.updatedTs, dateFormatter);
+  //           return !date.isBefore(start) && !date.isAfter(end);
+  //         }).toList();
+  //         break;
+  //
+  //       case 'Last 30 Days': // 👉 future 30 days
+  //         final start = _startOfDay(now);
+  //         final end = _endOfDay(now.add(const Duration(days: 30)));
+  //
+  //         filteredList = filteredList.where((r) {
+  //           final date = _parseReminderDate(r.updatedTs, dateFormatter);
+  //           return !date.isBefore(start) && !date.isAfter(end);
+  //         }).toList();
+  //         break;
+  //
+  //       case 'Custom Month':
+  //         if (selectedReminderMonth.value != null) {
+  //           final selected = selectedReminderMonth.value!;
+  //           filteredList = filteredList.where((r) {
+  //             final date = _parseReminderDate(r.startDt, dateFormatter);
+  //             return date.year == selected.year &&
+  //                 date.month == selected.month;
+  //           }).toList();
+  //         }
+  //         break;
+  //
+  //       case 'Custom Range':
+  //         if (selectedReminderRange.value != null) {
+  //           final range = selectedReminderRange.value!;
+  //
+  //           filteredList = filteredList.where((r) {
+  //             final date = _parseReminderDate(r.startDt, dateFormatter);
+  //             return !date.isBefore(_startOfDay(range.start)) &&
+  //                 !date.isAfter(_endOfDay(range.end));
+  //           }).toList();
+  //         }
+  //         break;
+  //     }
+  //   }
+  //
+  //   filteredList = filteredList.where((a) {
+  //     return filterReminder.value == "All" ||
+  //         (filterReminder.value == "Follow" && a.type == "1") ||
+  //         (filterReminder.value == "Appointment" && a.type == "2");
+  //   }).toList();
+  //
+  //   // 👤 Mine / Team Filter
+  //   filteredList = filteredList.where((a) {
+  //     String currentUser = controllers.storage.read("f_name") ?? "";
+  //
+  //     return filterRem.value == "All" ||
+  //         (filterRem.value == "Mine" &&
+  //             (a.employeeName ?? "")
+  //                 .toLowerCase()
+  //                 .contains(currentUser.toLowerCase())) ||
+  //         (filterRem.value == "Team" &&
+  //             !(a.employeeName ?? "")
+  //                 .toLowerCase()
+  //                 .contains(currentUser.toLowerCase()));
+  //   }).toList();
+  //
+  //   // 🔃 Sorting
+  //   filteredList.sort((a, b) {
+  //     dynamic aValue;
+  //     dynamic bValue;
+  //
+  //     switch (sortFieldCallActivity.value) {
+  //       case 'customerName':
+  //         aValue = (a.customerName ?? '').toLowerCase();
+  //         bValue = (b.customerName ?? '').toLowerCase();
+  //         break;
+  //
+  //       case 'employeeName':
+  //         aValue = (a.employeeName ?? '').toLowerCase();
+  //         bValue = (b.employeeName ?? '').toLowerCase();
+  //         break;
+  //
+  //       case 'details':
+  //         aValue = (a.details ?? '').toLowerCase();
+  //         bValue = (b.details ?? '').toLowerCase();
+  //         break;
+  //
+  //       case 'location':
+  //         aValue = (a.location ?? '').toLowerCase();
+  //         bValue = (b.location ?? '').toLowerCase();
+  //         break;
+  //
+  //       case 'type':
+  //         aValue = (a.type ?? '').toLowerCase();
+  //         bValue = (b.type ?? '').toLowerCase();
+  //         break;
+  //
+  //       case 'title':
+  //         aValue = (a.title ?? '').toLowerCase();
+  //         bValue = (b.title ?? '').toLowerCase();
+  //         break;
+  //
+  //       case 'startDate':
+  //         aValue = _parseReminderDate(a.startDt, dateFormatter);
+  //         bValue = _parseReminderDate(b.startDt, dateFormatter);
+  //         break;
+  //
+  //       case 'endDate':
+  //         aValue = _parseReminderDate(a.endDt, dateFormatter);
+  //         bValue = _parseReminderDate(b.endDt, dateFormatter);
+  //         break;
+  //
+  //       default:
+  //         aValue = '';
+  //         bValue = '';
+  //     }
+  //
+  //     int result;
+  //     if (aValue is String && bValue is String) {
+  //       result = aValue.compareTo(bValue);
+  //     } else if (aValue is DateTime && bValue is DateTime) {
+  //       result = aValue.compareTo(bValue);
+  //     } else {
+  //       result = 0;
+  //     }
+  //
+  //     return sortOrderCallActivity.value == 'asc' ? result : -result;
+  //   });
+  //
+  //   reminderFilteredList.assignAll(filteredList);
+  // }
+///
   void dashboardSortReminders() {
-    print("reminderList.....length ${reminderList.length}");
+    // print("📦 reminderList length: ${reminderList.length}");
+
     var filteredList = [...reminderList];
-    final dateFormatter = DateFormat("dd-MM-yyyy h:mm a");
     final now = DateTime.now();
 
-    DateTime _startOfDay(DateTime date) {
-      return DateTime(date.year, date.month, date.day);
+    DateTime _startOfDay(DateTime date) =>
+        DateTime(date.year, date.month, date.day);
+
+    DateTime _endOfDay(DateTime date) =>
+        DateTime(date.year, date.month, date.day, 23, 59, 59);
+
+    /// ✅ MULTI FORMAT PARSER
+    DateTime _parseReminderDate(String? date) {
+      if (date == null || date.trim().isEmpty) {
+        return DateTime(1900);
+      }
+
+      final formats = [
+        DateFormat("dd-MM-yyyy h:mm a"),
+        DateFormat("dd-MM-yyyy HH:mm"),
+        DateFormat("yyyy-MM-dd HH:mm:ss"),
+        DateFormat("dd.MM.yyyy h:mm a"),
+        DateFormat("dd-MM-yyyy hh.mm a"),
+        DateFormat("dd.MM.yyyy hh.mm a"),
+      ];
+
+      for (var format in formats) {
+        try {
+          return format.parseStrict(date);
+        } catch (_) {}
+      }
+
+      // print("❌ Date parse error: $date");
+      return DateTime(1900);
     }
 
-    DateTime _endOfDay(DateTime date) {
-      return DateTime(date.year, date.month, date.day, 23, 59, 59);
+    /// ✅ CORRECT RANGE CHECK (NO BUG)
+    bool _matchesRange(DateTime rangeStart, DateTime rangeEnd, dynamic r) {
+      final startDate = _parseReminderDate(r.startDt);
+
+      // 🔥 IMPORTANT FIX
+      final endDate = (r.endDt == null || (r.endDt ?? "").trim().isEmpty)
+          ? startDate
+          : _parseReminderDate(r.endDt);
+
+      // ✅ STRICT CHECK (ONLY INSIDE RANGE)
+      final match =
+          (startDate.isAtSameMomentAs(rangeStart) ||
+              startDate.isAfter(rangeStart)) &&
+              (startDate.isAtSameMomentAs(rangeEnd) ||
+                  startDate.isBefore(rangeEnd));
+
+      // print("🔍 ${r.title} -> $startDate | Match: $match");
+
+      return match;
     }
 
+    /// 🔍 FILTERING
     if (selectedReminderSortBy.value.isNotEmpty) {
       switch (selectedReminderSortBy.value) {
 
@@ -2963,47 +3231,55 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           break;
 
         case 'Today':
+          final start = _startOfDay(now);
+          final end = _endOfDay(now);
+
           filteredList = filteredList.where((r) {
-            final date = _parseReminderDate(r.updatedTs, dateFormatter);
-            return _isSameDay(date, now);
+            return _matchesRange(start, end, r);
           }).toList();
           break;
 
         case 'Yesterday':
           final yesterday = now.subtract(const Duration(days: 1));
+
+          final start = _startOfDay(yesterday);
+          final end = _endOfDay(yesterday);
+
           filteredList = filteredList.where((r) {
-            final date = _parseReminderDate(r.updatedTs, dateFormatter);
-            return _isSameDay(date, yesterday);
+            return _matchesRange(start, end, r);
           }).toList();
           break;
 
-        case 'Last 7 Days': // 👉 future 7 days
+      /// 🔥 FUTURE 7 DAYS (CORRECT)
+        case 'Last 7 Days':
           final start = _startOfDay(now);
           final end = _endOfDay(now.add(const Duration(days: 7)));
 
+          print("📅 RANGE: $start → $end");
+
           filteredList = filteredList.where((r) {
-            final date = _parseReminderDate(r.updatedTs, dateFormatter);
-            return !date.isBefore(start) && !date.isAfter(end);
+            return _matchesRange(start, end, r);
           }).toList();
           break;
 
-        case 'Last 30 Days': // 👉 future 30 days
+        case 'Last 30 Days':
           final start = _startOfDay(now);
           final end = _endOfDay(now.add(const Duration(days: 30)));
 
           filteredList = filteredList.where((r) {
-            final date = _parseReminderDate(r.updatedTs, dateFormatter);
-            return !date.isBefore(start) && !date.isAfter(end);
+            return _matchesRange(start, end, r);
           }).toList();
           break;
 
         case 'Custom Month':
           if (selectedReminderMonth.value != null) {
             final selected = selectedReminderMonth.value!;
+
             filteredList = filteredList.where((r) {
-              final date = _parseReminderDate(r.startDt, dateFormatter);
-              return date.year == selected.year &&
-                  date.month == selected.month;
+              final startDate = _parseReminderDate(r.startDt);
+
+              return startDate.year == selected.year &&
+                  startDate.month == selected.month;
             }).toList();
           }
           break;
@@ -3012,24 +3288,27 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           if (selectedReminderRange.value != null) {
             final range = selectedReminderRange.value!;
 
+            final start = _startOfDay(range.start);
+            final end = _endOfDay(range.end);
+
             filteredList = filteredList.where((r) {
-              final date = _parseReminderDate(r.startDt, dateFormatter);
-              return !date.isBefore(_startOfDay(range.start)) &&
-                  !date.isAfter(_endOfDay(range.end));
+              return _matchesRange(start, end, r);
             }).toList();
           }
           break;
       }
     }
 
-    // 🔍 Type Filter
+    // print("📊 After Date Filter: ${filteredList.length}");
+
+    /// 🔖 TYPE FILTER
     filteredList = filteredList.where((a) {
       return filterReminder.value == "All" ||
           (filterReminder.value == "Follow" && a.type == "1") ||
           (filterReminder.value == "Appointment" && a.type == "2");
     }).toList();
 
-    // 👤 Mine / Team Filter
+    /// 👤 MINE / TEAM FILTER
     filteredList = filteredList.where((a) {
       String currentUser = controllers.storage.read("f_name") ?? "";
 
@@ -3044,72 +3323,200 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
                   .contains(currentUser.toLowerCase()));
     }).toList();
 
-    // 🔃 Sorting
+    // print("📊 After User Filter: ${filteredList.length}");
+
+    /// 🔃 SORTING (BY START DATE)
     filteredList.sort((a, b) {
-      dynamic aValue;
-      dynamic bValue;
+      final aDate = _parseReminderDate(a.startDt);
+      final bDate = _parseReminderDate(b.startDt);
 
-      switch (sortFieldCallActivity.value) {
-        case 'customerName':
-          aValue = (a.customerName ?? '').toLowerCase();
-          bValue = (b.customerName ?? '').toLowerCase();
-          break;
-
-        case 'employeeName':
-          aValue = (a.employeeName ?? '').toLowerCase();
-          bValue = (b.employeeName ?? '').toLowerCase();
-          break;
-
-        case 'details':
-          aValue = (a.details ?? '').toLowerCase();
-          bValue = (b.details ?? '').toLowerCase();
-          break;
-
-        case 'location':
-          aValue = (a.location ?? '').toLowerCase();
-          bValue = (b.location ?? '').toLowerCase();
-          break;
-
-        case 'type':
-          aValue = (a.type ?? '').toLowerCase();
-          bValue = (b.type ?? '').toLowerCase();
-          break;
-
-        case 'title':
-          aValue = (a.title ?? '').toLowerCase();
-          bValue = (b.title ?? '').toLowerCase();
-          break;
-
-        case 'startDate':
-          aValue = _parseReminderDate(a.startDt, dateFormatter);
-          bValue = _parseReminderDate(b.startDt, dateFormatter);
-          break;
-
-        case 'endDate':
-          aValue = _parseReminderDate(a.endDt, dateFormatter);
-          bValue = _parseReminderDate(b.endDt, dateFormatter);
-          break;
-
-        default:
-          aValue = '';
-          bValue = '';
-      }
-
-      int result;
-      if (aValue is String && bValue is String) {
-        result = aValue.compareTo(bValue);
-      } else if (aValue is DateTime && bValue is DateTime) {
-        result = aValue.compareTo(bValue);
-      } else {
-        result = 0;
-      }
-
-      return sortOrderCallActivity.value == 'asc' ? result : -result;
+      return sortOrderCallActivity.value == 'asc'
+          ? aDate.compareTo(bDate)
+          : bDate.compareTo(aDate);
     });
 
     reminderFilteredList.assignAll(filteredList);
+    followUpReminderCount.value =reminderFilteredList.where((r) => r.type.toString() == '1').length;
+    meetingReminderCount.value =reminderFilteredList.where((r) => r.type.toString() == '2').length;
   }
+  void sortReminders() {
+    // print("📦 reminderList length: ${reminderList.length}");
 
+    var filteredList = [...reminderList];
+    final now = DateTime.now();
+
+    DateTime _startOfDay(DateTime date) =>
+        DateTime(date.year, date.month, date.day);
+
+    DateTime _endOfDay(DateTime date) =>
+        DateTime(date.year, date.month, date.day, 23, 59, 59);
+
+    /// ✅ MULTI FORMAT PARSER
+    DateTime _parseReminderDate(String? date) {
+      if (date == null || date.trim().isEmpty) {
+        return DateTime(1900);
+      }
+
+      final formats = [
+        DateFormat("dd-MM-yyyy h:mm a"),
+        DateFormat("dd-MM-yyyy HH:mm"),
+        DateFormat("yyyy-MM-dd HH:mm:ss"),
+        DateFormat("dd.MM.yyyy h:mm a"),
+        DateFormat("dd-MM-yyyy hh.mm a"),
+        DateFormat("dd.MM.yyyy hh.mm a"),
+      ];
+
+      for (var format in formats) {
+        try {
+          return format.parseStrict(date);
+        } catch (_) {}
+      }
+
+      // print("❌ Date parse error: $date");
+      return DateTime(1900);
+    }
+
+    /// ✅ CORRECT RANGE CHECK (NO BUG)
+    bool _matchesRange(DateTime rangeStart, DateTime rangeEnd, dynamic r) {
+      final startDate = _parseReminderDate(r.startDt);
+
+      // 🔥 IMPORTANT FIX
+      final endDate = (r.endDt == null || (r.endDt ?? "").trim().isEmpty)
+          ? startDate
+          : _parseReminderDate(r.endDt);
+
+      // ✅ STRICT CHECK (ONLY INSIDE RANGE)
+      final match =
+          (startDate.isAtSameMomentAs(rangeStart) ||
+              startDate.isAfter(rangeStart)) &&
+              (startDate.isAtSameMomentAs(rangeEnd) ||
+                  startDate.isBefore(rangeEnd));
+
+      // print("🔍 ${r.title} -> $startDate | Match: $match");
+
+      return match;
+    }
+
+    /// 🔍 FILTERING
+    if (selectedReminderSortBy.value.isNotEmpty) {
+      switch (selectedReminderSortBy.value) {
+
+        case 'All':
+          filteredList = [...reminderList];
+          break;
+
+        case 'Today':
+          final start = _startOfDay(now);
+          final end = _endOfDay(now);
+
+          filteredList = filteredList.where((r) {
+            return _matchesRange(start, end, r);
+          }).toList();
+          break;
+
+        case 'Yesterday':
+          final yesterday = now.subtract(const Duration(days: 1));
+
+          final start = _startOfDay(yesterday);
+          final end = _endOfDay(yesterday);
+
+          filteredList = filteredList.where((r) {
+            return _matchesRange(start, end, r);
+          }).toList();
+          break;
+
+      /// 🔥 FUTURE 7 DAYS (CORRECT)
+        case 'Last 7 Days':
+          final start = _startOfDay(now);
+          final end = _endOfDay(now.add(const Duration(days: 7)));
+
+          print("📅 RANGE: $start → $end");
+
+          filteredList = filteredList.where((r) {
+            return _matchesRange(start, end, r);
+          }).toList();
+          break;
+
+        case 'Last 30 Days':
+          final start = _startOfDay(now);
+          final end = _endOfDay(now.add(const Duration(days: 30)));
+
+          filteredList = filteredList.where((r) {
+            return _matchesRange(start, end, r);
+          }).toList();
+          break;
+
+        case 'Custom Month':
+          if (selectedReminderMonth.value != null) {
+            final selected = selectedReminderMonth.value!;
+
+            filteredList = filteredList.where((r) {
+              final startDate = _parseReminderDate(r.startDt);
+
+              return startDate.year == selected.year &&
+                  startDate.month == selected.month;
+            }).toList();
+          }
+          break;
+
+        case 'Custom Range':
+          if (selectedReminderRange.value != null) {
+            final range = selectedReminderRange.value!;
+
+            final start = _startOfDay(range.start);
+            final end = _endOfDay(range.end);
+
+            filteredList = filteredList.where((r) {
+              return _matchesRange(start, end, r);
+            }).toList();
+          }
+          break;
+      }
+    }
+
+    // print("📊 After Date Filter: ${filteredList.length}");
+
+    /// 🔖 TYPE FILTER
+    filteredList = filteredList.where((a) {
+      return filterReminder.value == "All" ||
+          (filterReminder.value == "Follow" && a.type == "1") ||
+          (filterReminder.value == "Appointment" && a.type == "2");
+    }).toList();
+
+    /// 👤 MINE / TEAM FILTER
+    filteredList = filteredList.where((a) {
+      String currentUser = controllers.storage.read("f_name") ?? "";
+
+      return filterRem.value == "All" ||
+          (filterRem.value == "Mine" &&
+              (a.employeeName ?? "")
+                  .toLowerCase()
+                  .contains(currentUser.toLowerCase())) ||
+          (filterRem.value == "Team" &&
+              !(a.employeeName ?? "")
+                  .toLowerCase()
+                  .contains(currentUser.toLowerCase()));
+    }).toList();
+
+    // print("📊 After User Filter: ${filteredList.length}");
+
+    /// 🔃 SORTING (BY START DATE)
+    filteredList.sort((a, b) {
+      final aDate = _parseReminderDate(a.startDt);
+      final bDate = _parseReminderDate(b.startDt);
+
+      return sortOrderCallActivity.value == 'asc'
+          ? aDate.compareTo(bDate)
+          : bDate.compareTo(aDate);
+    });
+
+    // print("✅ Final Count: ${filteredList.length}");
+    filteredList.sort((a, b) => b.startDt.compareTo(a.startDt));
+    reminderFilteredList.assignAll(filteredList);
+    followUpReminderCount.value =reminderFilteredList.where((r) => r.type.toString() == '1').length;
+    meetingReminderCount.value =reminderFilteredList.where((r) => r.type.toString() == '2').length;
+  }
+///
   // DateTime _parseReminderDate(String dateStr, DateFormat fallbackFormatter) {
   //   try {
   //     print("dateStr");
@@ -3537,7 +3944,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       return sortOrderCallActivity.value == 'asc' ? result : -result;
 
     });
-
+    filteredList.sort((a, b) => b.sentDate.compareTo(a.sentDate));
     mailFilteredList.assignAll(filteredList);
 
  // debugPrint("remController.selectedMailSortBy.value ${remController.selectedMailSortBy.value}");
@@ -3672,8 +4079,8 @@ void unSelectAllAppointments() {
           "search_type": "allReminders"
         }),
       );
-      print("allReminders");
-      print(response.body);
+      // print("allReminders");
+      // print(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3692,11 +4099,11 @@ void unSelectAllAppointments() {
               data.map((e) => ReminderModel.fromJson(e)).toList();
 
           // ---------- COUNTS ----------
-          followUpReminderCount.value =
-              reminderList.where((r) => r.type.toString() == '1').length;
-
-          meetingReminderCount.value =
-              reminderList.where((r) => r.type.toString() == '2').length;
+          // followUpReminderCount.value =
+          //     reminderList.where((r) => r.type.toString() == '1').length;
+          //
+          // meetingReminderCount.value =
+          //     reminderList.where((r) => r.type.toString() == '2').length;
 
           int monthCount = 0;
 

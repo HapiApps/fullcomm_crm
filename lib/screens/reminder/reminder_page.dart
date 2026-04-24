@@ -30,13 +30,13 @@ class _ReminderPageState extends State<ReminderPage> {
   List<double> colWidths = [
     50,   // 0 Checkbox
     100,  // 1 Actions
-    170,  // 2 Event Name
+    200,  // 2 Event Name
     150,  // 3 Type
     150,  // 4 Location
     170,  // 5 Employee Name
     170,  // 6 Customer Name
-    170,  // 7 Start Date
-    170,  // 8 End Date
+    200,  // 7 Start Date
+    200,  // 8 End Date
     300,  // 9 Details
   ];
   Widget headerCell(int index, Widget child) {

@@ -122,7 +122,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero,(){
-      remController.dashboardMeetings(
+      remController.sortMeetings(
         searchText: controllers.searchText.value.toLowerCase(),
         callType: controllers.selectMeetingType.value,
         sortField: controllers.sortFieldMeetingActivity.value,
@@ -850,7 +850,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         Obx(()=> utils.selectHeatingType("Scheduled",
                             controllers.selectMeetingType.value=="Scheduled", (){
                               controllers.selectMeetingType.value="Scheduled";
-                              remController.dashboardMeetings(
+                              remController.sortMeetings(
                                 searchText: controllers.searchText.value.toLowerCase(),
                                 callType: controllers.selectMeetingType.value,
                                 sortField: controllers.sortFieldMeetingActivity.value,
@@ -861,7 +861,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         Obx(()=>utils.selectHeatingType("Completed",
                             controllers.selectMeetingType.value=="Completed", (){
                               controllers.selectMeetingType.value="Completed";
-                              remController.dashboardMeetings(
+                              remController.sortMeetings(
                                 searchText: controllers.searchText.value.toLowerCase(),
                                 callType: controllers.selectMeetingType.value,
                                 sortField: controllers.sortFieldMeetingActivity.value,
@@ -872,7 +872,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         Obx(()=> utils.selectHeatingType("Cancelled",
                             controllers.selectMeetingType.value=="Cancelled", (){
                               controllers.selectMeetingType.value="Cancelled";
-                              remController.dashboardMeetings(
+                              remController.sortMeetings(
                                 searchText: controllers.searchText.value.toLowerCase(),
                                 callType: controllers.selectMeetingType.value,
                                 sortField: controllers.sortFieldMeetingActivity.value,
@@ -1095,7 +1095,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                       hintText: "Search Lead Name, Company Name, Employee Name",
                       onChanged: (value) {
                         controllers.searchText.value = value.toString().trim();
-                        remController.dashboardMeetings(
+                        remController.sortMeetings(
                           searchText: controllers.searchText.value.toLowerCase(),
                           callType: controllers.selectMeetingType.value,
                           sortField: controllers.sortFieldMeetingActivity.value,
@@ -1109,7 +1109,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                       selectedMonth: remController.selectedMeetMonth,
                       focusNode: _focusNode,
                       onDaysSelected: () {
-                        remController.dashboardMeetings(
+                        remController.sortMeetings(
                           searchText: controllers.searchText.value.toLowerCase(),
                           callType: controllers.selectMeetingType.value,
                           sortField: controllers.sortFieldMeetingActivity.value,
@@ -1122,7 +1122,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                           remController.selectedMeetSortBy,
                           remController.selectedMeetMonth,
                               () {
-                            remController.dashboardMeetings(
+                            remController.sortMeetings(
                               searchText: controllers.searchText.value.toLowerCase(),
                               callType: controllers.selectMeetingType.value,
                               sortField: controllers.sortFieldMeetingActivity.value,
@@ -1135,7 +1135,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         remController.showDatePickerDialog(ctx, (pickedRange) {
                           remController.selectedMeetSortBy.value = "Custom Range";
                           remController.selectedMeetRange.value = pickedRange;
-                          remController.dashboardMeetings(
+                          remController.sortMeetings(
                             searchText: controllers.searchText.value.toLowerCase(),
                             callType: controllers.selectMeetingType.value,
                             sortField: controllers.sortFieldMeetingActivity.value,
@@ -1214,7 +1214,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       controllers.sortOrderMeetingActivity.value='asc';
                                     }
                                     controllers.sortFieldMeetingActivity.value='customerName';
-                                    remController.dashboardMeetings(
+                                    remController.sortMeetings(
                                       searchText: controllers.searchText.value.toLowerCase(),
                                       callType: controllers.selectMeetingType.value,
                                       sortField: controllers.sortFieldMeetingActivity.value,
@@ -1253,7 +1253,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       controllers.sortOrderMeetingActivity.value='asc';
                                     }
                                     controllers.sortFieldMeetingActivity.value='companyName';
-                                    remController.dashboardMeetings(
+                                    remController.sortMeetings(
                                       searchText: controllers.searchText.value.toLowerCase(),
                                       callType: controllers.selectMeetingType.value,
                                       sortField: controllers.sortFieldMeetingActivity.value,
@@ -1292,7 +1292,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       controllers.sortOrderMeetingActivity.value='asc';
                                     }
                                     controllers.sortFieldMeetingActivity.value='emp';
-                                    remController.dashboardMeetings(
+                                    remController.sortMeetings(
                                       searchText: controllers.searchText.value.toLowerCase(),
                                       callType: controllers.selectMeetingType.value,
                                       sortField: controllers.sortFieldMeetingActivity.value,
@@ -1331,7 +1331,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       controllers.sortOrderMeetingActivity.value='asc';
                                     }
                                     controllers.sortFieldMeetingActivity.value='title';
-                                    remController.dashboardMeetings(
+                                    remController.sortMeetings(
                                       searchText: controllers.searchText.value.toLowerCase(),
                                       callType: controllers.selectMeetingType.value,
                                       sortField: controllers.sortFieldMeetingActivity.value,
@@ -1370,7 +1370,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       controllers.sortOrderMeetingActivity.value='asc';
                                     }
                                     controllers.sortFieldMeetingActivity.value='venue';
-                                    remController.dashboardMeetings(
+                                    remController.sortMeetings(
                                       searchText: controllers.searchText.value.toLowerCase(),
                                       callType: controllers.selectMeetingType.value,
                                       sortField: controllers.sortFieldMeetingActivity.value,
@@ -1409,7 +1409,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       controllers.sortOrderMeetingActivity.value='asc';
                                     }
                                     controllers.sortFieldMeetingActivity.value='status';
-                                    remController.dashboardMeetings(
+                                    remController.sortMeetings(
                                       searchText: controllers.searchText.value.toLowerCase(),
                                       callType: controllers.selectMeetingType.value,
                                       sortField: controllers.sortFieldMeetingActivity.value,
@@ -1448,7 +1448,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       controllers.sortOrderMeetingActivity.value='asc';
                                     }
                                     controllers.sortFieldMeetingActivity.value='notes';
-                                    remController.dashboardMeetings(
+                                    remController.sortMeetings(
                                       searchText: controllers.searchText.value.toLowerCase(),
                                       callType: controllers.selectMeetingType.value,
                                       sortField: controllers.sortFieldMeetingActivity.value,
@@ -1487,7 +1487,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                       controllers.sortOrderMeetingActivity.value='asc';
                                     }
                                     controllers.sortFieldMeetingActivity.value='date';
-                                    remController.dashboardMeetings(
+                                    remController.sortMeetings(
                                       searchText: controllers.searchText.value.toLowerCase(),
                                       callType: controllers.selectMeetingType.value,
                                       sortField: controllers.sortFieldMeetingActivity.value,

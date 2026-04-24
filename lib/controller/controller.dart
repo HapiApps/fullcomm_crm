@@ -2854,6 +2854,62 @@ print("sortField ${sortField}");
       // print("FLUTTER ERROR => $e");
     }
   }
+  var invoiceNo="".obs;
+  var quotationNo="".obs;
+  final TextEditingController iCtr=TextEditingController();
+  final TextEditingController qCtr=TextEditingController();
+  Future<void> insertSeriesNo() async {
+    try {
+      invoiceNo.value="";
+      quotationNo.value="";
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "action": "insert_series",
+          "cos_id": controllers.storage.read("cos_id"),
+          "created_by": controllers.storage.read("id"),
+          "invoice": iCtr.text,
+          "quotation": qCtr.text,
+        }),
+      );
+
+      print("STATUS CODE insert_series: ${response.statusCode}");
+      print("RAW RESPONSE: ${response.body}");
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertSeriesNo();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode != 200) {
+        // print("SERVER ERROR");
+        return;
+      }
+
+      final decoded = jsonDecode(response.body);
+
+      // ✅ Safety check
+      if (decoded["status"] == "success" && decoded["data"] != null) {
+
+        List<Map<String, dynamic>> list =
+        List<Map<String, dynamic>>.from(decoded["data"]);
+
+        invoiceNo.value=list[0]["invoice"];
+        quotationNo.value=list[0]["quotation"];
+
+      } else {
+        // print("API Error: ${decoded["message"]}");
+      }
+    } catch (e) {
+      // print("FLUTTER ERROR => $e");
+    }
+  }
 
   RxList<Map<String, dynamic>> rangeStatusList =
       <Map<String, dynamic>>[].obs;

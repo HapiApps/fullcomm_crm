@@ -743,6 +743,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 }),
                                           );
                                         }),
+                                        10.height,
                                         CustomTextField(
                                           onEdit: () {
                                             FocusScope.of(context)
@@ -952,8 +953,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                             children: [
                                                               Row(
                                                                 children: [
-                                                                  CustomText(text: "Company Phone No.", isCopy: false),
-                                                                  CustomText(text: "*",size: 18,colors: Colors.red, isCopy: false),
+                                                                  CustomText(text: "Company Phone No", isCopy: false),
                                                                 ],
                                                               ),
                                                               InkWell(
@@ -1011,8 +1011,8 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                   onEdit: () {
                                                                     FocusScope.of(context).requestFocus(linkedin);
                                                                   },
-                                                                  hintText: "Company Phone No.",
-                                                                  text: "Company Phone No.",
+                                                                  hintText: "",
+                                                                  text: "",
                                                                   controller: controllers.infoNumberList[index],
                                                                   width: textFieldSize,
                                                                   keyboardType: TextInputType.number,
@@ -1848,7 +1848,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         controllers.leadCtr.reset();
                                         return;
                                       }
-                                      if (controllers.leadLinkedinCrt.text.trim().isNotEmpty&&!utils.isValidXId(controllers.leadXCrt.text.trim())) {
+                                      if (controllers.leadXCrt.text.trim().isNotEmpty&&!utils.isValidXId(controllers.leadXCrt.text.trim())) {
                                         utils.snackBar(
                                           context: context,
                                           msg: "Enter valid X ID",

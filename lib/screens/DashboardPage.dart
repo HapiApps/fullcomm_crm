@@ -151,6 +151,7 @@ class _DashboardPageState extends State<DashboardPage>
       if(remController.callMailsDetailsList.isEmpty){
         apiService.getMailCallActivity();
       }
+      remController.dashboardSortReminders();
       remController.dashboardCommunicationFilterList(
         dataList: remController.callMailsDetailsList2,
         searchText: controllers.searchText.value.toLowerCase(),
@@ -561,26 +562,28 @@ void checkDate(){
                   subLabelBuilder: (item) => item.phoneNo, // 🔥 optional
                   itemBuilder: (item) => SizedBox(), // not used now
                   onSelected: (item) {
+                    print("item.name");
                     print(item.name);
-                    //     controllers.search.text = value.name.toString();
-                    //     for (var i = 0; i < controllers.leadCategoryList.length; i++) {
-                    //       var item = controllers.leadCategoryList[i];
-                    //       if (item.leadStatus == value.leadStatus) {
-                    //         controllers.selectedIndex.value =
-                    //             int.tryParse(value.leadStatus.toString()) ?? 0;
-                    //         Get.off(
-                    //               () => NewLeadPage(
-                    //             index: item.leadStatus,
-                    //             name: item.value,
-                    //             list: item.list,
-                    //             list2: item.list2,
-                    //             listIndex: i,
-                    //           ),
-                    //           preventDuplicates: false,
-                    //         );
-                    //         break;
-                    //       }
-                    //     }
+                    controllers.search.text = item.name.toString();
+                    for (var i = 0; i < controllers.leadCategoryList.length; i++) {
+                      if(controllers.leadCategoryList[i].value==item.category.toString()){
+                        print(controllers.leadCategoryList[i].value);
+                        print(item.category.toString());
+
+                        controllers.selectedIndex.value =int.tryParse(item.leadStatus.toString()) ?? 0;
+                        Get.off(
+                              () => NewLeadPage(
+                            index: item.leadStatus,
+                            name: controllers.leadCategoryList[i].value,
+                            list: controllers.leadCategoryList[i].list,
+                            list2: controllers.leadCategoryList[i].list2,
+                            listIndex: i,
+                          ),
+                          preventDuplicates: false,
+                        );
+                        break;
+                      }
+                    }
                     // showDialog(
                     //   context: context,
                     //   builder: (_) => AlertDialog(

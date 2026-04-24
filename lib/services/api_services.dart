@@ -2520,10 +2520,10 @@ class ApiService {
       final Map<String, dynamic> response = json.decode(request.body);
 
       print(response);
-      if(request.body.toString().contains("Invalid mobile number or password")){
-        utils.snackBar(context: context, msg: "Invalid mobile number or password", color: Colors.red);
-        controllers.loginCtr.reset();
-      }
+      // if(request.body.toString().contains("Invalid mobile number or password")){
+        // utils.snackBar(context: context, msg: "Invalid mobile number or password", color: Colors.red);
+        // controllers.loginCtr.reset();
+      // }
       // if (request.statusCode == 401) {
       //   final refreshed = await controllers.refreshToken();
       //   if (refreshed) {
@@ -2575,9 +2575,11 @@ class ApiService {
         );
         Get.to(const DashboardPage(), duration: Duration.zero);
         controllers.loginCtr.reset();
-      } else {
+      }
+      else {
         controllers.loginCtr.reset();
-        errorDialog(Get.context!, 'No Account Found');
+        // errorDialog(Get.context!, 'No Account Found');
+        errorDialog(Get.context!, response['message'].toString());
       }
     } catch (e) {
       controllers.loginCtr.reset();
@@ -2870,7 +2872,7 @@ class ApiService {
     controllers.isReplied.value = false;
     try {
       final data = {
-        "search_type": "records",
+        "search_type": "mails",
         "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data",
         "type": "8",
@@ -3039,17 +3041,17 @@ class ApiService {
         List response = json.decode(request.body);
         controllers.meetingActivity.clear();
         controllers.meetingActivity.value = response.map((e) => MeetingObj.fromJson(e)).toList();
-        final scheduled = controllers.meetingActivity.where((e) => e.status.isNotEmpty && e.status.trim() == "Scheduled").toList();
-        final completed = controllers.meetingActivity
-            .where((e) => e.status.isNotEmpty && e.status.trim() == "Completed")
-            .toList();
-        final cancelled = controllers.meetingActivity
-            .where((e) => e.status.isNotEmpty && e.status.trim() == "Cancelled")
-            .toList();
-
-        controllers.allScheduleMeet.value = scheduled.length.toString();
-        controllers.allCompletedMeet.value = completed.length.toString();
-        controllers.allCancelled.value = cancelled.length.toString();
+        // final scheduled = controllers.meetingActivity.where((e) => e.status.isNotEmpty && e.status.trim() == "Scheduled").toList();
+        // final completed = controllers.meetingActivity
+        //     .where((e) => e.status.isNotEmpty && e.status.trim() == "Completed")
+        //     .toList();
+        // final cancelled = controllers.meetingActivity
+        //     .where((e) => e.status.isNotEmpty && e.status.trim() == "Cancelled")
+        //     .toList();
+        //
+        // controllers.allScheduleMeet.value = scheduled.length.toString();
+        // controllers.allCompletedMeet.value = completed.length.toString();
+        // controllers.allCancelled.value = cancelled.length.toString();
         remController.dashboardMeetings(
           searchText: controllers.searchText.value.toLowerCase(),
           callType: controllers.selectMeetingType.value,

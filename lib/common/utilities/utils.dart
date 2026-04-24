@@ -1538,6 +1538,7 @@ class Utils {
                                       nameList.add(match.name);
                                       idList.add(match.id);
                                     }
+                                    controller.clear();
                                   });
                                 },
                               );
@@ -1564,6 +1565,7 @@ class Utils {
                 ],
               );
             }
+
 
             return Dialog(
               shape: RoundedRectangleBorder(

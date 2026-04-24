@@ -548,7 +548,7 @@ class _OrderPageState extends State<OrderPage> {
                                               padding: const EdgeInsets.all(10.0),
                                               child: CustomText(
                                                 textAlign: TextAlign.left,
-                                                text:"${index+1} - ${data.orderId.toString()=="null"?"":data.orderId.toString()}",
+                                                text:data.orderId.toString()=="null"?"":data.orderId.toString(),
                                                 size: 14,
                                                 isCopy: true,
                                                 colors: colorsConst.textColor,

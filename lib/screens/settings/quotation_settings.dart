@@ -34,7 +34,7 @@ class _QuotationSettingsState extends State<QuotationSettings> {
     // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero, () {
-      dashController.selectedSortBy.value = controllers.storage.read("selectedSortBy") ?? "Today";
+      controllers.insertSeriesNo();
     });
   }
   @override
