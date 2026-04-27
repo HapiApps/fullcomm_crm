@@ -1033,9 +1033,39 @@ print("selectedDateFilter $selectedDateFilter");
     }
     quotationsList.assignAll(filtered);
   }
+  late TabController productTab;
+  @override
+  void onInit() {
+    productTab = TabController(length: 2, vsync: this);
+    productTab.addListener(() {
+    });
+    super.onInit();
+  }
+
+  void changeTab(int index) {
+    productTab.animateTo(index);
+  }
+
+  String showCrtDate(String? dateStr) {
+    if (dateStr == null || dateStr.isEmpty) return "";
+
+    DateTime dt = DateTime.parse(dateStr);
+    DateTime now = DateTime.now();
+    return DateFormat('dd-MM-yyyy').format(dt);
+    // if (dt.year == now.year) {
+    // } else {
+    //   return DateFormat('dd MMM yyyy').format(dt); // 14 Apr 2025
+    // }
+  }
+  @override
+  void onClose() {
+    productTab.dispose();
+    super.onClose();
+  }
 
   RxList<Quotations> quotationsList=<Quotations>[].obs;
   RxList<Quotations> quotationsList2=<Quotations>[].obs;
+  RxList<QuotationsDetails> quotationsListDetail=<QuotationsDetails>[].obs;
   Future<List<Quotations>> getQuotationDetails() async {
     try {
       // quotationsList.clear();
@@ -1056,7 +1086,7 @@ print("selectedDateFilter $selectedDateFilter");
       );
 
       // print("STATUS CODE add_values: ${response.statusCode}");
-      // print("get_quotations..: ${response.body}");
+      print("get_quotations..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1076,6 +1106,51 @@ print("selectedDateFilter $selectedDateFilter");
           return [];
       }
     } catch (e) {
+      log("FLUTTER ERROR => $e");
+      return [];
+    }
+  }
+  var dataRefresh=true.obs;
+  Future<List<QuotationsDetails>> getQuotationFullDetails(String id) async {
+    try {
+      dataRefresh.value=false;
+      quotationsListDetail.clear();
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "action": "get_data",
+          "search_type": "quotations_full_details",
+          "role": controllers.storage.read("role").toString(),
+          "id": id,
+          "cos_id": controllers.storage.read("cos_id").toString(),
+        }),
+      );
+
+      // print("STATUS CODE add_values: ${response.statusCode}");
+      print("get_quotations..: ${response.body}");
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getQuotationFullDetails(id);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        final List data = jsonDecode(response.body);
+        quotationsListDetail.value =data.map((e) => QuotationsDetails.fromJson(e)).toList();
+        dataRefresh.value=true;
+        return quotationsListDetail;
+      }else{
+        dataRefresh.value=true;
+        return [];
+      }
+    } catch (e) {
+      dataRefresh.value=true;
       log("FLUTTER ERROR => $e");
       return [];
     }
@@ -1126,12 +1201,6 @@ print("selectedDateFilter $selectedDateFilter");
     }
   }
   RxList<BillingRow> rows = <BillingRow>[].obs;
-
-  /// 🔹 INIT
-  @override
-  void onInit() {
-    super.onInit();
-  }
 
   /// 🔹 ADD PRODUCT
   void addProducts(ProductModel product) {

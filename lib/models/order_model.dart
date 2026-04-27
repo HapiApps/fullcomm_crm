@@ -102,6 +102,10 @@ class Quotations {
   final String qty;
   final String pName;
   final String pId;
+  final String poDate;
+  final String iNo;
+  final String invoiceDate;
+  final String poNumber;
 
   Quotations({
     required this.id,
@@ -118,7 +122,6 @@ class Quotations {
     required this.company,
     required this.email,
     required this.subTotal,
-    required this.validityDate,
     required this.dis,
     required this.gst,
     required this.amount,
@@ -127,6 +130,11 @@ class Quotations {
     required this.qty,
     required this.pName,
     required this.pId,
+    required this.validityDate,
+    required this.iNo,
+    required this.poDate,
+    required this.poNumber,
+    required this.invoiceDate,
     this.dropValue,
   });
 
@@ -152,10 +160,71 @@ class Quotations {
       gst: json['gst'] ?? '',
       dis: json['dis'] ?? '',
       subTotal: json['subTotal'] ?? '',
-      dropValue: 'Confirm Order',
+      poNumber: json['po_number'] ?? '',
+      poDate: json['po_date'] ?? '',
+      iNo: json['i_no'] ?? '',
+      invoiceDate: json['invoice_date'] ?? '',
+      dropValue: 'Create Invoice',
       totalAmt: int.tryParse(json['total_amt']?.toString() ?? "0") ?? 0,
       totalProduct: int.tryParse(json['total_product']?.toString() ?? "0") ?? 0,
       totalItem: int.tryParse(json['total_item']?.toString() ?? "0") ?? 0
+    );
+  }
+}
+class QuotationsDetails {
+  final int id;
+  final String invoicePdf;
+  final String status;
+  final int totalAmt;
+  final int totalProduct;
+  final int totalItem;
+  final String po;
+  final String subTotal;
+  final String dis;
+  final String gst;
+  final String amount;
+  final String price;
+  final String mrp;
+  final String qty;
+  final String pName;
+  final String pId;
+  QuotationsDetails({
+    required this.id,
+    required this.totalAmt,
+    required this.invoicePdf,
+    required this.totalProduct,
+    required this.totalItem,
+    required this.po,
+    required this.status,
+    required this.subTotal,
+    required this.dis,
+    required this.gst,
+    required this.amount,
+    required this.price,
+    required this.mrp,
+    required this.qty,
+    required this.pName,
+    required this.pId,
+  });
+
+  factory QuotationsDetails.fromJson(Map<String, dynamic> json) {
+    return QuotationsDetails(
+      id: int.tryParse(json['id']?.toString() ?? "0") ?? 0,
+      po: json['po'] ?? '',
+      invoicePdf: json['invoice_pdf'] ?? '',
+      status: json['status'] ?? '',
+      totalAmt: int.tryParse(json['total_amt']?.toString() ?? "0") ?? 0,
+      totalProduct: int.tryParse(json['total_product']?.toString() ?? "0") ?? 0,
+      totalItem: int.tryParse(json['total_item']?.toString() ?? "0") ?? 0,
+      pId: json['p_id'] ?? '',
+      pName: json['productname'] ?? '',
+      qty: json['qty'] ?? '',
+      mrp: json['mrp'] ?? '',
+      price: json['price'] ?? '',
+      amount: json['amount'] ?? '',
+      gst: json['gst'] ?? '',
+      dis: json['dis'] ?? '',
+      subTotal: json['subTotal'] ?? '',
     );
   }
 }

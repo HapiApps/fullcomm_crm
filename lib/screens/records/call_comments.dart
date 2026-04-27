@@ -716,7 +716,7 @@ class _CallCommentsState extends State<CallComments> {
                                             children: [
                                               CustomText(
                                                 textAlign: TextAlign.left,
-                                                text: "Call Type",
+                                                text: "In/Out",
                                                 size: 15,
                                                 isBold: true,
                                                 isCopy: true,

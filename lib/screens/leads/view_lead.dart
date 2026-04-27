@@ -705,7 +705,7 @@ void checkType(){
                                                   list: widget.list,list2: widget.list2,
                                                   type: "2",
                                                   id: widget.id,
-                                                  mainName: displayName,
+                                                  mainName: widget.name,
                                                   mainMobile: displayMobile,
                                                   mainEmail: displayEmail,
                                                   mainWhatsApp: widget.whatsAppNo,
@@ -1570,8 +1570,7 @@ void checkType(){
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          120.height,
-                          Center(child: SvgPicture.asset("assets/images/noDataFound.svg")),
+                          Center(child: SvgPicture.asset("assets/images/noDataFound.svg",width: 100,height: 100,)),
                           10.height,
                           Text(snapshot.error.toString()),
                         ],

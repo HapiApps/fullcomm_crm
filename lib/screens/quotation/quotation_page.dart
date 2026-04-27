@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
+import 'package:fullcomm_crm/controller/product_controller.dart';
 import 'package:fullcomm_crm/screens/quotation/quotation_history.dart';
 import 'package:get/get.dart';
 import '../../billing/billing_view/new_billing_screen.dart';
@@ -39,7 +40,7 @@ class _QuotationPageState extends State<QuotationPage> {
                     height: 70,
                     color: Color(0xffE2E8F0),
                     child: TabBar(
-                      controller: controllers.tabController,
+                      controller: productCtr.productTab,
                       indicatorPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
                       indicator: BoxDecoration(
                         color: Colors.white,
@@ -83,7 +84,7 @@ class _QuotationPageState extends State<QuotationPage> {
                   ),
                   Expanded(
                     child: TabBarView(
-                      controller: controllers.tabController,
+                      controller: productCtr.productTab,
                       children: [
                         // SendQuotation(),
                         QuotationHistory(),

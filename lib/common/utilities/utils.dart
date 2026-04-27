@@ -2780,7 +2780,7 @@ class Utils {
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:MediaQuery.of(context).size.width*0.06,
+                                  width:110,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -2835,7 +2835,7 @@ class Utils {
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:MediaQuery.of(context).size.width*0.06,
+                                  width:110,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -2891,7 +2891,7 @@ class Utils {
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:MediaQuery.of(context).size.width*0.06,
+                                  width:110,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -2946,7 +2946,7 @@ class Utils {
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:MediaQuery.of(context).size.width*0.06,
+                                  width:110,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -4918,7 +4918,7 @@ void appointmentStatus(context,String value){
                             text: const TextSpan(
                               children: [
                                 TextSpan(
-                                  text: "Call Type ",
+                                  text: "In/Out",
                                   style: TextStyle(color: Colors.black, fontSize: 13),
                                 ),
                                 TextSpan(

@@ -5,6 +5,7 @@ import 'package:fullcomm_crm/common/constant/key_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:fullcomm_crm/models/billing_models/products_response.dart';
+import 'package:fullcomm_crm/screens/quotation/view_quotation_details.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -38,18 +39,18 @@ class _QuotationHistoryState extends State<QuotationHistory> {
   var sizeInKB=0.0.obs;
   List<double> colWidths = [
     60,//s no
-    200,//Action
-    150,//q no
+    170,//Action
+    200,//q no
+    150,//status
     150,//cus
-    150,//com
-    130,//com no
-    140,//prd
+    130,//com
+    140,//cum no
+    130,//prd
     110,//ite
-    110,//amt
-    130,//date
-    120,//vali
-    150,//quo
-    140,//stat
+    130,//amt
+    170,//date
+    130,//vali
+    140,//quo
   ];
   final ScrollController _controller = ScrollController();
   final ScrollController _horizontalController = ScrollController();
@@ -58,6 +59,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
     super.initState();
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      controllers.directNavigate.value=false;
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero,(){
@@ -108,7 +110,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
             "-${DateTime.now().year.toString()}";
   }
   late FocusNode _focusNode;
-  List<String> statusList = ["Confirm Order", "Upload PO", "Quotation Draft"];
+  List<String> statusList = ["Create Invoice", "Upload PO", "Quotation Draft"];
   @override
   void dispose() {
     _focusNode.dispose();
@@ -208,7 +210,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                             ),
                             CustomLoadingButton(
                               callback: () {
-                                controllers.changeTab(1);
+                                productCtr.changeTab(1);
                               },
                               isLoading: false,
                               height: 35,
@@ -457,6 +459,78 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                         ),
                                                       ),
 
+                                                    ],
+                                                  ),),
+                                                  headerCell(7, Row(
+                                                    children: [
+                                                      CustomText( //4
+                                                        textAlign: TextAlign.left,
+                                                        text: "Status",
+                                                        size: 15,
+                                                        isBold: true,
+                                                        isCopy: true,
+                                                        colors: Colors.white,
+                                                      ),
+                                                      3.width,
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          if (controllers
+                                                              .sortFieldCallActivity
+                                                              .value ==
+                                                              'status' &&
+                                                              controllers
+                                                                  .sortOrderCallActivity
+                                                                  .value ==
+                                                                  'asc') {
+                                                            controllers
+                                                                .sortOrderCallActivity
+                                                                .value = 'desc';
+                                                          } else {
+                                                            controllers
+                                                                .sortOrderCallActivity
+                                                                .value = 'asc';
+                                                          }
+                                                          controllers
+                                                              .sortFieldCallActivity
+                                                              .value = 'status';
+                                                          productCtr
+                                                              .filterAndSortQuotations(
+                                                            searchText: controllers
+                                                                .searchText.value
+                                                                .toLowerCase(),
+                                                            sortField: controllers
+                                                                .sortFieldCallActivity
+                                                                .value,
+                                                            sortOrder: controllers
+                                                                .sortOrderCallActivity
+                                                                .value,
+                                                            selectedMonth: productCtr
+                                                                .selectedCallMonth
+                                                                .value,
+                                                            selectedRange: productCtr
+                                                                .selectedCallRange
+                                                                .value,
+                                                            selectedDateFilter: productCtr
+                                                                .selectedCallSortBy
+                                                                .value,
+                                                          );
+                                                        },
+                                                        child: Obx(() =>
+                                                            Image.asset(
+                                                              controllers
+                                                                  .sortFieldCallActivity
+                                                                  .value.isEmpty
+                                                                  ? "assets/images/arrow.png"
+                                                                  : controllers
+                                                                  .sortOrderCallActivity
+                                                                  .value == 'asc'
+                                                                  ? "assets/images/arrow_up.png"
+                                                                  : "assets/images/arrow_down.png",
+                                                              width: 15,
+                                                              height: 15,
+                                                            ),
+                                                        ),
+                                                      ),
                                                     ],
                                                   ),),
                                                   headerCell(3, Row(
@@ -892,7 +966,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                     children: [
                                                       CustomText( //4
                                                         textAlign: TextAlign.left,
-                                                        text: "Sent Date",
+                                                        text: "Date",
                                                         size: 15,
                                                         isBold: true,
                                                         isCopy: true,
@@ -1039,95 +1113,16 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                     isCopy: true,
                                                     colors: Colors.white,
                                                   ),),
-                                                  headerCell(7, Row(
-                                                    children: [
-                                                      CustomText( //4
-                                                        textAlign: TextAlign.left,
-                                                        text: "Status",
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: true,
-                                                        colors: Colors.white,
-                                                      ),
-                                                      3.width,
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          if (controllers
-                                                              .sortFieldCallActivity
-                                                              .value ==
-                                                              'status' &&
-                                                              controllers
-                                                                  .sortOrderCallActivity
-                                                                  .value ==
-                                                                  'asc') {
-                                                            controllers
-                                                                .sortOrderCallActivity
-                                                                .value = 'desc';
-                                                          } else {
-                                                            controllers
-                                                                .sortOrderCallActivity
-                                                                .value = 'asc';
-                                                          }
-                                                          controllers
-                                                              .sortFieldCallActivity
-                                                              .value = 'status';
-                                                          productCtr
-                                                              .filterAndSortQuotations(
-                                                            searchText: controllers
-                                                                .searchText.value
-                                                                .toLowerCase(),
-                                                            sortField: controllers
-                                                                .sortFieldCallActivity
-                                                                .value,
-                                                            sortOrder: controllers
-                                                                .sortOrderCallActivity
-                                                                .value,
-                                                            selectedMonth: productCtr
-                                                                .selectedCallMonth
-                                                                .value,
-                                                            selectedRange: productCtr
-                                                                .selectedCallRange
-                                                                .value,
-                                                            selectedDateFilter: productCtr
-                                                                .selectedCallSortBy
-                                                                .value,
-                                                          );
-                                                        },
-                                                        child: Obx(() =>
-                                                            Image.asset(
-                                                              controllers
-                                                                  .sortFieldCallActivity
-                                                                  .value.isEmpty
-                                                                  ? "assets/images/arrow.png"
-                                                                  : controllers
-                                                                  .sortOrderCallActivity
-                                                                  .value == 'asc'
-                                                                  ? "assets/images/arrow_up.png"
-                                                                  : "assets/images/arrow_down.png",
-                                                              width: 15,
-                                                              height: 15,
-                                                            ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  // headerCell(9, CustomText(
-                                                  //   textAlign: TextAlign.left,
-                                                  //   text: "Confirm Order",
-                                                  //   size: 15,
-                                                  //   isBold: true,
-                                                  //   isCopy: true,
-                                                  //   colors: Colors.white,
-                                                  // ),)
                                                 ]),
                                           ],
                                         ),
                                         // BODY LIST
                                         Expanded(
                                           child: Obx(() {
-                                            if (productCtr.quotationsList.isEmpty)
+                                            if (productCtr.quotationsList.isEmpty) {
                                               return const Center(
                                                   child: Text("No Data Found"));
+                                            }
                                             return ListView.builder(
                                               controller: _controller,
                                               itemCount: productCtr.quotationsList
@@ -1160,18 +1155,23 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                               .backgroundColor,
                                                         ),
                                                         children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets
-                                                                .all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign
-                                                                  .left,
-                                                              text: "${index +
-                                                                  1}",
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst
-                                                                  .textColor,
+                                                          InkWell(
+                                                            onTap:(){
+                                                              Get.to(ViewQuotationDetails(id:data.id.toString(), list: data,));
+                                                            },
+                                                            child: Padding(
+                                                              padding: const EdgeInsets
+                                                                  .all(10.0),
+                                                              child: CustomText(
+                                                                textAlign: TextAlign
+                                                                    .left,
+                                                                text: "${index +
+                                                                    1}",
+                                                                size: 14,
+                                                                isCopy: true,
+                                                                colors: colorsConst
+                                                                    .textColor,
+                                                              ),
                                                             ),
                                                           ),
                                                           Padding(
@@ -1224,7 +1224,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                       controllers.directNavigate.value=false;
                                                                       controllers.qId.value="";
                                                                       data .dropValue = value;
-                                                                      if (data .status != "Order Confirmed" && data .dropValue == "Confirm Order") {
+                                                                      if (data .status != "Order Confirmed" && data .dropValue == "Create Invoice") {
                                                                         controllers.cusController.text="${data.name} - ${data.company}- ${data.number}";
                                                                         controllers.selectCustomer(AllCustomersObj(
                                                                             id: data.cusId.toString(), name: data.name,
@@ -1300,7 +1300,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                         }
                                                                         controllers.directNavigate.value=true;
                                                                         controllers.qId.value=data.id.toString();
-                                                                        controllers.changeTab(1);
+                                                                        productCtr.changeTab(1);
                                                                         ///
                                                                         // showDialog(
                                                                         //     context: context,
@@ -1362,47 +1362,19 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                         //         ],
                                                                         //       );
                                                                         //     });
-                                                                      } else
-                                                                      if (data
-                                                                          .status ==
-                                                                          "Order Confirmed" &&
-                                                                          data
-                                                                              .dropValue ==
-                                                                              "Confirm Order") {
-                                                                        utils
-                                                                            .snackBar(
+                                                                      } else if (data.status =="Order Confirmed" &&
+                                                                          data.dropValue =="Create Invoice") {
+                                                                        utils.snackBar(
                                                                             context: context,
                                                                             msg: "Already order confirmed",
-                                                                            color: Colors
-                                                                                .red);
-                                                                      } else
-                                                                      if (data
-                                                                          .status !=
-                                                                          "PO Sent" &&
-                                                                          data
-                                                                              .dropValue ==
-                                                                              "Upload PO") {
-                                                                        controllers
-                                                                            .emailToCtr
-                                                                            .clear();
-                                                                        controllers
-                                                                            .emailSubjectCtr
-                                                                            .text =
-                                                                            DateFormat(
-                                                                                'dd-MM-yyyy')
-                                                                                .format(
-                                                                                DateTime
-                                                                                    .now());
-                                                                        controllers
-                                                                            .emailMessageCtr
-                                                                            .clear();
-                                                                        controllers
-                                                                            .notesCtr
-                                                                            .clear();
-                                                                        imageController
-                                                                            .photo1
-                                                                            .value =
-                                                                        "";
+                                                                            color: Colors.red);
+                                                                      } else if (data.status !="PO Received" &&
+                                                                          data.dropValue =="Upload PO") {
+                                                                        controllers.emailToCtr.clear();
+                                                                        controllers.emailSubjectCtr.text =DateFormat('dd-MM-yyyy').format(DateTime.now());
+                                                                        controllers.emailMessageCtr.clear();
+                                                                        controllers.notesCtr.clear();
+                                                                        imageController.photo1.value ="";
                                                                         showDialog(
                                                                             context: context,
                                                                             barrierDismissible: false,
@@ -1436,68 +1408,29 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                                               .width,
                                                                                           CustomLoadingButton(
                                                                                             callback: () {
-                                                                                              if (controllers
-                                                                                                  .emailToCtr
-                                                                                                  .text
-                                                                                                  .trim()
-                                                                                                  .isEmpty) {
-                                                                                                utils
-                                                                                                    .showToast(
-                                                                                                    "PO Number is empty!",
-                                                                                                    Colors
-                                                                                                        .red);
-                                                                                                controllers
-                                                                                                    .emailCtr
-                                                                                                    .reset();
+                                                                                              if (controllers.emailToCtr.text.trim().isEmpty) {
+                                                                                                utils.showToast("PO Number is empty!",Colors.red);
+                                                                                                controllers.emailCtr.reset();
                                                                                                 return;
                                                                                               }
-                                                                                              if (controllers
-                                                                                                  .emailSubjectCtr
-                                                                                                  .text
-                                                                                                  .trim()
-                                                                                                  .isEmpty) {
-                                                                                                utils
-                                                                                                    .showToast(
-                                                                                                    "PO Date is empty!",
-                                                                                                    Colors
-                                                                                                        .red);
-                                                                                                controllers
-                                                                                                    .emailCtr
-                                                                                                    .reset();
+                                                                                              if (controllers.emailSubjectCtr.text.trim().isEmpty) {
+                                                                                                utils.showToast("PO Date is empty!",Colors.red);
+                                                                                                controllers.emailCtr.reset();
                                                                                                 return;
                                                                                               }
-                                                                                              if (controllers
-                                                                                                  .notesCtr
-                                                                                                  .text
-                                                                                                  .trim()
-                                                                                                  .isEmpty) {
-                                                                                                utils
-                                                                                                    .showToast(
-                                                                                                    "Notes is empty!",
-                                                                                                    Colors
-                                                                                                        .red);
-                                                                                                controllers
-                                                                                                    .emailCtr
-                                                                                                    .reset();
+                                                                                              if (controllers.notesCtr.text.trim().isEmpty) {
+                                                                                                utils.showToast("Notes is empty!",Colors.red);
+                                                                                                controllers.emailCtr.reset();
                                                                                                 return;
                                                                                               }
-                                                                                              apiService
-                                                                                                  .insertPOAPI(
+                                                                                              apiService.insertPOAPI(
                                                                                                   context,
-                                                                                                  data
-                                                                                                      .email,
-                                                                                                  data
-                                                                                                      .cusId
-                                                                                                      .toString(),
-                                                                                                  data
-                                                                                                      .id
-                                                                                                      .toString(),
-                                                                                                  data
-                                                                                                      .name
-                                                                                                      .toString());
+                                                                                                  data.email,
+                                                                                                  data.cusId.toString(),
+                                                                                                  data.id.toString(),
+                                                                                                  data.name.toString());
                                                                                             },
-                                                                                            controller: controllers
-                                                                                                .emailCtr,
+                                                                                            controller: controllers.emailCtr,
                                                                                             isImage: false,
                                                                                             isLoading: true,
                                                                                             backgroundColor: colorsConst
@@ -1505,7 +1438,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                                             radius: 5,
                                                                                             width: 200,
                                                                                             height: 50,
-                                                                                            text: "Send PO",
+                                                                                            text: "Save PO",
                                                                                             textColor: Colors
                                                                                                 .white,
                                                                                           ),
@@ -1551,8 +1484,26 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                                           SizedBox(
                                                                                             width: 600,
                                                                                             child: TextField(
-                                                                                              controller: controllers
-                                                                                                  .emailToCtr,
+                                                                                              onChanged: (value){
+                                                                                                if (value.toString().isNotEmpty) {
+                                                                                                  String newValue = value
+                                                                                                      .toString()[0]
+                                                                                                      .toUpperCase() +
+                                                                                                      value.toString().substring(1);
+                                                                                                  if (newValue != value) {
+                                                                                                    controllers.emailToCtr.value =
+                                                                                                        controllers.emailToCtr.value
+                                                                                                            .copyWith(
+                                                                                                          text: newValue,
+                                                                                                          selection:
+                                                                                                          TextSelection.collapsed(
+                                                                                                              offset:
+                                                                                                              newValue.length),
+                                                                                                        );
+                                                                                                  }
+                                                                                                }
+                                                                                              },
+                                                                                              controller: controllers.emailToCtr,
                                                                                               inputFormatters: constInputFormatters
                                                                                                   .accNoInput,
                                                                                               style: TextStyle(
@@ -1691,10 +1642,27 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                                           SizedBox(
                                                                                             width: 600,
                                                                                             child: TextField(
-                                                                                              textInputAction: TextInputAction
-                                                                                                  .newline,
-                                                                                              controller: controllers
-                                                                                                  .notesCtr,
+                                                                                              textInputAction: TextInputAction.newline,
+                                                                                              controller: controllers.notesCtr,
+                                                                                              onChanged: (value){
+                                                                                                if (value.toString().isNotEmpty) {
+                                                                                                  String newValue = value
+                                                                                                      .toString()[0]
+                                                                                                      .toUpperCase() +
+                                                                                                      value.toString().substring(1);
+                                                                                                  if (newValue != value) {
+                                                                                                    controllers.notesCtr.value =
+                                                                                                        controllers.notesCtr.value
+                                                                                                            .copyWith(
+                                                                                                          text: newValue,
+                                                                                                          selection:
+                                                                                                          TextSelection.collapsed(
+                                                                                                              offset:
+                                                                                                              newValue.length),
+                                                                                                        );
+                                                                                                  }
+                                                                                                }
+                                                                                              },
                                                                                               keyboardType: TextInputType
                                                                                                   .multiline,
                                                                                               maxLines: null,
@@ -1866,11 +1834,65 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                           Padding(
                                                             padding: const EdgeInsets
                                                                 .all(10.0),
+                                                            child: Column(
+                                                              children: [
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    CustomText(text: "Quotation", isCopy: false,size: 13,),
+                                                                    CustomText(
+                                                                      textAlign: TextAlign.center,
+                                                                      text: data.quotationNo,
+                                                                      size: 13,
+                                                                      isCopy: true,
+                                                                      colors: colorsConst.textColor,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                if(data.poNumber!="null"&&data.poNumber!="")
+                                                                Padding(
+                                                                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: [
+                                                                      CustomText(text: "PO", isCopy: false,size: 13,),
+                                                                      CustomText(
+                                                                        textAlign: TextAlign.center,
+                                                                        text: data.poNumber,
+                                                                        size: 13,
+                                                                        isCopy: true,
+                                                                        colors: Colors.blue,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                if(data.iNo!="null"&&data.iNo!="")
+                                                                Padding(
+                                                                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: [
+                                                                      CustomText(text: "Invoice", isCopy: false,size: 13,),
+                                                                      CustomText(
+                                                                        textAlign: TextAlign.center,
+                                                                        text: data.iNo,
+                                                                        size: 13,
+                                                                        isCopy: true,
+                                                                        colors: Colors.green,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets
+                                                                .all(10.0),
                                                             child: CustomText(
                                                               textAlign: TextAlign
                                                                   .left,
-                                                              text: data
-                                                                  .quotationNo,
+                                                              text: data.status,
                                                               size: 14,
                                                               isCopy: true,
                                                               colors: colorsConst
@@ -1926,99 +1948,14 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                               ),
                                                             ),
                                                           ),
-                                                          Tooltip(
-                                                            message: data.number
-                                                                .toString() ==
-                                                                "null" ? "" : data
-                                                                .number
-                                                                .toString(),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets
-                                                                  .all(10.0),
-                                                              child: CustomText(
-                                                                textAlign: TextAlign
-                                                                    .left,
-                                                                text: data.number
-                                                                    .toString(),
-                                                                size: 14,
-                                                                isCopy: true,
-                                                                colors: colorsConst
-                                                                    .textColor,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Tooltip(
-                                                            message: data
-                                                                .totalProduct
-                                                                .toString(),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets
-                                                                  .all(10.0),
-                                                              child: CustomText(
-                                                                textAlign: TextAlign
-                                                                    .left,
-                                                                text: data
-                                                                    .totalProduct
-                                                                    .toString(),
-                                                                size: 14,
-                                                                isCopy: true,
-                                                                colors: colorsConst
-                                                                    .textColor,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Tooltip(
-                                                            message: data
-                                                                .totalItem
-                                                                .toString(),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets
-                                                                  .all(10.0),
-                                                              child: CustomText(
-                                                                textAlign: TextAlign
-                                                                    .left,
-                                                                text: data
-                                                                    .totalItem
-                                                                    .toString(),
-                                                                size: 14,
-                                                                isCopy: true,
-                                                                colors: colorsConst
-                                                                    .textColor,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Tooltip(
-                                                            message: productCtr
-                                                                .formatAmount(
-                                                                data.totalAmt
-                                                                    .toString()),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets
-                                                                  .all(10.0),
-                                                              child: CustomText(
-                                                                textAlign: TextAlign
-                                                                    .left,
-                                                                text: productCtr
-                                                                    .formatAmount(
-                                                                    data.totalAmt
-                                                                        .toString()),
-                                                                size: 14,
-                                                                isCopy: true,
-                                                                colors: colorsConst
-                                                                    .textColor,
-                                                              ),
-                                                            ),
-                                                          ),
                                                           Padding(
                                                             padding: const EdgeInsets
                                                                 .all(10.0),
                                                             child: CustomText(
                                                               textAlign: TextAlign
                                                                   .left,
-                                                              text: productCtr
-                                                                  .fixedDateTime(
-                                                                  data.createdTs
-                                                                      .toString()),
+                                                              text: data.number
+                                                                  .toString(),
                                                               size: 14,
                                                               isCopy: true,
                                                               colors: colorsConst
@@ -2030,10 +1967,111 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                 .all(10.0),
                                                             child: CustomText(
                                                               textAlign: TextAlign
-                                                                  .left,
+                                                                  .center,
                                                               text: data
-                                                                  .validityDate
+                                                                  .totalProduct
                                                                   .toString(),
+                                                              size: 14,
+                                                              isCopy: true,
+                                                              colors: colorsConst
+                                                                  .textColor,
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets
+                                                                .all(10.0),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign
+                                                                  .center,
+                                                              text: data
+                                                                  .totalItem
+                                                                  .toString(),
+                                                              size: 14,
+                                                              isCopy: true,
+                                                              colors: colorsConst
+                                                                  .textColor,
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets
+                                                                .all(10.0),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign
+                                                                  .end,
+                                                              text: productCtr
+                                                                  .formatAmount(
+                                                                  data.totalAmt
+                                                                      .toString()),
+                                                              size: 14,
+                                                              isCopy: true,
+                                                              colors: colorsConst
+                                                                  .textColor,
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets
+                                                                .all(10.0),
+                                                            child: Column(
+                                                              children: [
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    CustomText(text: "Quotation",size: 13, isCopy: false),
+                                                                    CustomText(
+                                                                      textAlign: TextAlign.left,
+                                                                      text: productCtr.showCrtDate(data.createdTs.toString()),
+                                                                      size: 13,
+                                                                      isCopy: true,
+                                                                      colors: colorsConst.textColor,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                if(data.poDate!="null"&&data.poDate!="")
+                                                                Padding(
+                                                                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: [
+                                                                      CustomText(text: "Po",size: 13, isCopy: false),
+                                                                      CustomText(
+                                                                        textAlign: TextAlign.left,
+                                                                        text: data.poDate.toString(),
+                                                                        size: 13,
+                                                                        isCopy: true,
+                                                                        colors: Colors.blue,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                if(data.invoiceDate!="null"&&data.invoiceDate!="")
+                                                                Padding(
+                                                                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                  child: Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: [
+                                                                      CustomText(text: "Invoice",size: 13,isCopy: false),
+                                                                      CustomText(
+                                                                        textAlign: TextAlign.left,
+                                                                        text: productCtr.showCrtDate(data.invoiceDate.toString()),
+                                                                        size: 13,
+                                                                        isCopy: true,
+                                                                        colors: Colors.green,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding: const EdgeInsets
+                                                                .all(10.0),
+                                                            child: CustomText(
+                                                              textAlign: TextAlign
+                                                                  .left,
+                                                              text: data.validityDate.toString().contains("to")
+                                                                  ? data.validityDate.toString().split("to").last.trim()
+                                                                  : data.validityDate.toString(),
                                                               size: 14,
                                                               isCopy: true,
                                                               colors: colorsConst
@@ -2061,22 +2099,6 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                   isCopy: false,
                                                                   colors: colorsConst
                                                                       .primary,),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Tooltip(
-                                                            message: data.status,
-                                                            child: Padding(
-                                                              padding: const EdgeInsets
-                                                                  .all(10.0),
-                                                              child: CustomText(
-                                                                textAlign: TextAlign
-                                                                    .left,
-                                                                text: data.status,
-                                                                size: 14,
-                                                                isCopy: true,
-                                                                colors: colorsConst
-                                                                    .textColor,
                                                               ),
                                                             ),
                                                           ),

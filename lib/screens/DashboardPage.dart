@@ -948,7 +948,7 @@ void checkDate(){
                                   },
                                   title: "Appointments",
                                   // numericValue: int.parse(dashController.totalMeetings.value.toString()),
-                                  numericValue: remController.meetingFilteredList.length,
+                                  numericValue: remController.dMeetings.length,
                                   maxValue: maxValue,
                                   iconPath: DashboardAssets.date,
                                   valueColor: const Color(0xff8B2CF5),
@@ -1001,9 +1001,8 @@ void checkDate(){
                                     102;
                                   },
                                   title: "Reminders",
-                                  numericValue: int.parse(dashController
-                                      .totalReminders.value
-                                      .toString()),
+                                  // numericValue: int.parse(dashController.totalReminders.value.toString()),
+                                  numericValue: remController.reminderFilteredList2.length,
                                   maxValue: maxValue,
                                   iconPath: DashboardAssets.alarm,
                                   valueColor: const Color(0xffBB271A),
@@ -1088,55 +1087,45 @@ void checkDate(){
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                          Row(
                                             children: [
-                                              Row(
-                                                children: [
-                                                  CustomText(text: "Appointments", isCopy: false,isBold: true,size: 15,textAlign: TextAlign.start,),10.width,
-                                                  InkWell(
-                                                    onTap: (){
-                                                      final futureDate = DateTime.now().add(const Duration(days: 3));
-                                                      final adjustedDate = futureDate.weekday == DateTime.sunday?futureDate.add(const Duration(days: 1)):futureDate;
-                                                      controllers.fDate.value = DateFormat('dd-MM-yyyy').format(adjustedDate);
-                                                      controllers.fTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 15)));
-                                                      controllers.toDate.value = DateFormat('dd-MM-yyyy').format(adjustedDate);
-                                                      controllers.toTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 30)));
-
-                                                      setState(() {
-                                                        controllers.clearSelectedCustomer();
-                                                        controllers.cusController.text = "";
-                                                        controllers.callType = "Outgoing";
-                                                        controllers.callStatus = "Contacted";
-                                                      });
-                                                      controllers.callCommentCont.text = "";
-                                                      controllers.meetingTitleCrt.text = "";
-                                                      controllers.meetingVenueCrt.text = "";
-                                                      utils.addAppointment(context);
-                                                    },
-                                                    child: Card(
-                                                      color: colorsConst.primary,
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(4.0),
-                                                        child: Icon(Icons.add,color: Colors.white,size: 18,),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
+                                              InkWell(
+                                                  onTap: (){
+                                                    controllers.selectedIndex.value=101;
+                                                    controllers.changeTab(2);
+                                                    Get.to(Records(isReload: "true"));
+                                                  },
+                                                  child: CustomText(text: "Appointments", isCopy: false,isBold: true,size: 15,textAlign: TextAlign.start,colors: colorsConst.primary)),10.width,
                                               InkWell(
                                                 onTap: (){
-                                                  controllers.selectedIndex.value=101;
-                                                  controllers.changeTab(2);
-                                                  Get.to(Records(isReload: "true"));
+                                                  final futureDate = DateTime.now().add(const Duration(days: 3));
+                                                  final adjustedDate = futureDate.weekday == DateTime.sunday?futureDate.add(const Duration(days: 1)):futureDate;
+                                                  controllers.fDate.value = DateFormat('dd-MM-yyyy').format(adjustedDate);
+                                                  controllers.fTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 15)));
+                                                  controllers.toDate.value = DateFormat('dd-MM-yyyy').format(adjustedDate);
+                                                  controllers.toTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 30)));
+
+                                                  setState(() {
+                                                    controllers.clearSelectedCustomer();
+                                                    controllers.cusController.text = "";
+                                                    controllers.callType = "Outgoing";
+                                                    controllers.callStatus = "Contacted";
+                                                  });
+                                                  controllers.callCommentCont.text = "";
+                                                  controllers.meetingTitleCrt.text = "";
+                                                  controllers.meetingVenueCrt.text = "";
+                                                  utils.addAppointment(context);
                                                 },
-                                                child: Row(
-                                                  children: [
-                                                    CustomText(text: "View All Appointments", isCopy: false,size: 13,textAlign: TextAlign.start,colors: colorsConst.primary,),5.width,
-                                                    Icon(Icons.north_east,size: 20,color: colorsConst.primary,)
-                                                  ],
+                                                child: Card(
+                                                  color: colorsConst.primary,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(4.0),
+                                                    child: Icon(Icons.add,color: Colors.white,size: 18,),
+                                                  ),
                                                 ),
-                                              )
+                                              ),10.width,
+                                              CustomText(text: dashController.selectedSortBy.value=="Last 7 Days"?"Next 7 Days":
+                                              dashController.selectedSortBy.value=="Last 30 Days"?"Next 30 Days":"", isCopy: false,)
                                             ],
                                           ),
                                           Obx(() {
@@ -1383,7 +1372,7 @@ void checkDate(){
                                         color: Colors.white,
                                         width: screenWidth/3,
                                         height: 200,
-                                        child: remController.meetingFilteredList.isEmpty?
+                                        child: remController.dMeetings.isEmpty?
                                         Center(
                                           child: CustomText(
                                             text: "No Appointments",
@@ -1395,9 +1384,9 @@ void checkDate(){
                                           controller: _controller,
                                           shrinkWrap: true,
                                           physics: const ScrollPhysics(),
-                                          itemCount: remController.meetingFilteredList.length,
+                                          itemCount: remController.dMeetings.length,
                                           itemBuilder: (context, index) {
-                                            final data = remController.meetingFilteredList[index];
+                                            final data = remController.dMeetings[index];
                                             return Table(
                                               // columnWidths: {
                                               //   0: FixedColumnWidth(100),
@@ -1421,7 +1410,7 @@ void checkDate(){
                                                     children:[
                                                       InkWell(
                                                         onTap:(){
-                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                          showMeetingDialog(context, remController.dMeetings,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -1436,7 +1425,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                          showMeetingDialog(context, remController.dMeetings,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -1451,7 +1440,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                          showMeetingDialog(context, remController.dMeetings,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -1466,7 +1455,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showMeetingDialog(context, remController.meetingFilteredList,index);
+                                                          showMeetingDialog(context, remController.dMeetings,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.all(10.0),
@@ -1510,39 +1499,30 @@ void checkDate(){
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                          Row(
                                             children: [
-                                              Row(
-                                                children: [
-                                                  CustomText(text: "Reminders", isCopy: false,isBold: true,size: 15,),
-                                                  10.width,
-                                                  InkWell(
-                                                    onTap: (){
-                                                      reminderUtils.showAddReminderDialog(context);
-                                                    },
-                                                    child: Card(
-                                                      color: colorsConst.primary,
-                                                      child: Padding(
-                                                        padding: const EdgeInsets.all(4.0),
-                                                        child: Icon(Icons.add,color: Colors.white,size: 18,),
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
+                                              InkWell(
+                                                  onTap: (){
+                                                    controllers.selectedIndex.value=102;
+                                                    Get.to(ReminderPage());
+                                                  },
+                                                  child: CustomText(text: "Reminders", isCopy: false,isBold: true,size: 15,colors: colorsConst.primary)),
+                                              10.width,
                                               InkWell(
                                                 onTap: (){
-                                                  controllers.selectedIndex.value=102;
-                                                  Get.to(ReminderPage());
+                                                  reminderUtils.showAddReminderDialog(context);
                                                 },
-                                                child: Row(
-                                                  children: [
-                                                    CustomText(text: "View All Reminders", isCopy: false,size: 13,textAlign: TextAlign.start,colors: colorsConst.primary,),5.width,
-                                                    Icon(Icons.north_east,size: 20,color: colorsConst.primary,)
-                                                  ],
+                                                child: Card(
+                                                  color: colorsConst.primary,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(4.0),
+                                                    child: Icon(Icons.add,color: Colors.white,size: 18,),
+                                                  ),
                                                 ),
-                                              )
+                                              ),
+                                              10.width,
+                                              CustomText(text: dashController.selectedSortBy.value=="Last 7 Days"?"Next 7 Days":
+                                              dashController.selectedSortBy.value=="Last 30 Days"?"Next 30 Days":"", isCopy: false,)
                                             ],
                                           ),
                                           Obx(() {
@@ -1799,7 +1779,7 @@ void checkDate(){
                                         color: Colors.white,
                                         width: screenWidth/1.29,
                                         height: 200,
-                                        child: remController.reminderFilteredList.isEmpty?
+                                        child: remController.reminderFilteredList2.isEmpty?
                                         Center(
                                           child: CustomText(
                                             text: "No Reminders",
@@ -1811,9 +1791,9 @@ void checkDate(){
                                           controller: _controller,
                                           shrinkWrap: true,
                                           physics: const ScrollPhysics(),
-                                          itemCount: remController.reminderFilteredList.length,
+                                          itemCount: remController.reminderFilteredList2.length,
                                           itemBuilder: (context, index) {
-                                            final data = remController.reminderFilteredList[index];
+                                            final data = remController.reminderFilteredList2[index];
                                             return Table(
                                               // columnWidths: {
                                               //   0: FixedColumnWidth(5),
@@ -1838,7 +1818,7 @@ void checkDate(){
                                                     children:[
                                                       InkWell(
                                                         onTap:(){
-                                                          showReminderDialog(context,remController.reminderFilteredList,index);
+                                                          showReminderDialog(context,remController.reminderFilteredList2,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -1853,7 +1833,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showReminderDialog(context,remController.reminderFilteredList,index);
+                                                          showReminderDialog(context,remController.reminderFilteredList2,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -1868,7 +1848,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showReminderDialog(context,remController.reminderFilteredList,index);
+                                                          showReminderDialog(context,remController.reminderFilteredList2,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -1883,7 +1863,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showReminderDialog(context,remController.reminderFilteredList,index);
+                                                          showReminderDialog(context,remController.reminderFilteredList2,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -1898,7 +1878,7 @@ void checkDate(){
                                                       ),
                                                       InkWell(
                                                         onTap:(){
-                                                          showReminderDialog(context,remController.reminderFilteredList,index);
+                                                          showReminderDialog(context,remController.reminderFilteredList2,index);
                                                         },
                                                         child: Padding(
                                                           padding: const EdgeInsets.fromLTRB(5, 10, 5, 10),
@@ -2447,7 +2427,7 @@ void checkDate(){
                                                     children: [
                                                       CustomText(
                                                         textAlign: TextAlign.center,
-                                                        text: "Call Type",
+                                                        text: "In/Out",
                                                         isCopy: true,
                                                         size: 15,
                                                         isBold: true,

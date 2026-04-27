@@ -25,7 +25,9 @@ class _RecordsState extends State<Records> {
     apiService.getAllCustomers();
     if(widget.isReload=="true"){
       apiService.getAllCallActivity("");
-      apiService.getAllMeetingActivity("");
+      if(controllers.meetingActivity.isEmpty){
+        apiService.getAllMeetingActivity("");
+      }
     }
     // apiService.getAllMailActivity("");
     // apiService.getAllCallActivity("");

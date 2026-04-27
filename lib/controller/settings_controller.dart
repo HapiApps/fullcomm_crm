@@ -696,18 +696,34 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
                     hintText: "Template Name",
                     text: "Template Name",
                     controller: addNameController,
-                    width: 480,
-                    keyboardType: TextInputType.text,
-                    textInputAction: TextInputAction.next,
-                    isOptional: true,
-                    errorText: nameError,
-                    onChanged: (value) {
+                    onChanged: (value){
                       if (value.toString().isNotEmpty) {
                         setState(() {
                           nameError = null;
                         });
                       }
+                      if (value.toString().isNotEmpty) {
+                        String newValue = value
+                            .toString()[0]
+                            .toUpperCase() +
+                            value.toString().substring(1);
+                        if (newValue != value) {
+                          addNameController.value =addNameController.value
+                                  .copyWith(
+                                text: newValue,
+                                selection:
+                                TextSelection.collapsed(
+                                    offset:
+                                    newValue.length),
+                              );
+                        }
+                      }
                     },
+                    width: 480,
+                    keyboardType: TextInputType.text,
+                    textInputAction: TextInputAction.next,
+                    isOptional: true,
+                    errorText: nameError,
                   ),
                   CustomTextField(
                     hintText: "Subject",
@@ -718,11 +734,27 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
                     textInputAction: TextInputAction.next,
                     isOptional: true,
                     errorText: subjectError,
-                    onChanged: (value) {
+                    onChanged: (value){
                       if (value.toString().isNotEmpty) {
                         setState(() {
                           subjectError = null;
                         });
+                      }
+                      if (value.toString().isNotEmpty) {
+                        String newValue = value
+                            .toString()[0]
+                            .toUpperCase() +
+                            value.toString().substring(1);
+                        if (newValue != value) {
+                          addSubjectController.value =addSubjectController.value
+                              .copyWith(
+                            text: newValue,
+                            selection:
+                            TextSelection.collapsed(
+                                offset:
+                                newValue.length),
+                          );
+                        }
                       }
                     },
                   ),
@@ -750,17 +782,32 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
                         height: 100,
                         child: TextField(
                           controller: addMessageController,
-                          maxLines: null,
-                          expands: true,
-                          textAlign: TextAlign.start,
-                          onChanged: (value) {
+                          onChanged: (value){
                             if (value.toString().isNotEmpty) {
                               setState(() {
                                 messageError = null;
                               });
                             }
+                            if (value.toString().isNotEmpty) {
+                              String newValue = value
+                                  .toString()[0]
+                                  .toUpperCase() +
+                                  value.toString().substring(1);
+                              if (newValue != value) {
+                                addMessageController.value =addMessageController.value
+                                    .copyWith(
+                                  text: newValue,
+                                  selection:
+                                  TextSelection.collapsed(
+                                      offset:
+                                      newValue.length),
+                                );
+                              }
+                            }
                           },
-
+                          maxLines: null,
+                          expands: true,
+                          textAlign: TextAlign.start,
                           decoration: InputDecoration(
                             hintText: "Message",
                             errorText: messageError,

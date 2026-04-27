@@ -263,7 +263,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                colors: colorsConst.primary,
                                isBold: true,
                                size: 15,
-                               isCopy: true,
+                               isCopy: false,
                              ),
                              10.width,
                              CircleAvatar(
@@ -272,7 +272,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                child: CustomText(
                                  text: "${remController.followUpReminderCount.value+remController.meetingReminderCount.value}",
                                  colors: remController.filterReminder.value=="All"?Colors.white:colorsConst.primary,
-                                 isCopy: true,
+                                 isCopy: false,
                                  size: 13,
                                ),
                              ),
@@ -292,7 +292,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                colors: colorsConst.primary,
                                isBold: true,
                                size: 15,
-                               isCopy: true,
+                               isCopy: false,
                              ),
                              10.width,
                              CircleAvatar(
@@ -301,7 +301,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                child: CustomText(
                                  text: remController.followUpReminderCount.value.toString(),
                                  colors: remController.filterReminder.value=="Follow"?Colors.white:colorsConst.primary,
-                                 isCopy: true,
+                                 isCopy: false,
                                  size: 13,
                                ),
                              ),
@@ -321,7 +321,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                colors: colorsConst.primary,
                                isBold: true,
                                size: 15,
-                               isCopy: true,
+                               isCopy: false,
                              ),
                              10.width,
                              CircleAvatar(
@@ -330,7 +330,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                child: CustomText(
                                  text: remController.meetingReminderCount.value.toString(),
                                  colors: remController.filterReminder.value=="Appointment"?Colors.white:colorsConst.primary,
-                                 isCopy: true,
+                                 isCopy: false,
                                  size: 13,
                                ),
                              ),
@@ -883,8 +883,8 @@ class _ReminderPageState extends State<ReminderPage> {
                                                              remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
                                                              remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
                                                              remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                                             remController.updateStartController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                                             remController.updateEndController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
+                                                             remController.startController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
+                                                             remController.endController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
                                                              reminderUtils.showUpdateReminderDialog(reminder.id.toString(),context);
                                                            },
                                                            icon:  SvgPicture.asset(

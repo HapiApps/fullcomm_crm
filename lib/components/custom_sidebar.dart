@@ -243,7 +243,7 @@ class SideBar extends StatelessWidget {
               // index: 6,
               index: 101,
               icon: Icons.receipt_long,
-              label: "Records",
+              label: "Communication",
               selectedImage: "assets/images/s_records.png",
               unSelectedImage: "assets/images/u_records.png",
               page: const Records(isReload: "true"),

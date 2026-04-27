@@ -1,7 +1,7 @@
 
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:math';
+import 'dart:math' hide log;
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -1050,6 +1050,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   RxString selectedCallSortBy = "Today".obs;
   RxString selectedMailSortBy = "All".obs;
   RxString selectedMeetSortBy = "Today".obs;
+  RxString dashboardMeetSortBy = "Today".obs;
   RxString selectedReminderSortBy = "Today".obs;
 
   void loadSavedFilters() {
@@ -1078,7 +1079,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   RxList<CustomerActivity> callFilteredList  = <CustomerActivity>[].obs;
   RxList<CustomerActivity> mailFilteredList  = <CustomerActivity>[].obs;
   RxList<MeetingObj> meetingFilteredList     = <MeetingObj>[].obs;
+  RxList<MeetingObj> dMeetings     = <MeetingObj>[].obs;
   RxList<ReminderModel> reminderFilteredList = <ReminderModel>[].obs;
+  RxList<ReminderModel> reminderFilteredList2 = <ReminderModel>[].obs;
 
   void selectMonth(BuildContext context, RxString sortByKey, Rxn<DateTime> selectedMonthTarget,VoidCallback onMonthSelected) {
     final now = DateTime.now();
@@ -1377,7 +1380,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       try {
         return DateFormat("dd-MM-yyyy hh.mm a").parse(dateStr);
       } catch (e) {
-        print("❌ Date parse error: $dateStr");
+        // print("❌ Date parse error: $dateStr");
         return DateTime(1900);
       }
     }
@@ -1461,6 +1464,102 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       return matchesCallType && matchesSearch && matchesDate && matchesFilterType;
 
     }).toList();
+    final filteredList = allCalls.where((activity) {
+      final matchesSearch =
+          searchText.isEmpty ||
+              activity.customerName.toLowerCase().contains(searchText.toLowerCase()) ||
+              activity.sentDate.toLowerCase().contains(searchText.toLowerCase());
+
+      final activityDate = parseDate(activity.sentDate);
+
+      bool matchesDate = true;
+
+      /// Today
+      if (selectedDateFilter == "Today") {
+        matchesDate = activityDate.year == now.year &&
+            activityDate.month == now.month &&
+            activityDate.day == now.day;
+      }
+
+      /// Yesterday
+      else if (selectedDateFilter == "Yesterday") {
+        final yesterday = today.subtract(const Duration(days: 1));
+        matchesDate = activityDate.isAfter(yesterday.subtract(const Duration(seconds: 1))) &&
+            activityDate.isBefore(today);
+      }
+
+      /// Last 7 Days
+      else if (selectedDateFilter == "Last 7 Days") {
+        final sevenDaysAgo = today.subtract(const Duration(days: 7));
+        matchesDate = activityDate.isAfter(sevenDaysAgo.subtract(const Duration(seconds: 1)));
+      }
+
+      /// Last 30 Days
+      else if (selectedDateFilter == "Last 30 Days") {
+        final thirtyDaysAgo = today.subtract(const Duration(days: 30));
+        matchesDate = activityDate.isAfter(thirtyDaysAgo.subtract(const Duration(seconds: 1)));
+      }
+
+      /// Date Range Filter (same date issue fixed)
+      if (selectedRange != null) {
+
+        final start = DateTime(
+          selectedRange.start.year,
+          selectedRange.start.month,
+          selectedRange.start.day,
+        );
+
+        final end = DateTime(
+          selectedRange.end.year,
+          selectedRange.end.month,
+          selectedRange.end.day,
+          23, 59, 59,
+        );
+
+        matchesDate = activityDate.isAfter(start.subtract(const Duration(seconds: 1))) &&
+            activityDate.isBefore(end.add(const Duration(seconds: 1)));
+      }
+
+      /// Month Filter
+      if (selectedMonth != null) {
+        matchesDate = activityDate.month == selectedMonth.month &&
+            activityDate.year == selectedMonth.year;
+      }
+
+      return matchesSearch && matchesDate ;
+
+    }).toList();
+
+    //
+    final Map<String, int> statusCountMap = {};
+
+    for (var item in filteredList) {
+      final status = item.callStatus.trim();
+      if (status.isEmpty) continue;
+
+      statusCountMap[status] = (statusCountMap[status] ?? 0) + 1;
+    }
+    controllers.hCallStatusList.value =
+        controllers.hCallStatusList.map((item) {
+          final statusValue = item["value"]?.toString();
+
+          return {
+            ...item,
+            "count": statusCountMap[statusValue] ?? 0,
+          };
+        }).toList();
+
+    // 🔹 Total count calculate
+    int totalCount = controllers.hCallStatusList.fold(
+        0, (sum, item) => sum + ((item["count"] ?? 0) as int));
+
+    log("Total Calls: $totalCount");
+    log("Merged Status List: ${controllers.hCallStatusList}");
+
+    controllers.allCalls.value = filteredList.length.toString();
+
+    //
+
 
     /// Sorting
     if (sortField == 'customerName') {
@@ -1535,6 +1634,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     }
 
     callFilteredList.assignAll(filtered);
+
+    // apiService.mergeStatusWithCount();
     // apiService.mergeStatusWithCount();
   }
 
@@ -2459,6 +2560,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required String sortField,
     required String sortOrder,
   }) {
+    print("Calling dMeetings.......");
+
     var filtered = [...controllers.meetingActivity];
 
     final now = DateTime.now();
@@ -2491,7 +2594,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       }
     }
     // ✅ DATE FILTER
-    if (selectedMeetSortBy.value.isNotEmpty) {
+    if (dashboardMeetSortBy.value.isNotEmpty) {
       filtered = filtered.where((activity) {
 
         final dates = _parseMeetingDateRange(activity.dates ?? '');
@@ -2568,9 +2671,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     }
     // 🔍 SEARCH + FILTER
     filtered = filtered.where((activity) {
-      final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
-          activity.status == controllers.selectMeetingType.value;
-
       final matchesFilterType =
           filterApp.value == "All" ||
               (filterApp.value == "Mine" &&
@@ -2594,7 +2694,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           (activity.notes ?? '').toLowerCase().contains(search) ||
           (activity.cusName ?? '').toLowerCase().contains(search);
 
-      return matchesCallType && matchesSearch && matchesFilterType;
+      return matchesSearch && matchesFilterType;
     }).toList();
 
     // 🔃 SORTING
@@ -2636,20 +2736,22 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       });
     }
 
-    meetingFilteredList.assignAll(filtered);
+    dMeetings.assignAll(filtered);
 
-    final scheduled = meetingFilteredList.where((e) => e.status.isNotEmpty && e.status.trim() == "Scheduled").toList();
-    final completed = meetingFilteredList
-        .where((e) => e.status.isNotEmpty && e.status.trim() == "Completed")
-        .toList();
-    final cancelled = meetingFilteredList
-        .where((e) => e.status.isNotEmpty && e.status.trim() == "Cancelled")
-        .toList();
+    // final scheduled = meetingFilteredList2.where((e) => e.status.isNotEmpty && e.status.trim() == "Scheduled").toList();
+    // final completed = meetingFilteredList
+    //     .where((e) => e.status.isNotEmpty && e.status.trim() == "Completed")
+    //     .toList();
+    // final cancelled = meetingFilteredList
+    //     .where((e) => e.status.isNotEmpty && e.status.trim() == "Cancelled")
+    //     .toList();
+    //
+    // controllers.allScheduleMeet.value = scheduled.length.toString();
+    // controllers.allCompletedMeet.value = completed.length.toString();
+    // controllers.allCancelled.value = cancelled.length.toString();
 
-    controllers.allScheduleMeet.value = scheduled.length.toString();
-    controllers.allCompletedMeet.value = completed.length.toString();
-    controllers.allCancelled.value = cancelled.length.toString();
 
+    print("dMeetings ${dMeetings.length}");
   }
 
   void sortMeetings({
@@ -2765,6 +2867,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
       }).toList();
     }
+
+    final scheduled = filtered.where((e) => e.status.isNotEmpty && e.status.trim() == "Scheduled").toList();
+    final completed = filtered.where((e) => e.status.isNotEmpty && e.status.trim() == "Completed").toList();
+    final cancelled = filtered.where((e) => e.status.isNotEmpty && e.status.trim() == "Cancelled").toList();
+
+    controllers.allScheduleMeet.value = scheduled.length.toString();
+    controllers.allCompletedMeet.value = completed.length.toString();
+    controllers.allCancelled.value = cancelled.length.toString();
     // 🔍 SEARCH + FILTER
     filtered = filtered.where((activity) {
       final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
@@ -2837,18 +2947,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     filtered.sort((a, b) => b.dates.compareTo(a.dates));
 
     meetingFilteredList.assignAll(filtered);
-
-    final scheduled = meetingFilteredList.where((e) => e.status.isNotEmpty && e.status.trim() == "Scheduled").toList();
-    final completed = meetingFilteredList
-        .where((e) => e.status.isNotEmpty && e.status.trim() == "Completed")
-        .toList();
-    final cancelled = meetingFilteredList
-        .where((e) => e.status.isNotEmpty && e.status.trim() == "Cancelled")
-        .toList();
-
-    controllers.allScheduleMeet.value = scheduled.length.toString();
-    controllers.allCompletedMeet.value = completed.length.toString();
-    controllers.allCancelled.value = cancelled.length.toString();
 
   }
 
@@ -3335,9 +3433,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           : bDate.compareTo(aDate);
     });
 
-    reminderFilteredList.assignAll(filteredList);
-    followUpReminderCount.value =reminderFilteredList.where((r) => r.type.toString() == '1').length;
-    meetingReminderCount.value =reminderFilteredList.where((r) => r.type.toString() == '2').length;
+    reminderFilteredList2.assignAll(filteredList);
+    // followUpReminderCount.value =reminderFilteredList.where((r) => r.type.toString() == '1').length;
+    // meetingReminderCount.value =reminderFilteredList.where((r) => r.type.toString() == '2').length;
   }
   void sortReminders() {
     // print("📦 reminderList length: ${reminderList.length}");
@@ -3473,7 +3571,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           break;
       }
     }
-
+    followUpReminderCount.value =filteredList.where((r) => r.type.toString() == '1').length;
+    meetingReminderCount.value =filteredList.where((r) => r.type.toString() == '2').length;
     // print("📊 After Date Filter: ${filteredList.length}");
 
     /// 🔖 TYPE FILTER
@@ -3513,8 +3612,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     // print("✅ Final Count: ${filteredList.length}");
     filteredList.sort((a, b) => b.startDt.compareTo(a.startDt));
     reminderFilteredList.assignAll(filteredList);
-    followUpReminderCount.value =reminderFilteredList.where((r) => r.type.toString() == '1').length;
-    meetingReminderCount.value =reminderFilteredList.where((r) => r.type.toString() == '2').length;
   }
 ///
   // DateTime _parseReminderDate(String dateStr, DateFormat fallbackFormatter) {
@@ -4284,8 +4381,8 @@ void unSelectAllAppointments() {
         "repeat_type": updateRepeat,
         "employee": controllers.selectedEmployeeId.value,
         "customer": controllers.selectedCustomerId.value,
-        "start_dt": updateStartController.text.trim(),
-        "end_dt": updateEndController.text.trim(),
+        "start_dt":startController.text.trim(),
+        "end_dt": endController.text.trim(),
         "details": updateDetailsController.text.trim(),
         "updated_by": controllers.storage.read("id"),
         "cos_id": controllers.storage.read("cos_id")

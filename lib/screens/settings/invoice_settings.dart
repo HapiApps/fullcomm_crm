@@ -21,14 +21,14 @@ import '../../models/all_customers_obj.dart';
 import '../../services/api_services.dart';
 import 'lead_categories.dart';
 
-class QuotationSettings extends StatefulWidget {
-  const QuotationSettings({super.key});
+class InvoiceSetting extends StatefulWidget {
+  const InvoiceSetting({super.key});
 
   @override
-  State<QuotationSettings> createState() => _QuotationSettingsState();
+  State<InvoiceSetting> createState() => _InvoiceSettingState();
 }
 
-class _QuotationSettingsState extends State<QuotationSettings> {
+class _InvoiceSettingState extends State<InvoiceSetting> {
   @override
   void initState() {
     // TODO: implement initState

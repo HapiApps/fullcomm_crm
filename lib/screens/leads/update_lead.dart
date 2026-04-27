@@ -146,28 +146,14 @@ class _UpdateLeadState extends State<UpdateLead> {
   String safeValue(dynamic value) {
     return value.toString()=="null"?"":value;
   }
-
-  Future<void> setDefaults() async {
-    setState(() => controllers.selectedCountry.value = "India");
-
-    // setState(() =>controllers.selectedState.value = "Tamil Nadu");
-    // await billing_utils.getCities();
-
-    setState(() => controllers.selectedCity.value = controllers.coCityController.text);
-
-  }
   Future<void> getStringValue() async {
     setState(() {
-      print("controllers.industry");
-      // print(controllers.industry);
-      print(widget.points.toString());
+      controllers.selectedCountry.value = "India";
+      controllers.selectedCity.value =controllers.coCityController.text;
       controllers.numberList.clear();
       controllers.infoNumberList.clear();
 
-      controllers.industry =
-      safeValue(widget.industry).isEmpty ? null : safeValue(widget.industry);
-
-
+      controllers.industry =safeValue(widget.industry).isEmpty ? null : safeValue(widget.industry);
 
       /// Main Mobile Numbers
       var list = (widget.mainMobile ?? "").split("||");
@@ -251,7 +237,7 @@ class _UpdateLeadState extends State<UpdateLead> {
 
       controllers.selectedCity.value = safeValue(widget.city);
 
-      controllers.pinCodeController.text = safeValue(widget.pinCode);
+      controllers.pinCodeController.text = safeValue(widget.pinCode=="0"?"":widget.pinCode);
       controllers.pinCode = safeValue(widget.pinCode);
 
       /// State
@@ -282,80 +268,11 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.leadActions.text = safeValue(widget.points);
 
       controllers.selectPinCodeList = [];
+
+      print("widget.industry ${widget.industry}");
+      print("controllers.industry ${controllers.industry}");
     });
   }
-  // Future<void> getStringValue() async {
-  //   setState(() {
-  //     controllers.numberList.clear();
-  //     controllers.infoNumberList.clear();
-  //     controllers.industry = safeValue(widget.industry).isEmpty ? null : safeValue(widget.industry);
-  //
-  //     print(controllers.industry);
-  //     print(widget.points.toString());
-  //     var list = (widget.mainMobile ?? "").split("||");
-  //     for(var i=0;i<list.length;i++){
-  //       controllers.numberList.add(TextEditingController(text: list[i]));
-  //       phoneFocusList.add(FocusNode());
-  //     }
-  //
-  //     var list2 = (widget.companyNumber ?? "").split("||");
-  //     for(var i=0;i<list2.length;i++){
-  //       controllers.infoNumberList.add(TextEditingController(text: list2[i]));
-  //       phoneFocusList2.add(FocusNode());
-  //     }
-  //     controllers.visitType = (widget.visitType ?? "").isEmpty
-  //         ? "Call"
-  //         : controllers.callNameList.contains(widget.visitType)
-  //         ? widget.visitType
-  //         : "Call";
-  //     controllers.leadNameCrt[0].text  = safeValue(widget.mainName);
-  //     controllers.leadMobileCrt[0].text = safeValue(widget.mainMobile);
-  //     controllers.leadEmailCrt[0].text  = safeValue(widget.mainEmail);
-  //     controllers.leadWhatsCrt[0].text  = safeValue(widget.mainWhatsApp);
-  //     controllers.leadTitleCrt[0].text  = safeValue(widget.owner);
-  //
-  //     controllers.leadCoNameCrt.text     = safeValue(widget.companyName);
-  //     controllers.leadCoMobileCrt.text   = safeValue(widget.companyNumber);
-  //     controllers.leadWebsite.text       = safeValue(widget.companyWebsite);
-  //     controllers.leadCoEmailCrt.text    = safeValue(widget.companyEmail);
-  //     controllers.leadProduct.text       = safeValue(widget.productServices);
-  //     controllers.leadOwnerNameCrt.text  = safeValue(widget.owner);
-  //     controllers.prodDescriptionController.text = safeValue(widget.productDiscussion);
-  //     controllers.statusCrt.text           = safeValue(widget.statusUpdate);
-  //     controllers.leadDisPointsCrt.text    = safeValue(widget.source);
-  //     controllers.prospectGradingCrt.text  = safeValue(widget.rating);
-  //     controllers.exMonthBillingValCrt.text     = safeValue(widget.expectedBillingValue);
-  //     controllers.noOfHeadCountCrt.text         = safeValue(widget.numOfHeadcount);
-  //     controllers.sourceCrt.text                = safeValue(widget.detailsOfRequired);
-  //     controllers.additionalNotesCrt.text       = safeValue(widget.notes);
-  //     controllers.arpuCrt.text                  = safeValue(widget.arpuValue);
-  //     controllers.expectedConversionDateCrt.text = safeValue(widget.expectedConvertionDate);
-  //     controllers.prospectEnrollmentDateCrt.text = safeValue(widget.prospectEnrollmentDate);
-  //     controllers.prospectDate.value = safeValue(widget.prospectEnrollmentDate);
-  //     controllers.exDate.value       = safeValue(widget.expectedConvertionDate);
-  //     controllers.source   = safeValue(widget.source).isEmpty ? null : safeValue(widget.source);
-  //     controllers.status   = safeValue(widget.status).isEmpty ? null : safeValue(widget.status);
-  //     controllers.rating   = safeValue(widget.rating).isEmpty ? null : safeValue(widget.rating);
-  //     controllers.service  = safeValue(widget.serviceInterest).isEmpty ? null : safeValue(widget.serviceInterest);
-  //     controllers.doorNumberController.text = safeValue(widget.addressLine1);
-  //     controllers.streetNameController.text = safeValue(widget.addressLine2);
-  //     controllers.areaController.text       = safeValue(widget.area);
-  //     controllers.cityController.text       = safeValue(widget.city);
-  //     controllers.selectedCity.value        = safeValue(widget.city);
-  //     controllers.pinCodeController.text    = safeValue(widget.pinCode);
-  //     controllers.pinCode                   = safeValue(widget.pinCode);
-  //     controllers.stateController.text      = safeValue(widget.state.toString().isEmpty ? "Tamil Nadu" : widget.state);
-  //     controllers.selectedState.value       = safeValue(widget.state.toString().isEmpty ? "Tamil Nadu" : widget.state);
-  //     controllers.countryController.text    = safeValue(widget.country.toString().isEmpty ? "India" : widget.country);
-  //     controllers.leadXCrt.text        = safeValue(widget.x);
-  //     controllers.leadLinkedinCrt.text = safeValue(widget.linkedin);
-  //     controllers.leadDescription.text = safeValue(widget.description);
-  //     controllers.leadTime.text        = safeValue(widget.timelineDecision);
-  //     controllers.budgetCrt.text       = safeValue(widget.budget);
-  //     controllers.leadActions.text     = safeValue(widget.points);
-  //     controllers.selectPinCodeList = [];
-  //   });
-  // }
   String _formatHeading(String heading) {
     String cleaned = heading.replaceAll(",", "").trim();
     return cleaned
@@ -405,10 +322,8 @@ class _UpdateLeadState extends State<UpdateLead> {
     // TODO: implement initState
     super.initState();
     _focusNode = FocusNode();
-
-    getStringValue();
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      getStringValue();
       if (mounted) {
         _focusNode.requestFocus();
         FocusScope.of(context)
@@ -911,6 +826,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                   thickness: 1,
                                 ),
                                 20.height,
+                                ///
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1066,7 +982,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         IndustryDropdown(
                                           width: textFieldSize,
                                           items: controllers.industriesList,
-                                          hint: controllers.industry,
+                                          hint: controllers.industry ?? "Select Industry",
                                           onChanged: (val) {
                                             setState(() {
                                               controllers.industry = val?['value'];
@@ -1262,6 +1178,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                     ),
                                   ],
                                 ),
+                                ///
                                 20.height,
                                 Row(
                                   children:[
@@ -1904,7 +1821,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             controllers.leadCtr.reset();
                                           }
                                         }else{
-                                          if(controllers.pinCodeController.text.isEmpty||controllers.pinCodeController.text=="0"){
+                                          if(controllers.pinCodeController.text.isEmpty||controllers.pinCodeController.text==""){
                                             apiService.updateLeadAPI(context,widget.index,widget.name.toString(),widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
                                           }else{
                                             if(controllers.pinCodeController.text.length==6){
@@ -1916,69 +1833,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             }
                                           }
                                         }}
-                                      // if(controllers.leadNameCrt[0].text.isEmpty){
-                                      //   utils.snackBar(msg: "Please add name",
-                                      //       color: colorsConst.primary,context:context);
-                                      //   controllers.leadCtr.reset();
-                                      // }else if(controllers.leadMobileCrt[0].text.length!=10){
-                                      //   utils.snackBar(msg: "Invalid Mobile Number",
-                                      //       color: colorsConst.primary,context:context);
-                                      //   controllers.leadCtr.reset();
-                                      // }else if(controllers.leadTitleCrt[0].text.isEmpty){
-                                      //   utils.snackBar(msg: "Please add title",
-                                      //       color: colorsConst.primary,context:context);
-                                      //   controllers.leadCtr.reset();
-                                      // }else if(controllers.leadCoNameCrt.text.isEmpty){
-                                      //   utils.snackBar(msg: "Please add company name",
-                                      //       color: colorsConst.primary,context:context);
-                                      //   controllers.leadCtr.reset();
-                                      // }else if(controllers.leadCoMobileCrt.text.length!=10){
-                                      //   utils.snackBar(msg: "Invalid Company Mobile Number",
-                                      //       color: colorsConst.primary,context:context);
-                                      //   controllers.leadCtr.reset();
-                                      // }else if(controllers.industry==null){
-                                      //   utils.snackBar(msg: "Please add industry",
-                                      //       color: colorsConst.primary,context:context);
-                                      //   controllers.leadCtr.reset();
-                                      // }else if(controllers.leadProduct.text.isEmpty){
-                                      //   utils.snackBar(msg: "Please add product/services",
-                                      //       color: colorsConst.primary,context:context);
-                                      //   controllers.leadCtr.reset();
-                                      // }else if(controllers.pinCode==null){
-                                      //   utils.snackBar(msg: "Please add pin code",
-                                      //       color: colorsConst.primary,context:context);
-                                      //   controllers.leadCtr.reset();
-                                      // }else if(controllers.selectedCity.isEmpty){
-                                      //   utils.snackBar(msg: "Please add city",
-                                      //       color: colorsConst.primary,context:context);
-                                      //   controllers.leadCtr.reset();
-                                      // }else if(controllers.status==null){
-                                      //   utils.snackBar(msg: "Please add status",
-                                      //       color: colorsConst.primary,context:context);
-                                      //   controllers.leadCtr.reset();
-                                      // }else if(controllers.leadOwnerNameCrt.text.isEmpty){
-                                      //   utils.snackBar(msg: "Please add lead owner",
-                                      //       color: colorsConst.primary,context:context);
-                                      //   controllers.leadCtr.reset();
-                                      // }else{
-                                      //   if(controllers.leadEmailCrt[0].text.isEmail){
-                                      //     if(controllers.leadCoEmailCrt.text.isEmail){
                                       print("lead id ${widget.id.toString()}");
-                                      //controllers.leadCtr.reset();
-
-                                      //     }else{
-                                      //       utils.snackBar(msg: "Invalid Company Email",
-                                      //           color: colorsConst.primary,context:context);
-                                      //       controllers.leadCtr.reset();
-                                      //     }
-                                      //
-                                      //   }else{
-                                      //     utils.snackBar(msg: "Invalid Email",
-                                      //         color: colorsConst.primary,context:context);
-                                      //     controllers.leadCtr.reset();
-                                      //   }
-                                      // }
-
                                     },
                                     text: "Save ${widget.pageName}",
                                     height: 60,

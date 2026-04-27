@@ -243,6 +243,16 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                                 color: Colors.red,
                               );
                               FocusScope.of(context).requestFocus(mobileFocus);
+                              return;
+                            }
+                            if (controllers.loginNumber.text.length!=10) {
+                              mobileUtils.snackBar(
+                                context: Get.context!,
+                                msg: "Please check your mobile number",
+                                color: Colors.red,
+                              );
+                              FocusScope.of(context).requestFocus(mobileFocus);
+                              return;
                             }
 
                             await checkMobileAPI(

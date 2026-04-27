@@ -925,7 +925,6 @@ class ApiService {
         controllers.selectCallType.value="All";
         remController.selectedCallSortBy.value="All";
         getAllCallActivity("");
-        mergeStatusWithCount();
         Navigator.pop(context);
         controllers.productCtr.reset();
         if (remController.stDate.value.isEmpty) {
@@ -1256,11 +1255,7 @@ class ApiService {
   //     controllers.emailCtr.reset();
   //   }
   // }
-  Future bulkEmailAPI(
-      BuildContext context,
-      List<Map<String, String>> list,
-      String image,
-      ) async {
+  Future bulkEmailAPI(BuildContext context,List<Map<String, String>> list,String image) async {
     try {
       debugPrint("📤 bulkEmailAPI called");
       debugPrint("📦 Total leads: ${list.length}");
@@ -1307,8 +1302,6 @@ class ApiService {
         'Content-Type': 'application/json',
       });
 
-      debugPrint("🧾 Headers: ${request.headers}");
-
       if (imageController.empFileName.value.isNotEmpty) {
         debugPrint(
           "🖼 Attachment: ${imageController.empFileName.value}",
@@ -1331,16 +1324,22 @@ class ApiService {
 
       var body = await response.stream.bytesToString();
       debugPrint("📨 Response Body: $body");
-
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return bulkEmailAPI(context,list,image);
+        } else {
+          controllers.setLogOut();
+        }
+      }
       if (body.contains("Mail process completed.")) {
         debugPrint("✅ Bulk mail success");
-
+        controllers.idList.clear();
         utils.snackBar(
           msg: "Mail has been sent",
           color: Colors.green,
           context: Get.context!,
         );
-
         controllers.emailMessageCtr.clear();
         controllers.emailToCtr.clear();
         controllers.emailSubjectCtr.clear();
@@ -2532,7 +2531,7 @@ class ApiService {
       //     controllers.setLogOut();
       //   }
       // }
-
+      controllers.loginCtr.reset();
       if (request.statusCode == 200 && response['status'] == 'success') {
         TokenStorage().writeToken(response['access_token']);
         TokenStorage().writeRefreshToken(response['refresh_token']);
@@ -2902,7 +2901,7 @@ class ApiService {
         final activities = response.map((e) => CustomerActivity.fromJson(e)).toList();
         controllers.mailActivity.assignAll(activities);
         controllers.allSentMails.value = controllers.mailActivity.length.toString();
-        remController.selectedMailSortBy.value=dashController.selectedSortBy.value;
+        // remController.selectedMailSortBy.value=dashController.selectedSortBy.value;
         remController.sortMails();
         // remController.sortMails();
         // remController.dashboardCommunicationFilterList(
@@ -3464,6 +3463,7 @@ class ApiService {
         Provider.of<BillingProvider>(context, listen: false).billingItems.clear();
         productCtr.getQuotationDetails();
         Navigator.pop(Get.context!);
+        Navigator.pop(Get.context!);
         controllers.changeTab(0);
         controllers.emailCtr.reset();
       } else {
@@ -3515,7 +3515,7 @@ class ApiService {
       }
       if (response.statusCode == 200) {
         utils.snackBar(
-            msg: "Purchase Order sent successfully",
+            msg: "Purchase Order Saved successfully",
             color: Colors.green,
             context: Get.context!);
         productCtr.getQuotationDetails();
@@ -3523,7 +3523,7 @@ class ApiService {
         controllers.emailCtr.reset();
       } else {
         controllers.emailCtr.reset();
-        errorDialog(Get.context!, "Mail has been not sent");
+        errorDialog(Get.context!, "Failed");
       }
     } catch (e) {
       errorDialog(Get.context!, e.toString());
@@ -4427,8 +4427,15 @@ class ApiService {
   //   return map;
   // }
   void mergeStatusWithCount() {
-    final statusCountMap = getStatusCountMap();
+    // final statusCountMap = getStatusCountMap();
+    final Map<String, int> statusCountMap = {};
 
+    for (var item in remController.callFilteredList) {
+      final status = item.callStatus.trim();
+      if (status.isEmpty) continue;
+
+      statusCountMap[status] = (statusCountMap[status] ?? 0) + 1;
+    }
     controllers.hCallStatusList.value =
         controllers.hCallStatusList.map((item) {
           final statusValue = item["value"]?.toString();
@@ -4443,7 +4450,6 @@ class ApiService {
     int totalCount = controllers.hCallStatusList.fold(
         0, (sum, item) => sum + ((item["count"] ?? 0) as int));
 
-    controllers.allCalls.value = totalCount.toString();
 
     log("Total Calls: $totalCount");
     log("Merged Status List: ${controllers.hCallStatusList}");
@@ -4477,6 +4483,7 @@ class ApiService {
         List response = json.decode(request.body);
         controllers.callActivity.clear();
         controllers.callActivity.value = response.map((e) => CustomerActivity.fromJson(e)).toList();
+        controllers.allCalls.value = response.length.toString();
         // final incoming = controllers.callActivity.where((e) => e.callType.isNotEmpty && e.callType.trim() == "Incoming").toList();
         // final outgoing = controllers.callActivity
         //     .where((e) => e.callType.isNotEmpty && e.callType.trim() == "Outgoing")
@@ -4488,20 +4495,8 @@ class ApiService {
         // controllers.allIncomingCalls.value = incoming.length.toString();
         // controllers.allOutgoingCalls.value = outgoing.length.toString();
         // controllers.allMissedCalls.value = missed.length.toString();
-        controllers.allCalls.value = response.length.toString();
-        mergeStatusWithCount();
         remController.filterAndSortCalls(
           allCalls: controllers.callActivity,
-          searchText: controllers.searchText.value.toLowerCase(),
-          callType: controllers.selectCallType.value,
-          sortField: controllers.sortFieldCallActivity.value,
-          sortOrder: controllers.sortOrderCallActivity.value,
-          selectedMonth: remController.selectedCallMonth.value,
-          selectedRange: remController.selectedCallRange.value,
-          selectedDateFilter: remController.selectedCallSortBy.value,
-        );
-        remController.dashboardCommunicationFilterList(
-          dataList: controllers.callActivity,
           searchText: controllers.searchText.value.toLowerCase(),
           callType: controllers.selectCallType.value,
           sortField: controllers.sortFieldCallActivity.value,
