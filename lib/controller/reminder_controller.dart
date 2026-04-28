@@ -1390,8 +1390,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
     final filtered = allCalls.where((activity) {
 
-      final matchesCallType =
-          callType.isEmpty || callType == "All" || activity.callStatus == callType;
+      final matchesCallType =controllers.selectCallType.value == "All" || controllers.selectCallType.value==activity.callStatus;
 
       final matchesFilterType =
           filterCall.value == "All" ||
@@ -1460,107 +1459,98 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         matchesDate = activityDate.month == selectedMonth.month &&
             activityDate.year == selectedMonth.year;
       }
+      final list = allCalls.where((activity) {
+
+        final activityDate = parseDate(activity.sentDate);
+
+        bool matchesDate = true;
+
+        /// Today
+        if (selectedDateFilter == "Today") {
+          matchesDate = activityDate.year == now.year &&
+              activityDate.month == now.month &&
+              activityDate.day == now.day;
+        }
+
+        /// Yesterday
+        else if (selectedDateFilter == "Yesterday") {
+          final yesterday = today.subtract(const Duration(days: 1));
+          matchesDate = activityDate.isAfter(yesterday.subtract(const Duration(seconds: 1))) &&
+              activityDate.isBefore(today);
+        }
+
+        /// Last 7 Days
+        else if (selectedDateFilter == "Last 7 Days") {
+          final sevenDaysAgo = today.subtract(const Duration(days: 7));
+          matchesDate = activityDate.isAfter(sevenDaysAgo.subtract(const Duration(seconds: 1)));
+        }
+
+        /// Last 30 Days
+        else if (selectedDateFilter == "Last 30 Days") {
+          final thirtyDaysAgo = today.subtract(const Duration(days: 30));
+          matchesDate = activityDate.isAfter(thirtyDaysAgo.subtract(const Duration(seconds: 1)));
+        }
+
+        /// Date Range Filter (same date issue fixed)
+        if (selectedRange != null) {
+
+          final start = DateTime(
+            selectedRange.start.year,
+            selectedRange.start.month,
+            selectedRange.start.day,
+          );
+
+          final end = DateTime(
+            selectedRange.end.year,
+            selectedRange.end.month,
+            selectedRange.end.day,
+            23, 59, 59,
+          );
+
+          matchesDate = activityDate.isAfter(start.subtract(const Duration(seconds: 1))) &&
+              activityDate.isBefore(end.add(const Duration(seconds: 1)));
+        }
+
+        /// Month Filter
+        if (selectedMonth != null) {
+          matchesDate = activityDate.month == selectedMonth.month &&
+              activityDate.year == selectedMonth.year;
+        }
+
+        return matchesDate;
+
+      }).toList();
+
+
+      final Map<String, int> statusCountMap = {};
+
+      for (var item in list) {
+        final status = item.callStatus.trim();
+        if (status.isEmpty) continue;
+        statusCountMap[status] = (statusCountMap[status] ?? 0) + 1;
+      }
+      controllers.hCallStatusList.value =
+          controllers.hCallStatusList.map((item) {
+            final statusValue = item["value"]?.toString();
+
+            return {
+              ...item,
+              "count": statusCountMap[statusValue] ?? 0,
+            };
+          }).toList();
+
+      // 🔹 Total count calculate
+      int totalCount = controllers.hCallStatusList.fold(
+          0, (sum, item) => sum + ((item["count"] ?? 0) as int));
+
+
+      log("Total Calls: $totalCount");
+      log("Merged Status List: ${controllers.hCallStatusList}");
+      controllers.allCalls.value = list.length.toString();
 
       return matchesCallType && matchesSearch && matchesDate && matchesFilterType;
 
     }).toList();
-    final filteredList = allCalls.where((activity) {
-      final matchesSearch =
-          searchText.isEmpty ||
-              activity.customerName.toLowerCase().contains(searchText.toLowerCase()) ||
-              activity.sentDate.toLowerCase().contains(searchText.toLowerCase());
-
-      final activityDate = parseDate(activity.sentDate);
-
-      bool matchesDate = true;
-
-      /// Today
-      if (selectedDateFilter == "Today") {
-        matchesDate = activityDate.year == now.year &&
-            activityDate.month == now.month &&
-            activityDate.day == now.day;
-      }
-
-      /// Yesterday
-      else if (selectedDateFilter == "Yesterday") {
-        final yesterday = today.subtract(const Duration(days: 1));
-        matchesDate = activityDate.isAfter(yesterday.subtract(const Duration(seconds: 1))) &&
-            activityDate.isBefore(today);
-      }
-
-      /// Last 7 Days
-      else if (selectedDateFilter == "Last 7 Days") {
-        final sevenDaysAgo = today.subtract(const Duration(days: 7));
-        matchesDate = activityDate.isAfter(sevenDaysAgo.subtract(const Duration(seconds: 1)));
-      }
-
-      /// Last 30 Days
-      else if (selectedDateFilter == "Last 30 Days") {
-        final thirtyDaysAgo = today.subtract(const Duration(days: 30));
-        matchesDate = activityDate.isAfter(thirtyDaysAgo.subtract(const Duration(seconds: 1)));
-      }
-
-      /// Date Range Filter (same date issue fixed)
-      if (selectedRange != null) {
-
-        final start = DateTime(
-          selectedRange.start.year,
-          selectedRange.start.month,
-          selectedRange.start.day,
-        );
-
-        final end = DateTime(
-          selectedRange.end.year,
-          selectedRange.end.month,
-          selectedRange.end.day,
-          23, 59, 59,
-        );
-
-        matchesDate = activityDate.isAfter(start.subtract(const Duration(seconds: 1))) &&
-            activityDate.isBefore(end.add(const Duration(seconds: 1)));
-      }
-
-      /// Month Filter
-      if (selectedMonth != null) {
-        matchesDate = activityDate.month == selectedMonth.month &&
-            activityDate.year == selectedMonth.year;
-      }
-
-      return matchesSearch && matchesDate ;
-
-    }).toList();
-
-    //
-    final Map<String, int> statusCountMap = {};
-
-    for (var item in filteredList) {
-      final status = item.callStatus.trim();
-      if (status.isEmpty) continue;
-
-      statusCountMap[status] = (statusCountMap[status] ?? 0) + 1;
-    }
-    controllers.hCallStatusList.value =
-        controllers.hCallStatusList.map((item) {
-          final statusValue = item["value"]?.toString();
-
-          return {
-            ...item,
-            "count": statusCountMap[statusValue] ?? 0,
-          };
-        }).toList();
-
-    // 🔹 Total count calculate
-    int totalCount = controllers.hCallStatusList.fold(
-        0, (sum, item) => sum + ((item["count"] ?? 0) as int));
-
-    log("Total Calls: $totalCount");
-    log("Merged Status List: ${controllers.hCallStatusList}");
-
-    controllers.allCalls.value = filteredList.length.toString();
-
-    //
-
-
     /// Sorting
     if (sortField == 'customerName') {
       filtered.sort((a, b) {
@@ -1569,7 +1559,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }
-
     else if (sortField == 'mobile') {
       filtered.sort((a, b) {
         final comparison =
@@ -1577,7 +1566,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }
-
     else if (sortField == 'type') {
       filtered.sort((a, b) {
         final comparison =
@@ -1585,7 +1573,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }
-
     else if (sortField == 'status') {
       filtered.sort((a, b) {
         final comparison =
@@ -1593,7 +1580,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }
-
     else if (sortField == 'message') {
       filtered.sort((a, b) {
         final comparison =
@@ -1601,7 +1587,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }
-
     else if (sortField == 'leadStatus') {
       filtered.sort((a, b) {
         final comparison =
@@ -1623,7 +1608,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         return sortOrder == 'asc' ? comparison : -comparison;
       });
     }
-
     else if (sortField == 'date') {
       filtered.sort((a, b) {
         final dateA = parseDate(a.sentDate);
@@ -1635,7 +1619,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
     callFilteredList.assignAll(filtered);
 
-    // apiService.mergeStatusWithCount();
+    // if(controllers.selectCallType.value=="All"){
+    // }
     // apiService.mergeStatusWithCount();
   }
 
@@ -2815,7 +2800,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
               break;
 
           /// ✅ FUTURE 7 DAYS
-            case 'Last 7 Days':
+            case 'Next 7 Days':
               final start = today;
               final end = normalize(now.add(const Duration(days: 7)));
 
@@ -2825,7 +2810,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
               break;
 
           /// ✅ FUTURE 30 DAYS
-            case 'Last 30 Days':
+            case 'Next 30 Days':
               final start = today;
               final end = normalize(now.add(const Duration(days: 30)));
 
@@ -3524,7 +3509,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           break;
 
       /// 🔥 FUTURE 7 DAYS (CORRECT)
-        case 'Last 7 Days':
+        case 'Next 7 Days':
           final start = _startOfDay(now);
           final end = _endOfDay(now.add(const Duration(days: 7)));
 
@@ -3535,7 +3520,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           }).toList();
           break;
 
-        case 'Last 30 Days':
+        case 'Next 30 Days':
           final start = _startOfDay(now);
           final end = _endOfDay(now.add(const Duration(days: 30)));
 

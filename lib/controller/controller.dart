@@ -2856,12 +2856,52 @@ print("sortField ${sortField}");
   }
   var invoiceNo="".obs;
   var quotationNo="".obs;
-  final TextEditingController iCtr=TextEditingController();
-  final TextEditingController qCtr=TextEditingController();
-  Future<void> insertSeriesNo() async {
+  final qNo=TextEditingController();
+  final iNo=TextEditingController();
+
+  final comName=TextEditingController();
+  final comDoor=TextEditingController();
+  final comStreet=TextEditingController();
+  final comCity=TextEditingController();
+  final comState=TextEditingController();
+  final comCountry=TextEditingController();
+  final comPincode=TextEditingController();
+  final comEmail=TextEditingController();
+  final comNumber=TextEditingController();
+  final comGSTNo=TextEditingController();
+  final bankName=TextEditingController();
+  final branchName=TextEditingController();
+  final ifscCode=TextEditingController();
+  final upiNo=TextEditingController();
+  final accNo=TextEditingController();
+  void firstCaps(String value,TextEditingController controller){
+    if (value.toString().isNotEmpty) {
+      String newValue = value.toString()[0].toUpperCase() +value.toString().substring(1);
+      if (newValue != value) {
+        controller.value =controller.value.copyWith(
+          text: newValue,
+          selection:
+          TextSelection.collapsed(
+              offset:
+              newValue.length),
+        );
+      }
+    }
+  }
+  void fullCaps(String value, TextEditingController controller) {
+    if (value.isNotEmpty) {
+      String newValue = value.toUpperCase();
+
+      if (newValue != value) {
+        controller.value = controller.value.copyWith(
+          text: newValue,
+          selection: TextSelection.collapsed(offset: newValue.length),
+        );
+      }
+    }
+  }
+  Future<void> insertSeriesNo(context,bool isFetch) async {
     try {
-      invoiceNo.value="";
-      quotationNo.value="";
       final response = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -2872,17 +2912,34 @@ print("sortField ${sortField}");
           "action": "insert_series",
           "cos_id": controllers.storage.read("cos_id"),
           "created_by": controllers.storage.read("id"),
-          "invoice": iCtr.text,
-          "quotation": qCtr.text,
+          "invoice": iNo.text,
+          "quotation": qNo.text,
+          "c_name": comName.text,
+          "c_no": comNumber.text,
+          "c_email": comEmail.text,
+          "gstin_no": comGSTNo.text,
+          "door": comDoor.text,
+          "street": comStreet.text,
+          "city": comCity.text,
+          "state": comState.text,
+          "country": comCountry.text,
+          "pincode": comPincode.text,
+          "bank": bankName.text,
+          "branch": branchName.text,
+          "ifsc": ifscCode.text,
+          "acc_no": accNo.text,
+          "upi": upiNo.text,
+          "isFetch": isFetch==true?"0":"1",
         }),
       );
 
       print("STATUS CODE insert_series: ${response.statusCode}");
       print("RAW RESPONSE: ${response.body}");
+      controllers.leadCtr.reset();
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return insertSeriesNo();
+          return insertSeriesNo(context,isFetch);
         } else {
           controllers.setLogOut();
         }
@@ -2902,11 +2959,28 @@ print("sortField ${sortField}");
 
         invoiceNo.value=list[0]["invoice"];
         quotationNo.value=list[0]["quotation"];
-
+        comName.text=list[0]["c_name"];
+        comNumber.text=list[0]["c_no"];
+        comEmail.text=list[0]["c_email"];
+        comGSTNo.text=list[0]["gstin_no"];
+        comDoor.text=list[0]["door"];
+        comStreet.text=list[0]["street"];
+        comCity.text=list[0]["city"];
+        comState.text=list[0]["state"];
+        comCountry.text=list[0]["country"];
+        comPincode.text=list[0]["pincode"];
+        bankName.text=list[0]["bank"];
+        branchName.text=list[0]["branch"];
+        ifscCode.text=list[0]["ifsc"];
+        accNo.text=list[0]["acc_no"];
+        upiNo.text=list[0]["upi"];
       } else {
-        // print("API Error: ${decoded["message"]}");
+        utils.snackBar(context: context, msg: "Failed", color: Colors.red);
       }
     } catch (e) {
+      if(isFetch==false){
+        utils.snackBar(context: context, msg: "Failed", color: Colors.red);
+      }
       // print("FLUTTER ERROR => $e");
     }
   }
@@ -3112,7 +3186,7 @@ var refreshValue=true.obs;
       allTargetLength=0.obs,
       allProductLength = 0.obs,
       allEmployeeLength = 0.obs, selectCallType = "All".obs,selectMeetingType = "".obs;
-
+  AllCustomersObj? highlightedOption;
   var states,
       upState,
       upCoState,

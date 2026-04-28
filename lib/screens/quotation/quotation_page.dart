@@ -19,6 +19,9 @@ class _QuotationPageState extends State<QuotationPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    Future.delayed(Duration.zero, () {
+      controllers.insertSeriesNo(context,true);
+    });
   }
   @override
   Widget build(BuildContext context) {

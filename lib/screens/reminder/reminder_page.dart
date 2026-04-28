@@ -452,7 +452,7 @@ class _ReminderPageState extends State<ReminderPage> {
                        remController.searchText.value = value.toString().trim();
                      },
                    ),
-                   DateFilterBar(
+                   FutureDateFilterBar(
                      selectedSortBy: remController.selectedReminderSortBy,
                      selectedRange: remController.selectedReminderRange,
                      selectedMonth: remController.selectedReminderMonth,

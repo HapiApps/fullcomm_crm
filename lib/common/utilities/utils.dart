@@ -1491,11 +1491,53 @@ class Utils {
                         )),
 
                         /// 🔹 Autocomplete
+                        // SizedBox(
+                        //   // width: 220,
+                        //   child: Autocomplete<AllCustomersObj>(
+                        //
+                        //     /// 🔥 FILTER + SEARCH
+                        //     optionsBuilder: (text) {
+                        //       final query = text.text.toLowerCase();
+                        //
+                        //       return controllers.customers.where((c) {
+                        //         final email = (c.email ?? "").toLowerCase().trim();
+                        //         final name = (c.name ?? "").toLowerCase();
+                        //
+                        //         if (email.isEmpty || email == "null") return false;
+                        //
+                        //         return email.contains(query) || name.contains(query);
+                        //       });
+                        //     },
+                        //
+                        //     displayStringForOption: (c) => '${c.name} - ${c.email} - ${c.category}',
+                        //
+                        //     fieldViewBuilder:(context, controller, focusNode, onSubmit) {
+                        //       return TextField(
+                        //         controller: controller,
+                        //         focusNode: focusNode,
+                        //         decoration: InputDecoration(
+                        //           hintText: emailList.isEmpty?"Search email":"Add email",
+                        //           border: UnderlineInputBorder(),
+                        //         ),
+                        //       );
+                        //     },
+                        //     /// 🔥 SELECT → EMAIL மட்டும் add
+                        //     onSelected: (c) {
+                        //       final email = c.email ?? "";
+                        //       if (email.isEmpty) return;
+                        //
+                        //       setState(() {
+                        //         if (!emailList.contains(email)) {
+                        //           emailList.add(email);
+                        //           nameList.add(c.name);
+                        //           idList.add(c.id);
+                        //         }
+                        //       });
+                        //     },
+                        //   ),
+                        // ),
                         SizedBox(
-                          // width: 220,
                           child: Autocomplete<AllCustomersObj>(
-
-                            /// 🔥 FILTER + SEARCH
                             optionsBuilder: (text) {
                               final query = text.text.toLowerCase();
 
@@ -1509,42 +1551,84 @@ class Utils {
                               });
                             },
 
-                            displayStringForOption: (c) => '${c.name} - ${c.email} - ${c.category}',
+                            displayStringForOption: (c) =>
+                            '${c.name} - ${c.email} - ${c.category}',
 
-                            fieldViewBuilder:(context, controller, focusNode, onSubmit) {
+                            /// 🔥 CUSTOM DROPDOWN (IMPORTANT)
+                            optionsViewBuilder: (context, onSelected, options) {
+                              return Align(
+                                alignment: Alignment.topLeft,
+                                child: Material(
+                                  elevation: 4,
+                                  child: SizedBox(
+                                    height: 200,
+                                    child: ListView.builder(
+                                      itemCount: options.length,
+                                      itemBuilder: (context, index) {
+                                        final option = options.elementAt(index);
+
+                                        return InkWell(
+                                          onTap: () => onSelected(option),
+                                          child: Builder(
+                                            builder: (context) {
+                                              final isHighlighted =
+                                                  AutocompleteHighlightedOption.of(context) == index;
+
+                                              /// 🔥 STORE CURRENT HIGHLIGHTED
+                                              if (isHighlighted) {
+                                                controllers.highlightedOption = option;
+                                              }
+
+                                              return Container(
+                                                color: isHighlighted
+                                                    ? Colors.grey.shade300
+                                                    : null,
+                                                padding: EdgeInsets.all(10),
+                                                child: Text(
+                                                  '${option.name} - ${option.email}',
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+
+                            fieldViewBuilder: (context, controller, focusNode, onSubmit) {
                               return TextField(
                                 controller: controller,
                                 focusNode: focusNode,
                                 decoration: InputDecoration(
-                                  hintText: emailList.isEmpty?"Search email":"Add email",
+                                  hintText: emailList.isEmpty ? "Search email" : "Add email",
                                   border: UnderlineInputBorder(),
                                 ),
-                                onSubmitted: (value) {
-                                  print("input $value");
-                                  final input = value.toLowerCase();
 
-                                  final match = controllers.customers.firstWhere(
-                                        (c) =>
-                                    (c.email ?? "").toLowerCase() == input ||
-                                        (c.name ?? "").toLowerCase() == input,
-                                    orElse: () => AllCustomersObj(id: '', name: '', companyName: '', phoneNo: '', email: '', leadStatus: '', category: ''),
-                                  );
+                                /// 🔥 ENTER PRESS → SELECT HIGHLIGHTED
+                                onSubmitted: (_) {
+                                  if (controllers.highlightedOption != null) {
+                                    final c = controllers.highlightedOption!;
+                                    final email = c.email ?? "";
 
-                                  if ((match.email ?? "").isEmpty) return;
+                                    if (email.isEmpty) return;
 
-                                  setState(() {
-                                    if (!emailList.contains(match.email)) {
-                                      emailList.add(match.email);
-                                      nameList.add(match.name);
-                                      idList.add(match.id);
-                                    }
+                                    setState(() {
+                                      if (!emailList.contains(email)) {
+                                        emailList.add(email);
+                                        nameList.add(c.name);
+                                        idList.add(c.id);
+                                      }
+                                    });
+
                                     controller.clear();
-                                  });
+                                  }
                                 },
                               );
                             },
 
-                            /// 🔥 SELECT → EMAIL மட்டும் add
                             onSelected: (c) {
                               final email = c.email ?? "";
                               if (email.isEmpty) return;
@@ -1558,7 +1642,7 @@ class Utils {
                               });
                             },
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -1897,8 +1981,9 @@ class Utils {
     return usernameRegex.hasMatch(input) || urlRegex.hasMatch(input);
   }
   bool isValidXId(String id) {
-    final regex = RegExp(r'^[a-zA-Z0-9_]{4,15}$');
-    return regex.hasMatch(id);
+    final cleaned = id.trim();
+    final regex = RegExp(r'^@?[a-zA-Z0-9_]{4,15}$');
+    return regex.hasMatch(cleaned);
   }
 
   ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar({required BuildContext context,

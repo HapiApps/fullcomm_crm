@@ -23,7 +23,7 @@ import '../../models/new_lead_obj.dart';
 class UpdateLead extends StatefulWidget {
   final String pageName;
   final String type;
-  final String? id;
+  final String id;
   final int index;
   final String? mainName;
   final String? mainMobile;
@@ -81,7 +81,7 @@ class UpdateLead extends StatefulWidget {
   final RxList<NewLeadObj> list;
   final RxList<NewLeadObj> list2;
   UpdateLead({super.key,
-    this.id,
+    required this.id,
     this.mainName,
     this.mainMobile,
     this.mainEmail,
@@ -165,9 +165,14 @@ class _UpdateLeadState extends State<UpdateLead> {
 
       /// Company Numbers
       var list2 = (widget.companyNumber ?? "").split("||");
-      for (var i = 0; i < list2.length; i++) {
-        controllers.infoNumberList.add(TextEditingController(text: list2[i]));
+      if(widget.companyNumber.toString()=="null"||widget.companyNumber.toString()==""){
+        controllers.infoNumberList.add(TextEditingController());
         phoneFocusList2.add(FocusNode());
+      }else{
+        for (var i = 0; i < list2.length; i++) {
+          controllers.infoNumberList.add(TextEditingController(text: list2[i]));
+          phoneFocusList2.add(FocusNode());
+        }
       }
 
       /// Visit Type
@@ -478,10 +483,24 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           textInputAction: TextInputAction.next,
                                           textCapitalization: TextCapitalization.words,
                                           inputFormatters: constInputFormatters.textInput,
-                                          onChanged:(value) async {
-                                            // SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                            //sharedPref.setString("leadName$index", value.toString().trim());
-                                          },
+                                          onChanged:(value) {
+                                            if (value.toString().isNotEmpty) {
+                                              String newValue = value
+                                                  .toString()[0]
+                                                  .toUpperCase() +
+                                                  value.toString().substring(1);
+                                              if (newValue != value) {
+                                                controllers.leadNameCrt[0]
+                                                    .value =
+                                                    controllers.leadNameCrt[0].value
+                                                        .copyWith(
+                                                      text: newValue,
+                                                      selection:
+                                                      TextSelection.collapsed(
+                                                          offset:
+                                                          newValue.length),
+                                                    );
+                                          }}},
                                         ),
                                         Obx((){
                                           return SizedBox(
@@ -850,8 +869,22 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           textInputAction: TextInputAction.next,
                                           inputFormatters: constInputFormatters.textInput,
                                           onChanged:(value) async {
-                                            SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                            sharedPref.setString("leadCoName", value.toString().trim());
+                                            if (value.toString().isNotEmpty) {
+                                              String newValue = value
+                                                  .toString()[0]
+                                                  .toUpperCase() +
+                                                  value.toString().substring(1);
+                                              if (newValue != value) {
+                                                controllers.leadCoNameCrt.value =
+                                                    controllers.leadCoNameCrt.value
+                                                        .copyWith(
+                                                      text: newValue,
+                                                      selection:
+                                                      TextSelection.collapsed(
+                                                          offset:
+                                                          newValue.length),
+                                                    );
+                                              }}
                                           },
                                         ),
                                         Obx((){
@@ -1634,11 +1667,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                                               if(controllers.leadEmailCrt[0].text.isNotEmpty){
                                                 if (controllers.leadEmailCrt[0].text.isEmail) {
                                                   if(controllers.pinCodeController.text.isEmpty){
-                                                    apiService.updateLeadAPI(context,widget.index,widget.name.toString(),widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
-                                                  }else{
+                                                    apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                                        type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2);                                                  }else{
                                                     if(controllers.pinCodeController.text.length==6){
-                                                      apiService.updateLeadAPI(context,widget.index,widget.name.toString(),widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
-                                                    }else{
+                                                      apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                                          type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2);                                                    }else{
                                                       utils.snackBar(msg: "Please add 6 digits pin code",
                                                           color: colorsConst.primary,context:context);
                                                       controllers.leadCtr.reset();
@@ -1651,11 +1684,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 }
                                               }else{
                                                 if(controllers.pinCodeController.text.isEmpty){
-                                                  apiService.updateLeadAPI(context,widget.index,widget.name.toString(),widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
-                                                }else{
+                                                  apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                                      type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2);                                                }else{
                                                   if(controllers.pinCodeController.text.length==6){
-                                                    apiService.updateLeadAPI(context,widget.index,widget.name.toString(),widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
-                                                  }else{
+                                                    apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                                        type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2);                                                  }else{
                                                     utils.snackBar(msg: "Please add 6 digits pin code",
                                                         color: colorsConst.primary,context:context);
                                                     controllers.leadCtr.reset();
@@ -1805,11 +1838,11 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         if(controllers.leadEmailCrt[0].text.isNotEmpty){
                                           if (controllers.leadEmailCrt[0].text.isEmail) {
                                             if(controllers.pinCodeController.text.isEmpty){
-                                              apiService.updateLeadAPI(context,widget.index,widget.name.toString(),widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
-                                            }else{
+                                              apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                                  type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2);                                            }else{
                                               if(controllers.pinCodeController.text.length==6){
-                                                apiService.updateLeadAPI(context,widget.index,widget.name.toString(),widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
-                                              }else{
+                                                apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                                    type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2);                                              }else{
                                                 utils.snackBar(msg: "Please add 6 digits pin code",
                                                     color: Colors.red,context:context);
                                                 controllers.leadCtr.reset();
@@ -1822,10 +1855,12 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           }
                                         }else{
                                           if(controllers.pinCodeController.text.isEmpty||controllers.pinCodeController.text==""){
-                                            apiService.updateLeadAPI(context,widget.index,widget.name.toString(),widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
+                                            apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                                type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2);
                                           }else{
                                             if(controllers.pinCodeController.text.length==6){
-                                              apiService.updateLeadAPI(context,widget.index,widget.name.toString(),widget.id.toString(),widget.type.toString(),widget.addressId.toString(),widget.list,widget.list2);
+                                              apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                                  type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2);
                                             }else{
                                               utils.snackBar(msg: "Please add 6 digits pin code",
                                                   color: Colors.red,context:context);

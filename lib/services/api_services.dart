@@ -241,7 +241,14 @@ class ApiService {
   //   }
   // }
 
-  Future updateLeadAPI(BuildContext context, int index, String name,String leadId,  String type, String addressId, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
+  Future updateLeadAPI(BuildContext context,
+      {required int index,
+        required String name,
+        required String leadId,
+        required String type,
+        required String addressId,
+        required RxList<NewLeadObj> list,
+        required RxList<NewLeadObj> list2}) async {
     try {
       String callListId = "";
       for (var role in controllers.callList) {
@@ -309,11 +316,16 @@ class ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return updateLeadAPI(context,index,name,leadId,type,addressId,list,list2);
+          return apiService.updateLeadAPI(context,index:index,name:name,leadId:leadId,
+              type:type,addressId:addressId,list:list,list2:list2);
         } else {
           controllers.setLogOut();
         }
       }
+      print("list");
+      print(list);
+      print(list2);
+      print(request.body);
       if (request.statusCode == 200 &&
           response["message"] == "Customer updated successfully") {
         utils.snackBar(
@@ -321,6 +333,7 @@ class ApiService {
             color: Colors.green,
             context: Get.context!);
         list[index]=NewLeadObj(
+          userId: leadId,
           select: false,
           firstname: controllers.leadNameCrt[0].text.trim(),
           email: controllers.leadEmailCrt[0].text.trim(),
@@ -328,8 +341,7 @@ class ApiService {
               .map((e) => e.text.trim())
               .where((e) => e.isNotEmpty)
               .join("||"),
-
-          userId: controllers.storage.read("id").toString(),
+          whatsapp: controllers.leadWhatsCrt[0].text,
           companyName: controllers.leadCoNameCrt.text.trim(),
           productDiscussion: controllers.prodDescriptionController.text.trim(),
           source: controllers.leadDisPointsCrt.text.trim(),
@@ -390,7 +402,9 @@ class ApiService {
           updatedTs: DateTime.now().toString(),
         );
         list2[index]=NewLeadObj(
+          userId: leadId,
           select: false,
+          whatsapp: controllers.leadWhatsCrt[0].text,
           firstname: controllers.leadNameCrt[0].text.trim(),
           email: controllers.leadEmailCrt[0].text.trim(),
           mobileNumber: controllers.numberList
@@ -398,7 +412,6 @@ class ApiService {
               .where((e) => e.isNotEmpty)
               .join("||"),
 
-          userId: controllers.storage.read("id").toString(),
           companyName: controllers.leadCoNameCrt.text.trim(),
           productDiscussion: controllers.prodDescriptionController.text.trim(),
           source: controllers.leadDisPointsCrt.text.trim(),
@@ -478,7 +491,7 @@ class ApiService {
         // );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) =>  NewLeadPage(index: index.toString() ,
+          MaterialPageRoute(builder: (_) =>  NewLeadPage(index: index.toString(),
               name: name,list: list,list2: list2, listIndex: 0,)),
         );
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
@@ -521,6 +534,45 @@ class ApiService {
           debugPrint("COUNTRY: ${controllers.selectedCountry.value}");
           debugPrint("STATE  : ${controllers.stateController.text}");
           debugPrint("CITY   : ${controllers.cityController.text}");
+        } else {
+          _resetPinValues();
+        }
+      } else {
+        _resetPinValues();
+      }
+    } catch (e) {
+      _resetPinValues();
+      debugPrint("PINCODE ERROR: $e");
+    }
+  }
+  Future<void> fetchPinCodeData2(String pinCode) async {
+    try {
+      controllers.comCountry.text = "Loading...";
+
+      final response = await http.get(
+        Uri.parse('https://api.postalpincode.in/pincode/$pinCode'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        if (data[0]['Status'] == 'Success') {
+          final postOffice = data[0]['PostOffice'][0];
+
+          final district = postOffice['District'] ?? "";
+          final state = postOffice['Circle'] ?? "";
+          final country = postOffice['Country'] ?? "India";
+
+          // ✅ SET VALUES
+          controllers.comCountry.text = country;
+          controllers.comState.text = state;
+          controllers.comCity.text = district;
+
+          // ✅ FINAL PRINT (THIS is what you want)
+          debugPrint("PINCODE: $pinCode");
+          debugPrint("COUNTRY: ${controllers.comCountry.text}");
+          debugPrint("STATE  : ${controllers.comState.text}");
+          debugPrint("CITY   : ${controllers.comCity.text}");
         } else {
           _resetPinValues();
         }
@@ -2945,6 +2997,7 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
       controllers.isMailLoading.value = false;
+
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -2988,6 +3041,8 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
       controllers.isMailLoading.value = false;
+      print(data);
+      print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -4297,6 +4352,12 @@ class ApiService {
     controllers.isLeadLoading.value = true;
     final url = Uri.parse(scriptApi);
     try {
+      Map data={
+        "cos_id": controllers.storage.read("cos_id"),
+        "customer_id": customerId,
+        "action": "lead_details"
+      };
+
       final response = await http.post(
         url,
         // headers: {'Content-Type': 'application/json'},
@@ -4304,14 +4365,11 @@ class ApiService {
           'X-API-TOKEN': "${TokenStorage().readToken()}",
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          "cos_id": controllers.storage.read("cos_id"),
-          "customer_id": customerId,
-          "action": "lead_details"
-        }),
+        body: jsonEncode(data),
       );
 
       controllers.isLeadLoading.value = false;
+      print(data);
       print(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -4427,7 +4485,34 @@ class ApiService {
   //   return map;
   // }
   void mergeStatusWithCount() {
-    // final statusCountMap = getStatusCountMap();
+    // // final statusCountMap = getStatusCountMap();
+    // final Map<String, int> statusCountMap = {};
+    //
+    // for (var item in remController.callFilteredList) {
+    //   final status = item.callStatus.trim();
+    //   if (status.isEmpty) continue;
+    //
+    //   statusCountMap[status] = (statusCountMap[status] ?? 0) + 1;
+    // }
+    // controllers.hCallStatusList.value =
+    //     controllers.hCallStatusList.map((item) {
+    //       final statusValue = item["value"]?.toString();
+    //
+    //       return {
+    //         ...item,
+    //         "count": statusCountMap[statusValue] ?? 0,
+    //       };
+    //     }).toList();
+    //
+    // // 🔹 Total count calculate
+    // int totalCount = controllers.hCallStatusList.fold(
+    //     0, (sum, item) => sum + ((item["count"] ?? 0) as int));
+    //
+    //
+    // log("Total Calls: $totalCount");
+    // log("Merged Status List: ${controllers.hCallStatusList}");
+
+    //
     final Map<String, int> statusCountMap = {};
 
     for (var item in remController.callFilteredList) {
@@ -4450,9 +4535,12 @@ class ApiService {
     int totalCount = controllers.hCallStatusList.fold(
         0, (sum, item) => sum + ((item["count"] ?? 0) as int));
 
-
     log("Total Calls: $totalCount");
     log("Merged Status List: ${controllers.hCallStatusList}");
+
+    controllers.allCalls.value = remController.callFilteredList.length.toString();
+
+    //
   }//new
   Future getAllCallActivity(String cusId) async {
     try {

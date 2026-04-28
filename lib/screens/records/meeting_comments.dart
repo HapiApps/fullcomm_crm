@@ -1103,7 +1103,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                         );
                       },
                     ),
-                    DateFilterBar(
+                    FutureDateFilterBar(
                       selectedSortBy: remController.selectedMeetSortBy,
                       selectedRange: remController.selectedMeetRange,
                       selectedMonth: remController.selectedMeetMonth,

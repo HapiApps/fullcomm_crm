@@ -92,18 +92,31 @@ class InputFormatters {
   ];
 }
 
-class UpperCaseTextFormatter extends TextInputFormatter {
-  @override
-  TextEditingValue formatEditUpdate(
-      TextEditingValue oldValue, TextEditingValue newValue) {
-    return TextEditingValue(
-      text: capitalize(newValue.text),
-      selection: newValue.selection,
-    );
-  }
-}
+// class UpperCaseTextFormatter extends TextInputFormatter {
+//   @override
+//   TextEditingValue formatEditUpdate(
+//       TextEditingValue oldValue, TextEditingValue newValue) {
+//     return TextEditingValue(
+//       text: capitalize(newValue.text),
+//       selection: newValue.selection,
+//     );
+//   }
+// }
 
 String capitalize(String value) {
   if (value.trim().isEmpty) return "";
   return "${value[0].toUpperCase()}${value.substring(1).toLowerCase()}";
+}
+
+class UpperCaseTextFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue,
+      TextEditingValue newValue) {
+
+    return newValue.copyWith(
+      text: newValue.text.toUpperCase(),
+      selection: newValue.selection,
+    );
+  }
 }

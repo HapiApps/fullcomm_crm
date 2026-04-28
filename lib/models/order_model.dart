@@ -188,6 +188,7 @@ class QuotationsDetails {
   final String qty;
   final String pName;
   final String pId;
+  final String notes;
   QuotationsDetails({
     required this.id,
     required this.totalAmt,
@@ -205,6 +206,7 @@ class QuotationsDetails {
     required this.qty,
     required this.pName,
     required this.pId,
+    required this.notes,
   });
 
   factory QuotationsDetails.fromJson(Map<String, dynamic> json) {
@@ -225,6 +227,7 @@ class QuotationsDetails {
       gst: json['gst'] ?? '',
       dis: json['dis'] ?? '',
       subTotal: json['subTotal'] ?? '',
+      notes: json['notes'] ?? '',
     );
   }
 }

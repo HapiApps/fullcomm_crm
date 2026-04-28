@@ -3117,6 +3117,808 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                         });
                                                   }
                                                 }
+                                                else if(dropValue=="Create Invoice"){
+                                                  if(controllers.selectedCustomerId.value==""){
+                                                    utils.showToast("Please select customer",Colors.red);
+                                                  }else if(billingProvider.billingItems.isEmpty){
+                                                    utils.showToast("Please select products",Colors.red);
+                                                  }else{
+                                                    setState(() {
+                                                      controllers.type.value="1";
+                                                      controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
+                                                      controllers.notesCtr.text="The invoice is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
+                                                      controllers.isTemplate.value=false;
+                                                      controllers.emailSubjectCtr.text="Invoice";
+                                                      controllers.emailMessageCtr.clear();
+                                                    });
+                                                    showDialog(
+                                                        context: context,
+                                                        barrierDismissible: false,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            actions: [
+                                                              Column(
+                                                                children: [
+                                                                  Divider(
+                                                                    color: Colors.grey.shade300,
+                                                                    thickness: 1,
+                                                                  ),
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        child: Row(
+                                                                          children: [
+                                                                            TextButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.of(context).pop();
+                                                                                  settingsController.showAddTemplateDialog(context);
+                                                                                },
+                                                                                child: CustomText(
+                                                                                  text: "Create Template",
+                                                                                  isCopy: false,
+                                                                                  colors: colorsConst.third,
+                                                                                  size: 18,
+                                                                                  isBold: true,
+                                                                                )),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                      CustomLoadingButton(
+                                                                        callback: () {
+                                                                          if(controllers.emailToCtr.text.trim().isEmpty){
+                                                                            utils.showToast("To is empty!",Colors.red);
+                                                                            controllers.emailCtr.reset();
+                                                                            return;
+                                                                          }
+                                                                          if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
+                                                                            utils.showToast("Invalid mail!",Colors.red);
+                                                                            controllers.emailCtr.reset();
+                                                                            return;
+                                                                          }
+                                                                          if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                                                            utils.showToast("Subject is empty!",Colors.red);
+                                                                            controllers.emailCtr.reset();
+                                                                            return;
+                                                                          }
+                                                                          if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                                                            utils.showToast("Message is empty!",Colors.red);
+                                                                            controllers.emailCtr.reset();
+                                                                            return;
+                                                                          }
+                                                                          sendInvoice(billingProvider);
+                                                                        },
+                                                                        controller: controllers.emailCtr,
+                                                                        isImage: false,
+                                                                        isLoading: true,
+                                                                        backgroundColor: colorsConst.primary,
+                                                                        radius: 5,
+                                                                        width: 200,
+                                                                        height: 50,
+                                                                        text: "Send Invoice",
+                                                                        textColor: Colors.white,
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                            content: SizedBox(
+                                                                width: 600,
+                                                                height: 400,
+                                                                child: SingleChildScrollView(
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Align(
+                                                                          alignment: Alignment.topRight,
+                                                                          child: InkWell(
+                                                                              onTap: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: Icon(
+                                                                                Icons.clear,
+                                                                                size: 18,
+                                                                                color: colorsConst.textColor,
+                                                                              ))),
+                                                                      Align(
+                                                                        alignment: Alignment.topRight,
+                                                                        child: TextButton(
+                                                                            onPressed: () {
+                                                                              controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                            },
+                                                                            child: CustomText(
+                                                                              text: "Get From Template",
+                                                                              colors: colorsConst.third,
+                                                                              size: 18,
+                                                                              isCopy: false,
+                                                                              isBold: true,
+                                                                            )),
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          CustomText(
+                                                                            textAlign: TextAlign.center,
+                                                                            text: "To",
+                                                                            colors: colorsConst.textColor,
+                                                                            size: 15,
+                                                                            isCopy: false,
+                                                                          ),
+                                                                          50.width,
+                                                                          SizedBox(
+                                                                            width: 500,
+                                                                            child: TextField(
+                                                                              controller: controllers.emailToCtr,
+                                                                              onChanged: (value){
+                                                                                if (value.toString().isNotEmpty) {
+                                                                                  String newValue = value
+                                                                                      .toString()[0]
+                                                                                      .toUpperCase() +
+                                                                                      value.toString().substring(1);
+                                                                                  if (newValue != value) {
+                                                                                    controllers.emailToCtr.value =
+                                                                                        controllers.emailToCtr.value
+                                                                                            .copyWith(
+                                                                                          text: newValue,
+                                                                                          selection:
+                                                                                          TextSelection.collapsed(
+                                                                                              offset:
+                                                                                              newValue.length),
+                                                                                        );
+                                                                                  }
+                                                                                }
+                                                                              },
+                                                                              style: TextStyle(
+                                                                                  fontSize: 15, color: colorsConst.textColor),
+                                                                              decoration: const InputDecoration(
+                                                                                border: InputBorder.none,
+                                                                              ),
+                                                                            ),
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                      SizedBox(
+                                                                          width: 600,
+                                                                          child: SingleChildScrollView(
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Divider(
+                                                                                  color: Colors.grey.shade300,
+                                                                                  thickness: 1,
+                                                                                ),
+                                                                                Row(
+                                                                                  children: [
+                                                                                    15.height,
+                                                                                    CustomText(
+                                                                                      text: "Subject",
+                                                                                      colors: colorsConst.textColor,
+                                                                                      size: 14,
+                                                                                      isCopy: false,
+                                                                                    ),
+                                                                                    20.width,
+                                                                                    SizedBox(
+                                                                                      width: 500,
+                                                                                      height: 50,
+                                                                                      child: TextField(
+                                                                                        controller: controllers.emailSubjectCtr,
+                                                                                        onChanged: (value){
+                                                                                          if (value.toString().isNotEmpty) {
+                                                                                            String newValue = value
+                                                                                                .toString()[0]
+                                                                                                .toUpperCase() +
+                                                                                                value.toString().substring(1);
+                                                                                            if (newValue != value) {
+                                                                                              controllers.emailSubjectCtr.value =
+                                                                                                  controllers.emailSubjectCtr.value
+                                                                                                      .copyWith(
+                                                                                                    text: newValue,
+                                                                                                    selection:
+                                                                                                    TextSelection.collapsed(
+                                                                                                        offset:
+                                                                                                        newValue.length),
+                                                                                                  );
+                                                                                            }
+                                                                                          }
+                                                                                        },
+                                                                                        maxLines: null,
+                                                                                        minLines: 1,
+                                                                                        style: TextStyle(
+                                                                                          color: colorsConst.textColor,
+                                                                                        ),
+                                                                                        decoration: const InputDecoration(
+                                                                                          border: InputBorder.none,
+                                                                                        ),
+                                                                                      ),
+                                                                                    )
+                                                                                  ],
+                                                                                ),
+                                                                                Divider(
+                                                                                  color: Colors.grey.shade300,
+                                                                                  thickness: 1,
+                                                                                ),
+                                                                                Obx(() => controllers.isTemplate.value == false
+                                                                                    ? SingleChildScrollView(
+                                                                                  child: Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children: [
+                                                                                      SizedBox(
+                                                                                        width: 600,
+                                                                                        height: 70,
+                                                                                        child: TextField(
+                                                                                          textInputAction: TextInputAction.newline,
+                                                                                          controller: controllers.emailMessageCtr,
+                                                                                          onChanged: (value){
+                                                                                            if (value.toString().isNotEmpty) {
+                                                                                              String newValue = value
+                                                                                                  .toString()[0]
+                                                                                                  .toUpperCase() +
+                                                                                                  value.toString().substring(1);
+                                                                                              if (newValue != value) {
+                                                                                                controllers.emailMessageCtr.value =
+                                                                                                    controllers.emailMessageCtr.value
+                                                                                                        .copyWith(
+                                                                                                      text: newValue,
+                                                                                                      selection:
+                                                                                                      TextSelection.collapsed(
+                                                                                                          offset:
+                                                                                                          newValue.length),
+                                                                                                    );
+                                                                                              }
+                                                                                            }
+                                                                                          },
+                                                                                          keyboardType: TextInputType.multiline,
+                                                                                          maxLines: 21,
+                                                                                          expands: false,
+                                                                                          style: TextStyle(
+                                                                                            color: colorsConst.textColor,
+                                                                                          ),
+                                                                                          decoration: InputDecoration(
+                                                                                            hintText: "Message",
+                                                                                            hintStyle: TextStyle(
+                                                                                                color: colorsConst.textColor,
+                                                                                                fontSize: 14,
+                                                                                                fontFamily: "Lato"),
+                                                                                            border: InputBorder.none,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                )
+                                                                                    :Obx(() => UnconstrainedBox(
+                                                                                  child: Container(
+                                                                                    width: 500,
+                                                                                    alignment: Alignment.center,
+                                                                                    decoration: BoxDecoration(
+                                                                                      color: colorsConst.secondary,
+                                                                                      borderRadius: BorderRadius.circular(10),
+                                                                                    ),
+                                                                                    child: SingleChildScrollView(
+                                                                                      child: Column(
+                                                                                        children: [
+                                                                                          SizedBox(
+                                                                                            width: 500,
+                                                                                            height: 170,
+                                                                                            child: Table(
+                                                                                              defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                              border: TableBorder.all(
+                                                                                                color: Colors.grey.shade300,
+                                                                                                style: BorderStyle.solid,
+                                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                                width: 1,
+                                                                                              ),
+                                                                                              children: [
+                                                                                                // Header Row
+                                                                                                TableRow(
+                                                                                                  children: [
+                                                                                                    CustomText(
+                                                                                                      textAlign: TextAlign.center,
+                                                                                                      text: "\nTemplate Name\n",
+                                                                                                      colors: colorsConst.textColor,
+                                                                                                      size: 15,
+                                                                                                      isBold: true,
+                                                                                                      isCopy: false,
+                                                                                                    ),
+                                                                                                    CustomText(
+                                                                                                      textAlign: TextAlign.center,
+                                                                                                      text: "\nSubject\n",
+                                                                                                      colors: colorsConst.textColor,
+                                                                                                      size: 15,
+                                                                                                      isBold: true,
+                                                                                                      isCopy: false,
+                                                                                                    ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                                // Dynamic Rows
+                                                                                                for (var item in settingsController.templateList)
+                                                                                                  utils.emailRow(
+                                                                                                      context,
+                                                                                                      isCheck: controllers.isAdd,
+                                                                                                      templateName: item.templateName,
+                                                                                                      msg: item.message,
+                                                                                                      subject: item.subject,
+                                                                                                      id: item.id
+                                                                                                  ),
+                                                                                              ],
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ))),
+                                                                                10.height,
+                                                                                SizedBox(
+                                                                                  width: 600,
+                                                                                  height: 50,
+                                                                                  child: TextField(
+                                                                                    textInputAction: TextInputAction.newline,
+                                                                                    controller: controllers.notesCtr,
+                                                                                    onChanged: (value){
+                                                                                      if (value.toString().isNotEmpty) {
+                                                                                        String newValue = value
+                                                                                            .toString()[0]
+                                                                                            .toUpperCase() +
+                                                                                            value.toString().substring(1);
+                                                                                        if (newValue != value) {
+                                                                                          controllers.notesCtr.value =
+                                                                                              controllers.notesCtr.value
+                                                                                                  .copyWith(
+                                                                                                text: newValue,
+                                                                                                selection:
+                                                                                                TextSelection.collapsed(
+                                                                                                    offset:
+                                                                                                    newValue.length),
+                                                                                              );
+                                                                                        }
+                                                                                      }
+                                                                                    },
+                                                                                    keyboardType: TextInputType.multiline,
+                                                                                    maxLines: null,
+                                                                                    minLines: 3,
+                                                                                    style: TextStyle(
+                                                                                      color: colorsConst.textColor,
+                                                                                    ),
+                                                                                    decoration: InputDecoration(
+                                                                                      hintText: "",
+                                                                                      hintStyle: TextStyle(
+                                                                                          color: colorsConst.textColor,
+                                                                                          fontSize: 14,
+                                                                                          fontFamily: "Lato"),
+                                                                                      border: InputBorder.none,
+                                                                                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                InkWell(
+                                                                                  onTap:(){
+                                                                                    printInvoice(billingProvider);
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    width: MediaQuery.of(context).size.width*0.6,
+                                                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                                                      color: Colors.grey.shade50,radius: 5,
+                                                                                    ),
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.all(8.0),
+                                                                                      child: CustomText(
+                                                                                        textAlign: TextAlign.start,
+                                                                                        text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
+                                                                                        isCopy: false,colors: colorsConst.primary,isBold: true,),
+                                                                                    ),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                          )),
+                                                                    ],
+                                                                  ),
+                                                                )),
+                                                          );
+                                                        });
+                                                  }
+                                                }
+                                                else if(dropValue=="Proforma Invoice"){
+                                                  if(controllers.selectedCustomerId.value==""){
+                                                    utils.showToast("Please select customer",Colors.red);
+                                                  }else if(billingProvider.billingItems.isEmpty){
+                                                    utils.showToast("Please select products",Colors.red);
+                                                  }else{
+                                                    setState(() {
+                                                      controllers.type.value="0";
+                                                      controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
+                                                      controllers.notesCtr.text="The proforma invoice is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
+                                                      controllers.isTemplate.value=false;
+                                                      controllers.emailSubjectCtr.text="Proforma Invoice";
+                                                      controllers.emailMessageCtr.clear();
+                                                    });
+                                                    showDialog(
+                                                        context: context,
+                                                        barrierDismissible: false,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            actions: [
+                                                              Column(
+                                                                children: [
+                                                                  Divider(
+                                                                    color: Colors.grey.shade300,
+                                                                    thickness: 1,
+                                                                  ),
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        child: Row(
+                                                                          children: [
+                                                                            TextButton(
+                                                                                onPressed: () {
+                                                                                  Navigator.of(context).pop();
+                                                                                  settingsController.showAddTemplateDialog(context);
+                                                                                },
+                                                                                child: CustomText(
+                                                                                  text: "Create Template",
+                                                                                  isCopy: false,
+                                                                                  colors: colorsConst.third,
+                                                                                  size: 18,
+                                                                                  isBold: true,
+                                                                                )),
+                                                                          ],
+                                                                        ),
+                                                                      ),
+                                                                      CustomLoadingButton(
+                                                                        callback: () {
+                                                                          if(controllers.emailToCtr.text.trim().isEmpty){
+                                                                            utils.showToast("To is empty!",Colors.red);
+                                                                            controllers.emailCtr.reset();
+                                                                            return;
+                                                                          }
+                                                                          if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
+                                                                            utils.showToast("Invalid mail!",Colors.red);
+                                                                            controllers.emailCtr.reset();
+                                                                            return;
+                                                                          }
+                                                                          if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                                                            utils.showToast("Subject is empty!",Colors.red);
+                                                                            controllers.emailCtr.reset();
+                                                                            return;
+                                                                          }
+                                                                          if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                                                            utils.showToast("Message is empty!",Colors.red);
+                                                                            controllers.emailCtr.reset();
+                                                                            return;
+                                                                          }
+                                                                          sendInvoice(billingProvider);
+                                                                        },
+                                                                        controller: controllers.emailCtr,
+                                                                        isImage: false,
+                                                                        isLoading: true,
+                                                                        backgroundColor: colorsConst.primary,
+                                                                        radius: 5,
+                                                                        width: 200,
+                                                                        height: 50,
+                                                                        text: "Send Proforma Invoice",
+                                                                        textColor: Colors.white,
+                                                                      ),
+                                                                    ],
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                            content: SizedBox(
+                                                                width: 600,
+                                                                height: 400,
+                                                                child: SingleChildScrollView(
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Align(
+                                                                          alignment: Alignment.topRight,
+                                                                          child: InkWell(
+                                                                              onTap: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: Icon(
+                                                                                Icons.clear,
+                                                                                size: 18,
+                                                                                color: colorsConst.textColor,
+                                                                              ))),
+                                                                      Align(
+                                                                        alignment: Alignment.topRight,
+                                                                        child: TextButton(
+                                                                            onPressed: () {
+                                                                              controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                            },
+                                                                            child: CustomText(
+                                                                              text: "Get From Template",
+                                                                              colors: colorsConst.third,
+                                                                              size: 18,
+                                                                              isCopy: false,
+                                                                              isBold: true,
+                                                                            )),
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          CustomText(
+                                                                            textAlign: TextAlign.center,
+                                                                            text: "To",
+                                                                            colors: colorsConst.textColor,
+                                                                            size: 15,
+                                                                            isCopy: false,
+                                                                          ),
+                                                                          50.width,
+                                                                          SizedBox(
+                                                                            width: 500,
+                                                                            child: TextField(
+                                                                              controller: controllers.emailToCtr,
+                                                                              onChanged: (value){
+                                                                                if (value.toString().isNotEmpty) {
+                                                                                  String newValue = value
+                                                                                      .toString()[0]
+                                                                                      .toUpperCase() +
+                                                                                      value.toString().substring(1);
+                                                                                  if (newValue != value) {
+                                                                                    controllers.emailToCtr.value =
+                                                                                        controllers.emailToCtr.value
+                                                                                            .copyWith(
+                                                                                          text: newValue,
+                                                                                          selection:
+                                                                                          TextSelection.collapsed(
+                                                                                              offset:
+                                                                                              newValue.length),
+                                                                                        );
+                                                                                  }
+                                                                                }
+                                                                              },
+                                                                              style: TextStyle(
+                                                                                  fontSize: 15, color: colorsConst.textColor),
+                                                                              decoration: const InputDecoration(
+                                                                                border: InputBorder.none,
+                                                                              ),
+                                                                            ),
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                      SizedBox(
+                                                                          width: 600,
+                                                                          child: SingleChildScrollView(
+                                                                            child: Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Divider(
+                                                                                  color: Colors.grey.shade300,
+                                                                                  thickness: 1,
+                                                                                ),
+                                                                                Row(
+                                                                                  children: [
+                                                                                    15.height,
+                                                                                    CustomText(
+                                                                                      text: "Subject",
+                                                                                      colors: colorsConst.textColor,
+                                                                                      size: 14,
+                                                                                      isCopy: false,
+                                                                                    ),
+                                                                                    20.width,
+                                                                                    SizedBox(
+                                                                                      width: 500,
+                                                                                      height: 50,
+                                                                                      child: TextField(
+                                                                                        controller: controllers.emailSubjectCtr,
+                                                                                        onChanged: (value){
+                                                                                          if (value.toString().isNotEmpty) {
+                                                                                            String newValue = value
+                                                                                                .toString()[0]
+                                                                                                .toUpperCase() +
+                                                                                                value.toString().substring(1);
+                                                                                            if (newValue != value) {
+                                                                                              controllers.emailSubjectCtr.value =
+                                                                                                  controllers.emailSubjectCtr.value
+                                                                                                      .copyWith(
+                                                                                                    text: newValue,
+                                                                                                    selection:
+                                                                                                    TextSelection.collapsed(
+                                                                                                        offset:
+                                                                                                        newValue.length),
+                                                                                                  );
+                                                                                            }
+                                                                                          }
+                                                                                        },
+                                                                                        maxLines: null,
+                                                                                        minLines: 1,
+                                                                                        style: TextStyle(
+                                                                                          color: colorsConst.textColor,
+                                                                                        ),
+                                                                                        decoration: const InputDecoration(
+                                                                                          border: InputBorder.none,
+                                                                                        ),
+                                                                                      ),
+                                                                                    )
+                                                                                  ],
+                                                                                ),
+                                                                                Divider(
+                                                                                  color: Colors.grey.shade300,
+                                                                                  thickness: 1,
+                                                                                ),
+                                                                                Obx(() => controllers.isTemplate.value == false
+                                                                                    ? SingleChildScrollView(
+                                                                                  child: Column(
+                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                    children: [
+                                                                                      SizedBox(
+                                                                                        width: 600,
+                                                                                        height: 70,
+                                                                                        child: TextField(
+                                                                                          textInputAction: TextInputAction.newline,
+                                                                                          controller: controllers.emailMessageCtr,
+                                                                                          onChanged: (value){
+                                                                                            if (value.toString().isNotEmpty) {
+                                                                                              String newValue = value
+                                                                                                  .toString()[0]
+                                                                                                  .toUpperCase() +
+                                                                                                  value.toString().substring(1);
+                                                                                              if (newValue != value) {
+                                                                                                controllers.emailMessageCtr.value =
+                                                                                                    controllers.emailMessageCtr.value
+                                                                                                        .copyWith(
+                                                                                                      text: newValue,
+                                                                                                      selection:
+                                                                                                      TextSelection.collapsed(
+                                                                                                          offset:
+                                                                                                          newValue.length),
+                                                                                                    );
+                                                                                              }
+                                                                                            }
+                                                                                          },
+                                                                                          keyboardType: TextInputType.multiline,
+                                                                                          maxLines: 21,
+                                                                                          expands: false,
+                                                                                          style: TextStyle(
+                                                                                            color: colorsConst.textColor,
+                                                                                          ),
+                                                                                          decoration: InputDecoration(
+                                                                                            hintText: "Message",
+                                                                                            hintStyle: TextStyle(
+                                                                                                color: colorsConst.textColor,
+                                                                                                fontSize: 14,
+                                                                                                fontFamily: "Lato"),
+                                                                                            border: InputBorder.none,
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                )
+                                                                                    :Obx(() => UnconstrainedBox(
+                                                                                  child: Container(
+                                                                                    width: 500,
+                                                                                    alignment: Alignment.center,
+                                                                                    decoration: BoxDecoration(
+                                                                                      color: colorsConst.secondary,
+                                                                                      borderRadius: BorderRadius.circular(10),
+                                                                                    ),
+                                                                                    child: SingleChildScrollView(
+                                                                                      child: Column(
+                                                                                        children: [
+                                                                                          SizedBox(
+                                                                                            width: 500,
+                                                                                            height: 170,
+                                                                                            child: Table(
+                                                                                              defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                              border: TableBorder.all(
+                                                                                                color: Colors.grey.shade300,
+                                                                                                style: BorderStyle.solid,
+                                                                                                borderRadius: BorderRadius.circular(10),
+                                                                                                width: 1,
+                                                                                              ),
+                                                                                              children: [
+                                                                                                // Header Row
+                                                                                                TableRow(
+                                                                                                  children: [
+                                                                                                    CustomText(
+                                                                                                      textAlign: TextAlign.center,
+                                                                                                      text: "\nTemplate Name\n",
+                                                                                                      colors: colorsConst.textColor,
+                                                                                                      size: 15,
+                                                                                                      isBold: true,
+                                                                                                      isCopy: false,
+                                                                                                    ),
+                                                                                                    CustomText(
+                                                                                                      textAlign: TextAlign.center,
+                                                                                                      text: "\nSubject\n",
+                                                                                                      colors: colorsConst.textColor,
+                                                                                                      size: 15,
+                                                                                                      isBold: true,
+                                                                                                      isCopy: false,
+                                                                                                    ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                                // Dynamic Rows
+                                                                                                for (var item in settingsController.templateList)
+                                                                                                  utils.emailRow(
+                                                                                                      context,
+                                                                                                      isCheck: controllers.isAdd,
+                                                                                                      templateName: item.templateName,
+                                                                                                      msg: item.message,
+                                                                                                      subject: item.subject,
+                                                                                                      id: item.id
+                                                                                                  ),
+                                                                                              ],
+                                                                                            ),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                  ),
+                                                                                ))),
+                                                                                10.height,
+                                                                                SizedBox(
+                                                                                  width: 600,
+                                                                                  height: 50,
+                                                                                  child: TextField(
+                                                                                    textInputAction: TextInputAction.newline,
+                                                                                    controller: controllers.notesCtr,
+                                                                                    onChanged: (value){
+                                                                                      if (value.toString().isNotEmpty) {
+                                                                                        String newValue = value
+                                                                                            .toString()[0]
+                                                                                            .toUpperCase() +
+                                                                                            value.toString().substring(1);
+                                                                                        if (newValue != value) {
+                                                                                          controllers.notesCtr.value =
+                                                                                              controllers.notesCtr.value
+                                                                                                  .copyWith(
+                                                                                                text: newValue,
+                                                                                                selection:
+                                                                                                TextSelection.collapsed(
+                                                                                                    offset:
+                                                                                                    newValue.length),
+                                                                                              );
+                                                                                        }
+                                                                                      }
+                                                                                    },
+                                                                                    keyboardType: TextInputType.multiline,
+                                                                                    maxLines: null,
+                                                                                    minLines: 3,
+                                                                                    style: TextStyle(
+                                                                                      color: colorsConst.textColor,
+                                                                                    ),
+                                                                                    decoration: InputDecoration(
+                                                                                      hintText: "",
+                                                                                      hintStyle: TextStyle(
+                                                                                          color: colorsConst.textColor,
+                                                                                          fontSize: 14,
+                                                                                          fontFamily: "Lato"),
+                                                                                      border: InputBorder.none,
+                                                                                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                                                    ),
+                                                                                  ),
+                                                                                ),
+                                                                                InkWell(
+                                                                                  onTap:(){
+                                                                                    printInvoice(billingProvider);
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    width: MediaQuery.of(context).size.width*0.6,
+                                                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                                                      color: Colors.grey.shade50,radius: 5,
+                                                                                    ),
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.all(8.0),
+                                                                                      child: CustomText(
+                                                                                        textAlign: TextAlign.start,
+                                                                                        text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
+                                                                                        isCopy: false,colors: colorsConst.primary,isBold: true,),
+                                                                                    ),
+                                                                                  ),
+                                                                                )
+                                                                              ],
+                                                                            ),
+                                                                          )),
+                                                                    ],
+                                                                  ),
+                                                                )),
+                                                          );
+                                                        });
+                                                  }
+                                                }
                                               });
                                             },
                                           ),
@@ -4479,16 +5281,21 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                       child: pw.Column(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                          pw.Text("Hapi Apps",
+                          pw.Text(controllers.comName.text,
                               style: pw.TextStyle(
                                   fontSize: 18,
                                   fontWeight: pw.FontWeight.bold)),
                           pw.Text(
-                              "7/38, East Street, Kulaiyankarisal\nThoothukudi, Tamil Nadu, 628103"),
+                              "${controllers.comDoor.text}, ${controllers.comStreet.text}\n${controllers.comCity.text}, ${controllers.comState.text},"
+                                  " ${controllers.comCountry.text}, ${controllers.comPincode.text}"),
                           pw.SizedBox(height: 5),
-                          pw.Text("Email : info@hapiapps.com"),
-                          pw.Text("Mobile : +91 9677 281 724"),
-                          pw.Text("GSTIN : "),
+                          pw.Text("Email : ${controllers.comEmail.text}"),
+                          pw.Text("Mobile : +91 ${controllers.comNumber.text.replaceAllMapped(
+                              RegExp(r'(\d{4})(\d{3})(\d{3})'),
+                                  (m) => '${m[1]} ${m[2]} ${m[3]}',
+                            )}",
+                          ),
+                          pw.Text("GSTIN : ${controllers.comGSTNo.text}"),
                         ],
                       ),
                     ),
@@ -4581,11 +5388,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                         children: [
                           // pw.Text("Amount in Words: INR ${productCtr.numberToWords(int.parse(data.totalAmt))} Only"),
                           pw.SizedBox(height: 10),
-                          pw.Text("UPI ID:"),
-                          pw.Text("Bank Account No:"),
-                          pw.Text("Name: Hapi Apps"),
-                          pw.Text("IFSC: ..."),
-                          pw.Text("Kulaiyankarisal branch"),
+                          pw.Text("Name:  ${controllers.bankName.text}"),
+                          pw.Text("Branch:  ${controllers.branchName.text}"),
+                          pw.Text("Bank Account No:  ${controllers.accNo.text}"),
+                          pw.Text("IFSC:  ${controllers.ifscCode.text}"),
+                          pw.Text("UPI ID: ${controllers.upiNo.text}"),
                         ],
                       ),
                     ),

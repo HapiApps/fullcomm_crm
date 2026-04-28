@@ -93,6 +93,7 @@ class _CallCommentsState extends State<CallComments> {
         selectedRange: remController.selectedCallRange.value,
         selectedDateFilter: remController.selectedCallSortBy.value,
       );
+      apiService.mergeStatusWithCount();
       apiService.currentVersion();
     });
   }
@@ -477,7 +478,6 @@ class _CallCommentsState extends State<CallComments> {
                           selectedRange: remController.selectedCallRange.value,
                           selectedDateFilter: remController.selectedCallSortBy.value,
                         );
-                        apiService.mergeStatusWithCount();
                       },
                       onSelectMonth: () {
                         remController.selectMonth(

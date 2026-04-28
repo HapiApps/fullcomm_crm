@@ -67,8 +67,8 @@ class _NewLeadPageState extends State<NewLeadPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // debugPrint("widget.list: ${widget.list}");
-    // debugPrint("widget.list2: ${widget.list}");
+    debugPrint("widget.list: ${widget.list}");
+    debugPrint("widget.list2: ${widget.list}");
     // debugPrint("widget.list: ${widget.list.length}");
     // debugPrint("widget.list2: ${widget.list2.length}");
     _focusNode = FocusNode();

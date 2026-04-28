@@ -19,6 +19,7 @@ import '../../controller/dashboard_controller.dart';
 import '../../controller/product_controller.dart';
 import '../../models/all_customers_obj.dart';
 import '../../services/api_services.dart';
+import 'invoice_settings.dart';
 import 'lead_categories.dart';
 
 class QuotationSettings extends StatefulWidget {
@@ -34,7 +35,7 @@ class _QuotationSettingsState extends State<QuotationSettings> {
     // TODO: implement initState
     super.initState();
     Future.delayed(Duration.zero, () {
-      controllers.insertSeriesNo();
+      controllers.insertSeriesNo(context,true);
     });
   }
   @override
@@ -147,7 +148,107 @@ class _QuotationSettingsState extends State<QuotationSettings> {
                       ),10.width,
                       InkWell(
                         onTap: (){
-                          // utils.showFilterDialog(context);
+                          controllers.qNo.text=controllers.quotationNo.value;
+                          controllers.iNo.text=controllers.invoiceNo.value;
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: Color(0xFFF1F5F9),
+                                title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      width: 30,height: 30,decoration: customDecoration.baseBackgroundDecoration(
+                                        color: colorsConst.primary,radius: 5
+                                    ),
+                                      child: Icon(Icons.calendar_today_outlined,color: Colors.white,size: 15,),
+                                    ),10.width,
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        CustomText(text: "Number Series", isCopy: false,isBold: true,),
+                                        // CustomText(text: "Set the default time filter for dashboard records", isCopy: false),
+                                      ],
+                                    ),10.width,
+                                    InkWell(
+                                      onTap: (){
+                                        Navigator.pop(context);
+                                      },
+                                      child: Container(
+                                        width: 25,height: 25,decoration: customDecoration.baseBackgroundDecoration(
+                                          color: Colors.transparent,radius: 5,borderColor: Colors.grey.shade500
+                                      ),
+                                        child: Center(child: Icon(Icons.clear,color: Colors.grey.shade500,size: 15,)),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                content: SizedBox(
+                                  height: 300,
+                                  child: Column(
+                                    // mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CustomTextField(text: "Quotation Series",
+                                          hintText: "Quotation Series", controller: controllers.qNo,
+                                          inputFormatters: constInputFormatters.panInput,
+                                          onChanged: (value) {
+                                          if (value.toString().isNotEmpty) {
+                                            String newValue = value.toString()[0].toUpperCase() +value.toString().substring(1);
+                                            if (newValue != value) {
+                                              controllers.qNo.value =controllers.qNo.value.copyWith(
+                                                    text: newValue,
+                                                    selection:
+                                                    TextSelection.collapsed(
+                                                        offset:
+                                                        newValue.length),
+                                                  );
+                                            }
+                                          }
+                                        }
+                                      ),
+                                      CustomTextField(text: "Invoice Series",hintText: "Invoice Series",
+                                          controller: controllers.iNo,
+                                          inputFormatters: constInputFormatters.panInput,
+                                          onChanged: (value) {
+                                            if (value.toString().isNotEmpty) {
+                                              String newValue = value.toString()[0].toUpperCase() +value.toString().substring(1);
+                                              if (newValue != value) {
+                                                controllers.iNo.value =controllers.iNo.value.copyWith(
+                                                  text: newValue,
+                                                  selection:
+                                                  TextSelection.collapsed(
+                                                      offset:
+                                                      newValue.length),
+                                                );
+                                              }
+                                            }
+                                          }
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                actions: [
+                                  OutlinedButton(
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: const CustomText(text: "Cancel", isCopy: false,colors: Colors.black,),
+                                  ),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: colorsConst.primary
+                                    ),
+                                    onPressed: () {
+                                      controllers.insertSeriesNo(context,false);
+                                      Navigator.pop(context);
+                                    },
+                                    child: CustomText(text:"Save",colors: Colors.white,isCopy: false,),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         },
                         child: Container(
                           width:screenWidth/5,
@@ -185,11 +286,11 @@ class _QuotationSettingsState extends State<QuotationSettings> {
                                   children: [
                                     Row(
                                       children: [
-                                        Image.asset("assets/images/setting3.png",width: 15,height: 15,),5.width,
-                                        CustomText(
-                                          text: "CQ0001",
+                                        Icon(Icons.numbers),5.width,
+                                        Obx(()=>CustomText(
+                                          text: controllers.quotationNo.value,
                                           isCopy: false,
-                                        )
+                                        ))
                                       ],
                                     ),
                                     Container(
@@ -210,7 +311,7 @@ class _QuotationSettingsState extends State<QuotationSettings> {
                     10.width,
                       InkWell(
                         onTap: (){
-                          // utils.showFilterDialog(context);
+                          Get.to(InvoiceSetting());
                         },
                         child: Container(
                           width:screenWidth/5,
