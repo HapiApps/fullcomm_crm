@@ -1,13 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
-import 'package:get/get_utils/src/extensions/string_extensions.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:fullcomm_crm/res/colors.dart';
 import 'package:fullcomm_crm/res/components/bottom_widgets.dart';
 import 'package:fullcomm_crm/res/components/buttons.dart';
 import 'package:fullcomm_crm/res/components/k_loadings.dart';
@@ -44,7 +40,6 @@ import '../../res/components/keyboard_search.dart';
 import '../../screens/quotation/send_quotation.dart';
 import '../../services/api_services.dart';
 import '../orders/hold_order.dart';
-import '../orders/order_detail_page.dart';
 import '../products/add_products.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -4940,7 +4935,66 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                             IconButton(
                                                               icon: const Icon(Icons.delete_forever, color: Colors.black),
                                                               onPressed: () {
-                                                                billingProvider.removeBillingItem(index: index);
+                                                                showDialog(
+                                                                    context: context,
+                                                                    barrierDismissible: false,
+                                                                    builder: (context) {
+                                                                      return AlertDialog(
+                                                                        content: CustomText(
+                                                                          text: "Are you sure delete this product?",
+                                                                          size: 16,
+                                                                          isCopy: false,
+                                                                          isBold: true,
+                                                                          colors: colorsConst.textColor,
+                                                                        ),
+                                                                        actions: [
+                                                                          Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                                            children: [
+                                                                              Container(
+                                                                                decoration: BoxDecoration(
+                                                                                    border: Border.all(color: colorsConst.primary),
+                                                                                    color: Colors.white),
+                                                                                width: 80,
+                                                                                height: 25,
+                                                                                child: ElevatedButton(
+                                                                                    style: ElevatedButton.styleFrom(
+                                                                                      shape: const RoundedRectangleBorder(
+                                                                                        borderRadius: BorderRadius.zero,
+                                                                                      ),
+                                                                                      backgroundColor: Colors.white,
+                                                                                    ),
+                                                                                    onPressed: () {
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                    child: CustomText(
+                                                                                      text: "Cancel",
+                                                                                      isCopy: false,
+                                                                                      colors: colorsConst.primary,
+                                                                                      size: 14,
+                                                                                    )),
+                                                                              ),
+                                                                              10.width,
+                                                                              CustomLoadingButton(
+                                                                                callback: (){
+                                                                                  billingProvider.removeBillingItem(index: index);
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                height: 35,
+                                                                                isLoading: false,
+                                                                                backgroundColor: colorsConst.primary,
+                                                                                radius: 2,
+                                                                                width: 80,
+                                                                                isImage: false,
+                                                                                text: "Delete",
+                                                                                textColor: Colors.white,
+                                                                              ),
+                                                                              5.width
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      );
+                                                                    });
                                                               },
                                                             ),
                                                           ],
@@ -4969,11 +5023,8 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                           border: InputBorder.none,
                                                           enabledBorder: InputBorder.none,
                                                           focusedBorder: InputBorder.none,
-                                                          contentPadding: EdgeInsets.symmetric(
-                                                            vertical: 6,
-                                                            horizontal: 6,
-                                                          ),),
-
+                                                          contentPadding: EdgeInsets.fromLTRB(5, 15, 5, 5),
+                                                        ),
                                                         // 🔹 USER TYPING (ALLOW EMPTY)
                                                         onChanged: (value) {
                                                           // allow empty while typing
@@ -5063,10 +5114,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                           border: InputBorder.none,
                                                           enabledBorder: InputBorder.none,
                                                           focusedBorder: InputBorder.none,
-                                                          contentPadding: EdgeInsets.symmetric(
-                                                            vertical: 6,
-                                                            horizontal: 6,
-                                                          ),
+                                                          contentPadding: EdgeInsets.fromLTRB(5, 15, 5, 5),
                                                         ),
 
                                                         // 🔹 USER TYPING — ALLOW EMPTY / 0
@@ -5091,24 +5139,24 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                               int.tryParse(billProduct.product.qtyLeft=="null"||billProduct.product.qtyLeft==""?"0"
                                                                   :billProduct.product.qtyLeft.toString()) ?? 0;
 
-                                                          if (qty > maxQty) {
-                                                            qty = maxQty;
-
-                                                            final controller =
-                                                            billingProvider.quantityControllers[index]!;
-
-                                                            final fixedText = qty.toString();
-
-                                                            // cursor-safe update
-                                                            if (controller.text != fixedText) {
-                                                              controller.value = controller.value.copyWith(
-                                                                text: fixedText,
-                                                                selection:
-                                                                TextSelection.collapsed(offset: fixedText.length),
-                                                                composing: TextRange.empty,
-                                                              );
-                                                            }
-                                                          }
+                                                          // if (qty > maxQty) {
+                                                          //   qty = maxQty;
+                                                          //
+                                                          //   final controller =
+                                                          //   billingProvider.quantityControllers[index]!;
+                                                          //
+                                                          //   final fixedText = qty.toString();
+                                                          //
+                                                          //   // cursor-safe update
+                                                          //   if (controller.text != fixedText) {
+                                                          //     controller.value = controller.value.copyWith(
+                                                          //       text: fixedText,
+                                                          //       selection:
+                                                          //       TextSelection.collapsed(offset: fixedText.length),
+                                                          //       composing: TextRange.empty,
+                                                          //     );
+                                                          //   }
+                                                          // }
 
                                                           // update provider
                                                           billingProvider.updateBillingItem(

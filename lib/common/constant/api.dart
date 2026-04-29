@@ -24,7 +24,6 @@ const String qualifiedScript = "$domain/CRM/qualified_script.php";
 const String getImage        = "$domain/CRM/get_files.php";
 const String imageFile        = "$domain/CRM/image_file.php";
 
-
 /// Thirumal database
 /// Dev
 // const String domain      = "https://thirumald.hapirides.in";

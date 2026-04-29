@@ -20,6 +20,16 @@ class CustomStyle {
         fontWeight: isBold! ? FontWeight.bold : FontWeight.w200,
         fontFamily: "Lato");
   }
+  InputDecoration lineDecoration({String? text}) {
+    return InputDecoration(
+      // fillColor: Colors.white,
+      // filled: true,
+      enabledBorder: OutlineInputBorder(
+          borderSide:  const BorderSide(color: Colors.white,),
+          borderRadius: BorderRadius.circular(5)
+      ),
+    );
+  }
 
   InputDecoration inputDecoration(
       {String? text,String? errorText,

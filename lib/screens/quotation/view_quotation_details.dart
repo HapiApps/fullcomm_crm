@@ -173,6 +173,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                             CustomText(text: "Quotation Detail",size: 16, isCopy: false,isBold: true,colors: colorsConst.primary,),20.width,
                                             rowText("Quotation Number",widget.list.quotationNo),20.width,
                                             rowText("Quotation Status",widget.list.status),
+                                            rowText("Send Date",productCtr.showCrtDate(widget.list.createdTs.toString())),
                                           ],
                                         ),
                                         10.height,

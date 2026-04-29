@@ -35,6 +35,27 @@ final Utils utils = Utils._();
 
 class Utils {
   Utils._();
+  String formatDob(String? dob) {
+    if (dob == null || dob.isEmpty || dob == "null") {
+      return "";
+    }
+
+    // Check if already in dd-mm-yyyy format
+    final regex = RegExp(r'^\d{2}-\d{2}-\d{4}$');
+    if (regex.hasMatch(dob)) {
+      return dob; // Already in correct format
+    }
+
+    try {
+      DateTime parsedDate = DateTime.parse(dob);
+      return "${parsedDate.day.toString().padLeft(2, '0')}-"
+          "${parsedDate.month.toString().padLeft(2, '0')}-"
+          "${parsedDate.year}";
+    } catch (e) {
+      return "";
+    }
+  }
+
   // void bulkEmailDialog(FocusNode focusNode, {required List<Map<String, String>> list}) {
   //   int total = list.length;
   //   int withMail = list.where((e) => (e["mail_id"] != null && e["mail_id"]!.trim().isNotEmpty && e["mail_id"]!.trim() != "null")).length;
@@ -2865,7 +2886,7 @@ class Utils {
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:110,
+                                  width:120,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -2920,7 +2941,7 @@ class Utils {
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:110,
+                                  width:100,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -2976,7 +2997,7 @@ class Utils {
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:110,
+                                  width:120,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -3031,7 +3052,7 @@ class Utils {
                                 },
                                 child: Container(
                                   height: 40,
-                                  width:110,
+                                  width:100,
                                   padding: const EdgeInsets.symmetric(horizontal: 10),
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey.shade400),
@@ -5474,4 +5495,19 @@ void caps(String value,TextEditingController ctr){
     }
   }
 }
+  Widget app_bar({String? text,required VoidCallback callback1,VoidCallback? callback2}){
+    return AppBar(
+      leading: IconButton(onPressed:callback1, icon: Icon(Icons.keyboard_arrow_left,color: Colors.black,)),
+      centerTitle: true,
+      backgroundColor: colorsConst.backgroundColor,
+      title:Text("$text",
+        style: const TextStyle(
+            color:Colors.black,
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            fontFamily: "Lato"
+        ),),
+      elevation: 0.0,
+    );
+  }
 }

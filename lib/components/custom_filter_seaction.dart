@@ -162,8 +162,10 @@ class FilterSection extends StatelessWidget {
                     //   // controllers.selectCustomer(value);
                     // },
                     onSelected: (value) {
-
-                    controllers.search.text = value.name.toString();
+                      print("value...");
+                      print(value);
+                      controllers.selectCustomer(value);
+                      controllers.search.text = value.name.toString();
 
                     // print("value.leadStatus ${value.leadStatus}");
                     // print("leadIndex $leadIndex");

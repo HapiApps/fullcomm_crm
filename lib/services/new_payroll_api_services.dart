@@ -3,14 +3,14 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart'as http;
-import 'package:security/constant/api.dart';
-import 'package:security/constant/local_data.dart';
-import '../controller/monthly_unit_payroll.dart';
+import '../common/constant/api.dart';
+import '../common/utilities/utils.dart';
+import '../controller/controller.dart';
 import '../controller/new_payroll_controller.dart';
-import '../model/payroll_user_model.dart';
-import '../model/unit_model.dart';
-import '../utills/utilities.dart';
-import '../view/new_payroll/wages_sheet.dart';
+import '../models/payroll/monthly_unit_payroll.dart';
+import '../models/payroll/payroll_user_model.dart';
+import '../models/payroll/unit_model.dart';
+import '../screens/new_payroll/wages_sheet.dart';
 
 class NewPayrollApiServices{
   /// private constructor
@@ -21,14 +21,14 @@ class NewPayrollApiServices{
   Future<List<units>> getAllUnits() async {
     try{
       Map data = {
-        "action":getAllData,
-        "cos_id":localData.storage.read("cos_id"),
-        "com_id":localData.storage.read("com_id"),
+        "action":"get_data",
+        "cos_id":controllers.storage.read("cos_id"),
+        "com_id":controllers.storage.read("com_id"),
         "search_type":"payroll_units",
-        "role":localData.storage.read("role"),
-        "id":localData.storage.read("id")
+        "role":controllers.storage.read("role"),
+        "id":controllers.storage.read("id")
       };
-      final request = await http.post(Uri.parse(phpFile),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -59,16 +59,16 @@ class NewPayrollApiServices{
     try{
       pyrlCtr.getData.value=false;
       Map data = {
-        "action":getAllData,
-        "cos_id":localData.storage.read("cos_id"),
-        "com_id":localData.storage.read("com_id"),
+        "action":"get_data",
+        "cos_id":controllers.storage.read("cos_id"),
+        "com_id":controllers.storage.read("com_id"),
         "search_type":"new_monthly_payroll",
         "unit_id":unitId,
         "month":pyrlCtr.month.value,
-        "role":localData.storage.read("role"),
-        "id":localData.storage.read("id")
+        "role":controllers.storage.read("role"),
+        "id":controllers.storage.read("id")
       };
-      final request = await http.post(Uri.parse(phpFile),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -101,16 +101,16 @@ class NewPayrollApiServices{
       pyrlCtr.getData.value=false;
       pyrlCtr.unitPayrollList.clear();
       Map data = {
-        "action":getAllData,
-        "cos_id":localData.storage.read("cos_id"),
-        "com_id":localData.storage.read("com_id"),
+        "action":"get_data",
+        "cos_id":controllers.storage.read("cos_id"),
+        "com_id":controllers.storage.read("com_id"),
         "search_type":"team_new_monthly_payroll",
         "team_id":teamId,
         "month":pyrlCtr.month.value,
-        "role":localData.storage.read("role"),
-        "id":localData.storage.read("id")
+        "role":controllers.storage.read("role"),
+        "id":controllers.storage.read("id")
       };
-      final request = await http.post(Uri.parse(phpFile),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -142,15 +142,15 @@ class NewPayrollApiServices{
     try{
       pyrlCtr.getData.value=false;
       Map data = {
-        "action":getAllData,
-        "cos_id":localData.storage.read("cos_id"),
-        "com_id":localData.storage.read("com_id"),
+        "action":"get_data",
+        "cos_id":controllers.storage.read("cos_id"),
+        "com_id":controllers.storage.read("com_id"),
         "search_type":"esi_wages_payroll",
         "month":pyrlCtr.month.value,
-        "role":localData.storage.read("role"),
-        "id":localData.storage.read("id")
+        "role":controllers.storage.read("role"),
+        "id":controllers.storage.read("id")
       };
-      final request = await http.post(Uri.parse(phpFile),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -182,15 +182,15 @@ class NewPayrollApiServices{
     try{
       pyrlCtr.getData.value=false;
       Map data = {
-        "action":getAllData,
-        "cos_id":localData.storage.read("cos_id"),
-        "com_id":localData.storage.read("com_id"),
+        "action":"get_data",
+        "cos_id":controllers.storage.read("cos_id"),
+        "com_id":controllers.storage.read("com_id"),
         "search_type":"pf_wages_payroll",
         "month":pyrlCtr.month.value,
-        "role":localData.storage.read("role"),
-        "id":localData.storage.read("id")
+        "role":controllers.storage.read("role"),
+        "id":controllers.storage.read("id")
       };
-      final request = await http.post(Uri.parse(phpFile),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -222,14 +222,14 @@ class NewPayrollApiServices{
     try{
       pyrlCtr.getData.value=false;
       Map data = {
-        "action":getAllData,
-        "cos_id":localData.storage.read("cos_id"),
-        "com_id":localData.storage.read("com_id"),
+        "action":"get_data",
+        "cos_id":controllers.storage.read("cos_id"),
+        "com_id":controllers.storage.read("com_id"),
         "search_type":"payslip_payroll",
         "month":pyrlCtr.month.value,
         "id":id
       };
-      final request = await http.post(Uri.parse(phpFile),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -261,14 +261,14 @@ class NewPayrollApiServices{
     try{
       pyrlCtr.getData.value=false;
       Map data = {
-        "action":getAllData,
-        "cos_id":localData.storage.read("cos_id"),
-        "com_id":localData.storage.read("com_id"),
+        "action":"get_data",
+        "cos_id":controllers.storage.read("cos_id"),
+        "com_id":controllers.storage.read("com_id"),
         "search_type":"salary_slip_payroll",
         "month":pyrlCtr.month.value,
         "id":id
       };
-      final request = await http.post(Uri.parse(phpFile),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -299,13 +299,13 @@ class NewPayrollApiServices{
   Future<List<EmployeeModel2>> allEmpList() async {
     pyrlCtr.getData.value=false;
     Map data = {
-      "action":getAllData,
-      "cos_id":localData.storage.read("cos_id"),
-      "com_id":localData.storage.read("com_id"),
+      "action":"get_data",
+      "cos_id":controllers.storage.read("cos_id"),
+      "com_id":controllers.storage.read("com_id"),
       "search_type":"payroll_emps",
-      "role":localData.storage.read("role")
+      "role":controllers.storage.read("role")
     };
-    final request = await http.post(Uri.parse(phpFile),
+    final request = await http.post(Uri.parse(scriptApi),
         headers: {
           "Accept": "application/text",
           "Content-Type": "application/x-www-form-urlencoded"
@@ -329,13 +329,13 @@ class NewPayrollApiServices{
   Future<List<EmployeeModel2>> getIDCardNew(String id) async {
     pyrlCtr.getData.value=false;
     Map data = {
-      "action":getAllData,
-      "cos_id":localData.storage.read("cos_id"),
-      "com_id":localData.storage.read("com_id"),
+      "action":"get_data",
+      "cos_id":controllers.storage.read("cos_id"),
+      "com_id":controllers.storage.read("com_id"),
       "search_type":"id_emps",
       "id":id
     };
-    final request = await http.post(Uri.parse(phpFile),
+    final request = await http.post(Uri.parse(scriptApi),
         headers: {
           "Accept": "application/text",
           "Content-Type": "application/x-www-form-urlencoded"
@@ -366,18 +366,18 @@ class NewPayrollApiServices{
       print(empList.toString());
 
       final Map<String, dynamic> sendData = {
-        'action': payrollUserList,
+        'action': "payroll_user_list",
         'empList': empList,
-        'created_by': localData.storage.read("id"),
+        'created_by': controllers.storage.read("id"),
         'month': pyrlCtr.month.value,
-        'unit_id': localData.storage.read("p_unit_id"),
-        'unit_name': localData.storage.read("p_unit_name"),
-        "cos_id":localData.storage.read("cos_id"),
-        "com_id":localData.storage.read("com_id"),
+        'unit_id': controllers.storage.read("p_unit_id"),
+        'unit_name': controllers.storage.read("p_unit_name"),
+        "cos_id":controllers.storage.read("cos_id"),
+        "com_id":controllers.storage.read("com_id"),
       };
       log(sendData.toString());
 
-      final request = await http.post(Uri.parse(phpFile),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -387,17 +387,17 @@ class NewPayrollApiServices{
       log("response.body");
       log(request.body);
       if (request.statusCode == 200) {
-        utils.toast(context: context,text: "Saved Successfully", color: Colors.green);
+        utils.snackBar(context: context,msg: "Saved Successfully", color: Colors.green);
         pyrlCtr.users.clear();
         pyrlCtr.unitPayrollList.clear();
         Get.to(const UnitSlip(), transition: Transition.rightToLeftWithFade, duration: const Duration(seconds: 1));
         pyrlCtr.submit.reset();
       } else {
-        utils.toast(context: context,text:"Failed",color: Colors.red);
+        utils.snackBar(context: context,msg:"Failed",color: Colors.red);
         pyrlCtr.submit.reset();
       }
     } catch (e) {
-      utils.toast(context: context,text:"Failed",color: Colors.red);
+      utils.snackBar(context: context,msg:"Failed",color: Colors.red);
       pyrlCtr.submit.reset();
     }
   }
@@ -408,16 +408,16 @@ class NewPayrollApiServices{
       final List<Map<String, dynamic>> empList =
       dataList.map((e) => e.toJson()).toList();
       final Map<String, dynamic> sendData = {
-        'action': updatePayrollUserList,
+        'action': "update_payroll_user_list",
         'empList': empList,
-        'created_by': localData.storage.read("id"),
+        'created_by': controllers.storage.read("id"),
         'slip_id': slipId,
-        "cos_id":localData.storage.read("cos_id"),
-        "com_id":localData.storage.read("com_id"),
+        "cos_id":controllers.storage.read("cos_id"),
+        "com_id":controllers.storage.read("com_id"),
       };
       log(sendData.toString());
 
-      final request = await http.post(Uri.parse(phpFile),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -427,17 +427,17 @@ class NewPayrollApiServices{
       log("response.body");
       log(request.body);
       if (request.statusCode == 200) {
-        utils.toast(context: context,text: "Saved Successfully", color: Colors.green);
+        utils.snackBar(context: context,msg: "Saved Successfully", color: Colors.green);
         pyrlCtr.users.clear();
         pyrlCtr.unitPayrollList.clear();
         Get.to(const UnitSlip(), transition: Transition.rightToLeftWithFade, duration: const Duration(seconds: 1));
         pyrlCtr.submit.reset();
       } else {
-        utils.toast(context: context,text:"Failed",color: Colors.red);
+        utils.snackBar(context: context,msg:"Failed",color: Colors.red);
         pyrlCtr.submit.reset();
       }
     } catch (e) {
-      utils.toast(context: context,text:"Failed",color: Colors.red);
+      utils.snackBar(context: context,msg:"Failed",color: Colors.red);
       pyrlCtr.submit.reset();
     }
   }
@@ -445,11 +445,11 @@ class NewPayrollApiServices{
   Future addDutyDays(BuildContext context,{required String basic,required String da,required String hra,required String dedection,required String netAmt}) async {
     Map data = {
       // "action":insertMonthlyPayroll,
-      "emp_id":localData.storage.read("p_emp_id"),
-      "name":localData.storage.read("p_emp_name"),
-      "unit_id":localData.storage.read("p_unit_id"),
-      "unit_name":localData.storage.read("p_unit_name"),
-      "created_by":localData.storage.read("id"),
+      "emp_id":controllers.storage.read("p_emp_id"),
+      "name":controllers.storage.read("p_emp_name"),
+      "unit_id":controllers.storage.read("p_unit_id"),
+      "unit_name":controllers.storage.read("p_unit_name"),
+      "created_by":controllers.storage.read("id"),
       "duty":pyrlCtr.duty.text.trim(),
       "advance":parseDoubleOrZero(pyrlCtr.advance.text.trim()),
       "penalty":parseDoubleOrZero(pyrlCtr.penalty.text.trim()),
@@ -462,7 +462,7 @@ class NewPayrollApiServices{
       "deduction":dedection,
       "net_amount":netAmt,
     };
-    final request = await http.post(Uri.parse(phpFile),
+    final request = await http.post(Uri.parse(scriptApi),
         headers: {
           "Accept": "application/text",
           "Content-Type": "application/x-www-form-urlencoded"
@@ -471,11 +471,11 @@ class NewPayrollApiServices{
         encoding: Encoding.getByName("utf-8"));
     log(request.body);
     if (request.statusCode == 200) {
-      utils.toast(context: context,text: "Saved Successfully", color: Colors.green);
+      utils.snackBar(context: context,msg: "Saved Successfully", color: Colors.green);
       Get.to(const UnitSlip(), transition: Transition.rightToLeftWithFade, duration: const Duration(seconds: 1));
       pyrlCtr.submit.reset();
     } else {
-      utils.toast(context: context,text: "Failed", color: Colors.red);
+      utils.snackBar(context: context,msg: "Failed", color: Colors.red);
       pyrlCtr.submit.reset();
     }
   }

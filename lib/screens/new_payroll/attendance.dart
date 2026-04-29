@@ -1,43 +1,32 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fullcomm_crm/common/constant/api.dart';
+import 'package:fullcomm_crm/common/utilities/utils.dart';
+import 'package:fullcomm_crm/controller/controller.dart';
+import 'package:fullcomm_crm/screens/new_payroll/search_bar.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:printing/printing.dart';
-import 'package:security/component/custom_loading_button.dart';
-import 'package:security/controller/payroll_controller.dart';
-import 'package:security/model/payroll_user_model.dart';
-import 'package:security/services/new_payroll_api_services.dart';
-import 'package:security/source/extentions/extensions.dart';
-import 'package:security/view/new_payroll/search_bar.dart';
-import '../../component/custom_button.dart';
-import '../../component/custom_text.dart';
-import '../../component/custom_textfield.dart';
-import '../../component/emp_drop.dart';
-import '../../component/loading.dart';
-import '../../component/month_calender.dart';
-import '../../constant/api.dart';
-import '../../constant/assets_constant.dart';
-import '../../constant/color_constant.dart';
-import '../../constant/key_constant.dart';
-import '../../constant/local_data.dart';
-import '../../controller/employee_controller.dart';
-import '../../controller/monthly_unit_payroll.dart';
+import '../../billing_utils/sized_box.dart';
+import '../../common/constant/api.dart' as assets;
+import '../../common/constant/colors_constant.dart';
+import '../../components/Customtext.dart';
+import '../../components/custom_loading_button.dart';
+import '../../components/custom_sidebar.dart';
+import '../../components/custom_textfield.dart';
+import '../../components/emp_drop.dart';
+import '../../components/month_calender.dart';
 import '../../controller/new_payroll_controller.dart';
-import '../../model/employee_model.dart';
-import '../../model/myunit_model.dart';
-import '../../model/unit_model.dart';
+import '../../models/payroll/monthly_unit_payroll.dart';
+import '../../models/payroll/payroll_user_model.dart';
+import '../../models/payroll/unit_model.dart';
 import '../../services/new_payroll_api_services.dart';
-import '../../styles/decoration.dart';
-import '../../utills/utilities.dart';
-import '../../utills/validate_field.dart';
-import '../../widgets/widgets_functions.dart';
-import 'dashboard.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column,Row;
@@ -104,19 +93,21 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
   var unitId;
   @override
   void initState() {
-    pyrlCtr.unitName=null;
-    pyrlCtr.empName=null;
-    pyrlCtr.duty.clear();
-    pyrlCtr.penalty.clear();
-    pyrlCtr.advance.clear();
-    pyrlCtr.uniform.clear();
-    pyrlCtr.total.clear();
-    pyrlCtr.users.clear();
-    pyrlCtr.start =
-    ("01-${(pyrlCtr.selected.month.toString().padLeft(2, "0"))}-${pyrlCtr.selected.year}");
-    var ex = pyrlCtr.start.split("-");
-    var date = DateTime(int.parse(ex.first), int.parse(ex[1]) + 1,0);
-    pyrlCtr.lastDate = date.day;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      pyrlCtr.unitName=null;
+      pyrlCtr.empName=null;
+      pyrlCtr.duty.clear();
+      pyrlCtr.penalty.clear();
+      pyrlCtr.advance.clear();
+      pyrlCtr.uniform.clear();
+      pyrlCtr.total.clear();
+      pyrlCtr.users.clear();
+      pyrlCtr.start =
+      ("01-${(pyrlCtr.selected.month.toString().padLeft(2, "0"))}-${pyrlCtr.selected.year}");
+      var ex = pyrlCtr.start.split("-");
+      var date = DateTime(int.parse(ex.first), int.parse(ex[1]) + 1,0);
+      pyrlCtr.lastDate = date.day;
+    });
     super.initState();
   }
   @override
@@ -124,449 +115,461 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
     final activeUsers = pyrlCtr.users.where((u) => u.active != "2").toList();
     var mobileSize= MediaQuery.of(context).size.width*0.95;
     var webSize= MediaQuery.of(context).size.width*0.97;
-    return Scaffold(
-      backgroundColor: colorsConst.backGroundColor,
-      appBar: PreferredSize(preferredSize: const Size(300, 70),
-          child: app_bar(text: "Attendance",callback1: (){
-            Get.to(const NewPayroll(), transition: Transition.rightToLeftWithFade, duration: const Duration(seconds: 1));
-          })),
-      body: Obx(()=>Column(
-        children: [
-          InkWell(
-              onTap: (){
-                showMonthPicker2(
-                  context: context,
-                  month: pyrlCtr.month,
-                  function: (){
-                    if(pyrlCtr.unitName!=null){
-                      getPyrlAtt(unitId);
-                    }
-                  }
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+    return SelectionArea(
+      child: Scaffold(
+        backgroundColor: colorsConst.backgroundColor,
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SideBar(),
+            Container(
+              width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+              height: MediaQuery.of(context).size.height,
+              alignment: Alignment.center,
+              padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
+              child: Obx(()=>Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.calendar_month,color: Colors.blueGrey),10.width,
-                  CustomText(text: pyrlCtr.month.value,colors: Colors.lightBlueAccent,size:15),
-                ],
-              )),
-          10.height,
-          Center(
-            child: pyrlCtr.getUnits.value == false
-                ? const Loading()
-                : pyrlCtr.unitList.isEmpty
-                ? const CustomText(text: "No Unit Found")
-                : PayrollUnitDropDown(
-              size: kIsWeb?webSize:mobileSize,
-              color: Colors.white,
-              text: "Unit Name",
-              unitList: pyrlCtr.unitList,
-              onChanged: (units? unit) {
-                setState(() {
-                  pyrlCtr.unitName = unit;
-                  localData.storage.write("p_unit_id", unit!.id);
-                  localData.storage.write("p_unit_name", unit.unit_name);
-                  // salary = double.parse(unit.salary.toString());
-                  // basicCalc = double.parse(unit.basicDa.toString());
-                  // hraCalc = double.parse(unit.hra.toString());
-                  // daCalc = double.parse(unit.allowance.toString());
-                  // esiCalc = double.parse(unit.esi.toString());
-                  // pfCalc = double.parse(unit.pf.toString());
-                  // workingDays = int.parse(
-                  //   unit.workingDays.toString() == "null" ||
-                  //       unit.workingDays.toString().isEmpty
-                  //       ? "31"
-                  //       : unit.workingDays.toString(),
-                  // );
-
-                  rolesL = unit.payrollRoleIds;
-                  salaryL = unit.payrollSalaries;
-                  perSalaryL = unit.payrollPerDay;
-                  basicCalcL = unit.payrollBasic;
-                  hraCalcL = unit.payrollHra;
-                  daCalcL = unit.payrollAllowance;
-                  esiCalcL = unit.payrollEsi;
-                  pfCalcL = unit.payrollPf;
-                  esiWagesCalcL = unit.payrollEsiWages;
-                  pfWagesCalcL = unit.payrollPfWages;
-                  workingDaysL = unit.payrollWorkingDays;
-                  weekOffL = unit.payrollWeekOff;
-                  monthlyWagesL = unit.monthlyWages;
-                  adCL = unit.payrollAdminCharges;
-                  bonusCL = unit.payrollBonus;
-                  oPCL = unit.payrollOSalary;
-                  unitId=unit.id;
-                  getPyrlAtt(unitId);
-                });
-              },)
-          ),
-          pyrlCtr.getData.value==false?const Loading():
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  10.height,
-                  EmployeeSearchBox(
-                    allEmployees: pyrlCtr.allEmpList,
-                    onEmployeeSelected: (selectedEmployee) {
-                      setState(() {
-                        // Save selected employee details
-                        localData.storage.write("p_emp_id", selectedEmployee.id);
-                        localData.storage.write("p_emp_name", selectedEmployee.fName);
-
-                        // Check if employee already exists in the list
-                        bool alreadyExists = pyrlCtr.users.any(
-                              (user) => user.empId == selectedEmployee.id.toString(),
-                        );
-
-                        if (!alreadyExists) {
-                          // Add to payroll users only if not already in the list
-                          pyrlCtr.users.add(
-                            PayrollUserModel(
-                              empId: selectedEmployee.id.toString(),
-                              name: selectedEmployee.fName.toString(),
-                              code: selectedEmployee.empCode.toString(),
-                              rank: selectedEmployee.roleName.toString(),
-                              duty: TextEditingController(),
-                              ot: TextEditingController(),
-                              advance: TextEditingController(),
-                              penalty: TextEditingController(),
-                              uniform: TextEditingController(),
-                              total: TextEditingController(),
-                              food: TextEditingController(),
-                              bonus2: TextEditingController(),
-                              basic: "",
-                              newE: "1",
-                              da: "",
-                              hra: "",
-                              esi: "",
-                              pf: "",
-                              deduction: TextEditingController(),
-                              netAmount: "",
-                              active: "1",
-                            ),
-                          );
-                        } else {
-                          // Optional: Show message or toast
-                          utils.toast(context: Get.context!, text: "${selectedEmployee.fName} already added ",color: Colors.red);
-                        }
-                      });
-                    },
-                  ),
-                  10.height,
-                  if(pyrlCtr.users.isNotEmpty)
-                  Obx(() => Table(
-                    defaultColumnWidth: const IntrinsicColumnWidth(),
-                    border: TableBorder.all(color: Colors.grey.shade300),
-                    columnWidths: {
-                      0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.03),
-                      1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                      2: FixedColumnWidth(MediaQuery.of(context).size.width * 0.08),
-                      3: FixedColumnWidth(MediaQuery.of(context).size.width * 0.3),
-                      4: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                      5: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                      6: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                      7: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                      8: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                      9: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                      10: FixedColumnWidth(MediaQuery.of(context).size.width * 0.06),
-                      11: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                      12: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                      13: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                    },
+                  30.height,
+                  Row(
                     children: [
-                      // Header row
-                      TableRow(
-                        decoration: BoxDecoration(color: Colors.grey.shade200),
-                        children: [
-                          textBox("S.No"),
-                          textBox("ID"),
-                          textBox("Rank"),
-                          textBox("Name"),
-                          textBox("Duty"),
-                          textBox("OT"),
-                          textBox("Advance"),
-                          textBox("Uniform"),
-                          textBox("Penalty"),
-                          textBox("Bonus"),
-                          textBox("Food Charges"),
-                          textBox("Total"),
-                          textBox("Deduction"),
-                          textBox("Delete"),
-                        ],
-                      ),
-
-                      // Data rows
-                      ...List.generate(pyrlCtr.users.length, (index) {
-                        final user = pyrlCtr.users[index];
-                        if (user.active == "2") {
-                          return TableRow(children: [
-                          0.height,
-                          0.height,
-                          0.height,
-                          0.height,
-                          0.height,
-                          0.height,
-                          0.height,
-                          0.height,
-                          0.height,
-                          0.height,
-                          0.height,
-                          0.height,
-                          0.height,
-                          0.height,
-                        ]);
-                        }
-                        return TableRow(
-                          children: [
-                            valueBox((index + 1).toString()),
-                            valueBox(pyrlCtr.users[index].code.toString()),
-                            valueBox(pyrlCtr.users[index].rank.toString()),
-                            valueBox(pyrlCtr.users[index].name.toString()),
-                            UnderLineTextField(
-                              width: 70,
-                              controller: user.duty,
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => calculatePayroll(index),
-                              isRequired: true,
-                            ),
-                            UnderLineTextField(
-                              width: 70,
-                              controller: user.ot,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
-                              ],
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => user.ot.text.isNotEmpty?calculatePayroll(index):null,
-                            ),
-                            UnderLineTextField(
-                              width: 70,
-                              controller: user.advance,
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => calculatePayroll(index),
-                            ),
-                            UnderLineTextField(
-                              width: 70,
-                              controller: user.uniform,
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => calculatePayroll(index),
-                            ),
-                            UnderLineTextField(
-                              width: 70,
-                              controller: user.penalty,
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => calculatePayroll(index),
-                            ),
-                            UnderLineTextField(
-                              width: 70,
-                              controller: user.bonus2,
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => calculatePayroll(index),
-                            ),
-                            UnderLineTextField(
-                              width: 70,
-                              controller: user.food,
-                              keyboardType: TextInputType.number,
-                              onChanged: (_) => calculatePayroll(index),
-                            ),
-                            valueBox(user.total.text),
-                            valueBox(user.deduction.text),
-                            IconButton(
-                              onPressed: () {
-                                empCtr.loginPassword.clear();
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (dialogCtx) {
-                                    return Center(
-                                      child: ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                          maxWidth: MediaQuery.of(context).size.width * 0.80, // FULL dialog width
-                                        ),
-                                        child: AlertDialog(
-                                          title: const Center(child: CustomText(text: "Verify Password")),
-                                          content: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              CustomTextField(
-                                                width: double.infinity,
-                                                controller: empCtr.loginPassword,
-                                                keyboardType: TextInputType.visiblePassword,
-                                                textInputAction: TextInputAction.done,
-                                                textCapitalization: TextCapitalization.none,
-                                                text: "Password",
-                                              ),
-                                            ],
-                                          ),
-                                          actionsAlignment: MainAxisAlignment.spaceBetween,
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(dialogCtx).pop();
-                                              },
-                                              child: const Text("CANCEL"),
-                                            ),
-                                            TextButton(
-                                              onPressed: () {
-                                                final pass = empCtr.loginPassword.text.trim();
-                                                if (pass.isEmpty) {
-                                                  utils.toast(
-                                                    context: context,
-                                                    text: "Please fill password",
-                                                    color: Colors.red,
-                                                  );
-                                                  return;
-                                                }
-
-                                                final saved = localData.storage.read("password")?.toString() ?? "";
-                                                if (pass == saved) {
-                                                  Navigator.of(dialogCtx).pop();
-                                                  setState(() {
-                                                    user.active = "2";
-                                                    calculatePayroll(index);
-                                                  });
-                                                } else {
-                                                  utils.toast(
-                                                    context: context,
-                                                    text: "Incorrect password",
-                                                    color: Colors.red,
-                                                  );
-                                                }
-                                              },
-                                              child: const Text("VERIFY"),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              icon: const Icon(Icons.delete_outline_outlined, color: Colors.red),
-                            )
-                          ],
-                        );
-                      }),
-                      // Totals row
-                      TableRow(
-                        decoration: BoxDecoration(color: Colors.grey.shade300),
-                        children: [
-                          textBox(""),
-                          textBox(""),
-                          textBox(""),
-                          textBox("Total", width: 150),
-                          valueBox(totalDuty.value.toString()),
-                          valueBox(totalOT.value.toString()),
-                          valueBox(totalAdvance.value.toStringAsFixed(2)),
-                          valueBox(totalUniform.value.toStringAsFixed(2)),
-                          valueBox(totalPenalty.value.toStringAsFixed(2)),
-                          valueBox(totalBonus2.value.toStringAsFixed(2)),
-                          valueBox(totalFood.value.toStringAsFixed(2)),
-                          valueBox(totalEarned.value.toStringAsFixed(2)),
-                          valueBox(totalDed.value.toStringAsFixed(2)),
-                          textBox(""),
-                        ],
+                      IconButton(onPressed: (){
+                        Get.back();
+                      }, icon: Icon(Icons.arrow_back)),
+                      CustomText(
+                        text: "Quotation Details",
+                        colors: colorsConst.textColor,
+                        size: 20,
+                        isBold: true,
+                        isCopy: true,
                       ),
                     ],
-                  )),
-                  20.height,
-                  pyrlCtr.users.isNotEmpty?
-                  SizedBox(
-                    width: kIsWeb?webSize:mobileSize,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CustomLoadingButton(
-                            controller: pyrlCtr.submit,text: "Save",
-                            callback: (){
-                              if(pyrlCtr.unitName==null){
-                                utils.toast(context: Get.context!, text: "Select Unit name",color: colorsConst.primary);
-                                pyrlCtr.submit.reset();
-                              }else{
-                                checkValue(context);
-                              }
+                  ),
+                  10.height,
+                  TextButton(
+                      onPressed: (){
+                        showMonthPicker2(
+                          context: context,
+                          month: pyrlCtr.month,
+                          function: (){
+                            if(pyrlCtr.unitName!=null){
+                              getPyrlAtt(unitId);
+                            }
+                          }
+                        );
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.calendar_month,color: Colors.blueGrey),10.width,
+                          CustomText(text: pyrlCtr.month.value,colors: colorsConst.primary,size:15, isCopy: true,),
+                        ],
+                      )),
+                  10.height,
+                  pyrlCtr.getUnits.value == false
+                      ? const CircularProgressIndicator()
+                      : pyrlCtr.unitList.isEmpty
+                      ? const CustomText(text: "No Unit Found", isCopy: true,)
+                      : PayrollUnitDropDown(
+                    size: kIsWeb?webSize:mobileSize,
+                    color: Colors.white,
+                    text: "Unit Name",
+                    unitList: pyrlCtr.unitList,
+                    onChanged: (units? unit) {
+                      setState(() {
+                        pyrlCtr.unitName = unit;
+                        controllers.storage.write("p_unit_id", unit!.id);
+                        controllers.storage.write("p_unit_name", unit.unit_name);
+                        rolesL = unit.payrollRoleIds;
+                        salaryL = unit.payrollSalaries;
+                        perSalaryL = unit.payrollPerDay;
+                        basicCalcL = unit.payrollBasic;
+                        hraCalcL = unit.payrollHra;
+                        daCalcL = unit.payrollAllowance;
+                        esiCalcL = unit.payrollEsi;
+                        pfCalcL = unit.payrollPf;
+                        esiWagesCalcL = unit.payrollEsiWages;
+                        pfWagesCalcL = unit.payrollPfWages;
+                        workingDaysL = unit.payrollWorkingDays;
+                        weekOffL = unit.payrollWeekOff;
+                        monthlyWagesL = unit.monthlyWages;
+                        adCL = unit.payrollAdminCharges;
+                        bonusCL = unit.payrollBonus;
+                        oPCL = unit.payrollOSalary;
+                        unitId=unit.id;
+                        getPyrlAtt(unitId);
+                      });
+                    },),
+                  pyrlCtr.getData.value==false?const CircularProgressIndicator():
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          10.height,
+                          EmployeeSearchBox(
+                            allEmployees: pyrlCtr.allEmpList,
+                            onEmployeeSelected: (selectedEmployee) {
+                              setState(() {
+                                // Save selected employee details
+                                controllers.storage.write("p_emp_id", selectedEmployee.id);
+                                controllers.storage.write("p_emp_name", selectedEmployee.fName);
+
+                                // Check if employee already exists in the list
+                                bool alreadyExists = pyrlCtr.users.any(
+                                      (user) => user.empId == selectedEmployee.id.toString(),
+                                );
+
+                                if (!alreadyExists) {
+                                  // Add to payroll users only if not already in the list
+                                  pyrlCtr.users.add(
+                                    PayrollUserModel(
+                                      empId: selectedEmployee.id.toString(),
+                                      name: selectedEmployee.fName.toString(),
+                                      code: selectedEmployee.empCode.toString(),
+                                      rank: selectedEmployee.roleName.toString(),
+                                      duty: TextEditingController(),
+                                      ot: TextEditingController(),
+                                      advance: TextEditingController(),
+                                      penalty: TextEditingController(),
+                                      uniform: TextEditingController(),
+                                      total: TextEditingController(),
+                                      food: TextEditingController(),
+                                      bonus2: TextEditingController(),
+                                      basic: "",
+                                      newE: "1",
+                                      da: "",
+                                      hra: "",
+                                      esi: "",
+                                      pf: "",
+                                      deduction: TextEditingController(),
+                                      netAmount: "",
+                                      active: "1",
+                                    ),
+                                  );
+                                } else {
+                                  // Optional: Show message or toast
+                                  utils.snackBar(context: Get.context!, msg: "${selectedEmployee.fName} already added ",color: Colors.red);
+                                }
+                              });
                             },
-                            isLoading: true, backgroundColor: colorsConst.primary,
-                            radius: 10, width:  kIsWeb?webSize/4:mobileSize),
-                        CustomLoadingButton(text: "Excel",isImage: false,
-                            callback: (){
-                              if(pyrlCtr.unitName==null){
-                                utils.toast(context: Get.context!, text: "Select Unit name",color: colorsConst.primary);
-                                pyrlCtr.submit.reset();
-                              }else{
-                                bool hasEmptyDuty = false;
-                                for (var i = 0; i < pyrlCtr.users.length; i++) {
-                                  if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
-                                      pyrlCtr.users[i].duty.text == "0") {
-                                    utils.toast(
-                                      context: context,
-                                      text: "Fill duty days for ${pyrlCtr.users[i].name}",
-                                      color: Colors.red,
-                                    );
-                                    pyrlCtr.submit.reset();
-                                    hasEmptyDuty = true;
-                                    break; // exit the loop after first invalid
-                                  }
-                                }
-                                if (!hasEmptyDuty) {
-                                  generateExcel(pyrlCtr.users);
-                                }
-                              }
+                          ),
+                          10.height,
+                          if(pyrlCtr.users.isNotEmpty)
+                          Obx(() => Table(
+                            defaultColumnWidth: const IntrinsicColumnWidth(),
+                            border: TableBorder.all(color: Colors.grey.shade300),
+                            columnWidths: {
+                              0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.03),
+                              1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                              2: FixedColumnWidth(MediaQuery.of(context).size.width * 0.08),
+                              3: FixedColumnWidth(MediaQuery.of(context).size.width * 0.3),
+                              4: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                              5: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                              6: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                              7: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                              8: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                              9: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                              10: FixedColumnWidth(MediaQuery.of(context).size.width * 0.06),
+                              11: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                              12: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                              13: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
                             },
-                            isLoading: false, backgroundColor: colorsConst.primary,
-                            radius: 5, width:  kIsWeb?webSize/4:mobileSize),
-                        CustomLoadingButton(text: "PDF",
-                            callback: (){
-                              if(pyrlCtr.unitName==null){
-                                utils.toast(context: Get.context!, text: "Select Unit name",color: colorsConst.primary);
-                                pyrlCtr.submit.reset();
-                              }else{
-                                bool hasEmptyDuty = false;
-                                for (var i = 0; i < pyrlCtr.users.length; i++) {
-                                  if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
-                                      pyrlCtr.users[i].duty.text == "0") {
-                                    utils.toast(
-                                      context: context,
-                                      text: "Fill duty days for ${pyrlCtr.users[i].name}",
-                                      color: Colors.red,
-                                    );
-                                    pyrlCtr.submit.reset();
-                                    hasEmptyDuty = true;
-                                    break; // exit the loop after first invalid
-                                  }
+                            children: [
+                              // Header row
+                              TableRow(
+                                decoration: BoxDecoration(color: Colors.grey.shade200),
+                                children: [
+                                  textBox("S.No"),
+                                  textBox("ID"),
+                                  textBox("Rank"),
+                                  textBox("Name"),
+                                  textBox("Duty"),
+                                  textBox("OT"),
+                                  textBox("Advance"),
+                                  textBox("Uniform"),
+                                  textBox("Penalty"),
+                                  textBox("Bonus"),
+                                  textBox("Food Charges"),
+                                  textBox("Total"),
+                                  textBox("Deduction"),
+                                  textBox("Delete"),
+                                ],
+                              ),
+
+                              // Data rows
+                              ...List.generate(pyrlCtr.users.length, (index) {
+                                final user = pyrlCtr.users[index];
+                                if (user.active == "2") {
+                                  return TableRow(children: [
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                  0.height,
+                                ]);
                                 }
-                                if (!hasEmptyDuty) {
-                                  exportPayrollToPdf(pyrlCtr.users);
-                                }
-                              }
-                            },isImage: false,
-                            isLoading: false, backgroundColor: colorsConst.primary,
-                            radius: 5, width:  kIsWeb?webSize/4:mobileSize),
-                      ],
+                                return TableRow(
+                                  children: [
+                                    valueBox((index + 1).toString()),
+                                    valueBox(pyrlCtr.users[index].code.toString()),
+                                    valueBox(pyrlCtr.users[index].rank.toString()),
+                                    valueBox(pyrlCtr.users[index].name.toString()),
+                                    UnderLineTextField(
+                                      width: 70,
+                                      controller: user.duty,
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (_) => calculatePayroll(index),
+                                      isRequired: true,
+                                    ),
+                                    UnderLineTextField(
+                                      width: 70,
+                                      controller: user.ot,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+                                      ],
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (_) => user.ot.text.isNotEmpty?calculatePayroll(index):null,
+                                    ),
+                                    UnderLineTextField(
+                                      width: 70,
+                                      controller: user.advance,
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (_) => calculatePayroll(index),
+                                    ),
+                                    UnderLineTextField(
+                                      width: 70,
+                                      controller: user.uniform,
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (_) => calculatePayroll(index),
+                                    ),
+                                    UnderLineTextField(
+                                      width: 70,
+                                      controller: user.penalty,
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (_) => calculatePayroll(index),
+                                    ),
+                                    UnderLineTextField(
+                                      width: 70,
+                                      controller: user.bonus2,
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (_) => calculatePayroll(index),
+                                    ),
+                                    UnderLineTextField(
+                                      width: 70,
+                                      controller: user.food,
+                                      keyboardType: TextInputType.number,
+                                      onChanged: (_) => calculatePayroll(index),
+                                    ),
+                                    valueBox(user.total.text),
+                                    valueBox(user.deduction.text),
+                                    IconButton(
+                                      onPressed: () {
+                                        controllers.loginPassword.clear();
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (dialogCtx) {
+                                            return Center(
+                                              child: ConstrainedBox(
+                                                constraints: BoxConstraints(
+                                                  maxWidth: MediaQuery.of(context).size.width * 0.80, // FULL dialog width
+                                                ),
+                                                child: AlertDialog(
+                                                  title: const Center(child: CustomText(text: "Verify Password", isCopy: true,)),
+                                                  content: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      CustomTextField(
+                                                        width: double.infinity,
+                                                        controller: controllers.loginPassword,
+                                                        keyboardType: TextInputType.visiblePassword,
+                                                        textInputAction: TextInputAction.done,
+                                                        textCapitalization: TextCapitalization.none,
+                                                        text: "Password",
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  actionsAlignment: MainAxisAlignment.spaceBetween,
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(dialogCtx).pop();
+                                                      },
+                                                      child: const Text("CANCEL"),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        final pass = controllers.loginPassword.text.trim();
+                                                        if (pass.isEmpty) {
+                                                          utils.snackBar(
+                                                            context: context,
+                                                            msg: "Please fill password",
+                                                            color: Colors.red,
+                                                          );
+                                                          return;
+                                                        }
+
+                                                        final saved = controllers.storage.read("password")?.toString() ?? "";
+                                                        if (pass == saved) {
+                                                          Navigator.of(dialogCtx).pop();
+                                                          setState(() {
+                                                            user.active = "2";
+                                                            calculatePayroll(index);
+                                                          });
+                                                        } else {
+                                                          utils.snackBar(
+                                                            context: context,
+                                                            msg: "Incorrect password",
+                                                            color: Colors.red,
+                                                          );
+                                                        }
+                                                      },
+                                                      child: const Text("VERIFY"),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      icon: const Icon(Icons.delete_outline_outlined, color: Colors.red),
+                                    )
+                                  ],
+                                );
+                              }),
+                              // Totals row
+                              TableRow(
+                                decoration: BoxDecoration(color: Colors.grey.shade300),
+                                children: [
+                                  textBox(""),
+                                  textBox(""),
+                                  textBox(""),
+                                  textBox("Total", width: 150),
+                                  valueBox(totalDuty.value.toString()),
+                                  valueBox(totalOT.value.toString()),
+                                  valueBox(totalAdvance.value.toStringAsFixed(2)),
+                                  valueBox(totalUniform.value.toStringAsFixed(2)),
+                                  valueBox(totalPenalty.value.toStringAsFixed(2)),
+                                  valueBox(totalBonus2.value.toStringAsFixed(2)),
+                                  valueBox(totalFood.value.toStringAsFixed(2)),
+                                  valueBox(totalEarned.value.toStringAsFixed(2)),
+                                  valueBox(totalDed.value.toStringAsFixed(2)),
+                                  textBox(""),
+                                ],
+                              ),
+                            ],
+                          )),
+                          20.height,
+                          pyrlCtr.users.isNotEmpty?
+                          SizedBox(
+                            width: kIsWeb?webSize:mobileSize,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                CustomLoadingButton(
+                                    controller: pyrlCtr.submit,text: "Save",
+                                    callback: (){
+                                      if(pyrlCtr.unitName==null){
+                                        utils.snackBar(context: Get.context!, msg: "Select Unit name",color: colorsConst.primary);
+                                        pyrlCtr.submit.reset();
+                                      }else{
+                                        checkValue(context);
+                                      }
+                                    },
+                                    isLoading: true, backgroundColor: colorsConst.primary,
+                                    radius: 10, width:  kIsWeb?webSize/4:mobileSize),
+                                CustomLoadingButton(text: "Excel",isImage: false,
+                                    callback: (){
+                                      if(pyrlCtr.unitName==null){
+                                        utils.snackBar(context: Get.context!, msg: "Select Unit name",color: colorsConst.primary);
+                                        pyrlCtr.submit.reset();
+                                      }else{
+                                        bool hasEmptyDuty = false;
+                                        for (var i = 0; i < pyrlCtr.users.length; i++) {
+                                          if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
+                                              pyrlCtr.users[i].duty.text == "0") {
+                                            utils.snackBar(
+                                              context: context,
+                                              msg: "Fill duty days for ${pyrlCtr.users[i].name}",
+                                              color: Colors.red,
+                                            );
+                                            pyrlCtr.submit.reset();
+                                            hasEmptyDuty = true;
+                                            break; // exit the loop after first invalid
+                                          }
+                                        }
+                                        if (!hasEmptyDuty) {
+                                          generateExcel(pyrlCtr.users);
+                                        }
+                                      }
+                                    },
+                                    isLoading: false, backgroundColor: colorsConst.primary,
+                                    radius: 5, width:  kIsWeb?webSize/4:mobileSize),
+                                CustomLoadingButton(text: "PDF",
+                                    callback: (){
+                                      if(pyrlCtr.unitName==null){
+                                        utils.snackBar(context: Get.context!, msg: "Select Unit name",color: colorsConst.primary);
+                                        pyrlCtr.submit.reset();
+                                      }else{
+                                        bool hasEmptyDuty = false;
+                                        for (var i = 0; i < pyrlCtr.users.length; i++) {
+                                          if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
+                                              pyrlCtr.users[i].duty.text == "0") {
+                                            utils.snackBar(
+                                              context: context,
+                                              msg: "Fill duty days for ${pyrlCtr.users[i].name}",
+                                              color: Colors.red,
+                                            );
+                                            pyrlCtr.submit.reset();
+                                            hasEmptyDuty = true;
+                                            break; // exit the loop after first invalid
+                                          }
+                                        }
+                                        if (!hasEmptyDuty) {
+                                          exportPayrollToPdf(pyrlCtr.users);
+                                        }
+                                      }
+                                    },isImage: false,
+                                    isLoading: false, backgroundColor: colorsConst.primary,
+                                    radius: 5, width:  kIsWeb?webSize/4:mobileSize),
+                              ],
+                            ),
+                          )
+                          :const CustomText(text: "\n\n\n\n\nSelect Employee",colors: Colors.grey,size:15,isBold: true, isCopy: true,),
+                          50.height
+                        ],
+                      ),
                     ),
                   )
-                  :const CustomText(text: "\n\n\n\n\nSelect Employee",colors: Colors.grey,size:15,isBold: true,),
-                  50.height
                 ],
-              ),
+              )),
             ),
-          )
-        ],
-      ))
+          ],
+        )
+      ),
     );
   }
 
   Widget textBox(String text, {double? width = 70}){
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: CustomText(text: text),
+      child: CustomText(text: text, isCopy: true,),
     );
   }
   Widget valueBox(String value, {double? width = 90}){
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: CustomText(text: value,colors: colorsConst.four,),
+      child: CustomText(text: value,colors: Colors.grey, isCopy: true,),
     );
   }
 
@@ -577,9 +580,9 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
     for (var i = 0; i < pyrlCtr.users.length; i++) {
       if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
           pyrlCtr.users[i].duty.text == "0") {
-        utils.toast(
+        utils.snackBar(
           context: context,
-          text: "Fill duty days for ${pyrlCtr.users[i].name}",
+          msg: "Fill duty days for ${pyrlCtr.users[i].name}",
           color: Colors.red,
         );
         pyrlCtr.submit.reset();
@@ -591,7 +594,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
     // Only proceed if all duty fields are filled
     if (!hasEmptyDuty) {
       if(pyrlCtr.isStored.value!=""){
-        empCtr.loginPassword.clear();
+        controllers.loginPassword.clear();
         showDialog(
           context: context,
           barrierDismissible: false,
@@ -602,13 +605,13 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                   maxWidth: MediaQuery.of(context).size.width * 0.80, // FULL dialog width
                 ),
                 child: AlertDialog(
-                  title: const Center(child: CustomText(text: "Verify Password")),
+                  title: const Center(child: CustomText(text: "Verify Password", isCopy: true,)),
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       CustomTextField(
                         width: double.infinity,
-                        controller: empCtr.loginPassword,
+                        controller: controllers.loginPassword,
                         keyboardType: TextInputType.visiblePassword,
                         textInputAction: TextInputAction.done,
                         textCapitalization: TextCapitalization.none,
@@ -627,26 +630,26 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                     ),
                     TextButton(
                       onPressed: () {
-                        final pass = empCtr.loginPassword.text.trim();
+                        final pass = controllers.loginPassword.text.trim();
                         if (pass.isEmpty) {
                           pyrlCtr.submit.reset();
-                          utils.toast(
+                          utils.snackBar(
                             context: context,
-                            text: "Please fill password",
+                            msg: "Please fill password",
                             color: Colors.red,
                           );
                           return;
                         }
 
-                        final saved = localData.storage.read("password")?.toString() ?? "";
+                        final saved = controllers.storage.read("password")?.toString() ?? "";
                         if (pass == saved) {
                           Navigator.of(dialogCtx).pop();
                           newPyrlServ.updatePayrollList(context, pyrlCtr.users,pyrlCtr.isStored.value);
                         } else {
                           pyrlCtr.submit.reset();
-                          utils.toast(
+                          utils.snackBar(
                             context: context,
-                            text: "Incorrect password",
+                            msg: "Incorrect password",
                             color: Colors.red,
                           );
                         }
@@ -671,16 +674,16 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
       pyrlCtr.isStored.value="";
       pyrlCtr.users.clear();
       Map data = {
-        "action":getAllData,
-        "cos_id":localData.storage.read("cos_id"),
-        "com_id":localData.storage.read("com_id"),
+        "action":"get_data",
+        "cos_id":controllers.storage.read("cos_id"),
+        "com_id":controllers.storage.read("com_id"),
         "search_type":"new_monthly_payroll",
         "unit_id":unitId,
         "month":pyrlCtr.month.value,
-        "role":localData.storage.read("role"),
-        "id":localData.storage.read("id")
+        "role":controllers.storage.read("role"),
+        "id":controllers.storage.read("id")
       };
-      final request = await http.post(Uri.parse(phpFile),
+      final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/text",
             "Content-Type": "application/x-www-form-urlencoded"
@@ -952,7 +955,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
   //   // -----------------------------
   //   // 3. CALCULATE EARNED
   //   // -----------------------------
-  //   // String comId = localData.storage.read("com_id").toString();
+  //   // String comId = controllers.storage.read("com_id").toString();
   //   // bool isCompanyOne = comId == "1";
   //
   //   double earned = 0.0;
@@ -1782,7 +1785,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
   //
   //
   //     // Company check
-  //     String comId = localData.storage.read("com_id").toString();
+  //     String comId = controllers.storage.read("com_id").toString();
   //     bool isCompanyOne = comId == "1";
   //
   //     // Duty & OT
@@ -2178,7 +2181,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                   pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       children: [
-                        pw.Text(" : ${localData.storage.read("p_unit_name")}"),
+                        pw.Text(" : ${controllers.storage.read("p_unit_name")}"),
                         pw.Text(" : ${pyrlCtr.month.value}")
                       ]
                   )
@@ -2205,11 +2208,11 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
 
     if (kIsWeb) {
       // Web: just download/share
-      await Printing.sharePdf(bytes: await pdf.save(), filename: '${localData.storage.read("p_unit_name")} Muster Roll - ${pyrlCtr.month.value}.pdf');
+      await Printing.sharePdf(bytes: await pdf.save(), filename: '${controllers.storage.read("p_unit_name")} Muster Roll - ${pyrlCtr.month.value}.pdf');
     } else {
       // Mobile: save to device
       final dir = await getApplicationDocumentsDirectory();
-      final file = File('${dir.path}/${localData.storage.read("p_unit_name")} Muster Roll - ${pyrlCtr.month.value}.pdf');
+      final file = File('${dir.path}/${controllers.storage.read("p_unit_name")} Muster Roll - ${pyrlCtr.month.value}.pdf');
       await file.writeAsBytes(await pdf.save());
       await OpenFile.open(file.path);
     }
@@ -2256,9 +2259,9 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
     sheet.getRangeByName('J2:S2').merge();
     sheet.getRangeByName("A2:S2").rowHeight = 60;
     sheet.getRangeByName("A2").setText(
-        "${localData.storage.read("com_name")}\n Address : 44/1, V.V. Koil Street, Tambaram Sanatorium,Chennai-600 045,Tamilnadu, India.");
+        "${controllers.storage.read("com_name")}\n Address : 44/1, V.V. Koil Street, Tambaram Sanatorium,Chennai-600 045,Tamilnadu, India.");
     sheet.getRangeByName("J2").setText(
-        "Client Name : ${localData.storage.read("p_unit_name")}\nMonth : ${pyrlCtr.month.value}");
+        "Client Name : ${controllers.storage.read("p_unit_name")}\nMonth : ${pyrlCtr.month.value}");
     sheet.getRangeByName('A1:S1').cellStyle.hAlign = HAlignType.center;
     sheet.getRangeByName('A2:S2').cellStyle.hAlign = HAlignType.center;
     for (int i = 0; i < headers.length; i++) {
@@ -2301,11 +2304,11 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
         href: 'data:application/octet-stream;charset=utf-161e;base64,${base64
             .encode(bytes)}',
       )
-        ..setAttribute('download', '${localData.storage.read("p_unit_name")} Muster Roll - ${pyrlCtr.month.value}.xlsx')
+        ..setAttribute('download', '${controllers.storage.read("p_unit_name")} Muster Roll - ${pyrlCtr.month.value}.xlsx')
         ..click();
     } else {
       final String path = (await getApplicationSupportDirectory()).path;
-      final String filename = '$path/${localData.storage.read("p_unit_name")} Muster Roll - ${pyrlCtr.month.value}.xlsx';
+      final String filename = '$path/${controllers.storage.read("p_unit_name")} Muster Roll - ${pyrlCtr.month.value}.xlsx';
       final File file = File(filename);
       await file.writeAsBytes(bytes, flush: true);
       OpenFile.open(filename, linuxByProcess: true);

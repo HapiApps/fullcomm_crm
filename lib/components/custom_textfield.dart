@@ -295,3 +295,60 @@ class ShiftCustomTextField extends StatelessWidget {
     );
   }
 }
+
+class UnderLineTextField extends StatefulWidget {
+  final String? text;
+  final String? hintText;
+  final double? height;
+  final double? width;
+  final TextEditingController controller;
+  // final FocusNode? focusNode;
+  final ValueChanged<Object?>? onChanged;
+  final VoidCallback? onTap;
+  final TextInputType? keyboardType;
+  final TextInputAction? textInputAction;
+  final TextCapitalization? textCapitalization;
+  final FormFieldValidator<String>? validator;
+  final List<TextInputFormatter>? inputFormatters;
+  final bool? isIcon;
+  final bool? isLogin;
+  final bool? isShadow;
+  final bool? readOnly;
+  final IconData? iconData;
+  final bool? isRequired;
+  final VoidCallback? iconCallBack;
+  final Color? iconColor;
+  const UnderLineTextField({Key? key, this.text, this.height=70, this.width=270,
+    required this.controller, this.onChanged, this.onTap, this.keyboardType=TextInputType.text,
+    this.textInputAction=TextInputAction.next, this.textCapitalization=TextCapitalization.words, this.validator,
+    this.inputFormatters, this.hintText, this.isIcon, this.iconData, this.isShadow=false, this.isLogin=false, this.readOnly=false, this.isRequired, this.iconCallBack, this.iconColor}) : super(key: key);
+
+  @override
+  State<UnderLineTextField> createState() => _UnderLineTextFieldState();
+}
+
+class _UnderLineTextFieldState extends State<UnderLineTextField> {
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+        readOnly: widget.readOnly!,
+        obscureText: false,
+        cursorColor: colorsConst.primary,
+        onChanged:widget.onChanged,
+        onTap:widget.onTap,
+        inputFormatters: widget.inputFormatters,
+        textCapitalization: widget.textCapitalization!,
+        textInputAction: widget.textInputAction,
+        keyboardType: widget.keyboardType,
+        validator: widget.validator,
+        controller: widget.controller,
+        decoration: customStyle.lineDecoration(text: widget.text)
+    );
+  }
+// @override
+// void dispose() {
+//   // TODO: implement dispose
+//   super.dispose();
+//   test.dispose();
+// }
+}

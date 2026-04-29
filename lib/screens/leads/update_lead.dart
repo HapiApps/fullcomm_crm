@@ -507,13 +507,13 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             width: textFieldSize,
                                             child: ListView.builder(
                                                 shrinkWrap:true,
+                                                reverse: true,
                                                 itemCount:controllers.numberList.length,
                                                 itemBuilder: (context,index){
                                                   return Column(
                                                       children:[
-
                                                         if(index==controllers.numberList.length-1)
-                                                          Row(
+                                                        Row(
                                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             children: [
                                                               Row(
@@ -892,6 +892,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             width: textFieldSize,
                                             child: ListView.builder(
                                                 shrinkWrap:true,
+                                                reverse: true,
                                                 itemCount:controllers.infoNumberList.length,
                                                 itemBuilder: (context,index){
                                                   return Column(
@@ -1651,12 +1652,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                   color: Colors.red,
                                                   context: context);
                                               controllers.leadCtr.reset();
-                                            } else if (controllers.leadMobileCrt[0].text.length != 10) {
-                                              utils.snackBar(
-                                                  msg: "Invalid Mobile Number",
-                                                  color: Colors.red,
-                                                  context: context);
-                                              controllers.leadCtr.reset();
                                             } else if (controllers.visitType == null || controllers.visitType.toString().isEmpty) {
                                               utils.snackBar(
                                                   msg: "Please Select Incoming Source",
@@ -1822,13 +1817,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             color: Colors.red,
                                             context: context);
                                         controllers.leadCtr.reset();
-                                      } else if (controllers.leadMobileCrt[0].text.length != 10) {
-                                        utils.snackBar(
-                                            msg: "Invalid Mobile Number",
-                                            color: Colors.red,
-                                            context: context);
-                                        controllers.leadCtr.reset();
-                                      } else if (controllers.visitType == null || controllers.visitType.toString().isEmpty) {
+                                      }else if (controllers.visitType == null || controllers.visitType.toString().isEmpty) {
                                         utils.snackBar(
                                             msg: "Please Select Incoming Source",
                                             color: Colors.red,

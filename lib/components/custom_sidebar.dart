@@ -14,6 +14,12 @@ import '../screens/DashboardPage.dart';
 import '../screens/leads/new_lead_page.dart';
 import '../screens/employee/employee_screen.dart';
 import '../screens/employee/role_management.dart';
+import '../screens/new_payroll/attendance.dart';
+import '../screens/new_payroll/esi_wages.dart';
+import '../screens/new_payroll/pay_slip.dart';
+import '../screens/new_payroll/pf_wages.dart';
+import '../screens/new_payroll/salary_slip.dart';
+import '../screens/new_payroll/wages_sheet.dart';
 import '../screens/order/order_page.dart';
 import '../screens/products/product_page.dart';
 import '../screens/quotation/quotation_page.dart';
@@ -33,10 +39,12 @@ class SideBar extends StatelessWidget {
   Widget build(BuildContext context) {
     RxBool isSettingsHovered = false.obs;
     RxBool isLeadHovered = false.obs;
+    RxBool isPayrollHovered = false.obs;
     return
       Obx(() => controllers.isLeftOpen.value?
       Container(
       width: 150,
+      // width: 170,
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
         color: Colors.white,
@@ -138,6 +146,10 @@ class SideBar extends StatelessWidget {
                         controllers.selectedIndex.value = 500;
                         controllers.isLeadsExpanded.toggle();
                         controllers.selectedQualifiedSortBy.value="All";
+                        isSettingsHovered.value=false;
+                        isPayrollHovered.value=false;
+                        controllers.isSettingsExpanded.value=false;
+                        controllers.isPayrollExpanded.value=false;
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
@@ -293,6 +305,116 @@ class SideBar extends StatelessWidget {
               label: constValue.products,
               page: const ProductPage(),
             ),
+
+            controllers.storage.read("role") != "See All Customer Records"
+                ? const SizedBox.shrink()
+                : Obx(() {
+              bool isExpanded = controllers.isPayrollExpanded.value;
+              bool isSelected = controllers.selectedIndex.value == 108 ||
+                  (controllers.selectedIndex.value >= 801 &&
+                      controllers.selectedIndex.value <= 805);
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 5),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    onEnter: (_) => isPayrollHovered.value = true,
+                    onExit: (_) => isPayrollHovered.value = false,
+                    child: GestureDetector(
+                      onTap: () {
+                        controllers.oldIndex.value = controllers.selectedIndex.value;
+                        controllers.selectedIndex.value = 108;
+                        controllers.isPayrollExpanded.toggle();
+                        isSettingsHovered.value=false;
+                        isLeadHovered.value=false;
+                        controllers.isSettingsExpanded.value=false;
+                        controllers.isLeadsExpanded.value=false;
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.easeInOut,
+                        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? const Color(0xffF3F8FD)
+                              : isSettingsHovered.value
+                              ? const Color(0xffF8FAFF)
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: isSelected
+                              ? Border(
+                            left: BorderSide(
+                              color: colorsConst.primary,
+                              width: 4,
+                            ),
+                          )
+                              : null,
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.settings,
+                              size: 20,
+                              color: isSelected
+                                  ? colorsConst.primary
+                                  : isSettingsHovered.value
+                                  ? colorsConst.primary.withOpacity(0.7)
+                                  : Colors.black,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: IgnorePointer(
+                                child: Text(
+                                  "Payroll",
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: isSelected
+                                        ? colorsConst.primary
+                                        : isSettingsHovered.value
+                                        ? colorsConst.primary
+                                        : Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            AnimatedRotation(
+                              duration: const Duration(milliseconds: 250),
+                              turns: isExpanded ? 0.5 : 0,
+                              child: Icon(
+                                Icons.keyboard_arrow_down,
+                                size: 22,
+                                color: isSelected ? colorsConst.primary : Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: isExpanded
+                        ? Padding(
+                      padding: const EdgeInsets.only(left: 32, top: 8),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "Attendance", 801, const AttendanceDuty()),
+                          subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "Wages Sheet", 802, const UnitSlip()),
+                          subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "ESI Wages", 803, const ESIWages()),
+                          subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "PF Wages", 804, const PFWages()),
+                          subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "Pay Slip", 805, const PaySlip()),
+                          subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "Salary Slip", 805, const SalarySlip()),
+                        ],
+                      ),
+                    )
+                        : const SizedBox(),
+                  ),
+                ],
+              );
+            }),
+
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()
                 : Obx(() {
@@ -314,6 +436,10 @@ class SideBar extends StatelessWidget {
                         // controllers.selectedIndex.value = 7;
                         controllers.selectedIndex.value = 103;
                         controllers.isSettingsExpanded.toggle();
+                        isPayrollHovered.value=false;
+                        isLeadHovered.value=false;
+                        controllers.isPayrollExpanded.value=false;
+                        controllers.isLeadsExpanded.value=false;
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 250),
@@ -495,26 +621,6 @@ class SideBar extends StatelessWidget {
       ),
     )
         : 0.height);
-    //     : Container(
-    //   width: 60,
-    //   height: MediaQuery.of(context).size.height,
-    //   padding: const EdgeInsets.fromLTRB(6, 8, 0, 0),
-    //   alignment: Alignment.topCenter,
-    //   color: Colors.white,
-    //   child: Tooltip(
-    //     message: "Click to view the side panel",
-    //     child: InkWell(
-    //       focusColor: Colors.transparent,
-    //       onTap: () {
-    //         controllers.isLeftOpen.value = !controllers.isLeftOpen.value;
-    //       },
-    //       child: CircleAvatar(
-    //         backgroundColor: colorsConst.secondary,
-    //         child: const Icon(Icons.menu, color: Colors.black),
-    //       ),
-    //     ),
-    //   ),
-    // ));
   }
 }
 
@@ -694,7 +800,7 @@ Widget subItem(BuildContext context, RxBool select, RxBool unSelect, String titl
             controllers.oldIndex.value = controllers.selectedIndex.value;
             controllers.selectedIndex.value = index;
             select.value = true;
-            unSelect.value = false;
+            // unSelect.value = false;
             Navigator.push(
               context,
               PageRouteBuilder(

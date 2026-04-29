@@ -417,7 +417,10 @@ class _AddProductDialogState extends State<AddProductDialog> {
         focusNode: fn,
         keyboardType: numbers ? TextInputType.number : TextInputType.text,
         inputFormatters: numbers
-            ? [FilteringTextInputFormatter.digitsOnly]
+            ? [
+              FilteringTextInputFormatter.digitsOnly,
+              LengthLimitingTextInputFormatter(10),
+            ]
             : null,
         textInputAction:
         next != null ? TextInputAction.next : TextInputAction.done,

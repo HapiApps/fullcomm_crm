@@ -1415,6 +1415,8 @@ class _AddLeadState extends State<AddLead> {
                                     }),
                               );
                             }),10.height,
+                            Obx(()=>controllers.refreshValue.value==false?
+                            CircularProgressIndicator():
                             IndustryDropdown(
                               width: textFieldSize,
                               items: controllers.industriesList,
@@ -1474,7 +1476,7 @@ class _AddLeadState extends State<AddLead> {
                                                 onPressed: () {
                                                   controllers.industryValueCtr.clear();
                                                   Navigator.pop(context);
-                                                  },
+                                                },
                                                 child: CustomText(
                                                   text: "Cancel",
                                                   isBold: true,
@@ -1513,7 +1515,7 @@ class _AddLeadState extends State<AddLead> {
                                   },
                                 );
                               },
-                            ),
+                            )),
                             CustomTextField(
                               focusNode: linkedin,
                               onEdit: () {

@@ -133,6 +133,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   var isEyeOpen = false.obs,isLeftOpen=true.obs,isRightOpen=true.obs;
   RxInt selectedIndex = 100.obs,oldIndex=100.obs,selectedSettingsIndex = 0.obs;
   var isSettingsExpanded = false.obs;
+  var isPayrollExpanded = false.obs;
   var isLeadsExpanded = false.obs;
   bool extended =false;
   RxString searchText = ''.obs;
@@ -3070,7 +3071,7 @@ var refreshValue=true.obs;
   Future<void> getIndustries() async {
     try {
       refreshValue.value=false;
-      industriesList.clear();
+      // industriesList.clear();
 
       final response = await http.post(
         Uri.parse(scriptApi),

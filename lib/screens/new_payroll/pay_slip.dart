@@ -1,28 +1,27 @@
 import 'dart:io';
+import 'package:fullcomm_crm/screens/new_payroll/search_bar.dart';
 import 'package:number_to_words_english/number_to_words_english.dart';
-import 'package:security/view/new_payroll/search_bar.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:security/services/new_payroll_api_services.dart';
-import 'package:security/source/extentions/extensions.dart';
-import '../../component/custom_text.dart';
-import '../../component/loading.dart';
-import '../../component/month_calender.dart';
-import '../../constant/assets_constant.dart';
-import '../../constant/color_constant.dart';
-import '../../constant/local_data.dart';
-import '../../controller/monthly_unit_payroll.dart';
+import '../../billing_utils/sized_box.dart';
+import '../../common/constant/api.dart' as assets;
+import '../../common/constant/colors_constant.dart';
+import '../../common/styles/decoration.dart';
+import '../../common/utilities/utils.dart';
+import '../../components/Customtext.dart';
+import '../../components/custom_sidebar.dart';
+import '../../components/month_calender.dart';
+import '../../controller/controller.dart';
 import '../../controller/new_payroll_controller.dart';
-import '../../styles/decoration.dart';
-import '../../widgets/widgets_functions.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
-import 'dashboard.dart';
+import '../../models/payroll/monthly_unit_payroll.dart';
+import '../../services/new_payroll_api_services.dart';
 
 class PaySlip extends StatefulWidget {
   const PaySlip({super.key});
@@ -36,7 +35,9 @@ class _PaySlipState extends State<PaySlip> {
   String empId="";
   @override
   void initState() {
-    pyrlCtr.unitPayrollList.clear();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      pyrlCtr.unitPayrollList.clear();
+    });
     super.initState();
   }
 
@@ -50,179 +51,203 @@ class _PaySlipState extends State<PaySlip> {
         .of(context)
         .size
         .width * 0.97;
-    return Scaffold(
-        backgroundColor: colorsConst.backGroundColor,
-        appBar: PreferredSize(preferredSize: const Size(300, 70),
-            child: app_bar(text: "Pay Slip", callback1: () {
-              Get.to(const NewPayroll(),
-                  transition: Transition.rightToLeftWithFade,
-                  duration: const Duration(seconds: 1));
-            })),
-        body: Obx(() =>
-            Column(
-              children: [
-                InkWell(
-                    onTap: () {
-                      showMonthPicker(
-                        context: context,
-                        month: pyrlCtr.month,
-                        function: (){
-                          if(empId!=""){
-                            newPyrlServ.getPaySlip(empId);
-                          }
-                        }
-                      );
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+    return SelectionArea(
+      child: Scaffold(
+          backgroundColor: colorsConst.backgroundColor,
+          body: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SideBar(),
+              Container(
+                width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+                height: MediaQuery.of(context).size.height,
+                alignment: Alignment.center,
+                padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
+                child: Obx(() =>
+                    Column(
                       children: [
-                        const Icon(
-                            Icons.calendar_month, color: Colors.blueGrey),
-                        10.width,
-                        CustomText(text: pyrlCtr.month.value,
-                            colors: Colors.lightBlueAccent,
-                            size: 15),
-                      ],
-                    )),
-                EmployeeSearchBox(
-                  allEmployees: pyrlCtr.allEmpList,
-                  onEmployeeSelected: (selectedEmployee) {
-                    setState(() {
-                      // Save selected employee details
-                      localData.storage.write("p_emp_id", selectedEmployee.id);
-                      localData.storage.write("p_emp_name", selectedEmployee.fName);
-                      empId=selectedEmployee.id.toString();
-                      newPyrlServ.getPaySlip(empId);
-                    });
-                  },
-                ),
-                10.height,
-                pyrlCtr.getData.value == false ?
-                const Padding(
-                  padding: EdgeInsets.all(25.0),
-                  child: Loading(),
-                ) :
-                pyrlCtr.unitPayrollList.isEmpty ?
-                const CustomText(text: "\n\n\n\n\n\nNo Data Found") :
-                Expanded(
-                  child: SizedBox(
-                    width: kIsWeb ? webSize : mobileSize,
-                    child: Column(
-                      children: [
+                        30.height,
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            ElevatedButton(onPressed: () {
-                              generatePayrollPdf(pyrlCtr.unitPayrollList);
-                            },
-                                child: const CustomText(text: "PDF",
-                                    isBold: true,
-                                    colors: Colors.white)), 10.width
+                            IconButton(onPressed: (){
+                              Get.back();
+                            }, icon: Icon(Icons.arrow_back)),
+                            CustomText(
+                              text: "Pay Slip",
+                              colors: colorsConst.textColor,
+                              size: 20,
+                              isBold: true,
+                              isCopy: true,
+                            ),
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                          child: Container(
+                        10.height,
+                        InkWell(
+                            onTap: () {
+                              showMonthPicker(
+                                context: context,
+                                month: pyrlCtr.month,
+                                function: (){
+                                  if(empId!=""){
+                                    newPyrlServ.getPaySlip(empId);
+                                  }
+                                }
+                              );
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                    Icons.calendar_month, color: Colors.blueGrey),
+                                10.width,
+                                CustomText(text: pyrlCtr.month.value,
+                                    colors: Colors.lightBlueAccent,
+                                    size: 15, isCopy: true,),
+                              ],
+                            )),
+                        EmployeeSearchBox(
+                          allEmployees: pyrlCtr.allEmpList,
+                          onEmployeeSelected: (selectedEmployee) {
+                            setState(() {
+                              // Save selected employee details
+                              controllers.storage.write("p_emp_id", selectedEmployee.id);
+                              controllers.storage.write("p_emp_name", selectedEmployee.fName);
+                              empId=selectedEmployee.id.toString();
+                              newPyrlServ.getPaySlip(empId);
+                            });
+                          },
+                        ),
+                        10.height,
+                        pyrlCtr.getData.value == false ?
+                        const Padding(
+                          padding: EdgeInsets.all(25.0),
+                          child: CircularProgressIndicator(),
+                        ) :
+                        pyrlCtr.unitPayrollList.isEmpty ?
+                        const CustomText(text: "\n\n\n\n\n\nNo Data Found", isCopy: true,) :
+                        Expanded(
+                          child: SizedBox(
                             width: kIsWeb ? webSize : mobileSize,
-                            decoration: customDecoration
-                                .baseBackgroundDecoration(
-                              color: Colors.white,
-                              radius: 10,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(5.0),
-                              child: Column(
-                                children: [
-                                  Table(
-                                    border: TableBorder.all(
-                                        color: Colors.grey.shade300),
-                                    columnWidths: const {
-                                      0: FlexColumnWidth(0.5), // no
-                                      1: FlexColumnWidth(1), // id
-                                      2: FlexColumnWidth(1.2), // role
-                                      3: FlexColumnWidth(2.5), // name
-                                      4: FlexColumnWidth(1), // duty
-                                      5: FlexColumnWidth(1.2), // basic
-                                      6: FlexColumnWidth(1.3), // da
-                                      7: FlexColumnWidth(1.2), // hra
-                                      8: FlexColumnWidth(1.3), // total
-                                      9: FlexColumnWidth(1.3), // Advance
-                                      10: FlexColumnWidth(1.3), // pe
-                                      11: FlexColumnWidth(1.3), // un
-                                      12: FlexColumnWidth(1), // esi
-                                      13: FlexColumnWidth(1), // pf
-                                      14: FlexColumnWidth(1.3), // Deduction
-                                      15: FlexColumnWidth(1.7), // netAmt
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(onPressed: () {
+                                      generatePayrollPdf(pyrlCtr.unitPayrollList);
                                     },
-                                    children: [
-                                      // Header Row
-                                      TableRow(
-                                        decoration: const BoxDecoration(
-                                            color: Colors.black12),
+                                        child: const CustomText(text: "PDF",
+                                            isBold: true,
+                                            colors: Colors.white, isCopy: true,)), 10.width
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  child: Container(
+                                    width: kIsWeb ? webSize : mobileSize,
+                                    decoration: customDecoration
+                                        .baseBackgroundDecoration(
+                                      color: Colors.white,
+                                      radius: 10,
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(5.0),
+                                      child: Column(
                                         children: [
-                                          customWid("S.No",bold: true,),
-                                          customWid("ID",bold: true,),
-                                          customWid("Rank",bold: true,),
-                                          customWid("Name",bold: true,),
-                                          customWid("Duty",bold: true,),
-                                          customWid("OT",bold: true,),
-                                          customWid("Basic",bold: true,),
-                                          customWid("DA",bold: true,),
-                                          customWid("HRA",bold: true,),
-                                          customWid("Earning",bold: true,),
-                                          customWid("Advance",bold: true,),
-                                          customWid("Uniform",bold: true,),
-                                          customWid("Penalty",bold: true,),
-                                          customWid("ESI",bold: true,),
-                                          customWid("PF",bold: true,),
-                                          customWid("Deduction",bold: true,),
-                                          customWid("Net Amt",bold: true,),
+                                          Table(
+                                            border: TableBorder.all(
+                                                color: Colors.grey.shade300),
+                                            columnWidths: const {
+                                              0: FlexColumnWidth(0.5), // no
+                                              1: FlexColumnWidth(1), // id
+                                              2: FlexColumnWidth(1.2), // role
+                                              3: FlexColumnWidth(2.5), // name
+                                              4: FlexColumnWidth(1), // duty
+                                              5: FlexColumnWidth(1.2), // basic
+                                              6: FlexColumnWidth(1.3), // da
+                                              7: FlexColumnWidth(1.2), // hra
+                                              8: FlexColumnWidth(1.3), // total
+                                              9: FlexColumnWidth(1.3), // Advance
+                                              10: FlexColumnWidth(1.3), // pe
+                                              11: FlexColumnWidth(1.3), // un
+                                              12: FlexColumnWidth(1), // esi
+                                              13: FlexColumnWidth(1), // pf
+                                              14: FlexColumnWidth(1.3), // Deduction
+                                              15: FlexColumnWidth(1.7), // netAmt
+                                            },
+                                            children: [
+                                              // Header Row
+                                              TableRow(
+                                                decoration: const BoxDecoration(
+                                                    color: Colors.black12),
+                                                children: [
+                                                  customWid("S.No",bold: true,),
+                                                  customWid("ID",bold: true,),
+                                                  customWid("Rank",bold: true,),
+                                                  customWid("Name",bold: true,),
+                                                  customWid("Duty",bold: true,),
+                                                  customWid("OT",bold: true,),
+                                                  customWid("Basic",bold: true,),
+                                                  customWid("DA",bold: true,),
+                                                  customWid("HRA",bold: true,),
+                                                  customWid("Earning",bold: true,),
+                                                  customWid("Advance",bold: true,),
+                                                  customWid("Uniform",bold: true,),
+                                                  customWid("Penalty",bold: true,),
+                                                  customWid("ESI",bold: true,),
+                                                  customWid("PF",bold: true,),
+                                                  customWid("Deduction",bold: true,),
+                                                  customWid("Net Amt",bold: true,),
+                                                ],
+                                              ),
+
+                                              // Data Rows
+                                              for (int i = 0; i < pyrlCtr.unitPayrollList.length; i++)
+                                                TableRow(
+                                                  children: [
+                                                    customWid((i+1).toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].empcd.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].roleName.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].name.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].duty.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].ot.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].basic.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].da.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].hra.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].total.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].advance.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].uniform.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].penalty.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].esi.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].pf.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].deduction.toString()),
+                                                    customWid(pyrlCtr.unitPayrollList[i].netAmount.toString()),
+                                                  ],
+                                                ),
+                                            ],
+                                          ),
                                         ],
                                       ),
-
-                                      // Data Rows
-                                      for (int i = 0; i < pyrlCtr.unitPayrollList.length; i++)
-                                        TableRow(
-                                          children: [
-                                            customWid((i+1).toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].empcd.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].roleName.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].name.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].duty.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].ot.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].basic.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].da.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].hra.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].total.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].advance.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].uniform.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].penalty.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].esi.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].pf.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].deduction.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[i].netAmount.toString()),
-                                          ],
-                                        ),
-                                    ],
+                                    ),
                                   ),
-                                ],
-                              ),
+                                )
+                              ],
                             ),
                           ),
                         )
                       ],
-                    ),
-                  ),
-                )
-              ],
-            ))
+                    )),
+              ),
+            ],
+          )
+      ),
     );
   }
 
   Widget customWid(String value, {double? width = 8,bool? bold = false}){
     return Padding(
         padding: const EdgeInsets.all(8),
-        child: CustomText(text: value,isBold: bold,));
+        child: CustomText(text: value,isBold: bold!, isCopy: true,));
   }
   // static Future<void> generatePayrollPdf(RxList<UnitPayroll> unitPayrollList) async {
   //   final pdf = pw.Document();
@@ -371,7 +396,7 @@ class _PaySlipState extends State<PaySlip> {
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
                     pw.Text(
-                      localData.storage.read("com_name"),
+                      controllers.storage.read("com_name"),
                       style: pw.TextStyle(
                           fontWeight: pw.FontWeight.bold, fontSize: 14),
                     ),

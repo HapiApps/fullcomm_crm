@@ -40,7 +40,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
   List<double> colWidths = [
     60,//s no
     170,//Action
-    200,//q no
+    350,//q no
     150,//status
     150,//cus
     130,//com
@@ -48,7 +48,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
     130,//prd
     110,//ite
     130,//amt
-    170,//date
+    // 170,//date
     130,//vali
     140,//quo
   ];
@@ -393,7 +393,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                     children: [
                                                       CustomText(
                                                         textAlign: TextAlign.left,
-                                                        text: "Quotation No",
+                                                        text: "Quotation No - Date",
                                                         size: 15,
                                                         isBold: true,
                                                         isCopy: true,
@@ -962,77 +962,77 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                       ),
                                                     ],
                                                   ),),
-                                                  headerCell(6, Row(
-                                                    children: [
-                                                      CustomText( //4
-                                                        textAlign: TextAlign.left,
-                                                        text: "Date",
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: true,
-                                                        colors: Colors.white,
-                                                      ),
-                                                      3.width,
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          if (controllers
-                                                              .sortFieldCallActivity
-                                                              .value == 'date' &&
-                                                              controllers
-                                                                  .sortOrderCallActivity
-                                                                  .value ==
-                                                                  'asc') {
-                                                            controllers
-                                                                .sortOrderCallActivity
-                                                                .value = 'desc';
-                                                          } else {
-                                                            controllers
-                                                                .sortOrderCallActivity
-                                                                .value = 'asc';
-                                                          }
-                                                          controllers
-                                                              .sortFieldCallActivity
-                                                              .value = 'date';
-                                                          productCtr
-                                                              .filterAndSortQuotations(
-                                                            searchText: controllers
-                                                                .searchText.value
-                                                                .toLowerCase(),
-                                                            sortField: controllers
-                                                                .sortFieldCallActivity
-                                                                .value,
-                                                            sortOrder: controllers
-                                                                .sortOrderCallActivity
-                                                                .value,
-                                                            selectedMonth: productCtr
-                                                                .selectedCallMonth
-                                                                .value,
-                                                            selectedRange: productCtr
-                                                                .selectedCallRange
-                                                                .value,
-                                                            selectedDateFilter: productCtr
-                                                                .selectedCallSortBy
-                                                                .value,
-                                                          );
-                                                        },
-                                                        child: Obx(() =>
-                                                            Image.asset(
-                                                              controllers
-                                                                  .sortFieldCallActivity
-                                                                  .value.isEmpty
-                                                                  ? "assets/images/arrow.png"
-                                                                  : controllers
-                                                                  .sortOrderCallActivity
-                                                                  .value == 'asc'
-                                                                  ? "assets/images/arrow_up.png"
-                                                                  : "assets/images/arrow_down.png",
-                                                              width: 15,
-                                                              height: 15,
-                                                            ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
+                                                  // headerCell(6, Row(
+                                                  //   children: [
+                                                  //     CustomText( //4
+                                                  //       textAlign: TextAlign.left,
+                                                  //       text: "Date",
+                                                  //       size: 15,
+                                                  //       isBold: true,
+                                                  //       isCopy: true,
+                                                  //       colors: Colors.white,
+                                                  //     ),
+                                                  //     3.width,
+                                                  //     GestureDetector(
+                                                  //       onTap: () {
+                                                  //         if (controllers
+                                                  //             .sortFieldCallActivity
+                                                  //             .value == 'date' &&
+                                                  //             controllers
+                                                  //                 .sortOrderCallActivity
+                                                  //                 .value ==
+                                                  //                 'asc') {
+                                                  //           controllers
+                                                  //               .sortOrderCallActivity
+                                                  //               .value = 'desc';
+                                                  //         } else {
+                                                  //           controllers
+                                                  //               .sortOrderCallActivity
+                                                  //               .value = 'asc';
+                                                  //         }
+                                                  //         controllers
+                                                  //             .sortFieldCallActivity
+                                                  //             .value = 'date';
+                                                  //         productCtr
+                                                  //             .filterAndSortQuotations(
+                                                  //           searchText: controllers
+                                                  //               .searchText.value
+                                                  //               .toLowerCase(),
+                                                  //           sortField: controllers
+                                                  //               .sortFieldCallActivity
+                                                  //               .value,
+                                                  //           sortOrder: controllers
+                                                  //               .sortOrderCallActivity
+                                                  //               .value,
+                                                  //           selectedMonth: productCtr
+                                                  //               .selectedCallMonth
+                                                  //               .value,
+                                                  //           selectedRange: productCtr
+                                                  //               .selectedCallRange
+                                                  //               .value,
+                                                  //           selectedDateFilter: productCtr
+                                                  //               .selectedCallSortBy
+                                                  //               .value,
+                                                  //         );
+                                                  //       },
+                                                  //       child: Obx(() =>
+                                                  //           Image.asset(
+                                                  //             controllers
+                                                  //                 .sortFieldCallActivity
+                                                  //                 .value.isEmpty
+                                                  //                 ? "assets/images/arrow.png"
+                                                  //                 : controllers
+                                                  //                 .sortOrderCallActivity
+                                                  //                 .value == 'asc'
+                                                  //                 ? "assets/images/arrow_up.png"
+                                                  //                 : "assets/images/arrow_down.png",
+                                                  //             width: 15,
+                                                  //             height: 15,
+                                                  //           ),
+                                                  //       ),
+                                                  //     ),
+                                                  //   ],
+                                                  // ),),
                                                   headerCell(6, Row(
                                                     children: [
                                                       CustomText( //4
@@ -1837,31 +1837,117 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                             child: Column(
                                                               children: [
                                                                 Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                   children: [
-                                                                    CustomText(text: "Quotation", isCopy: false,size: 13,),
-                                                                    CustomText(
-                                                                      textAlign: TextAlign.center,
-                                                                      text: data.quotationNo,
-                                                                      size: 13,
-                                                                      isCopy: true,
-                                                                      colors: colorsConst.textColor,
+                                                                    Container(
+                                                                      width: 100,
+                                                                      color: Colors.pinkAccent,
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          CustomText(text: "Quotation", isCopy: false,size: 13,),
+                                                                          if(data.poNumber!="null"&&data.poNumber!="")
+                                                                          CustomText(text: "PO", isCopy: false,size: 13,),
+                                                                          CustomText(text: "Invoice", isCopy: false,size: 13,),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    Container(
+                                                                      width: 100,
+                                                                      color: Colors.pinkAccent,
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          CustomText(
+                                                                            textAlign: TextAlign.left,
+                                                                            text: productCtr.showCrtDate(data.createdTs.toString()),
+                                                                            size: 13,
+                                                                            isCopy: true,
+                                                                            colors: colorsConst.textColor,
+                                                                          ),
+                                                                          if(data.poNumber!="null"&&data.poNumber!="")
+                                                                            CustomText(
+                                                                            textAlign: TextAlign.center,
+                                                                            text: data.poNumber,
+                                                                            size: 13,
+                                                                            isCopy: true,
+                                                                            colors: Colors.blue,
+                                                                          ),
+                                                                          if(data.iNo!="null"&&data.iNo!="")
+                                                                            CustomText(
+                                                                              textAlign: TextAlign.center,
+                                                                              text: data.iNo,
+                                                                              size: 13,
+                                                                              isCopy: true,
+                                                                              colors: Colors.green,
+                                                                            ),
+                                                                            CustomText(
+                                                                            textAlign: TextAlign.left,
+                                                                            text: data.poDate.toString(),
+                                                                            size: 13,
+                                                                            isCopy: true,
+                                                                            colors: Colors.blue,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    Container(
+                                                                      width: 100,
+                                                                      color: Colors.pinkAccent,
+                                                                      child: Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          CustomText(
+                                                                            textAlign: TextAlign.left,
+                                                                            text: productCtr.showCrtDate(data.createdTs.toString()),
+                                                                            size: 13,
+                                                                            isCopy: true,
+                                                                            colors: colorsConst.textColor,
+                                                                          ),
+                                                                            CustomText(
+                                                                            textAlign: TextAlign.center,
+                                                                            text: data.poNumber,
+                                                                            size: 13,
+                                                                            isCopy: true,
+                                                                            colors: Colors.blue,
+                                                                          ),
+                                                                          if(data.poNumber!="null"&&data.poNumber!="")
+                                                                            CustomText(
+                                                                              textAlign: TextAlign.center,
+                                                                              text: data.poDate,
+                                                                              size: 13,
+                                                                              isCopy: true,
+                                                                              colors: Colors.green,
+                                                                            ),
+                                                                          if(data.iNo!="null"&&data.iNo!="")
+                                                                            CustomText(
+                                                                            textAlign: TextAlign.left,
+                                                                            text: productCtr.showCrtDate(data.invoiceDate.toString()),
+                                                                            size: 13,
+                                                                            isCopy: true,
+                                                                            colors: Colors.green,
+                                                                          ),
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   ],
                                                                 ),
-                                                                if(data.poNumber!="null"&&data.poNumber!="")
                                                                 Padding(
                                                                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                                                                   child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                     children: [
-                                                                      CustomText(text: "PO", isCopy: false,size: 13,),
-                                                                      CustomText(
-                                                                        textAlign: TextAlign.center,
-                                                                        text: data.poNumber,
-                                                                        size: 13,
-                                                                        isCopy: true,
-                                                                        colors: Colors.blue,
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          CustomText(text: "PO", isCopy: false,size: 13,),
+
+                                                                        ],
+                                                                      ),
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          CustomText(text: "Po",size: 13, isCopy: false),
+
+                                                                        ],
                                                                       ),
                                                                     ],
                                                                   ),
@@ -1870,15 +1956,20 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                 Padding(
                                                                   padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
                                                                   child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                     children: [
-                                                                      CustomText(text: "Invoice", isCopy: false,size: 13,),
-                                                                      CustomText(
-                                                                        textAlign: TextAlign.center,
-                                                                        text: data.iNo,
-                                                                        size: 13,
-                                                                        isCopy: true,
-                                                                        colors: Colors.green,
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          CustomText(text: "Invoice", isCopy: false,size: 13,),
+
+                                                                        ],
+                                                                      ),
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          CustomText(text: "Invoice",size: 13,isCopy: false),
+
+                                                                        ],
                                                                       ),
                                                                     ],
                                                                   ),
@@ -2008,61 +2099,61 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                   .textColor,
                                                             ),
                                                           ),
-                                                          Padding(
-                                                            padding: const EdgeInsets
-                                                                .all(10.0),
-                                                            child: Column(
-                                                              children: [
-                                                                Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                  children: [
-                                                                    CustomText(text: "Quotation",size: 13, isCopy: false),
-                                                                    CustomText(
-                                                                      textAlign: TextAlign.left,
-                                                                      text: productCtr.showCrtDate(data.createdTs.toString()),
-                                                                      size: 13,
-                                                                      isCopy: true,
-                                                                      colors: colorsConst.textColor,
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                                if(data.poDate!="null"&&data.poDate!="")
-                                                                Padding(
-                                                                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: [
-                                                                      CustomText(text: "Po",size: 13, isCopy: false),
-                                                                      CustomText(
-                                                                        textAlign: TextAlign.left,
-                                                                        text: data.poDate.toString(),
-                                                                        size: 13,
-                                                                        isCopy: true,
-                                                                        colors: Colors.blue,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                if(data.invoiceDate!="null"&&data.invoiceDate!="")
-                                                                Padding(
-                                                                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                                                  child: Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: [
-                                                                      CustomText(text: "Invoice",size: 13,isCopy: false),
-                                                                      CustomText(
-                                                                        textAlign: TextAlign.left,
-                                                                        text: productCtr.showCrtDate(data.invoiceDate.toString()),
-                                                                        size: 13,
-                                                                        isCopy: true,
-                                                                        colors: Colors.green,
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
+                                                          // Padding(
+                                                          //   padding: const EdgeInsets
+                                                          //       .all(10.0),
+                                                          //   child: Column(
+                                                          //     children: [
+                                                          //       Row(
+                                                          //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          //         children: [
+                                                          //           CustomText(text: "Quotation",size: 13, isCopy: false),
+                                                          //           CustomText(
+                                                          //             textAlign: TextAlign.left,
+                                                          //             text: productCtr.showCrtDate(data.createdTs.toString()),
+                                                          //             size: 13,
+                                                          //             isCopy: true,
+                                                          //             colors: colorsConst.textColor,
+                                                          //           ),
+                                                          //         ],
+                                                          //       ),
+                                                          //       if(data.poDate!="null"&&data.poDate!="")
+                                                          //       Padding(
+                                                          //         padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                          //         child: Row(
+                                                          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          //           children: [
+                                                          //             CustomText(text: "Po",size: 13, isCopy: false),
+                                                          //             CustomText(
+                                                          //               textAlign: TextAlign.left,
+                                                          //               text: data.poDate.toString(),
+                                                          //               size: 13,
+                                                          //               isCopy: true,
+                                                          //               colors: Colors.blue,
+                                                          //             ),
+                                                          //           ],
+                                                          //         ),
+                                                          //       ),
+                                                          //       if(data.invoiceDate!="null"&&data.invoiceDate!="")
+                                                          //       Padding(
+                                                          //         padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                          //         child: Row(
+                                                          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          //           children: [
+                                                          //             CustomText(text: "Invoice",size: 13,isCopy: false),
+                                                          //             CustomText(
+                                                          //               textAlign: TextAlign.left,
+                                                          //               text: productCtr.showCrtDate(data.invoiceDate.toString()),
+                                                          //               size: 13,
+                                                          //               isCopy: true,
+                                                          //               colors: Colors.green,
+                                                          //             ),
+                                                          //           ],
+                                                          //         ),
+                                                          //       ),
+                                                          //     ],
+                                                          //   ),
+                                                          // ),
                                                           Padding(
                                                             padding: const EdgeInsets
                                                                 .all(10.0),

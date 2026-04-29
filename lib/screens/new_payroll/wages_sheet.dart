@@ -10,29 +10,21 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:security/services/new_payroll_api_services.dart';
-import 'package:security/source/extentions/extensions.dart';
-import '../../component/custom_text.dart';
-import '../../component/emp_drop.dart';
-import '../../component/loading.dart';
-import '../../component/map_dropdown.dart';
-import '../../component/month_calender.dart';
-import '../../constant/assets_constant.dart';
-import '../../constant/color_constant.dart';
-import '../../constant/local_data.dart';
-import '../../controller/employee_controller.dart';
-import '../../controller/monthly_unit_payroll.dart';
+import '../../billing_utils/sized_box.dart';
+import '../../common/constant/api.dart' as assets;
+import '../../common/constant/colors_constant.dart';
+import '../../common/styles/decoration.dart';
+import '../../common/utilities/utils.dart';
+import '../../components/Customtext.dart';
+import '../../components/custom_sidebar.dart';
+import '../../components/emp_drop.dart';
+import '../../components/month_calender.dart';
+import '../../controller/controller.dart';
 import '../../controller/new_payroll_controller.dart';
-import '../../controller/unit_controller.dart';
-import '../../model/unit_model.dart';
-import '../../services/employee_api_services.dart';
-import '../../styles/decoration.dart';
-import '../../widgets/widgets_functions.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
-import 'dashboard.dart';
-import 'dart:io' as io;
+import '../../models/payroll/unit_model.dart';
+import '../../services/new_payroll_api_services.dart';
 import 'dart:typed_data';
 
 class UnitSlip extends StatefulWidget {
@@ -44,15 +36,14 @@ class UnitSlip extends StatefulWidget {
 
 class _UnitSlipState extends State<UnitSlip> {
   var newPyrlServ = NewPayrollApiServices.instance;
-  var empServ=EmpApiServices.instance;
   var unitname,unitId;
 
   @override
   void initState() {
-    pyrlCtr.users.clear();
-    pyrlCtr.unitPayrollList.clear();
-    unitCtr.selectTeam=null;
-    empServ.getTeams();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      pyrlCtr.users.clear();
+      pyrlCtr.unitPayrollList.clear();
+    });
     super.initState();
   }
 
@@ -66,431 +57,333 @@ class _UnitSlipState extends State<UnitSlip> {
         .of(context)
         .size
         .width * 0.97;
-    return Scaffold(
-        backgroundColor: colorsConst.backGroundColor,
-        appBar: PreferredSize(preferredSize: const Size(300, 70),
-            child: app_bar(text: "Wages Sheet", callback1: () {
-              Get.to(const NewPayroll(),
-                  transition: Transition.rightToLeftWithFade,
-                  duration: const Duration(seconds: 1));
-            })),
-        body: Obx(() =>
-            Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    InkWell(
-                        onTap: () {
-                          showMonthPicker2(
-                            context: context,
-                            month: pyrlCtr.month,
-                            function: (){
-                              if(unitCtr.selectTeam==null){
-                                if(pyrlCtr.unitName!=null){
+    return SelectionArea(
+      child: Scaffold(
+          backgroundColor: colorsConst.backgroundColor,
+          body: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SideBar(),
+              Container(
+                width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+                height: MediaQuery.of(context).size.height,
+                alignment: Alignment.center,
+                padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
+                child: Obx(() =>
+                    Column(
+                      children: [
+                        30.height,
+                        Row(
+                          children: [
+                            IconButton(onPressed: (){
+                              Get.back();
+                            }, icon: Icon(Icons.arrow_back)),
+                            CustomText(
+                              text: "Wages Sheet",
+                              colors: colorsConst.textColor,
+                              size: 20,
+                              isBold: true,
+                              isCopy: true,
+                            ),
+                          ],
+                        ),
+                        10.height,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  showMonthPicker2(
+                                    context: context,
+                                    month: pyrlCtr.month,
+                                    function: (){
+                                      if(pyrlCtr.unitName!=null){
+                                        newPyrlServ.getUnitPayroll(unitId);
+                                      }
+                                    }
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                        Icons.calendar_month, color: Colors.blueGrey),
+                                    10.width,
+                                    CustomText(text: pyrlCtr.month.value,
+                                        colors: Colors.lightBlueAccent,
+                                        size: 15, isCopy: true,),
+                                  ],
+                                )),
+                          ],
+                        ),
+                        10.height,
+                        Center(
+                          child: pyrlCtr.getUnits.value == false ?
+                          const CircularProgressIndicator() :
+                          pyrlCtr.unitList.isEmpty ?
+                          const CustomText(text: "No Unit Found", isCopy: true,) :
+                          PayrollUnitDropDown(
+                            size: kIsWeb ? webSize : mobileSize,
+                            color: Colors.white,
+                            text: "Unit Name",
+                            unitList: pyrlCtr.unitList,
+                            onChanged: (units? unit) {
+                              setState(() {
+                                pyrlCtr.unitName = unit;
+                                if (unit != null) {
+                                  unitname = unit.unit_name.toString();
+                                  unitId = unit.id.toString();
                                   newPyrlServ.getUnitPayroll(unitId);
                                 }
-                              }else{
-                                newPyrlServ.getTeamUnitPayroll(localData.storage.read("team_report_id"));
-                              }
-                            }
-                          );
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(
-                                Icons.calendar_month, color: Colors.blueGrey),
-                            10.width,
-                            CustomText(text: pyrlCtr.month.value,
-                                colors: Colors.lightBlueAccent,
-                                size: 15),
-                          ],
-                        )),
-                    MapDropDown(
-                      color: Colors.white,
-                      width: webSize/5,
-                      value: unitCtr.selectTeam,
-                      hintText: "Team",
-                      items: empCtr.teamList.map((value) {
-                        return DropdownMenuItem(
-                          value: value,
-                          child: CustomText(text: value["name"]),
-                        );
-                      }).toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          pyrlCtr.unitName =null;
-                          var list=[];
-                          list.add(value);
-                          unitCtr.selectTeam = value;
-                          localData.storage.write("team_report_id", list[0]["id"]);
-                          localData.storage.write("team_report_name", list[0]["name"]);
-                          newPyrlServ.getTeamUnitPayroll(localData.storage.read("team_report_id"));
-                        });
-                      },
-                    ),
-
-                    // MapDropDown(
-                    //   color: Colors.white,
-                    //   width: webSize/5,
-                    //   value: unitCtr.selectTeam,
-                    //   hintText: "Team",
-                    //   items: empCtr.teamList.map((value) {
-                    //     return DropdownMenuItem(
-                    //       value: value,
-                    //       child: CustomText(text: value["name"]),
-                    //     );
-                    //   }).toList(),
-                    //   onChanged: (value) {
-                    //     setState(() {
-                    //       unitCtr.selectTeam = value;
-                    //       var list=[];
-                    //       list.add(value);
-                    //       print("list");
-                    //       print(list);
-                    //       newPyrlServ.getTeamUnitPayroll(list[0]["id"]);
-                    //     });
-                    //   },
-                    // ),
-                  ],
-                ),
-                10.height,
-                Center(
-                  child: pyrlCtr.getUnits.value == false ?
-                  const Loading() :
-                  pyrlCtr.unitList.isEmpty ?
-                  const CustomText(text: "No Unit Found") :
-                  PayrollUnitDropDown(
-                    size: kIsWeb ? webSize : mobileSize,
-                    color: Colors.white,
-                    text: "Unit Name",
-                    unitList: pyrlCtr.unitList,
-                    onChanged: (units? unit) {
-                      setState(() {
-                        pyrlCtr.unitName = unit;
-                        if (unit != null) {
-                          unitCtr.selectTeam =null;
-                          unitname = unit.unit_name.toString();
-                          unitId = unit.id.toString();
-                          newPyrlServ.getUnitPayroll(unitId);
-                        }
-                      });
-                    },),
-                ),
-                pyrlCtr.getData.value == false ?
-                const Padding(
-                  padding: EdgeInsets.all(25.0),
-                  child: Loading(),
-                ) :
-                pyrlCtr.unitPayrollList.isEmpty ?
-                const CustomText(text: "\n\n\n\n\n\nNo Data Found") :
-                Expanded(
-                  child: SizedBox(
-                    width: kIsWeb ? webSize : mobileSize,
-                    child: ListView.builder(
-                      itemCount: pyrlCtr.unitPayrollList.length,
-                      itemBuilder: (context, index) {
-                        var namesList = pyrlCtr.unitPayrollList[index].name.toString().split(',');
-                        var codeList = pyrlCtr.unitPayrollList[index].empcd.toString().split(',');
-                        var roleList = pyrlCtr.unitPayrollList[index].roleName.toString().split(',');
-                        var dutyList = pyrlCtr.unitPayrollList[index].duty.toString().split(',');
-                        var otList = pyrlCtr.unitPayrollList[index].ot.toString().split(',');
-                        var basicList = pyrlCtr.unitPayrollList[index].basic.toString().split(',');
-                        var hraList = pyrlCtr.unitPayrollList[index].hra.toString().split(',');
-                        var daList = pyrlCtr.unitPayrollList[index].da.toString().split(',');
-                        var netAmtList = pyrlCtr.unitPayrollList[index].netAmount.toString().split(',');
-                        var advanceList = pyrlCtr.unitPayrollList[index].advance.toString().split(',');
-                        var uniformList = pyrlCtr.unitPayrollList[index].uniform.toString().split(',');
-                        var penaltyList = pyrlCtr.unitPayrollList[index].penalty.toString().split(',');
-                        var esiList = pyrlCtr.unitPayrollList[index].esi.toString().split(',');
-                        var pfList = pyrlCtr.unitPayrollList[index].pf.toString().split(',');
-                        var deductionList = pyrlCtr.unitPayrollList[index].deduction.toString().split(',');
-                        var totalList = pyrlCtr.unitPayrollList[index].total.toString().split(',');
-                        var acList = pyrlCtr.unitPayrollList[index].aC.toString().split(',');
-                        var bonusList = pyrlCtr.unitPayrollList[index].bonus.toString().split(',');
-                        var bonus2List = pyrlCtr.unitPayrollList[index].bonus2.toString().split(',');
-                        var foodList = pyrlCtr.unitPayrollList[index].food.toString().split(',');
-                        var opList = pyrlCtr.unitPayrollList[index].op.toString().split(',');
-
-                        return Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                          child: Container(
+                              });
+                            },),
+                        ),
+                        pyrlCtr.getData.value == false ?
+                        const Padding(
+                          padding: EdgeInsets.all(25.0),
+                          child: CircularProgressIndicator(),
+                        ) :
+                        pyrlCtr.unitPayrollList.isEmpty ?
+                        const CustomText(text: "\n\n\n\n\n\nNo Data Found", isCopy: true,) :
+                        Expanded(
+                          child: SizedBox(
                             width: kIsWeb ? webSize : mobileSize,
-                            decoration: customDecoration
-                                .baseBackgroundDecoration(
-                              color: Colors.white,
-                              radius: 10,
-                            ),
-                            child: Column(
-                              children: [
-                                if(index==0)
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      // ElevatedButton(onPressed: () {
-                                      //   esiWagesPayrollExport(index, unitname);
-                                      // },
-                                      //     child: const CustomText(text: "ESI Wages",
-                                      //       isBold: true,
-                                      //       colors: Colors.white,)),
-                                      // 10.width,
-                                      // ElevatedButton(onPressed: () {
-                                      //   pfWagesPayrollExport(index, unitname);
-                                      // },
-                                      //     child: const CustomText(text: "PF Wages",
-                                      //         isBold: true,
-                                      //         colors: Colors.white)), 10.width,
-                                      ElevatedButton(onPressed: () {
-                                        // generateSinglePayrollPdf(pyrlCtr.unitPayrollList[index]);
-                                        unitPayrollExport(index, unitName: unitCtr.selectTeam==null?unitname:"");
-                                      },
-                                          child: const CustomText(text: "Excel",
-                                            isBold: true,
-                                            colors: Colors.white,)),
-                                      10.width,
-                                      ElevatedButton(onPressed: () {
-                                        unitPayrollPreviewPdf(index, unitName: unitCtr.selectTeam==null?unitname:"");
-                                      },
-                                          child: const CustomText(text: "PDF",
-                                              isBold: true,
-                                              colors: Colors.white)), 10.width
-                                    ],
+                            child: ListView.builder(
+                              itemCount: pyrlCtr.unitPayrollList.length,
+                              itemBuilder: (context, index) {
+                                var namesList = pyrlCtr.unitPayrollList[index].name.toString().split(',');
+                                var codeList = pyrlCtr.unitPayrollList[index].empcd.toString().split(',');
+                                var roleList = pyrlCtr.unitPayrollList[index].roleName.toString().split(',');
+                                var dutyList = pyrlCtr.unitPayrollList[index].duty.toString().split(',');
+                                var otList = pyrlCtr.unitPayrollList[index].ot.toString().split(',');
+                                var basicList = pyrlCtr.unitPayrollList[index].basic.toString().split(',');
+                                var hraList = pyrlCtr.unitPayrollList[index].hra.toString().split(',');
+                                var daList = pyrlCtr.unitPayrollList[index].da.toString().split(',');
+                                var netAmtList = pyrlCtr.unitPayrollList[index].netAmount.toString().split(',');
+                                var advanceList = pyrlCtr.unitPayrollList[index].advance.toString().split(',');
+                                var uniformList = pyrlCtr.unitPayrollList[index].uniform.toString().split(',');
+                                var penaltyList = pyrlCtr.unitPayrollList[index].penalty.toString().split(',');
+                                var esiList = pyrlCtr.unitPayrollList[index].esi.toString().split(',');
+                                var pfList = pyrlCtr.unitPayrollList[index].pf.toString().split(',');
+                                var deductionList = pyrlCtr.unitPayrollList[index].deduction.toString().split(',');
+                                var totalList = pyrlCtr.unitPayrollList[index].total.toString().split(',');
+                                var acList = pyrlCtr.unitPayrollList[index].aC.toString().split(',');
+                                var bonusList = pyrlCtr.unitPayrollList[index].bonus.toString().split(',');
+                                var bonus2List = pyrlCtr.unitPayrollList[index].bonus2.toString().split(',');
+                                var foodList = pyrlCtr.unitPayrollList[index].food.toString().split(',');
+                                var opList = pyrlCtr.unitPayrollList[index].op.toString().split(',');
+                
+                                return Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  child: Container(
+                                    width: kIsWeb ? webSize : mobileSize,
+                                    decoration: customDecoration
+                                        .baseBackgroundDecoration(
+                                      color: Colors.white,
+                                      radius: 10,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        if(index==0)
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              // ElevatedButton(onPressed: () {
+                                              //   esiWagesPayrollExport(index, unitname);
+                                              // },
+                                              //     child: const CustomText(text: "ESI Wages",
+                                              //       isBold: true,
+                                              //       colors: Colors.white,)),
+                                              // 10.width,
+                                              // ElevatedButton(onPressed: () {
+                                              //   pfWagesPayrollExport(index, unitname);
+                                              // },
+                                              //     child: const CustomText(text: "PF Wages",
+                                              //         isBold: true,
+                                              //         colors: Colors.white)), 10.width,
+                                              ElevatedButton(onPressed: () {
+                                                // generateSinglePayrollPdf(pyrlCtr.unitPayrollList[index]);
+                                                unitPayrollExport(index, unitName: unitname);
+                                              },
+                                                  child: const CustomText(text: "Excel",
+                                                    isBold: true,
+                                                    colors: Colors.white, isCopy: true,)),
+                                              10.width,
+                                              ElevatedButton(onPressed: () {
+                                                unitPayrollPreviewPdf(index, unitName: unitname);
+                                              },
+                                                  child: const CustomText(text: "PDF",
+                                                      isBold: true,
+                                                      colors: Colors.white, isCopy: true,)), 10.width
+                                            ],
+                                          ),
+                                        Table(
+                                          border: TableBorder.all(
+                                              color: Colors.grey.shade300),
+                                          columnWidths:controllers.storage.read("com_id")=="1"? {
+                                            0: FlexColumnWidth(0.5), // no
+                                            1: FlexColumnWidth(1), // id
+                                            2: FlexColumnWidth(1.2), // role
+                                            3: FlexColumnWidth(2.5), // name
+                                            4: FlexColumnWidth(1), // duty
+                                            5: FlexColumnWidth(1.2), // basic
+                                            6: FlexColumnWidth(1.3), // da
+                                            7: FlexColumnWidth(1.2), // hra
+                                            8: FlexColumnWidth(1.3), // total
+                                            9: FlexColumnWidth(1.3), // Advance
+                                            10: FlexColumnWidth(1.3), // pe
+                                            11: FlexColumnWidth(1.3), // un
+                                            12: FlexColumnWidth(1), // esi
+                                            13: FlexColumnWidth(1), // pf
+                                            14: FlexColumnWidth(1.3), // Deduction
+                                            15: FlexColumnWidth(1.7), // netAmt 16 c
+                                            16: FlexColumnWidth(1.7), // netAmt 16 c
+                                            17: FlexColumnWidth(1.7), // netAmt 16 c
+                                          }:
+                                          controllers.storage.read("com_id")!="1"? {
+                                            0: FlexColumnWidth(0.5), // no
+                                            1: FlexColumnWidth(1), // id
+                                            2: FlexColumnWidth(1.2), // role
+                                            3: FlexColumnWidth(2.5), // name
+                                            4: FlexColumnWidth(1), // duty
+                                            5: FlexColumnWidth(1.2), // basic
+                                            6: FlexColumnWidth(1.3), // da
+                                            7: FlexColumnWidth(1.2), // hra
+                                            8: FlexColumnWidth(1.3), // total
+                                            9: FlexColumnWidth(1.3), // Advance
+                                            10: FlexColumnWidth(1.3), // pe
+                                            11: FlexColumnWidth(1.3), // un
+                                            12: FlexColumnWidth(1), // esi
+                                            13: FlexColumnWidth(1), // pf
+                                            14: FlexColumnWidth(1), // admin charges
+                                            15: FlexColumnWidth(1.3), // Deduction
+                                            16: FlexColumnWidth(1.3), // Deduction
+                                            17: FlexColumnWidth(1.3), // Deduction
+                                            // 16: FlexColumnWidth(1.7), // netAmt
+                                          }:
+                                          {
+                                            0: FlexColumnWidth(0.7), // no
+                                            1: FlexColumnWidth(2), // unit Name
+                                            2: FlexColumnWidth(1), // id
+                                            3: FlexColumnWidth(1.2), // role
+                                            4: FlexColumnWidth(2), // name
+                                            5: FlexColumnWidth(1), // duty
+                                            6: FlexColumnWidth(1.1), // basic
+                                            7: FlexColumnWidth(1.2), // da
+                                            8: FlexColumnWidth(1.1), // hra
+                                            9: FlexColumnWidth(1.3), // total
+                                            10: FlexColumnWidth(1.3), // Advance
+                                            11: FlexColumnWidth(1.3), // pe
+                                            12: FlexColumnWidth(1.2), // un
+                                            13: FlexColumnWidth(1), // esi
+                                            14: FlexColumnWidth(1), // pf
+                                            15: FlexColumnWidth(1), // pf
+                                            16: FlexColumnWidth(1.1), // Deduction
+                                            17: FlexColumnWidth(1.7), // netAmt
+                                            18: FlexColumnWidth(1.7), // netAmt
+                                            19: FlexColumnWidth(1.7), // netAmt
+                                          },
+                                          children: [
+                                            // Header Row
+                                            if(index==0)
+                                              TableRow(
+                                                decoration: const BoxDecoration(
+                                                    color: Colors.black12),
+                                                children: [
+                                                  customWid("S.No",bold: true,),
+                                                  customWid("Unit Name",bold: true,),
+                                                  customWid("ID",bold: true,),
+                                                  customWid("Rank",bold: true,),
+                                                  customWid("Name",bold: true,),
+                                                  customWid("Duty",bold: true,),
+                                                  customWid("OT",bold: true,),
+                                                  if(controllers.storage.read("com_id")=="1")
+                                                  customWid("Basic",bold: true,),
+                                                  if(controllers.storage.read("com_id")=="1")
+                                                  customWid("DA",bold: true,),
+                                                  if(controllers.storage.read("com_id")=="1")
+                                                  customWid("HRA",bold: true,),
+                                                  if(controllers.storage.read("com_id")!="1")
+                                                  customWid("Optional Salary",bold: true,),
+                                                  if(controllers.storage.read("com_id")!="1")
+                                                  customWid("Bonus",bold: true,),
+                                                  customWid("Earning",bold: true,),
+                                                  customWid("Advance",bold: true,),
+                                                  customWid("Uniform",bold: true,),
+                                                  customWid("Penalty",bold: true,),
+                                                  customWid("Bonus",bold: true,),
+                                                  customWid("Food Charges",bold: true,),
+                                                  customWid("ESI",bold: true,),
+                                                  customWid("PF",bold: true,),
+                                                  if(controllers.storage.read("com_id")!="1")
+                                                  customWid("Admin\nCharges",bold: true,),
+                                                  customWid("Deduction",bold: true,),
+                                                  customWid("Net Amt",bold: true,),
+                                                ],
+                                              ),
+                
+                                            // Data Rows
+                                              for (int i = 0; i < namesList.length; i++)
+                                                TableRow(
+                                                  children: [
+                                                    customWid((i+1).toString()),
+                                                    customWid(codeList[i]),
+                                                    customWid(roleList[i]),
+                                                    customWid(namesList[i]),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(8),
+                                                      child: CustomText(
+                                                        text: dutyList[i], isCopy: true,
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: const EdgeInsets.all(8),
+                                                      child: CustomText(
+                                                        text: otList[i], isCopy: true,
+                                                      ),
+                                                    ),
+                                                    // customWid(dutyList[i]),
+                                                    // customWid(otList[i]),
+                                                    if(controllers.storage.read("com_id")=="1")
+                                                    customWid(basicList[i]),
+                                                    if(controllers.storage.read("com_id")=="1")
+                                                    customWid(daList[i]),
+                                                    if(controllers.storage.read("com_id")=="1")
+                                                    customWid(hraList[i]),
+                                                    if(controllers.storage.read("com_id")!="1")
+                                                    customWid("${double.parse(opList[i])*double.parse(dutyList[i])}"),
+                                                    if(controllers.storage.read("com_id")!="1")
+                                                    customWid("${double.parse(bonusList[i])*double.parse(dutyList[i])}"),
+                                                    customWid(totalList[i]),
+                                                    customWid(advanceList[i]),
+                                                    customWid(uniformList[i]),
+                                                    customWid(penaltyList[i]),
+                                                    customWid(bonus2List[i]),
+                                                    customWid(foodList[i]),
+                                                    customWid(esiList[i]),
+                                                    customWid(pfList[i]),
+                                                    if(controllers.storage.read("com_id")!="1")
+                                                    customWid("${double.parse(acList[i]=="null"||acList[i]==""?"0":acList[i])*int.parse(dutyList[i])}"),
+                                                    customWid(deductionList[i]),
+                                                    customWid(netAmtList[i]),
+                                                  ],
+                                                ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                Table(
-                                  border: TableBorder.all(
-                                      color: Colors.grey.shade300),
-                                  columnWidths: unitCtr.selectTeam==null&&localData.storage.read("com_id")=="1"? {
-                                    0: FlexColumnWidth(0.5), // no
-                                    1: FlexColumnWidth(1), // id
-                                    2: FlexColumnWidth(1.2), // role
-                                    3: FlexColumnWidth(2.5), // name
-                                    4: FlexColumnWidth(1), // duty
-                                    5: FlexColumnWidth(1.2), // basic
-                                    6: FlexColumnWidth(1.3), // da
-                                    7: FlexColumnWidth(1.2), // hra
-                                    8: FlexColumnWidth(1.3), // total
-                                    9: FlexColumnWidth(1.3), // Advance
-                                    10: FlexColumnWidth(1.3), // pe
-                                    11: FlexColumnWidth(1.3), // un
-                                    12: FlexColumnWidth(1), // esi
-                                    13: FlexColumnWidth(1), // pf
-                                    14: FlexColumnWidth(1.3), // Deduction
-                                    15: FlexColumnWidth(1.7), // netAmt 16 c
-                                    16: FlexColumnWidth(1.7), // netAmt 16 c
-                                    17: FlexColumnWidth(1.7), // netAmt 16 c
-                                  }:
-                                  unitCtr.selectTeam!=null&&localData.storage.read("com_id")=="1"?
-                                  {
-                                    0: FlexColumnWidth(0.7), // no
-                                    1: FlexColumnWidth(2), // unit Name
-                                    2: FlexColumnWidth(1), // id
-                                    3: FlexColumnWidth(1.2), // role
-                                    4: FlexColumnWidth(2), // name
-                                    5: FlexColumnWidth(1), // duty
-                                    6: FlexColumnWidth(1.1), // basic
-                                    7: FlexColumnWidth(1.2), // da
-                                    8: FlexColumnWidth(1.1), // hra
-                                    9: FlexColumnWidth(1.3), // total
-                                    10: FlexColumnWidth(1.3), // Advance
-                                    11: FlexColumnWidth(1.3), // pe
-                                    12: FlexColumnWidth(1.2), // un
-                                    13: FlexColumnWidth(1), // esi
-                                    14: FlexColumnWidth(1), // pf
-                                    15: FlexColumnWidth(1.1), // Deduction
-                                    16: FlexColumnWidth(1.7), // netAmt 17 c
-                                    17: FlexColumnWidth(1.7), // netAmt 17 c
-                                    18: FlexColumnWidth(1.7), // netAmt 17 c
-                                  }:
-                                  unitCtr.selectTeam==null&&localData.storage.read("com_id")!="1"? {
-                                    0: FlexColumnWidth(0.5), // no
-                                    1: FlexColumnWidth(1), // id
-                                    2: FlexColumnWidth(1.2), // role
-                                    3: FlexColumnWidth(2.5), // name
-                                    4: FlexColumnWidth(1), // duty
-                                    5: FlexColumnWidth(1.2), // basic
-                                    6: FlexColumnWidth(1.3), // da
-                                    7: FlexColumnWidth(1.2), // hra
-                                    8: FlexColumnWidth(1.3), // total
-                                    9: FlexColumnWidth(1.3), // Advance
-                                    10: FlexColumnWidth(1.3), // pe
-                                    11: FlexColumnWidth(1.3), // un
-                                    12: FlexColumnWidth(1), // esi
-                                    13: FlexColumnWidth(1), // pf
-                                    14: FlexColumnWidth(1), // admin charges
-                                    15: FlexColumnWidth(1.3), // Deduction
-                                    16: FlexColumnWidth(1.3), // Deduction
-                                    17: FlexColumnWidth(1.3), // Deduction
-                                    // 16: FlexColumnWidth(1.7), // netAmt
-                                  }:
-                                  {
-                                    0: FlexColumnWidth(0.7), // no
-                                    1: FlexColumnWidth(2), // unit Name
-                                    2: FlexColumnWidth(1), // id
-                                    3: FlexColumnWidth(1.2), // role
-                                    4: FlexColumnWidth(2), // name
-                                    5: FlexColumnWidth(1), // duty
-                                    6: FlexColumnWidth(1.1), // basic
-                                    7: FlexColumnWidth(1.2), // da
-                                    8: FlexColumnWidth(1.1), // hra
-                                    9: FlexColumnWidth(1.3), // total
-                                    10: FlexColumnWidth(1.3), // Advance
-                                    11: FlexColumnWidth(1.3), // pe
-                                    12: FlexColumnWidth(1.2), // un
-                                    13: FlexColumnWidth(1), // esi
-                                    14: FlexColumnWidth(1), // pf
-                                    15: FlexColumnWidth(1), // pf
-                                    16: FlexColumnWidth(1.1), // Deduction
-                                    17: FlexColumnWidth(1.7), // netAmt
-                                    18: FlexColumnWidth(1.7), // netAmt
-                                    19: FlexColumnWidth(1.7), // netAmt
-                                  },
-                                  children: [
-                                    // Header Row
-                                    if(index==0)
-                                      TableRow(
-                                        decoration: const BoxDecoration(
-                                            color: Colors.black12),
-                                        children: [
-                                          customWid("S.No",bold: true,),
-                                          if(unitCtr.selectTeam!=null)
-                                          customWid("Unit Name",bold: true,),
-                                          customWid("ID",bold: true,),
-                                          customWid("Rank",bold: true,),
-                                          customWid("Name",bold: true,),
-                                          customWid("Duty",bold: true,),
-                                          customWid("OT",bold: true,),
-                                          if(localData.storage.read("com_id")=="1")
-                                          customWid("Basic",bold: true,),
-                                          if(localData.storage.read("com_id")=="1")
-                                          customWid("DA",bold: true,),
-                                          if(localData.storage.read("com_id")=="1")
-                                          customWid("HRA",bold: true,),
-                                          if(localData.storage.read("com_id")!="1")
-                                          customWid("Optional Salary",bold: true,),
-                                          if(localData.storage.read("com_id")!="1")
-                                          customWid("Bonus",bold: true,),
-                                          customWid("Earning",bold: true,),
-                                          customWid("Advance",bold: true,),
-                                          customWid("Uniform",bold: true,),
-                                          customWid("Penalty",bold: true,),
-                                          customWid("Bonus",bold: true,),
-                                          customWid("Food Charges",bold: true,),
-                                          customWid("ESI",bold: true,),
-                                          customWid("PF",bold: true,),
-                                          if(localData.storage.read("com_id")!="1")
-                                          customWid("Admin\nCharges",bold: true,),
-                                          customWid("Deduction",bold: true,),
-                                          customWid("Net Amt",bold: true,),
-                                        ],
-                                      ),
-
-                                    // Data Rows
-                                    if(unitCtr.selectTeam==null)
-                                      for (int i = 0; i < namesList.length; i++)
-                                        TableRow(
-                                          children: [
-                                            customWid((i+1).toString()),
-                                            customWid(codeList[i]),
-                                            customWid(roleList[i]),
-                                            customWid(namesList[i]),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8),
-                                              child: CustomText(
-                                                text: dutyList[i],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8),
-                                              child: CustomText(
-                                                text: otList[i],
-                                              ),
-                                            ),
-                                            // customWid(dutyList[i]),
-                                            // customWid(otList[i]),
-                                            if(localData.storage.read("com_id")=="1")
-                                            customWid(basicList[i]),
-                                            if(localData.storage.read("com_id")=="1")
-                                            customWid(daList[i]),
-                                            if(localData.storage.read("com_id")=="1")
-                                            customWid(hraList[i]),
-                                            if(localData.storage.read("com_id")!="1")
-                                            customWid("${double.parse(opList[i])*double.parse(dutyList[i])}"),
-                                            if(localData.storage.read("com_id")!="1")
-                                            customWid("${double.parse(bonusList[i])*double.parse(dutyList[i])}"),
-                                            customWid(totalList[i]),
-                                            customWid(advanceList[i]),
-                                            customWid(uniformList[i]),
-                                            customWid(penaltyList[i]),
-                                            customWid(bonus2List[i]),
-                                            customWid(foodList[i]),
-                                            customWid(esiList[i]),
-                                            customWid(pfList[i]),
-                                            if(localData.storage.read("com_id")!="1")
-                                            customWid("${double.parse(acList[i]=="null"||acList[i]==""?"0":acList[i])*int.parse(dutyList[i])}"),
-                                            customWid(deductionList[i]),
-                                            customWid(netAmtList[i]),
-                                          ],
-                                        ),
-                                    if(unitCtr.selectTeam!=null)
-                                      // for (int i = 0; i < pyrlCtr.unitPayrollList.length; i++)
-                                        TableRow(
-                                          children: [
-                                            customWid((index+1).toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].unitName.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].empcd.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].roleName.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].name.toString()),
-                                            // customWid(pyrlCtr.unitPayrollList[index].duty.toString()),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8),
-                                              child: CustomText(
-                                                text: pyrlCtr.unitPayrollList[index].duty.toString(),
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding: const EdgeInsets.all(8),
-                                              child: CustomText(
-                                                text: pyrlCtr.unitPayrollList[index].ot.toString(),
-                                              ),
-                                            ),
-                                            // customWid(pyrlCtr.unitPayrollList[index].ot.toString()),
-                                            if(localData.storage.read("com_id")=="1")
-                                            customWid(pyrlCtr.unitPayrollList[index].basic.toString()),
-                                            if(localData.storage.read("com_id")=="1")
-                                            customWid(pyrlCtr.unitPayrollList[index].da.toString()),
-                                            if(localData.storage.read("com_id")=="1")
-                                            customWid(pyrlCtr.unitPayrollList[index].hra.toString()),
-                                            if(localData.storage.read("com_id")!="1")
-                                            customWid("${double.parse(pyrlCtr.unitPayrollList[index].op.toString())*double.parse(pyrlCtr.unitPayrollList[index].duty.toString())}"),
-                                            if(localData.storage.read("com_id")!="1")
-                                            customWid("${double.parse(pyrlCtr.unitPayrollList[index].bonus.toString())*double.parse(pyrlCtr.unitPayrollList[index].duty.toString())}"),
-                                            customWid(pyrlCtr.unitPayrollList[index].total.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].advance.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].uniform.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].penalty.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].bonus2.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].food.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].esi.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].pf.toString()),
-                                            if(localData.storage.read("com_id")!="1")
-                                            customWid("${double.parse(pyrlCtr.unitPayrollList[index].aC.toString())*double.parse(pyrlCtr.unitPayrollList[index].duty.toString())}"),
-                                            customWid(pyrlCtr.unitPayrollList[index].deduction.toString()),
-                                            customWid(pyrlCtr.unitPayrollList[index].netAmount.toString()),
-                                          ],
-                                        ),
-                                  ],
-                                ),
-                              ],
+                                );
+                              },
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                )
-              ],
-            ))
+                        )
+                      ],
+                    )),
+              ),
+            ],
+          )
+      ),
     );
   }
 
@@ -520,7 +413,7 @@ class _UnitSlipState extends State<UnitSlip> {
       padding: const EdgeInsets.all(8),
       child: CustomText(
         text: formattedValue,
-        isBold: bold,
+        isBold: bold, isCopy: true,
       ),
     );
   }
@@ -625,11 +518,11 @@ class _UnitSlipState extends State<UnitSlip> {
 
 
     worksheet.getRangeByName("A3").setText(
-        "${localData.storage.read("com_name")}\n Address : 44/1, V.V. Koil Street, Tambaram Sanatorium,Chennai-600 045,Tamilnadu, India.");
+        "${controllers.storage.read("com_name")}\n Address : 44/1, V.V. Koil Street, Tambaram Sanatorium,Chennai-600 045,Tamilnadu, India.");
     worksheet.getRangeByName("L3").setText(
-        "Client Name : ${unitName==""?"Team ${localData.storage.read("team_report_name")}":unitName}\nMonth : ${pyrlCtr.month.value}");
+        "Client Name : ${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName}\nMonth : ${pyrlCtr.month.value}");
     List<String> headers=[];
-    if(localData.storage.read("com_id")=="1"){
+    if(controllers.storage.read("com_id")=="1"){
       headers = [
         "S.No",
         "ID No",
@@ -725,7 +618,7 @@ class _UnitSlipState extends State<UnitSlip> {
     var salaryList = pyrlCtr.unitPayrollList[index].salary.toString().split(
         ',');
     int rowCountEx;
-    if(localData.storage.read("com_id")=="1"){
+    if(controllers.storage.read("com_id")=="1"){
       rowCountEx = [
         namesList.length,
         empcdList.length,
@@ -777,7 +670,7 @@ class _UnitSlipState extends State<UnitSlip> {
         bkNameList.length
       ].reduce((a, b) => a > b ? a : b);
     }
-    if(localData.storage.read("com_id")=="1"){
+    if(controllers.storage.read("com_id")=="1"){
       // Fill data
       if(unitName!=""){
         for (int i = 0; i < rowCountEx; i++) {
@@ -906,11 +799,11 @@ class _UnitSlipState extends State<UnitSlip> {
         href: 'data:application/octet-stream;charset=utf-161e;base64,${base64
             .encode(bytes)}',
       )
-        ..setAttribute('download', '${unitName==""?"Team ${localData.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.xlsx')
+        ..setAttribute('download', '${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.xlsx')
         ..click();
     } else {
       final String path = (await getApplicationSupportDirectory()).path;
-      final String filename = '$path/${unitName==""?"Team ${localData.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.xlsx';
+      final String filename = '$path/${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.xlsx';
       final File file = File(filename);
       await file.writeAsBytes(bytes, flush: true);
       OpenFile.open(filename, linuxByProcess: true);
@@ -974,7 +867,7 @@ class _UnitSlipState extends State<UnitSlip> {
     var salaryList = pyrlCtr.unitPayrollList[index].salary.toString().split(
         ',');
     int rowCount;
-    if(localData.storage.read("com_id")=="1"){
+    if(controllers.storage.read("com_id")=="1"){
       rowCount = [
         namesList.length,
         empcdList.length,
@@ -1124,7 +1017,7 @@ class _UnitSlipState extends State<UnitSlip> {
                       pw.Column(
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
-                            pw.Text(localData.storage.read("com_name"),
+                            pw.Text(controllers.storage.read("com_name"),
                                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                             pw.Text(
                                 "Address: 44/1, V.V. Koil Street, Tambaram Sanatorium,\nChennai-600 045, Tamilnadu, India."),
@@ -1141,7 +1034,7 @@ class _UnitSlipState extends State<UnitSlip> {
                       pw.Column(
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
-                            pw.Text(" : ${unitName==""?"Team ${localData.storage.read("team_report_name")}":unitName}"),
+                            pw.Text(" : ${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName}"),
                             pw.Text(" : ${pyrlCtr.month.value}")
                           ]
                       ),
@@ -1150,7 +1043,7 @@ class _UnitSlipState extends State<UnitSlip> {
               ],
             ),
             pw.SizedBox(height: 15),
-            if(localData.storage.read("com_id")=="1")
+            if(controllers.storage.read("com_id")=="1")
            // Table
             unitName!=""?
             pw.Table.fromTextArray(
@@ -1391,7 +1284,7 @@ class _UnitSlipState extends State<UnitSlip> {
                   23: const pw.FixedColumnWidth(50),  // IFSC Code
                 },
             ),
-            if(localData.storage.read("com_id")!="1")
+            if(controllers.storage.read("com_id")!="1")
            // Table
             unitName!=""?
             pw.Table.fromTextArray(
@@ -1654,11 +1547,11 @@ class _UnitSlipState extends State<UnitSlip> {
         href: 'data:application/octet-stream;charset=utf-161e;base64,${base64
             .encode(bytes)}',
       )
-        ..setAttribute('download', '${unitName==""?"Team ${localData.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.pdf')
+        ..setAttribute('download', '${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.pdf')
         ..click();
     } else {
       final String path = (await getApplicationSupportDirectory()).path;
-      final String filename = '$path/${unitName==""?"Team ${localData.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.pdf';
+      final String filename = '$path/${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.pdf';
       final File file = File(filename);
       await file.writeAsBytes(bytes, flush: true);
       OpenFile.open(filename, linuxByProcess: true);

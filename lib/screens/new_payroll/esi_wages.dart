@@ -9,18 +9,16 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:security/services/new_payroll_api_services.dart';
-import 'package:security/source/extentions/extensions.dart';
-import '../../component/custom_text.dart';
-import '../../component/loading.dart';
-import '../../component/month_calender.dart';
-import '../../constant/color_constant.dart';
+import '../../billing_utils/sized_box.dart';
+import '../../common/constant/colors_constant.dart';
+import '../../common/styles/decoration.dart';
+import '../../common/utilities/utils.dart';
+import '../../components/Customtext.dart';
+import '../../components/custom_sidebar.dart';
+import '../../components/month_calender.dart';
+import '../../controller/controller.dart';
 import '../../controller/new_payroll_controller.dart';
-import '../../controller/payroll_controller.dart';
-import '../../styles/decoration.dart';
-import '../../utills/utilities.dart';
-import '../../widgets/widgets_functions.dart';
-import 'dashboard.dart';
+import '../../services/new_payroll_api_services.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ESIWages extends StatefulWidget {
@@ -35,7 +33,9 @@ class _ESIWagesState extends State<ESIWages> {
 
   @override
   void initState() {
-    newPyrlServ.getEsiWages();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      newPyrlServ.getEsiWages();
+    });
     super.initState();
   }
 
@@ -49,161 +49,185 @@ class _ESIWagesState extends State<ESIWages> {
         .of(context)
         .size
         .width * 0.97;
-    return Scaffold(
-        backgroundColor: colorsConst.backGroundColor,
-        appBar: PreferredSize(preferredSize: const Size(300, 70),
-            child: app_bar(text: "ESI Wages", callback1: () {
-              Get.to(const NewPayroll(),
-                  transition: Transition.rightToLeftWithFade,
-                  duration: const Duration(seconds: 1));
-            })),
-        body: Obx(() =>
-            Column(
-              children: [
-                InkWell(
-                    onTap: () {
-                      showMonthPicker(
-                        context: context,
-                        month: pyrlCtr.month,
-                        function: (){
-                          newPyrlServ.getEsiWages();
-                        }
-                      );
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+    return SelectionArea(
+      child: Scaffold(
+          backgroundColor: colorsConst.backgroundColor,
+          body: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SideBar(),
+              Container(
+                width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+                height: MediaQuery.of(context).size.height,
+                alignment: Alignment.center,
+                padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
+                child: Obx(() =>
+                    Column(
                       children: [
-                        const Icon(
-                            Icons.calendar_month, color: Colors.blueGrey),
-                        10.width,
-                        CustomText(text: pyrlCtr.month.value,
-                            colors: Colors.lightBlueAccent,
-                            size: 15),
-                      ],
-                    )),
-                10.height,
-                pyrlCtr.getData.value == false ?
-                const Padding(
-                  padding: EdgeInsets.all(25.0),
-                  child: Loading(),
-                ) :
-                pyrlCtr.unitPayrollList.isEmpty ?
-                const CustomText(text: "\n\n\n\n\n\nNo data Found") :
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: SizedBox(
-                      width: kIsWeb ? webSize : mobileSize,
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  esiWagesPayrollExport();
-                                },
-                                child: const CustomText(
-                                  text: "Download",
-                                  isBold: true,
-                                  colors: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                            child: Container(
+                        30.height,
+                        Row(
+                          children: [
+                            IconButton(onPressed: (){
+                              Get.back();
+                            }, icon: Icon(Icons.arrow_back)),
+                            CustomText(
+                              text: "ESI Wages",
+                              colors: colorsConst.textColor,
+                              size: 20,
+                              isBold: true,
+                              isCopy: true,
+                            ),
+                          ],
+                        ),
+                        10.height,
+                        InkWell(
+                            onTap: () {
+                              showMonthPicker(
+                                context: context,
+                                month: pyrlCtr.month,
+                                function: (){
+                                  newPyrlServ.getEsiWages();
+                                }
+                              );
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                    Icons.calendar_month, color: Colors.blueGrey),
+                                10.width,
+                                CustomText(text: pyrlCtr.month.value,
+                                    colors: Colors.lightBlueAccent,
+                                    size: 15, isCopy: true,),
+                              ],
+                            )),
+                        10.height,
+                        pyrlCtr.getData.value == false ?
+                        const Padding(
+                          padding: EdgeInsets.all(25.0),
+                          child: CircularProgressIndicator(),
+                        ) :
+                        pyrlCtr.unitPayrollList.isEmpty ?
+                        const CustomText(text: "\n\n\n\n\n\nNo data Found", isCopy: true,) :
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: SizedBox(
                               width: kIsWeb ? webSize : mobileSize,
-                              decoration: customDecoration
-                                  .baseBackgroundDecoration(
-                                color: Colors.white,
-                                radius: 10,
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Column(
-                                  children: [
-
-                                    Table(
-                                      border: TableBorder.all(
-                                          color: Colors.grey.shade300),
-                                      columnWidths: const {
-                                        0: FlexColumnWidth(0.7), // S.No
-                                        1: FlexColumnWidth(1.5), // Site
-                                        2: FlexColumnWidth(1.2), // ID
-                                        3: FlexColumnWidth(2.2), // Name
-                                        4: FlexColumnWidth(1.5), // ESI No
-                                        5: FlexColumnWidth(1.3), // Working Days
-                                        6: FlexColumnWidth(1.5), // Salary Wages
-                                        7: FlexColumnWidth(1.5), // ESI Wages
-                                        8: FlexColumnWidth(1.5), // Pay Amount
-                                        9: FlexColumnWidth(1.5), // DOB
-                                        10: FlexColumnWidth(1.5), // DOB
-                                      },
-                                      children: [
-                                        // Header Row
-                                        TableRow(
-                                          decoration: const BoxDecoration(
-                                              color: Colors.black12),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      ElevatedButton(
+                                        onPressed: () {
+                                          esiWagesPayrollExport();
+                                        },
+                                        child: const CustomText(
+                                          text: "Download",
+                                          isBold: true,
+                                          colors: Colors.white, isCopy: true,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                    child: Container(
+                                      width: kIsWeb ? webSize : mobileSize,
+                                      decoration: customDecoration
+                                          .baseBackgroundDecoration(
+                                        color: Colors.white,
+                                        radius: 10,
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(5.0),
+                                        child: Column(
                                           children: [
-                                            customWid("S.No", bold: true),
-                                            customWid("Site Name", bold: true),
-                                            customWid("ID No", bold: true),
-                                            customWid("Name", bold: true),
-                                            customWid("ESI No", bold: true),
-                                            customWid("Working Days", bold: true),
-                                            customWid("Salary Wages", bold: true),
-                                            customWid("ESI Wages", bold: true),
-                                            customWid("Pay Amount", bold: true),
-                                            customWid("DOB", bold: true),
-                                            customWid("Age", bold: true),
+                      
+                                            Table(
+                                              border: TableBorder.all(
+                                                  color: Colors.grey.shade300),
+                                              columnWidths: const {
+                                                0: FlexColumnWidth(0.7), // S.No
+                                                1: FlexColumnWidth(1.5), // Site
+                                                2: FlexColumnWidth(1.2), // ID
+                                                3: FlexColumnWidth(2.2), // Name
+                                                4: FlexColumnWidth(1.5), // ESI No
+                                                5: FlexColumnWidth(1.3), // Working Days
+                                                6: FlexColumnWidth(1.5), // Salary Wages
+                                                7: FlexColumnWidth(1.5), // ESI Wages
+                                                8: FlexColumnWidth(1.5), // Pay Amount
+                                                9: FlexColumnWidth(1.5), // DOB
+                                                10: FlexColumnWidth(1.5), // DOB
+                                              },
+                                              children: [
+                                                // Header Row
+                                                TableRow(
+                                                  decoration: const BoxDecoration(
+                                                      color: Colors.black12),
+                                                  children: [
+                                                    customWid("S.No", bold: true),
+                                                    customWid("Site Name", bold: true),
+                                                    customWid("ID No", bold: true),
+                                                    customWid("Name", bold: true),
+                                                    customWid("ESI No", bold: true),
+                                                    customWid("Working Days", bold: true),
+                                                    customWid("Salary Wages", bold: true),
+                                                    customWid("ESI Wages", bold: true),
+                                                    customWid("Pay Amount", bold: true),
+                                                    customWid("DOB", bold: true),
+                                                    customWid("Age", bold: true),
+                                                  ],
+                                                ),
+                      
+                                                // Data Rows
+                                                for (int i = 0; i < pyrlCtr.unitPayrollList.length; i++)
+                                                  TableRow(
+                                                    children: [
+                                                      customWid((i + 1).toString()),
+                                                      customWid(pyrlCtr.unitPayrollList[i].unitName ?? ''),
+                                                      customWid(pyrlCtr.unitPayrollList[i].empcd ?? ''),
+                                                      customWid(pyrlCtr.unitPayrollList[i].name ?? ''),
+                                                      customWid(pyrlCtr.unitPayrollList[i].esiNo ?? ''),
+                                                      customWid(pyrlCtr.unitPayrollList[i].duty ?? ''),
+                                                      customWid(pyrlCtr.unitPayrollList[i].total ?? ''),
+                                                      // customWid(
+                                                      //     "${((int.parse(pyrlCtr.unitPayrollList[i].esiWages.toString()) /
+                                                      //         int.parse(payrollCtr.lastDate.toString())) *
+                                                      //         int.parse(pyrlCtr.unitPayrollList[i].duty.toString()))
+                                                      //         .round()}"
+                                                      // ),
+                                                      customWid(pyrlCtr.unitPayrollList[i].esiWagesAmt ?? ''),
+                                                      customWid(pyrlCtr.unitPayrollList[i].esi ?? ''),
+                                                      customWid(pyrlCtr.unitPayrollList[i].dob.toString()=="null"?"":utils.formatDob(pyrlCtr.unitPayrollList[i].dob.toString())),
+                                                      customWid(calculateAge(pyrlCtr.unitPayrollList[i].dob.toString())),
+                                                    ],
+                                                  ),
+                                              ],
+                                            ),
                                           ],
                                         ),
-
-                                        // Data Rows
-                                        for (int i = 0; i < pyrlCtr.unitPayrollList.length; i++)
-                                          TableRow(
-                                            children: [
-                                              customWid((i + 1).toString()),
-                                              customWid(pyrlCtr.unitPayrollList[i].unitName ?? ''),
-                                              customWid(pyrlCtr.unitPayrollList[i].empcd ?? ''),
-                                              customWid(pyrlCtr.unitPayrollList[i].name ?? ''),
-                                              customWid(pyrlCtr.unitPayrollList[i].esiNo ?? ''),
-                                              customWid(pyrlCtr.unitPayrollList[i].duty ?? ''),
-                                              customWid(pyrlCtr.unitPayrollList[i].total ?? ''),
-                                              // customWid(
-                                              //     "${((int.parse(pyrlCtr.unitPayrollList[i].esiWages.toString()) /
-                                              //         int.parse(payrollCtr.lastDate.toString())) *
-                                              //         int.parse(pyrlCtr.unitPayrollList[i].duty.toString()))
-                                              //         .round()}"
-                                              // ),
-                                              customWid(pyrlCtr.unitPayrollList[i].esiWagesAmt ?? ''),
-                                              customWid(pyrlCtr.unitPayrollList[i].esi ?? ''),
-                                              customWid(pyrlCtr.unitPayrollList[i].dob.toString()=="null"?"":utils.formatDob(pyrlCtr.unitPayrollList[i].dob.toString())),
-                                              customWid(calculateAge(pyrlCtr.unitPayrollList[i].dob.toString())),
-                                            ],
-                                          ),
-                                      ],
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ))
+                        ),
+                      ],
+                    )),
+              ),
+            ],
+          )
+      ),
     );
   }
 
   Widget customWid(String value, {double? width = 8,bool? bold = false}){
     return Padding(
         padding: const EdgeInsets.all(8),
-        child: CustomText(text: value,isBold: bold,));
+        child: CustomText(text: value,isBold: bold!, isCopy: true,));
   }
 
   Future<void> esiWagesPayrollExport() async {
