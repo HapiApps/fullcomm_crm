@@ -218,6 +218,7 @@ class _AddLeadState extends State<AddLead> {
   final FocusNode state = FocusNode();
   final FocusNode pincode = FocusNode();
   final FocusNode throughByF = FocusNode();
+  final FocusNode ins = FocusNode();
   @override
   void initState() {
     // TODO: implement initState
@@ -234,6 +235,7 @@ class _AddLeadState extends State<AddLead> {
   }
   @override
   void dispose() {
+    ins.dispose();
     name.dispose();
     throughByF.dispose();
     phone.dispose();
@@ -1424,10 +1426,9 @@ class _AddLeadState extends State<AddLead> {
                                 setState(() {
                                   controllers.industry = val?['value'];
                                 });
-                                print(val?['id']);
-                                print(val?['value']);
                               },
                               onAdd: () {
+                                FocusScope.of(context).requestFocus(ins);
                                 controllers.industryValueCtr.clear();
                                 showDialog(
                                   context: context,
@@ -1448,14 +1449,14 @@ class _AddLeadState extends State<AddLead> {
                                         child: SizedBox(
                                           width: 350,
                                           child: CustomTextField(
-                                            focusNode: cNo,
+                                            focusNode: ins,
                                             hintText: "Industry",
                                             text: "Industry",
                                             controller: controllers.industryValueCtr,
                                             width: textFieldSize,
                                             keyboardType: TextInputType.text,
                                             textInputAction: TextInputAction.done,
-                                            isOptional: false,
+                                            isOptional: true,
                                           ),
                                         ),
                                       ),
@@ -1491,11 +1492,8 @@ class _AddLeadState extends State<AddLead> {
                                                 if (controllers.industryValueCtr.text.trim().isNotEmpty) {
                                                   controllers.insertIndustries(context);
                                                 } else {
-                                                  utils.snackBar(
-                                                    context: context,
-                                                    msg: "Please enter industry value",
-                                                    color: Colors.red,
-                                                  );
+                                                  controllers.productCtr.reset();
+                                                  utils.showToast("Please enter industry value",Colors.red);
                                                 }
                                               },
                                               controller: controllers.productCtr,

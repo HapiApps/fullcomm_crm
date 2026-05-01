@@ -121,14 +121,12 @@ class BillingItemBeforeCombo {
       final double pricePerG =
           double.tryParse(product.pricePerG?.toString() ?? '') ?? 0.0;
 
-      print("Loose Calc → variation:$safeVariation price:$pricePerG");
 
       return safeVariation * pricePerG;
     } else {
       final double price =
           double.tryParse(product.outPrice?.toString() ?? '') ?? 0.0;
 
-      print("Normal Calc → qty:$safeQty price:$price");
 
       return price * safeQty;
     }

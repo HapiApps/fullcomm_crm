@@ -322,10 +322,6 @@ class ApiService {
           controllers.setLogOut();
         }
       }
-      print("list");
-      print(list);
-      print(list2);
-      print(request.body);
       if (request.statusCode == 200 &&
           response["message"] == "Customer updated successfully") {
         utils.snackBar(
@@ -530,10 +526,6 @@ class ApiService {
           controllers.cityController.text = district;
 
           // ✅ FINAL PRINT (THIS is what you want)
-          debugPrint("PINCODE: $pinCode");
-          debugPrint("COUNTRY: ${controllers.selectedCountry.value}");
-          debugPrint("STATE  : ${controllers.stateController.text}");
-          debugPrint("CITY   : ${controllers.cityController.text}");
         } else {
           _resetPinValues();
         }
@@ -542,7 +534,6 @@ class ApiService {
       }
     } catch (e) {
       _resetPinValues();
-      debugPrint("PINCODE ERROR: $e");
     }
   }
   Future<void> fetchPinCodeData2(String pinCode) async {
@@ -612,7 +603,7 @@ class ApiService {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      // print(request.body);
+      // debugPrint(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -714,12 +705,12 @@ class ApiService {
         }
       }
       if (request.statusCode == 200) {
-        log("Token updated success");
+        debugPrint("Token updated success");
       } else {
-        log("Token error ${request.body}");
+        debugPrint("Token error ${request.body}");
       }
     } catch (e) {
-      log("Token Error $e");
+      debugPrint("Token Error $e");
 
     }
   }
@@ -777,8 +768,8 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("No Matches request.body");
-      print(request.body);
+      debugPrint("No Matches request.body");
+      debugPrint(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -995,7 +986,7 @@ class ApiService {
             d = d.add(Duration(days: 3));
             remController.stDate.value = DateFormat("dd.MM.yyyy").format(d);
           } catch (e) {
-            log("DATE PARSE ERROR: $e   value='${remController.stDate.value}'");
+            debugPrint("DATE PARSE ERROR: $e   value='${remController.stDate.value}'");
           }
         }
         remController.stTime.value = "11:00 AM";
@@ -1042,8 +1033,8 @@ class ApiService {
                 "id":id
               }),
           encoding: Encoding.getByName("utf-8"));
-      print("request.body");
-      print(request.body);
+      debugPrint("request.body");
+      debugPrint(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -1162,8 +1153,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("request.body");
-      print(request.body);
+      debugPrint("request.body");
+      debugPrint(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -1429,9 +1420,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(sendList);
-      print("request.body");
-      print(request.body);
+      debugPrint("request.body");
+      debugPrint(request.body);
       // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -1451,18 +1441,18 @@ class ApiService {
         // prospectsList.clear();
         // qualifiedList.clear();
         // customerList.clear();
-        print("Before remove list length: ${list.length}");
-        print("Before remove list2 length: ${list2.length}");
-        print("Before remove allLeadList length: ${controllers.allLeadList.length}");
-        print("Initial list length: ${list.length}");
-        print("Initial list2 length: ${list2.length}");
-        print("SendList: $sendList");
+        debugPrint("Before remove list length: ${list.length}");
+        debugPrint("Before remove list2 length: ${list2.length}");
+        debugPrint("Before remove allLeadList length: ${controllers.allLeadList.length}");
+        debugPrint("Initial list length: ${list.length}");
+        debugPrint("Initial list2 length: ${list2.length}");
+        debugPrint("SendList: $sendList");
 
         list.removeWhere((item) => sendList.contains(item.userId));
         list2.removeWhere((item) => sendList.contains(item.userId));
 
-        print("Final list length: ${list.length}");
-        print("Final list2 length: ${list2.length}");
+        debugPrint("Final list length: ${list.length}");
+        debugPrint("Final list2 length: ${list2.length}");
 
         for(var i=0;i<sendList.length;i++){
           for(var j=0;j<controllers.allLeadList.length;j++){
@@ -1472,9 +1462,9 @@ class ApiService {
           }
         }
 
-        print("After remove list length: ${list.length}");
-        print("After remove list2 length: ${list2.length}");
-        print("After remove allLeadList length: ${controllers.allLeadList.length}");
+        debugPrint("After remove list length: ${list.length}");
+        debugPrint("After remove list2 length: ${list2.length}");
+        debugPrint("After remove allLeadList length: ${controllers.allLeadList.length}");
         dashController.getDashboardReport();
         controllers.idList.clear();
         Navigator.pop(context);
@@ -1518,19 +1508,19 @@ class ApiService {
       var responseData = await http.Response.fromStream(response);
 
 // STATUS CODE
-      print("STATUS CODE: ${responseData.statusCode}");
+      debugPrint("STATUS CODE: ${responseData.statusCode}");
 
 // FULL RAW RESPONSE
-      print("RAW RESPONSE: ${responseData.body}");
+      debugPrint("RAW RESPONSE: ${responseData.body}");
 
 // JSON DECODE
       Map<String, dynamic> res = json.decode(responseData.body);
 
 // PRINT JSON MAP
-      print("JSON RESPONSE: $res");
+      debugPrint("JSON RESPONSE: $res");
 
 // PRINT PARTICULAR VALUE
-      print("MESSAGE: ${res['message']}");
+      debugPrint("MESSAGE: ${res['message']}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1629,10 +1619,10 @@ class ApiService {
         Navigator.pop(context);
         controllers.customerCtr.reset();
         if (failed == 0) {
-          log("All customers saved successfully.");
+          debugPrint("All customers saved successfully.");
         } else {
           for (var failure in response["failures"]) {
-            log("Failed Phone: ${failure["phone_no"]} — ${failure["error"]}");
+            debugPrint("Failed Phone: ${failure["phone_no"]} — ${failure["error"]}");
           }
           errorDialog(Get.context!, "$success saved, $failed failed.\n Failed Phone: ${response["failures"]}");
         }
@@ -1766,7 +1756,7 @@ class ApiService {
       );
 
       final body = response.body.toString();
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1916,8 +1906,8 @@ class ApiService {
         //   createdTs: DateTime.now().toString(),
         //   updatedTs: DateTime.now().toString(),
         // ));        // apiService.getCustomLeads();
-        // print("After nav: ${list.last}");
-        // print("After nav: ${list.length}");
+        // debugPrint("After nav: ${list.last}");
+        // debugPrint("After nav: ${list.length}");
         var res = jsonDecode(response.body);
 
         int customerId = int.parse(res["cus_id"].toString());
@@ -1926,9 +1916,9 @@ class ApiService {
         int index=0;
         for(var i=0;i<controllers.leadCategoryList.length;i++){
           if(controllers.leadCategoryList[i].leadStatus=="1"){
-            log("dataaaa: ${controllers.leadCategoryList[i]}");
-            log("dataaaa: ${controllers.leadCategoryList[i].list.length}");
-            log("dataaaa: ${controllers.leadCategoryList[i].list2.length}");
+            debugPrint("dataaaa: ${controllers.leadCategoryList[i]}");
+            debugPrint("dataaaa: ${controllers.leadCategoryList[i].list.length}");
+            debugPrint("dataaaa: ${controllers.leadCategoryList[i].list2.length}");
             controllers.leadCategoryList[i].list.add(NewLeadObj(
               select: false,
               userId:customerId.toString(),
@@ -2160,9 +2150,9 @@ class ApiService {
             break;
           }
         }
-        log("dataaaa: ${data}");
-        log("dataaaa: ${data!.list.length}");
-        log("dataaaa: ${data.list2.length}");
+        debugPrint("dataaaa: ${data}");
+        debugPrint("dataaaa: ${data!.list.length}");
+        debugPrint("dataaaa: ${data.list2.length}");
         controllers.selectedIndex.value=int.parse(data.leadStatus.toString());
         controllers.selectedQualifiedSortBy.value="All";
         controllers.selectRadio(list,list2);
@@ -2194,7 +2184,7 @@ class ApiService {
   // List<Map<String, String>> qualifiedList = [];
   // Future insertQualifiedAPI(BuildContext context,List<Map<String, String>> list) async {
   //   try {
-  //     print("insertQualifiedAPI");
+  //     debugPrint("insertQualifiedAPI");
   //     final request = await http.post(Uri.parse(qualifiedScript),
   //         headers: {
   //           'X-API-TOKEN': "${TokenStorage().readToken()}",
@@ -2232,7 +2222,7 @@ class ApiService {
 
   // Future insertPromoteAPI(BuildContext context,String id,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
   //   try {
-  //     print("insertQualifiedAPI");
+  //     debugPrint("insertQualifiedAPI");
   //     Map<String, dynamic> data ={
   //       "id": id,
   //       "lead_status": status,
@@ -2283,7 +2273,7 @@ class ApiService {
   // }
   Future insertPromoteListAPI(BuildContext context,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
-      print("#####");
+      debugPrint("#####");
       Map<String, dynamic> data ={
         "id":controllers.idList,
         "lead_status": status,
@@ -2312,23 +2302,23 @@ class ApiService {
       // if (request.statusCode == 200 && response["message"] == "OK") {
       //   controllers.selectedIndex.value = int.parse(status);
       //   RxList<NewLeadObj> tempList=<NewLeadObj>[].obs;
-      //   print("status: ${status}");
-      //   print("Selected Index: ${controllers.selectedIndex.value}");
+      //   debugPrint("status: ${status}");
+      //   debugPrint("Selected Index: ${controllers.selectedIndex.value}");
       //
       //   for (var i = 0; i < controllers.idList.length; i++) {
-      //     print("Checking idList[$i]: ${controllers.idList[i]}");
+      //     debugPrint("Checking idList[$i]: ${controllers.idList[i]}");
       //
       //     for (var j = 0; j < list.length; j++) {
-      //       print("Comparing list[$j].userId: ${list[j].userId}");
+      //       debugPrint("Comparing list[$j].userId: ${list[j].userId}");
       //
       //       if (list[j].userId == controllers.idList[i]) {
-      //         print("MATCH FOUND -> userId: ${list[j].userId}");
+      //         debugPrint("MATCH FOUND -> userId: ${list[j].userId}");
       //
       //         list[j].leadStatus = status;
       //
       //         tempList.add(list[j]);
       //
-      //         print("Removing from main list index: $j");
+      //         debugPrint("Removing from main list index: $j");
       //
       //         list.removeAt(j);
       //         list2.removeAt(j);
@@ -2337,16 +2327,16 @@ class ApiService {
       //     }
       //   }
       //
-      //   log("list2: ${list}");
-      //   log("list2: ${list2}");
-      //   log("controllers.leadCategoryList[int.parse(status)].list: ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
-      //   log("controllers.leadCategoryList[int.parse(status)].list2: ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
+      //   debugPrint("list2: ${list}");
+      //   debugPrint("list2: ${list2}");
+      //   debugPrint("controllers.leadCategoryList[int.parse(status)].list: ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
+      //   debugPrint("controllers.leadCategoryList[int.parse(status)].list2: ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
       //
       //
-      //   print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].leadStatus}");
-      //   print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].value}");
-      //   print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
-      //   print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
+      //   debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].leadStatus}");
+      //   debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].value}");
+      //   debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
+      //   debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
       //   controllers.idList.clear();
       //   // dashController.getDashboardReport();
       //   // controllers.selectedIndex.value = int.parse(status);
@@ -2368,23 +2358,23 @@ class ApiService {
       if (request.statusCode == 200 && response["message"] == "OK") {
         controllers.selectedIndex.value = int.parse(status);
         RxList<NewLeadObj> tempList=<NewLeadObj>[].obs;
-        print("status: ${status}");
-        print("Selected Index: ${controllers.selectedIndex.value}");
+        debugPrint("status: ${status}");
+        debugPrint("Selected Index: ${controllers.selectedIndex.value}");
 
         for (var i = 0; i < controllers.idList.length; i++) {
-          print("Checking idList[$i]: ${controllers.idList[i]}");
+          debugPrint("Checking idList[$i]: ${controllers.idList[i]}");
 
           for (var j = 0; j < list.length; j++) {
-            print("Comparing list[$j].userId: ${list[j].userId}");
+            debugPrint("Comparing list[$j].userId: ${list[j].userId}");
 
             if (list[j].userId == controllers.idList[i]) {
-              print("MATCH FOUND -> userId: ${list[j].userId}");
+              debugPrint("MATCH FOUND -> userId: ${list[j].userId}");
 
               list[j].leadStatus = status;
 
               tempList.add(list[j]);
 
-              print("Removing from main list index: $j");
+              debugPrint("Removing from main list index: $j");
 
               list.removeAt(j);
               list2.removeAt(j);
@@ -2401,14 +2391,14 @@ class ApiService {
             break;
           }
         }
-        // log("controllers.leadCategoryList[int.parse(status)].list: ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
-        // log("controllers.leadCategoryList[int.parse(status)].list2: ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
+        // debugPrint("controllers.leadCategoryList[int.parse(status)].list: ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
+        // debugPrint("controllers.leadCategoryList[int.parse(status)].list2: ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
         //
         //
-        // print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].leadStatus}");
-        // print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].value}");
-        // print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
-        // print("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
+        // debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].leadStatus}");
+        // debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].value}");
+        // debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
+        // debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
         controllers.idList.clear();
         // dashController.getDashboardReport();
         // controllers.selectedIndex.value = int.parse(status);
@@ -2446,7 +2436,7 @@ class ApiService {
   }
   Future updateLeadStatus(BuildContext context,List<Map<String, String>> list,String status) async {
     try {
-      print("updateLeadStatusAPI");
+      debugPrint("updateLeadStatusAPI");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             'X-API-TOKEN': "${TokenStorage().readToken()}",
@@ -2565,12 +2555,11 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      // print("request.body");
-      // print(request.body);
+      // debugPrint("request.body");
+      // debugPrint(request.body);
 
       final Map<String, dynamic> response = json.decode(request.body);
 
-      print(response);
       // if(request.body.toString().contains("Invalid mobile number or password")){
         // utils.snackBar(context: context, msg: "Invalid mobile number or password", color: Colors.red);
         // controllers.loginCtr.reset();
@@ -2672,7 +2661,7 @@ class ApiService {
         }
       }
       if (request.statusCode == 200) {
-        log("Login history added success");
+        debugPrint("Login history added success");
       } else {
         controllers.loginCtr.reset();
       }
@@ -2859,8 +2848,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("allCustomers");
-      print(request.body);
+      debugPrint("allCustomers");
+      debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -2937,8 +2926,8 @@ class ApiService {
         body: jsonEncode(data),
       );
       controllers.isMailLoading.value = false;
-      // print("getting mails");
-      // print(request.body);
+      // debugPrint("getting mails");
+      // debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3041,8 +3030,6 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
       controllers.isMailLoading.value = false;
-      print(data);
-      print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3081,8 +3068,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      // print(data);
-      // print(request.body);
+      // debugPrint(data);
+      // debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3325,8 +3312,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("Api headings");
-      print(request.body);
+      debugPrint("Api headings");
+      debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3426,8 +3413,8 @@ class ApiService {
       );
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      print("body");
-      print(body);
+      debugPrint("body");
+      debugPrint(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3496,8 +3483,8 @@ class ApiService {
       );
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      print("body");
-      print(body);
+      debugPrint("body");
+      debugPrint(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3557,9 +3544,6 @@ class ApiService {
       }
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      print("body");
-      print(request.fields);
-      print(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3602,9 +3586,6 @@ class ApiService {
           'Content-Type': 'application/json',
         },
       );
-      print("body");
-      print(data);
-      print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3654,9 +3635,6 @@ class ApiService {
       });
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      print("body");
-      print(request.fields);
-      print(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3728,9 +3706,6 @@ class ApiService {
       }
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      print("body");
-      print(request.fields);
-      print(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3794,9 +3769,6 @@ class ApiService {
       }
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      print("body");
-      print(request.fields);
-      print(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -4369,8 +4341,6 @@ class ApiService {
       );
 
       controllers.isLeadLoading.value = false;
-      print(data);
-      print(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -4509,8 +4479,8 @@ class ApiService {
     //     0, (sum, item) => sum + ((item["count"] ?? 0) as int));
     //
     //
-    // log("Total Calls: $totalCount");
-    // log("Merged Status List: ${controllers.hCallStatusList}");
+    // debugPrint("Total Calls: $totalCount");
+    // debugPrint("Merged Status List: ${controllers.hCallStatusList}");
 
     //
     final Map<String, int> statusCountMap = {};
@@ -4535,8 +4505,8 @@ class ApiService {
     int totalCount = controllers.hCallStatusList.fold(
         0, (sum, item) => sum + ((item["count"] ?? 0) as int));
 
-    log("Total Calls: $totalCount");
-    log("Merged Status List: ${controllers.hCallStatusList}");
+    debugPrint("Total Calls: $totalCount");
+    debugPrint("Merged Status List: ${controllers.hCallStatusList}");
 
     controllers.allCalls.value = remController.callFilteredList.length.toString();
 
@@ -4558,7 +4528,7 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(request.body);
+      debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -4622,8 +4592,6 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(data);
-      print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -4958,7 +4926,7 @@ class ApiService {
         "action": "get_data",
         "date": "${DateTime.now().day.toString().padLeft(2, "0")}-${DateTime.now().month.toString().padLeft(2, "0")}-${DateTime.now().year.toString()}"
       };
-      log("main ${data.toString()}");
+      debugPrint("main ${data.toString()}");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             'X-API-TOKEN': "${TokenStorage().readToken()}",
@@ -4966,8 +4934,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      log("view dashboard report");
-      log(request.body);
+      debugPrint("view dashboard report");
+      debugPrint(request.body);
       controllers.directVisit.value = "0";
       controllers.telephoneCalls.value = "0";
       if (request.statusCode == 401) {
@@ -5008,7 +4976,7 @@ class ApiService {
         "action": "get_data",
         "year":"2025"
       };
-      log("main ${data.toString()}");
+      debugPrint("main ${data.toString()}");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             'X-API-TOKEN': "${TokenStorage().readToken()}",
@@ -5044,7 +5012,7 @@ class ApiService {
         "year":year,
         "month":month
       };
-      log("main day wise ${data.toString()}");
+      debugPrint("main day wise ${data.toString()}");
       dashController.dayReport.value = [];
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -5079,7 +5047,7 @@ class ApiService {
       Map data = {"mobile": "91$mobile",
         "action": "send_sms"
       };
-      log(data.toString());
+      debugPrint(data.toString());
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/json",
@@ -5098,7 +5066,7 @@ class ApiService {
         }
       }
       if (request.statusCode == 200) {
-        log("res $response");
+        debugPrint("res $response");
         controllers.otp.value = response["otp"].toString();
         controllers.loginCtr.reset();
       } else {
@@ -5122,7 +5090,7 @@ class ApiService {
         "cos_id": controllers.storage.read("cos_id"),
         "action": "forgot_password"
       };
-      log(data.toString());
+      debugPrint(data.toString());
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/json",
@@ -5141,7 +5109,7 @@ class ApiService {
         }
       }
       if (request.statusCode == 200) {
-        log("res $response");
+        debugPrint("res $response");
         controllers.storage.write("f_name", response["data"]["s_name"]);
         controllers.storage.write("role", response["data"]["permission"]);
         controllers.storage.write("role_name", "Admin");
@@ -5199,7 +5167,7 @@ class ApiService {
         "mobile_number": mobile,
         "action": "check_mobile"
       };
-      log(data.toString());
+      debugPrint(data.toString());
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/json",
@@ -5218,7 +5186,7 @@ class ApiService {
         }
       }
       if (request.statusCode == 200 && response.containsKey("s_name")) {
-        log("res $response");
+        debugPrint("res $response");
         controllers.loginCtr.reset();
         return true;
       } else {
@@ -5431,12 +5399,12 @@ class ApiService {
             if (controllers.leadCategoryList[i].leadStatus == controllers.allLeadList[j].leadStatus) {
               controllers.leadCategoryList[i].list.add(controllers.allLeadList[j]);
               controllers.leadCategoryList[i].list2.add(controllers.allLeadList[j]);
-              // print("Added → ${controllers.allLeadList[j].leadStatus} to ${controllers.leadCategoryList[i].leadStatus}");
+              // debugPrint("Added → ${controllers.allLeadList[j].leadStatus} to ${controllers.leadCategoryList[i].leadStatus}");
             }
           }
-          // print("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
+          // debugPrint("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
         }
-        // log("----------> ${controllers.leadCategoryList}");
+        // debugPrint("----------> ${controllers.leadCategoryList}");
         controllers.isCrmData.value=true;
         dashController.getCustomerStatus();
       } else {
@@ -5518,7 +5486,7 @@ class ApiService {
     }
   }
   Future<void> getCustomerRatingDetails(String type) async {
-    // print("getCustomerRatingDetails");
+    // debugPrint("getCustomerRatingDetails");
     controllers.isCrmData.value = false;
     controllers.ratingList.clear();
     controllers.ratingList2.clear();
@@ -5540,8 +5508,8 @@ class ApiService {
           "action": "get_data"
         }),
       );
-      // print("customer_rating_leads");
-      // print(response.body);
+      // debugPrint("customer_rating_leads");
+      // debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

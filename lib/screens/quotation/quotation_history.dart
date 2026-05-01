@@ -1239,8 +1239,6 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                         for(var i=0;i<idList.length;i++){
                                                                           for(var j=0;j<billingProvider.productsList.length;j++){
                                                                             if(idList[i]==billingProvider.productsList[j].id){
-                                                                              print("pVariation ${billingProvider.productsList[j].pVariation.toString()}");
-                                                                              print("unit ${billingProvider.productsList[j].unit.toString()}");
                                                                               billingProvider.addBillingItem(
                                                                                 BillingItem(
                                                                                   id: idList[i],
@@ -1838,40 +1836,39 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                               children: [
                                                                 Row(
                                                                   children: [
-                                                                    Container(
-                                                                      width: 100,
-                                                                      color: Colors.pinkAccent,
+                                                                    SizedBox(
+                                                                      width: 80,
                                                                       child: Column(
                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                         children: [
                                                                           CustomText(text: "Quotation", isCopy: false,size: 13,),
                                                                           if(data.poNumber!="null"&&data.poNumber!="")
-                                                                          CustomText(text: "PO", isCopy: false,size: 13,),
-                                                                          CustomText(text: "Invoice", isCopy: false,size: 13,),
+                                                                            CustomText(text: "PO", isCopy: false,size: 13,colors: Colors.blue,),
+                                                                          CustomText(text: "Invoice", isCopy: false,size: 13,colors: Colors.green,),
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    Container(
-                                                                      width: 100,
-                                                                      color: Colors.pinkAccent,
+                                                                    SizedBox(
+                                                                      width: 80,
+                                                                      // color: Colors.pinkAccent,
                                                                       child: Column(
                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                         children: [
                                                                           CustomText(
                                                                             textAlign: TextAlign.left,
-                                                                            text: productCtr.showCrtDate(data.createdTs.toString()),
+                                                                            text: data.quotationNo,
                                                                             size: 13,
                                                                             isCopy: true,
                                                                             colors: colorsConst.textColor,
                                                                           ),
                                                                           if(data.poNumber!="null"&&data.poNumber!="")
                                                                             CustomText(
-                                                                            textAlign: TextAlign.center,
-                                                                            text: data.poNumber,
-                                                                            size: 13,
-                                                                            isCopy: true,
-                                                                            colors: Colors.blue,
-                                                                          ),
+                                                                              textAlign: TextAlign.center,
+                                                                              text: data.poNumber,
+                                                                              size: 13,
+                                                                              isCopy: true,
+                                                                              colors: Colors.blue,
+                                                                            ),
                                                                           if(data.iNo!="null"&&data.iNo!="")
                                                                             CustomText(
                                                                               textAlign: TextAlign.center,
@@ -1880,19 +1877,12 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                               isCopy: true,
                                                                               colors: Colors.green,
                                                                             ),
-                                                                            CustomText(
-                                                                            textAlign: TextAlign.left,
-                                                                            text: data.poDate.toString(),
-                                                                            size: 13,
-                                                                            isCopy: true,
-                                                                            colors: Colors.blue,
-                                                                          ),
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    Container(
-                                                                      width: 100,
-                                                                      color: Colors.pinkAccent,
+                                                                    SizedBox(
+                                                                      width: 80,
+                                                                      // color: Colors.pinkAccent,
                                                                       child: Column(
                                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                                         children: [
@@ -1903,76 +1893,26 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                             isCopy: true,
                                                                             colors: colorsConst.textColor,
                                                                           ),
-                                                                            CustomText(
-                                                                            textAlign: TextAlign.center,
-                                                                            text: data.poNumber,
-                                                                            size: 13,
-                                                                            isCopy: true,
-                                                                            colors: Colors.blue,
-                                                                          ),
                                                                           if(data.poNumber!="null"&&data.poNumber!="")
                                                                             CustomText(
                                                                               textAlign: TextAlign.center,
                                                                               text: data.poDate,
                                                                               size: 13,
                                                                               isCopy: true,
-                                                                              colors: Colors.green,
+                                                                              colors: Colors.blue,
                                                                             ),
                                                                           if(data.iNo!="null"&&data.iNo!="")
                                                                             CustomText(
-                                                                            textAlign: TextAlign.left,
-                                                                            text: productCtr.showCrtDate(data.invoiceDate.toString()),
-                                                                            size: 13,
-                                                                            isCopy: true,
-                                                                            colors: Colors.green,
-                                                                          ),
+                                                                              textAlign: TextAlign.left,
+                                                                              text: productCtr.showCrtDate(data.invoiceDate.toString()),
+                                                                              size: 13,
+                                                                              isCopy: true,
+                                                                              colors: Colors.green,
+                                                                            ),
                                                                         ],
                                                                       ),
                                                                     ),
                                                                   ],
-                                                                ),
-                                                                Padding(
-                                                                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                        children: [
-                                                                          CustomText(text: "PO", isCopy: false,size: 13,),
-
-                                                                        ],
-                                                                      ),
-                                                                      Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                        children: [
-                                                                          CustomText(text: "Po",size: 13, isCopy: false),
-
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                if(data.iNo!="null"&&data.iNo!="")
-                                                                Padding(
-                                                                  padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
-                                                                  child: Row(
-                                                                    children: [
-                                                                      Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                        children: [
-                                                                          CustomText(text: "Invoice", isCopy: false,size: 13,),
-
-                                                                        ],
-                                                                      ),
-                                                                      Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                        children: [
-                                                                          CustomText(text: "Invoice",size: 13,isCopy: false),
-
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  ),
                                                                 ),
                                                               ],
                                                             ),

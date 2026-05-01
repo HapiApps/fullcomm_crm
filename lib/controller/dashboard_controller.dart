@@ -45,7 +45,6 @@ class DashboardController extends GetxController {
       String? token = await FirebaseMessaging.instance.getToken();
       apiService.updateTokenAPI(token.toString());
     }catch(e){
-      log("Token error $e");
     }
   }
   final List<String> filters = [
@@ -299,7 +298,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "stDate":stDate,
         "enDate":endDate
       };
-      // print("main day wise ${billing_data.toString()}");
+      // debugPrint("main day wise ${billing_data.toString()}");
       dayReport.value = [];
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -308,7 +307,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      // print("main day wise ${request.body.toString()}");
+      // debugPrint("main day wise ${request.body.toString()}");
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -324,7 +323,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         throw Exception('Failed to load album ${request.body}');
       }
     } catch (e) {
-      print("day_report $e");
+      debugPrint("day_report $e");
       throw Exception('Failed to load album');
     }
   }
@@ -336,7 +335,6 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data",
       };
-      log("main ${data.toString()}");
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             'X-API-TOKEN': "${TokenStorage().readToken()}",
@@ -407,7 +405,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "enDate": dashController.date2.value,
       };
 
-      print("Dashboard report 1:    ${data.toString()}");
+      debugPrint("Dashboard report 1:    ${data.toString()}");
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -417,7 +415,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      print("Dashboard report: ${request.body}");
+      debugPrint("Dashboard report: ${request.body}");
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -466,7 +464,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
           dashController.totalAmt.value    = response["total_amount"]?.toString() ?? "0";
         } else {
           // handle empty response gracefully
-          print("Dashboard API returned empty data");
+          debugPrint("Dashboard API returned empty data");
           dashController.totalQuotations.value        = "0";
           dashController.totalOrders.value        = "0";
           dashController.totalAmt.value        = "0";
@@ -568,8 +566,8 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      // print(billing_data);
-      // print("Dashboard report:2 ${request.body}");
+      // debugPrint(billing_data);
+      // debugPrint("Dashboard report:2 ${request.body}");
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -622,9 +620,9 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
 
-      print("customer_range_report: ${request.statusCode}");
-      print("RAW RESPONSE: ${data}");
-      print("RAW RESPONSE: ${request.body}");
+      debugPrint("customer_range_report: ${request.statusCode}");
+      debugPrint("RAW RESPONSE: ${data}");
+      debugPrint("RAW RESPONSE: ${request.body}");
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -634,7 +632,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         }
       }
       if (request.statusCode != 200) {
-        // print("SERVER ERROR");
+        // debugPrint("SERVER ERROR");
         return;
       }
 
@@ -647,14 +645,14 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         if (decoded is List) {
           customerStatusReport.value =List<Map<String, dynamic>>.from(decoded);
         } else {
-          print("Unexpected format");
+          debugPrint("Unexpected format");
         }
       } else {
-        print("API Error: ${decoded["message"]}");
+        debugPrint("API Error: ${decoded["message"]}");
       }
 
     } catch (e) {
-      print("FLUTTER ERROR => $e");
+      debugPrint("FLUTTER ERROR => $e");
     }
   }
 
@@ -688,8 +686,8 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      // print("STATUS CODE visit_status_report: ${request.statusCode}");
-      // print("RAW RESPONSE: ${request.body}");
+      // debugPrint("STATUS CODE visit_status_report: ${request.statusCode}");
+      // debugPrint("RAW RESPONSE: ${request.body}");
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -704,8 +702,8 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         for (var item in response) {
           total += int.parse(item["total_count"].toString());
         }
-        // print("total ${total}");
-        // print("visitStatusReport.value ${visitStatusReport.value}");
+        // debugPrint("total ${total}");
+        // debugPrint("visitStatusReport.value ${visitStatusReport.value}");
       } else {
         visitStatusReport.clear();
         throw Exception('Failed to load dashboard report');

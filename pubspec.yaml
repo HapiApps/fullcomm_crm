@@ -90,6 +90,7 @@ dependencies:
   printing:
   image: ^4.2.0
   oktoast: ^3.4.0
+  dotted_line:
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1083,7 +1083,6 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                           final billingProvider = Provider.of<BillingProvider>(context, listen: false);
                           final customerProvider = Provider.of<CustomersProvider>(context, listen: false);
 
-                          print("_isPaymentDialogOpen: $_isPaymentDialogOpen");
 
                           // 🔹 CLOSE DIALOG IF ALREADY OPEN
                           if (_isPaymentDialogOpen) {
@@ -1333,7 +1332,6 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                           final billingProvider = Provider.of<BillingProvider>(context, listen: false);
                           final customerProvider = Provider.of<CustomersProvider>(context, listen: false);
 
-                          print("_isPaymentDialogOpen: $_isPaymentDialogOpen");
 
                           // 🔹 CLOSE DIALOG IF ALREADY OPEN
                           if (_isPaymentDialogOpen) {
@@ -1898,7 +1896,18 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                   ),
                                 ),
                                 /// Fixed Header:
-                                // if(controllers.directNavigate.value==false)
+                                if(controllers.directNavigate.value==true)
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  child: Row(
+                                    children: [
+                                      CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                      if(controllers.selectedCompanyName.value!="")
+                                        CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                      CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                    ],
+                                  ),
+                                ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -2242,6 +2251,8 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                         ),
                                       ),
                                     ),
+                                    if(controllers.directNavigate.value==true)
+                                    10.width,
                                     Container(
                                       width: screenWidth*0.09,
                                       alignment: Alignment.center,
@@ -2866,6 +2877,17 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                               isBold: true,
                                                                             )),
                                                                       ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                                        child: Row(
+                                                                          children: [
+                                                                            CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                                                            if(controllers.selectedCompanyName.value!="")
+                                                                              CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                                                            CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                                                          ],
+                                                                        ),
+                                                                      ),
                                                                       Row(
                                                                         children: [
                                                                           CustomText(
@@ -3228,6 +3250,17 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                               isCopy: false,
                                                                               isBold: true,
                                                                             )),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                                        child: Row(
+                                                                          children: [
+                                                                            CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                                                            if(controllers.selectedCompanyName.value!="")
+                                                                              CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                                                            CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                                                          ],
+                                                                        ),
                                                                       ),
                                                                       Row(
                                                                         children: [
@@ -3629,6 +3662,17 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                               isCopy: false,
                                                                               isBold: true,
                                                                             )),
+                                                                      ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                                        child: Row(
+                                                                          children: [
+                                                                            CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                                                            if(controllers.selectedCompanyName.value!="")
+                                                                              CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                                                            CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                                                          ],
+                                                                        ),
                                                                       ),
                                                                       Row(
                                                                         children: [
@@ -4089,6 +4133,17 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                               isBold: true,
                                                                                             )),
                                                                                       ),
+                                                                                      Padding(
+                                                                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                                                        child: Row(
+                                                                                          children: [
+                                                                                            CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                                                                            if(controllers.selectedCompanyName.value!="")
+                                                                                              CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                                                                            CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                                                                          ],
+                                                                                        ),
+                                                                                      ),
                                                                                       Row(
                                                                                         children: [
                                                                                           CustomText(
@@ -4497,6 +4552,17 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                               isCopy: false,
                                                                                               isBold: true,
                                                                                             )),
+                                                                                      ),
+                                                                                      Padding(
+                                                                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                                                        child: Row(
+                                                                                          children: [
+                                                                                            CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                                                                            if(controllers.selectedCompanyName.value!="")
+                                                                                              CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                                                                            CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                                                                          ],
+                                                                                        ),
                                                                                       ),
                                                                                       Row(
                                                                                         children: [

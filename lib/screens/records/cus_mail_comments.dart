@@ -7,6 +7,7 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/models/mail_receive_obj.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../components/custom_comment_container.dart';
+import '../../components/custom_no_data.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../controller/controller.dart';
@@ -52,7 +53,7 @@ class _CusMailCommentsState extends State<CusMailComments> {
                    Navigator.of(context).pop();
                   }, icon: Icon(Icons.arrow_back, color: colorsConst.textColor,)),
 
-                  CustomText(text: "New Leads - Suspects",
+                  CustomText(text: "View Email Records",
                     colors: colorsConst.textColor,isBold: true,size: 20,isCopy: true,),
                   20.height,
                   Row(
@@ -85,13 +86,7 @@ class _CusMailCommentsState extends State<CusMailComments> {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return const Center(child: CircularProgressIndicator());
                           } else if (snapshot.hasError) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                150.height,
-                                Center(child: SvgPicture.asset("assets/images/noDataFound.svg")),
-                              ],
-                            );
+                            return Center(child: CustomNoData());
                           } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                             final mailList = snapshot.data!;
                             return MasonryGridView.count(
@@ -166,7 +161,7 @@ class _CusMailCommentsState extends State<CusMailComments> {
                               },
                             );
                           } else {
-                            return const Center(child: Text("No billing_data found"));
+                            return const Center(child: Text("No Data found"));
                           }
                         },
                       ),

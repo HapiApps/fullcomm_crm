@@ -64,7 +64,6 @@ class _LeadCategoriesState extends State<LeadCategories> {
   }
   @override
   Widget build(BuildContext context) {
-    print(controllers.allLead);
     return Scaffold(
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

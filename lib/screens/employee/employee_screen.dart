@@ -87,7 +87,6 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   ),
                                 ),
                                 onPressed: (){
-                                  log("Plan Type: ${controllers.planType.value} ${employeeProvider.filteredStaff.length}");
                                   String plan = controllers.planType.value.toLowerCase();
                                   if(plan=="business essential"&&(employeeProvider.filteredStaff.length) < 2){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));

@@ -218,7 +218,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
+      debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -263,7 +263,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
+      debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -306,7 +306,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
+      debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -354,7 +354,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
+      debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -402,7 +402,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
+      debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -453,7 +453,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
+      debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -499,7 +499,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           "search_type": "settings_roles"
         }),
       );
-    print("setting_roles"); // <-- ADD THIS
+    debugPrint("setting_roles"); // <-- ADD THIS
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -509,7 +509,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
         }
       }
       if (response.statusCode == 200) {
-        print(response.body); // <-- ADD THIS
+        debugPrint(response.body); // <-- ADD THIS
         final data = jsonDecode(response.body);
           final List<dynamic> rolesJson = data;
           roleList.value = rolesJson.map((json) => RoleModel.fromJson(json)).toList();
@@ -517,12 +517,12 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       } else {
         roleList.value = [];
         rolesCount.value = 0;
-        print("Failed to load reminders: ${response.body}");
+        debugPrint("Failed to load reminders: ${response.body}");
       }
     } catch (e) {
       roleList.value = [];
       rolesCount.value = 0;
-      print("Error fetching reminders11: $e");
+      debugPrint("Error fetching reminders11: $e");
     } finally {
       isLoadingRoles.value = false;
     }
@@ -547,8 +547,8 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           "search_type": "templates"
         }),
       );
-      print("templates");
-      print(response.body);
+      debugPrint("templates");
+      debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -565,12 +565,12 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       } else {
         templateList.value = [];
         templateCount.value = 0;
-        print("Failed to load template: ${response.body}");
+        debugPrint("Failed to load template: ${response.body}");
       }
     } catch (e) {
       templateList.value = [];
       templateCount.value = 0;
-      print("Error fetching template: $e");
+      debugPrint("Error fetching template: $e");
     } finally {
       isLoadingTemplates.value = false;
     }
@@ -612,12 +612,12 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       } else {
         officeHoursList.value = [];
         officeHoursCount.value = 0;
-        print("Failed to load reminders: ${response.body}");
+        debugPrint("Failed to load reminders: ${response.body}");
       }
     } catch (e) {
       officeHoursList.value = [];
       officeHoursCount.value = 0;
-      print("Error fetching reminders22: $e");
+      debugPrint("Error fetching reminders22: $e");
     } finally {
       isLoadingOfficeHours.value = false;
     }
@@ -643,8 +643,8 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request.body");
-      print(request.body);
+      debugPrint("request.body");
+      debugPrint(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();

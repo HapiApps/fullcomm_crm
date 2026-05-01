@@ -359,7 +359,7 @@ class ReminderUtils {
   //                                       cancelText: "",
   //                                       confirmText:"",
   //                                       onEntryModeChanged: (value){
-  //                                         print("Time $value");
+  //                                         debugPrint("Time $value");
   //                                         // _selectedTime=value;
   //                                       },
   //                                     ),
@@ -478,7 +478,7 @@ class ReminderUtils {
   //                             controller.text = "${selectedDate.day}-${selectedDate.month}-${selectedDate.year} "
   //                                 "${dialogSelectedTime.format(context)}";
   //                           }
-  //                           print("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
+  //                           debugPrint("Selected ${isStart ? "start" : "end"} dates & times: $selectedDatesTimes");
   //                         },
   //                         child: const Text(
   //                           "Set Time",
@@ -1056,7 +1056,7 @@ class ReminderUtils {
   //                         10.width,
   //                         CustomLoadingButton(
   //                           callback: () async {
-  //                             print("0000");
+  //                             debugPrint("0000");
   //                             // if (remController.titleController.text.trim().isEmpty) {
   //                             //   setState(() {
   //                             //     titleError = "Please enter reminder title";
@@ -1112,7 +1112,7 @@ class ReminderUtils {
   //                             //   return;
   //                             // }
   //                             if (remController.titleController.text.trim().isEmpty) {
-  //                               print("❌ Validation Failed => Title Empty");
+  //                               debugPrint("❌ Validation Failed => Title Empty");
   //                               setState(() {
   //                                 titleError = "Please enter reminder title";
   //                               });
@@ -1121,7 +1121,7 @@ class ReminderUtils {
   //                             }
   //
   //                             if (remController.stDate.value.isEmpty) {
-  //                               print("❌ Validation Failed => Start Date Empty");
+  //                               debugPrint("❌ Validation Failed => Start Date Empty");
   //                               setState(() {
   //                                 startDError = "Please select start date";
   //                               });
@@ -1130,7 +1130,7 @@ class ReminderUtils {
   //                             }
   //
   //                             if (remController.stTime.value.isEmpty) {
-  //                               print("❌ Validation Failed => Start Time Empty");
+  //                               debugPrint("❌ Validation Failed => Start Time Empty");
   //                               setState(() {
   //                                 startTError = "Please select start time";
   //                               });
@@ -1139,7 +1139,7 @@ class ReminderUtils {
   //                             }
   //
   //                             // if (remController.enDate.value.isEmpty) {
-  //                             //   print("❌ Validation Failed => End Date Empty");
+  //                             //   debugPrint("❌ Validation Failed => End Date Empty");
   //                             //   setState(() {
   //                             //     endDError = "Please select end date";
   //                             //   });
@@ -1148,7 +1148,7 @@ class ReminderUtils {
   //                             // }
   //                             //
   //                             // if (remController.enTime.value.isEmpty) {
-  //                             //   print("❌ Validation Failed => End Time Empty");
+  //                             //   debugPrint("❌ Validation Failed => End Time Empty");
   //                             //   setState(() {
   //                             //     endTError = "Please select end time";
   //                             //   });
@@ -1157,16 +1157,16 @@ class ReminderUtils {
   //                             // }
   //
   //                             final selType = Provider.of<ReminderProvider>(context, listen: false).selectedNotification ?? "";
-  //                             print("Selected Type => $selType");
+  //                             debugPrint("Selected Type => $selType");
   //
   //                             final needEmployee = selType == "followup" || (selType != "followup" && selType != "meeting");
   //                             final needCustomer = selType == "meeting" || (selType != "followup" && selType != "meeting");
   //
-  //                             print("needEmployee => $needEmployee");
-  //                             print("needCustomer => $needCustomer");
+  //                             debugPrint("needEmployee => $needEmployee");
+  //                             debugPrint("needCustomer => $needCustomer");
   //
   //                             if (needEmployee && controllers.selectedEmployeeId.value.isEmpty) {
-  //                               print("❌ Validation Failed => Employee Not Selected");
+  //                               debugPrint("❌ Validation Failed => Employee Not Selected");
   //                               setState(() {
   //                                 employeeError = "Please select employee";
   //                               });
@@ -1175,7 +1175,7 @@ class ReminderUtils {
   //                             }
   //
   //                             if (needCustomer && controllers.selectedCustomerId.value.isEmpty) {
-  //                               print("❌ Validation Failed => Customer Not Selected");
+  //                               debugPrint("❌ Validation Failed => Customer Not Selected");
   //                               setState(() {
   //                                 customerError = "Please select customer";
   //                               });
@@ -1183,7 +1183,7 @@ class ReminderUtils {
   //                               return;
   //                             }
   //
-  //                             print("✅ All validations passed — proceeding...");
+  //                             debugPrint("✅ All validations passed — proceeding...");
   //
   //                             remController.insertReminderAPI(context, Provider.of<ReminderProvider>(context, listen: false).selectedNotification);
   //                           },
@@ -1764,7 +1764,7 @@ class ReminderUtils {
                           CustomLoadingButton(
                             callback: () async {
                               if (remController.titleController.text.trim().isEmpty) {
-                                print("❌ Validation Failed => Title Empty");
+                                debugPrint("❌ Validation Failed => Title Empty");
                                 setState(() {
                                   titleError = "Please enter reminder title";
                                 });
@@ -1773,7 +1773,7 @@ class ReminderUtils {
                               }
 
                               if (remController.stDate.value.isEmpty) {
-                                print("❌ Validation Failed => Start Date Empty");
+                                debugPrint("❌ Validation Failed => Start Date Empty");
                                 setState(() {
                                   startDError = "Please select start date";
                                 });
@@ -1782,7 +1782,7 @@ class ReminderUtils {
                               }
 
                               if (remController.stTime.value.isEmpty) {
-                                print("❌ Validation Failed => Start Time Empty");
+                                debugPrint("❌ Validation Failed => Start Time Empty");
                                 setState(() {
                                   startTError = "Please select start time";
                                 });
@@ -1791,18 +1791,18 @@ class ReminderUtils {
                               }
 
                               final selType = Provider.of<ReminderProvider>(context, listen: false).selectedNotification ?? "";
-                              print("Selected Type => $selType");
+                              debugPrint("Selected Type => $selType");
 
                               final needEmployee = selType == "followup" || (selType != "followup" && selType != "meeting");
                               final needCustomer = selType == "meeting" || (selType != "followup" && selType != "meeting");
 
-                              print("needEmployee => $needEmployee");
-                              print("needCustomer => $needCustomer");
-                              print(remController.assignedIds.value);
+                              debugPrint("needEmployee => $needEmployee");
+                              debugPrint("needCustomer => $needCustomer");
+                              debugPrint(remController.assignedIds.value);
                               //Santhiya
                               if (remController.assignedIds.value=="") {
                               // if (needEmployee && controllers.selectedEmployeeId.value.isEmpty) {
-                                print("❌ Validation Failed => Employee Not Selected");
+                                debugPrint("❌ Validation Failed => Employee Not Selected");
                                 setState(() {
                                   employeeError = "Please select employee";
                                 });
@@ -1815,7 +1815,7 @@ class ReminderUtils {
                               }
 
                               if (needCustomer && controllers.selectedCustomerId.value.isEmpty) {
-                                print("❌ Validation Failed => Customer Not Selected");
+                                debugPrint("❌ Validation Failed => Customer Not Selected");
                                 setState(() {
                                   customerError = "Please select customer";
                                 });
@@ -1838,7 +1838,7 @@ class ReminderUtils {
                                 return;
                               }
 
-                              print("✅ All validations passed — proceeding...");
+                              debugPrint("✅ All validations passed — proceeding...");
 
                               remController.insertReminderAPI(context, Provider.of<ReminderProvider>(context, listen: false).selectedNotification);
                             },

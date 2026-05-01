@@ -2615,7 +2615,7 @@ class Utils {
   //     return "${formatDate(start)} $startTime to ${formatDate(end)} $endTime";
   //
   //   } catch (e) {
-  //     print("Error: $e"); // debug
+  //     debugPrint("Error: $e"); // debug
   //     return "";
   //   }
   // }
@@ -2702,7 +2702,7 @@ class Utils {
       return "${formatDate(start)} $startTime to ${formatDate(end)} $endTime";
 
     } catch (e) {
-      print("Error: $e");
+      debugPrint("Error: $e");
       return "";
     }
   }
@@ -3439,8 +3439,8 @@ void appointmentStatus(context,String value){
 
     DateTime dateTime = DateTime.now();
 
-    print("---- DATE PICKER OPEN ----");
-    print("Controller Text : ${textEditingController?.text}");
+    debugPrint("---- DATE PICKER OPEN ----");
+    debugPrint("Controller Text : ${textEditingController?.text}");
 
     // ---------- Parse Existing Date ----------
     if (pathVal.value!="") {
@@ -3452,11 +3452,11 @@ void appointmentStatus(context,String value){
             .replaceAll(".", "-")
             .trim();
 
-        print("Cleaned Date String : $cleaned");
+        debugPrint("Cleaned Date String : $cleaned");
 
         List<String> parts = cleaned.split("-");
 
-        print("Split Parts : $parts");
+        debugPrint("Split Parts : $parts");
 
         if (parts.length == 3) {
 
@@ -3464,30 +3464,30 @@ void appointmentStatus(context,String value){
           int p2 = int.tryParse(parts[1]) ?? 0;
           int p3 = int.tryParse(parts[2]) ?? 0;
 
-          print("Parsed => p1:$p1  p2:$p2  p3:$p3");
+          debugPrint("Parsed => p1:$p1  p2:$p2  p3:$p3");
 
           // Detect format
           if (p1 > 31) {
             // YYYY-MM-DD
             dateTime = DateTime(p1, p2, p3);
-            print("Format Detected : YYYY-MM-DD");
+            debugPrint("Format Detected : YYYY-MM-DD");
 
           } else {
             // DD-MM-YYYY
             dateTime = DateTime(p3, p2, p1);
-            print("Format Detected : DD-MM-YYYY");
+            debugPrint("Format Detected : DD-MM-YYYY");
           }
 
-          print("Initial DateTime Set : $dateTime");
+          debugPrint("Initial DateTime Set : $dateTime");
         }
 
       } catch (e) {
-        print("Date Parse Error : $e");
+        debugPrint("Date Parse Error : $e");
         dateTime = DateTime.now();
       }
     }
 
-    print("Opening DatePicker with Initial Date : $dateTime");
+    debugPrint("Opening DatePicker with Initial Date : $dateTime");
 
     // ---------- Show Date Picker ----------
     final value = await showDatePicker(
@@ -3497,7 +3497,7 @@ void appointmentStatus(context,String value){
       lastDate: DateTime(2030),
     );
 
-    print("Selected Date From Picker : $value");
+    debugPrint("Selected Date From Picker : $value");
 
     // ---------- Set Selected Date ----------
     if (value != null) {
@@ -3509,18 +3509,18 @@ void appointmentStatus(context,String value){
           "${dateTime.month.toString().padLeft(2, "0")}."
           "${dateTime.year}";
 
-      print("Formatted Date : $formattedDate");
+      debugPrint("Formatted Date : $formattedDate");
 
       textEditingController?.text = formattedDate;
       pathVal?.value = formattedDate;
 
-      print("Controller Updated Successfully ✅");
+      debugPrint("Controller Updated Successfully ✅");
 
     } else {
-      print("User Cancelled Date Picker ❌");
+      debugPrint("User Cancelled Date Picker ❌");
     }
 
-    print("---- DATE PICKER END ----");
+    debugPrint("---- DATE PICKER END ----");
   }
 
 
@@ -3531,11 +3531,11 @@ void appointmentStatus(context,String value){
     );
     if (result != null) {
       fileName?.value = result.files.single.name;
-      print("file name ${result.files.single.name}");
+      debugPrint("file name ${result.files.single.name}");
       mediaDataV?.value = result.files.single.bytes!.toList();
       pathName?.value = base64.encode(result.files.single.bytes!.toList());
     } else {
-      print('No file selected');
+      debugPrint('No file selected');
     }
   }
   TableRow emailRow(BuildContext context,
@@ -3616,7 +3616,6 @@ void appointmentStatus(context,String value){
     input.click();
     input.onChange.listen((event) {
       if (input.files == null || input.files!.isEmpty) {
-        debugPrint("User cancelled file selection.");
         controllers.customerCtr.reset();
         return;
       }
@@ -3638,13 +3637,13 @@ void appointmentStatus(context,String value){
 
 
   void parseExcelFile(Uint8List bytes, BuildContext context, String leadStatus) async {
-    //print("Bites $bytes");
+    //debugPrint("Bites $bytes");
     customerData = [];
     controllers.customerCtr.start();
     var excelD = excel.Excel.decodeBytes(bytes);
 
     for (var table in excelD.tables.keys) {
-      print("rows ${excelD.tables[table]!.rows}");
+      debugPrint("rows ${excelD.tables[table]!.rows}");
       var rows = excelD.tables[table]!.rows;
 
       if (rows.length < 6) {
@@ -3742,7 +3741,7 @@ void appointmentStatus(context,String value){
         "cusList": customerData,
       };
 
-      print("Payload: ${jsonEncode(finalPayload)}");
+      debugPrint("Payload: ${jsonEncode(finalPayload)}");
 
       await apiService.insertCustomersAPI(context, customerData, fieldMappings, bytes, "CRMSheet");
     }
@@ -3790,11 +3789,11 @@ void appointmentStatus(context,String value){
         await downloadSheetImplementation(fileName, bodyBytes);
       } else {
         downloadSampleExcel();
-        print('Download failed: ${response.statusCode}');
+        debugPrint('Download failed: ${response.statusCode}');
       }
     } catch (e) {
       downloadSampleExcel();
-      print('Error downloading file: $e');
+      debugPrint('Error downloading file: $e');
     }
   }
   Future<void> showImportDialogThirumal(BuildContext context,String leadStatus) async {
@@ -4112,7 +4111,7 @@ void appointmentStatus(context,String value){
         }
       }
 
-      print("missingColumns: $missingColumns");
+      debugPrint("missingColumns: $missingColumns");
 
       if (missingColumns.isNotEmpty) {
         Navigator.of(context).pop();
@@ -4214,8 +4213,8 @@ void appointmentStatus(context,String value){
       }
     }
 
-    print("mCustomerData ${thiMCustomerData.length}");
-    print("customerData ${thiCustomerData.length}");
+    debugPrint("mCustomerData ${thiMCustomerData.length}");
+    debugPrint("customerData ${thiCustomerData.length}");
 
     if (thiCustomerData.isEmpty) {
       Navigator.of(context).pop();
@@ -4275,7 +4274,7 @@ void appointmentStatus(context,String value){
         }
       }
 
-      print("missingColumns: $missingColumns");
+      debugPrint("missingColumns: $missingColumns");
 
       if (missingColumns.isNotEmpty) {
         Navigator.of(context).pop();
@@ -4377,8 +4376,8 @@ void appointmentStatus(context,String value){
       }
     }
 
-    print("mCustomerData ${thiMCustomerData.length}");
-    print("customerData ${thiCustomerData.length}");
+    debugPrint("mCustomerData ${thiMCustomerData.length}");
+    debugPrint("customerData ${thiCustomerData.length}");
 
     if (thiCustomerData.isEmpty) {
       Navigator.of(context).pop();
@@ -4457,10 +4456,10 @@ void appointmentStatus(context,String value){
                               side: BorderSide(color: colorsConst.third))),
                       onPressed: () {
                        // if(controllers.serverSheet.value.isEmpty){
-                          print("Local Download");
+                          debugPrint("Local Download");
                           downloadSampleExcel();
                         // }else{
-                        //   print("Network Download");
+                        //   debugPrint("Network Download");
                         //   downloadSheetFromNetwork(controllers.serverSheet.value, "easycrm_data_upload_template.xlsx");
                         // }
                       },
@@ -4674,8 +4673,8 @@ void appointmentStatus(context,String value){
                   ),
                   ElevatedButton(
                     onPressed: () async {
-                      // print("editMode len = ${controllers.editMode.length}");
-                      // print("category len = ${controllers.leadCategoryList.length}");
+                      // debugPrint("editMode len = ${controllers.editMode.length}");
+                      // debugPrint("category len = ${controllers.leadCategoryList.length}");
 
                       bool anyEdit = controllers.editMode.contains(true);
                       if (!anyEdit) {
@@ -5340,7 +5339,7 @@ void appointmentStatus(context,String value){
     )
         .then((selected) {
       if (selected != null) {
-        print("Selected filter: $selected");
+        debugPrint("Selected filter: $selected");
         // Use the selected filter here
       }
     });

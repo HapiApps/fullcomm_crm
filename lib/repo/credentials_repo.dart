@@ -19,10 +19,6 @@ class CredentialsRepository {
         "action": "b_login"
       }),
     );
-
-    log("Status Code: ${response.statusCode}");
-    log("Response Body: ${response.body}");
-
     if (response.statusCode == 200) {
       return UserDataResponse.fromJson(jsonDecode(response.body));
     } else {

@@ -605,8 +605,6 @@ class _RoleManagementState extends State<RoleManagement> {
                         ),
                         onPressed: (){
                           print(">>>>>");
-                          print(controllers.planType.value);
-                          print(settingsController.roleList);
                           String plan = controllers.planType.value.toLowerCase();
 
                           if(plan=="business essential"&&(settingsController.roleList.length ?? 0) < 2){

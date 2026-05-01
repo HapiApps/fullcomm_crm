@@ -34,7 +34,7 @@ class PlaceOrderRepository {
   //       return PlacedOrderResponse.fromJson(data);
   //
   //     } else {
-  //       log("placeOrder Error : ${response.body} \n"
+  //       debugPrint("placeOrder Error : ${response.body} \n"
   //           "Reason:${response.reasonPhrase}");
   //
   //       throw "Error on billing";
@@ -56,27 +56,27 @@ class PlaceOrderRepository {
         body: jsonEncode(requestBody),
       );
       // 🔥 PRINT RAW ORDER OBJECT
-      log("======== ORDER OBJECT ========");
-      log(order.toString());
+      debugPrint("======== ORDER OBJECT ========");
+      debugPrint(order.toString());
 
       // 🔥 PRINT ORDER JSON
       final orderJson = order.toJson();
-      log("======== ORDER JSON ========");
-      log(const JsonEncoder.withIndent('  ').convert(orderJson));
+      debugPrint("======== ORDER JSON ========");
+      debugPrint(const JsonEncoder.withIndent('  ').convert(orderJson));
 
 
 
       // 🔥 PRINT FULL REQUEST BODY
-      log("======== FINAL REQUEST BODY ========");
-      log(const JsonEncoder.withIndent('  ').convert(requestBody));
+      debugPrint("======== FINAL REQUEST BODY ========");
+      debugPrint(const JsonEncoder.withIndent('  ').convert(requestBody));
 
 
-      log("======== RESPONSE STATUS ========");
-      log(response.statusCode.toString());
+      debugPrint("======== RESPONSE STATUS ========");
+      debugPrint(response.statusCode.toString());
 
-      log("======== RESPONSE BODY ========");
-      log(response.body);
-      log('placeOrder Response body: ${response.body}');
+      debugPrint("======== RESPONSE BODY ========");
+      debugPrint(response.body);
+      debugPrint('placeOrder Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         if (response.body.isEmpty) {
@@ -89,15 +89,15 @@ class PlaceOrderRepository {
         throw Exception("Server error: ${response.reasonPhrase}");
       }
     } on TimeoutException {
-      log("Request timed out!");
+      debugPrint("Request timed out!");
       Toasts.showToastBar(context: context, text: 'Request timed out!. Please try again',color: Colors.red);
       throw Exception("Request timed out!");
     } on SocketException {
-      log("Network issue!");
+      debugPrint("Network issue!");
       Toasts.showToastBar(context: context, text: 'Network issue!. Please try again',color: Colors.red);
       throw Exception("Network issue!. Please try again");
     } catch (e) {
-      log("placeOrder Catch Error: $e");
+      debugPrint("placeOrder Catch Error: $e");
       throw Exception("placeOrder Catch Error: $e");
     }
   }
@@ -134,7 +134,7 @@ class PlaceOrderRepository {
         body: body,
       );
 
-      print("online orders ${response.body}");
+      debugPrint("online orders ${response.body}");
 
       final jsonData = jsonDecode(response.body);
 
@@ -193,8 +193,8 @@ class PlaceOrderRepository {
         body: body,
       );
 
-      print("REQUEST BODY: $body");
-      print("RESPONSE BODY: ${response.body}");
+      debugPrint("REQUEST BODY: $body");
+      debugPrint("RESPONSE BODY: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -211,7 +211,7 @@ class PlaceOrderRepository {
       }
       return false;
     } catch (e) {
-      print("Insert Product Exception: $e");
+      debugPrint("Insert Product Exception: $e");
       return false;
     }
   }
@@ -263,7 +263,7 @@ class PlaceOrderRepository {
     );
 
     if (response.statusCode == 200) {
-      print("response1${response.body}");
+      debugPrint("response1${response.body}");
       return jsonDecode(response.body);
     } else {
       throw Exception(
@@ -272,7 +272,7 @@ class PlaceOrderRepository {
   }
   Future<Map<String, dynamic>> cancelOrder(String orderId) async {
     try {
-      print('Sending cancel order request for Order ID: $orderId');
+      debugPrint('Sending cancel order request for Order ID: $orderId');
 
       final response = await http.post(
         Uri.parse(ApiUrl.script),
@@ -285,17 +285,17 @@ class PlaceOrderRepository {
         }),
       );
 
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
+      debugPrint('Response status: ${response.statusCode}');
+      debugPrint('Response body: ${response.body}');
 
       if (response.statusCode == 200) {
         // Parsing the response and returning the data
         final responseData = json.decode(response.body);
-        print('Order cancellation successful: $responseData');
+        debugPrint('Order cancellation successful: $responseData');
         return responseData; // Return the response from the API
       } else {
         // Handling non-200 responses
-        print('Error in response: ${response.body}');
+        debugPrint('Error in response: ${response.body}');
         return {
           'ResponseCode': '500',
           'ResponseMsg': 'Error updating order status',
@@ -303,7 +303,7 @@ class PlaceOrderRepository {
       }
     } catch (e) {
       // Catch any exception (network or parsing errors)
-      print('Error occurred: $e');
+      debugPrint('Error occurred: $e');
       return {
         'ResponseCode': '500',
         'ResponseMsg': 'Failed to connect to the server: $e',

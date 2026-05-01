@@ -36,8 +36,8 @@ class NewPayrollApiServices{
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
       final List dataValue= json.decode(request.body);
-      // print(data);
-      // print(dataValue);
+      // debugPrint(data);
+      // debugPrint(dataValue);
       pyrlCtr.unitList.clear();
       if (request.statusCode == 200){
         pyrlCtr.getUnits.value=true;
@@ -49,7 +49,7 @@ class NewPayrollApiServices{
         throw Exception('Failed to load album');
       }
     }catch(e){
-      log(e.toString());
+      debugPrint(e.toString());
       pyrlCtr.getUnits.value=true;
       pyrlCtr.unitList.clear();
       throw Exception('Failed to load album');
@@ -75,10 +75,8 @@ class NewPayrollApiServices{
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(data);
-      print(request.body);
       final List dataValue= json.decode(request.body);
-      // print(data);
+      // debugPrint(data);
       pyrlCtr.unitPayrollList.clear();
       if (request.statusCode == 200){
         pyrlCtr.getData.value=true;
@@ -90,7 +88,7 @@ class NewPayrollApiServices{
         throw Exception('Failed to load album');
       }
     }catch(e){
-      log(e.toString());
+      debugPrint(e.toString());
       pyrlCtr.getData.value=true;
       pyrlCtr.unitPayrollList.clear();
       throw Exception('Failed to load album');
@@ -117,9 +115,7 @@ class NewPayrollApiServices{
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(data);
-      print(request.body);
-      // print(data);
+      // debugPrint(data);
       pyrlCtr.unitPayrollList.clear();
       if (request.statusCode == 200){
         final List dataValue= json.decode(request.body);
@@ -132,7 +128,7 @@ class NewPayrollApiServices{
         throw Exception('Failed to load album');
       }
     }catch(e){
-      log(e.toString());
+      debugPrint(e.toString());
       pyrlCtr.getData.value=true;
       pyrlCtr.unitPayrollList.clear();
       throw Exception('Failed to load album');
@@ -157,10 +153,8 @@ class NewPayrollApiServices{
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(data);
-      print(request.body);
       final List dataValue= json.decode(request.body);
-      // print(data);
+      // debugPrint(data);
       pyrlCtr.unitPayrollList.clear();
       if (request.statusCode == 200){
         pyrlCtr.getData.value=true;
@@ -172,7 +166,7 @@ class NewPayrollApiServices{
         throw Exception('Failed to load album');
       }
     }catch(e){
-      log(e.toString());
+      debugPrint(e.toString());
       pyrlCtr.getData.value=true;
       pyrlCtr.unitPayrollList.clear();
       throw Exception('Failed to load album');
@@ -197,10 +191,8 @@ class NewPayrollApiServices{
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(data);
-      print(request.body);
       final List dataValue= json.decode(request.body);
-      // print(data);
+      // debugPrint(data);
       pyrlCtr.unitPayrollList.clear();
       if (request.statusCode == 200){
         pyrlCtr.getData.value=true;
@@ -212,7 +204,7 @@ class NewPayrollApiServices{
         throw Exception('Failed to load album');
       }
     }catch(e){
-      log(e.toString());
+      debugPrint(e.toString());
       pyrlCtr.getData.value=true;
       pyrlCtr.unitPayrollList.clear();
       throw Exception('Failed to load album');
@@ -236,10 +228,8 @@ class NewPayrollApiServices{
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(data);
-      print(request.body);
       final List dataValue= json.decode(request.body);
-      // print(data);
+      // debugPrint(data);
       pyrlCtr.unitPayrollList.clear();
       if (request.statusCode == 200){
         pyrlCtr.getData.value=true;
@@ -251,7 +241,7 @@ class NewPayrollApiServices{
         throw Exception('Failed to load album');
       }
     }catch(e){
-      log(e.toString());
+      debugPrint(e.toString());
       pyrlCtr.getData.value=true;
       pyrlCtr.unitPayrollList.clear();
       throw Exception('Failed to load album');
@@ -275,10 +265,8 @@ class NewPayrollApiServices{
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(data);
-      print(request.body);
       final List dataValue= json.decode(request.body);
-      // print(data);
+      // debugPrint(data);
       pyrlCtr.unitPayrollList.clear();
       if (request.statusCode == 200){
         pyrlCtr.getData.value=true;
@@ -290,7 +278,7 @@ class NewPayrollApiServices{
         throw Exception('Failed to load album');
       }
     }catch(e){
-      log(e.toString());
+      debugPrint(e.toString());
       pyrlCtr.getData.value=true;
       pyrlCtr.unitPayrollList.clear();
       throw Exception('Failed to load album');
@@ -312,8 +300,8 @@ class NewPayrollApiServices{
         },
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"));
-    print("request.body............");
-    print(request.body);
+    debugPrint("request.body............");
+    debugPrint(request.body);
     pyrlCtr.allEmpList.clear();
     if (request.statusCode == 200) {
       final List data= json.decode(request.body);
@@ -342,8 +330,8 @@ class NewPayrollApiServices{
         },
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"));
-    print("request.body............");
-    print(request.body);
+    debugPrint("request.body............");
+    debugPrint(request.body);
     pyrlCtr.idEmpList.clear();
     if (request.statusCode == 200) {
       final List data= json.decode(request.body);
@@ -359,11 +347,11 @@ class NewPayrollApiServices{
 
   Future<void> insertPayrollList(context,List<PayrollUserModel> dataList) async {
     try {
-      log("log");
-      print("print");
+      debugPrint("log");
+      debugPrint("print");
       final List<Map<String, dynamic>> empList =
       dataList.map((e) => e.toJson()).toList();
-      print(empList.toString());
+      debugPrint(empList.toString());
 
       final Map<String, dynamic> sendData = {
         'action': "payroll_user_list",
@@ -375,7 +363,7 @@ class NewPayrollApiServices{
         "cos_id":controllers.storage.read("cos_id"),
         "com_id":controllers.storage.read("com_id"),
       };
-      log(sendData.toString());
+      debugPrint(sendData.toString());
 
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -384,8 +372,8 @@ class NewPayrollApiServices{
           },
           body: jsonEncode(sendData),
           encoding: Encoding.getByName("utf-8"));
-      log("response.body");
-      log(request.body);
+      debugPrint("response.body");
+      debugPrint(request.body);
       if (request.statusCode == 200) {
         utils.snackBar(context: context,msg: "Saved Successfully", color: Colors.green);
         pyrlCtr.users.clear();
@@ -403,8 +391,8 @@ class NewPayrollApiServices{
   }
   Future<void> updatePayrollList(context,List<PayrollUserModel> dataList,String slipId) async {
     try {
-      log("log");
-      print("print");
+      debugPrint("log");
+      debugPrint("print");
       final List<Map<String, dynamic>> empList =
       dataList.map((e) => e.toJson()).toList();
       final Map<String, dynamic> sendData = {
@@ -415,7 +403,7 @@ class NewPayrollApiServices{
         "cos_id":controllers.storage.read("cos_id"),
         "com_id":controllers.storage.read("com_id"),
       };
-      log(sendData.toString());
+      debugPrint(sendData.toString());
 
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -424,8 +412,8 @@ class NewPayrollApiServices{
           },
           body: jsonEncode(sendData),
           encoding: Encoding.getByName("utf-8"));
-      log("response.body");
-      log(request.body);
+      debugPrint("response.body");
+      debugPrint(request.body);
       if (request.statusCode == 200) {
         utils.snackBar(context: context,msg: "Saved Successfully", color: Colors.green);
         pyrlCtr.users.clear();
@@ -469,7 +457,7 @@ class NewPayrollApiServices{
         },
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"));
-    log(request.body);
+    debugPrint(request.body);
     if (request.statusCode == 200) {
       utils.snackBar(context: context,msg: "Saved Successfully", color: Colors.green);
       Get.to(const UnitSlip(), transition: Transition.rightToLeftWithFade, duration: const Duration(seconds: 1));

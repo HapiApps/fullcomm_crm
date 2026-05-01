@@ -225,7 +225,6 @@ class ExtractedInfoControllerNew extends GetxController {
 
       final responseBody = await streamedResponse.stream.bytesToString();
 
-      debugPrint("Server response: $responseBody");
 
       if (responseBody.isEmpty) {
         Get.snackbar(
@@ -262,7 +261,6 @@ class ExtractedInfoControllerNew extends GetxController {
       return true;
 
     } catch (e, st) {
-      debugPrint("❌ saveVisitingCard error: $e\n$st");
 
       Get.snackbar(
         "Error",

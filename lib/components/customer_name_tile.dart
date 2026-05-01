@@ -10,9 +10,12 @@ import 'package:fullcomm_crm/components/custom_checkbox.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
+import '../controller/product_controller.dart';
 import '../controller/reminder_controller.dart';
 import '../controller/table_controller.dart';
+import '../models/all_customers_obj.dart';
 import '../models/new_lead_obj.dart';
+import '../screens/quotation/quotation_page.dart';
 import '../screens/records/cus_mail_comments.dart';
 import '../screens/leads/update_lead.dart';
 import '../screens/records/records.dart';
@@ -951,10 +954,6 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                                     selectedStage = controllers.leadCategoryList
                                                         .firstWhere((e) => e.leadStatus == value)
                                                         .value;
-
-                                                    print("stageId: $stageId");
-                                                    print("selectedStage: $selectedStage");
-
                                                   });
                                                 },
                                               ),
@@ -1201,6 +1200,17 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                     );
                                   });
                             }
+                            else if(value=="Create Quotation"){
+                              controllers.cusController.text="${widget.name} - ${widget.companyName}- ${widget.companyNumber}";
+                              controllers.selectCustomer(AllCustomersObj(
+                              id: widget.id.toString(), name: widget.name.toString(),
+                              companyName: widget.companyName.toString(), phoneNo: widget.companyNumber.toString(),
+                              email: widget.companyEmail.toString(), leadStatus: "", category: ""));
+                              controllers.directNavigate.value=true;
+                              controllers.qId.value=widget.id.toString();
+                              productCtr.changeTab(1);
+                              Get.to(QuotationPage());
+                            }
                           },
                           // onCanceled: () {
                           //   isMenuOpen.value = false;
@@ -1240,6 +1250,11 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                             PopupMenuItem(
                                 value: "View email record",
                                 child: Text("View email record",
+                                    style:
+                                    TextStyle(color: colorsConst.textColor))),
+                            PopupMenuItem(
+                                value: "Create Quotation",
+                                child: Text("Create Quotation",
                                     style:
                                     TextStyle(color: colorsConst.textColor))),
                             // PopupMenuItem(

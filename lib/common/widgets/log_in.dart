@@ -335,7 +335,6 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
         "mobile_number": mobile,
         "action": "check_mobile"
       };
-      log(data.toString());
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
             "Accept": "application/json",
@@ -343,7 +342,6 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      log("res ${request.body}");
 
       Map<String, dynamic> response = json.decode(request.body.trim());
       if (request.statusCode == 200 && response.containsKey("s_name")) {

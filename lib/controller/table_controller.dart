@@ -42,7 +42,7 @@ class TableController extends GetxController {
   var headingFields = <String>[].obs;
 
   // void setHeading(List<dynamic> billing_data) async {
-  //   log("Set Heading 1");
+  //   debugPrint("Set Heading 1");
   //   try {
   //     headingFields.value = billing_data
   //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
@@ -71,44 +71,44 @@ class TableController extends GetxController {
   //     }
   //     await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
   //   } catch (e) {
-  //     log("Set Heading fields error: $e");
+  //     debugPrint("Set Heading fields error: $e");
   //   }
   // }
   /// changed 9 mar
   // void setHeading(List<dynamic> billing_data) async {
-  //   print("Set Heading 1");
+  //   debugPrint("Set Heading 1");
   //
   //   try {
   //     headingFields.value = billing_data
   //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
   //         .toList();
   //
-  //     print("Heading Fields: $headingFields");
+  //     debugPrint("Heading Fields: $headingFields");
   //
   //     final prefs = await SharedPreferences.getInstance();
-  //     print("SharedPreferences loaded");
+  //     debugPrint("SharedPreferences loaded");
   //
   //     final saved = prefs.getString('tableHeadings');
-  //     print("Saved value: $saved");
+  //     debugPrint("Saved value: $saved");
   //
   //     if (saved != null) {
   //       final decoded = jsonDecode(saved);
-  //       print("Decoded: $decoded");
+  //       debugPrint("Decoded: $decoded");
   //
   //       List<String> savedHeadings = [];
   //
   //       if (decoded is List) {
   //         savedHeadings = decoded.cast<String>();
-  //         print("Decoded is List");
+  //         debugPrint("Decoded is List");
   //       } else if (decoded is Map) {
   //         savedHeadings = decoded.values.map((e) => e.toString()).toList();
-  //         print("Decoded is Map");
+  //         debugPrint("Decoded is Map");
   //       }
   //
   //       final combined = List<String>.from(savedHeadings);
   //
   //       for (var i = 0; i < headingFields.length; i++) {
-  //         print("Loop index: $i");
+  //         debugPrint("Loop index: $i");
   //
   //         if (i < combined.length) {
   //           combined[i] = headingFields[i];
@@ -118,10 +118,10 @@ class TableController extends GetxController {
   //       }
   //
   //       tableHeadings.value = combined;
-  //       print("Table Headings: $tableHeadings");
+  //       debugPrint("Table Headings: $tableHeadings");
   //
   //     } else {
-  //       print("No saved billing_data");
+  //       debugPrint("No saved billing_data");
   //       tableHeadings.value = List<String>.from(headingFields);
   //     }
   //
@@ -130,22 +130,22 @@ class TableController extends GetxController {
   //     }
   //
   //     await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
-  //     print("Saved to SharedPreferences");
+  //     debugPrint("Saved to SharedPreferences");
   //
   //   } catch (e) {
-  //     print("Set Heading fields error: $e");
+  //     debugPrint("Set Heading fields error: $e");
   //   }
   // }
   /// March 14
   // void setHeading(List<dynamic> billing_data) async {
-  //   print("Set Heading 1");
+  //   debugPrint("Set Heading 1");
   //
   //   try {
   //     headingFields.value = billing_data
   //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
   //         .toList();
   //
-  //     print("Heading Fields: $headingFields");
+  //     debugPrint("Heading Fields: $headingFields");
   //
   //     final prefs = await SharedPreferences.getInstance();
   //     final saved = prefs.getString('tableHeadings');
@@ -159,7 +159,7 @@ class TableController extends GetxController {
   //         savedHeadings = decoded.cast<String>();
   //       }
   //
-  //       print("Saved Headings: $savedHeadings");
+  //       debugPrint("Saved Headings: $savedHeadings");
   //
   //       // saved list base
   //       final combined = List<String>.from(savedHeadings);
@@ -179,17 +179,17 @@ class TableController extends GetxController {
   //       tableHeadings.value = List<String>.from(headingFields);
   //     }
   //
-  //     print("Final Headings: ${tableHeadings.value}");
+  //     debugPrint("Final Headings: ${tableHeadings.value}");
   //
   //     await prefs.setString(
   //         'tableHeadings', jsonEncode(tableHeadings.value));
   //
   //   } catch (e) {
-  //     print("Set Heading fields error: $e");
+  //     debugPrint("Set Heading fields error: $e");
   //   }
   // }
   void setHeading(List<dynamic> data) async {
-    print("Set Heading 1");
+    debugPrint("Set Heading 1");
 
     try {
       // normalize function
@@ -201,7 +201,7 @@ class TableController extends GetxController {
           .formatHeading(e['user_heading'].toString().trim()))
           .toList();
 
-      print("Heading Fields: $headingFields");
+      debugPrint("Heading Fields: $headingFields");
 
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getString('tableHeadings');
@@ -217,7 +217,7 @@ class TableController extends GetxController {
           savedHeadings = decoded.cast<String>();
         }
 
-        print("Saved Headings: $savedHeadings");
+        debugPrint("Saved Headings: $savedHeadings");
 
         combined = List<String>.from(savedHeadings);
 
@@ -250,7 +250,7 @@ class TableController extends GetxController {
         colWidth[h] = colWidth[h] ?? 150;
       }
 
-      print("Final Headings: ${tableHeadings.value}");
+      debugPrint("Final Headings: ${tableHeadings.value}");
 
       await prefs.setString(
         'tableHeadings',
@@ -258,12 +258,11 @@ class TableController extends GetxController {
       );
 
     } catch (e) {
-      print("Set Heading fields error: $e");
+      debugPrint("Set Heading fields error: $e");
     }
   }
   void setHeadingFields(List<dynamic> data) async {
     try {
-      log("Incoming billing_data: $data");
 
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getString('tableHeadings');
@@ -277,7 +276,7 @@ class TableController extends GetxController {
         apiMap[system] = heading;
       }
 
-      log("API Map: $apiMap");
+      debugPrint("API Map: $apiMap");
 
       Map<String, String> savedMap = {};
       bool isChanged = false;
@@ -296,18 +295,18 @@ class TableController extends GetxController {
               decoded.map((k, v) => MapEntry(k.toString(), v.toString()));
         }
 
-        log("Saved Map: $savedMap");
+        debugPrint("Saved Map: $savedMap");
 
         /// update or add
         apiMap.forEach((key, value) {
           if (!savedMap.containsKey(key)) {
             savedMap[key] = value;
             isChanged = true;
-            log("New column added: $value");
+            debugPrint("New column added: $value");
           } else if (savedMap[key] != value) {
             savedMap[key] = value;
             isChanged = true;
-            log("Heading renamed: $value");
+            debugPrint("Heading renamed: $value");
           }
         });
       } else {
@@ -321,7 +320,7 @@ class TableController extends GetxController {
       tableHeadings.value = finalHeadings;
       headingFields.value = finalHeadings;
 
-      log("Final tableHeadings: $finalHeadings");
+      debugPrint("Final tableHeadings: $finalHeadings");
 
       /// column width
       for (var h in finalHeadings) {
@@ -331,16 +330,12 @@ class TableController extends GetxController {
       /// save
       if (isChanged) {
         await prefs.setString('tableHeadings', jsonEncode(savedMap));
-        log("tableHeadings saved to local");
+        debugPrint("tableHeadings saved to local");
       }
 
-      log("FINAL HEADING ${headingFields.value}");
+      debugPrint("FINAL HEADING ${headingFields.value}");
     } catch (e, s) {
-      log(
-        "Set Heading fields error",
-        error: e,
-        stackTrace: s,
-      );
+      debugPrint("FINAL HEADING ${headingFields.value}");
     }
   }
 
@@ -372,10 +367,10 @@ class TableController extends GetxController {
     isTableLoading.value =false;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
-    print("Heading List: ${tableController.headingFields.toList()}");
+    debugPrint("Heading List: ${tableController.headingFields.toList()}");
 
-    print("savedpp");
-    print("done");
+    debugPrint("savedpp");
+    debugPrint("done");
   }
 
   // Cancel changes (restore default)
@@ -471,9 +466,7 @@ class TableController extends GetxController {
           encoding: Encoding.getByName("utf-8")
       );
       Map<String, dynamic> response = json.decode(request.body);
-      print("jdckdjck");
-      print(data);
-      print(request.body);
+      debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -492,7 +485,6 @@ class TableController extends GetxController {
         controllers.productCtr.reset();
       }
     }catch(e){
-      print(e);
       apiService.errorDialog(Get.context!,e.toString());
       controllers.productCtr.reset();
     }
@@ -514,7 +506,7 @@ class TableController extends GetxController {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print(request.body);
+      debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -527,8 +519,6 @@ class TableController extends GetxController {
         headingFields.add(heading);
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('tableHeadings', jsonEncode(headingFields.toList()));
-        print("headingFields");
-        print(headingFields);
         apiService.getHeading();
         Navigator.pop(context);
         utils.snackBar(context: context, msg: "Heading added successfully", color: Colors.green);

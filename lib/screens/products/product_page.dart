@@ -851,14 +851,12 @@ class _ProductPageState extends State<ProductPage> {
                           _focusNode.requestFocus();
                           productCtr.currentProspectPage.value--;
                           productCtr.changeProductPage(productCtr.products,productCtr.products2);
-                          print("controllers.currentProspectPage.value --- ${productCtr.currentProspectPage.value}");
                         }),
                         ...utils.buildPagination(totalPages, currentPage),
                         utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
                           productCtr.currentProspectPage.value++;
                           _focusNode.requestFocus();
                           productCtr.changeProductPage(productCtr.products,productCtr.products2);
-                          print("controllers.currentProspectPage.value +++ ${productCtr.currentProspectPage.value}");
                         }),
                       ],
                     );

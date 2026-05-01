@@ -23,8 +23,7 @@ class ProductController extends GetxController with GetSingleTickerProviderState
   var selectedProductId="".obs;
   var selectedProductName="".obs;
   void selectProduct(ProductModel c) {
-    print("productsList");
-    print(productsList);
+    debugPrint("productsList");
     selectedProductId.value = c.id.toString();
     selectedProductName.value = c.title.toString();
     controllers.search.text = c.title ?? "";
@@ -106,8 +105,7 @@ class ProductController extends GetxController with GetSingleTickerProviderState
 
     int end = start + itemsProspectPerPage;
     end = end > filteredLeads.length ? filteredLeads.length : end;
-    print("list");
-    print(filteredLeads.sublist(start, end));
+    debugPrint("list");
     return list.value=filteredLeads.sublist(start, end);
     // return filteredLeads.sublist(start, end);
     // }
@@ -160,8 +158,7 @@ class ProductController extends GetxController with GetSingleTickerProviderState
 
     int end = start + itemsProspectPerPage;
     end = end > filteredLeads.length ? filteredLeads.length : end;
-    print("list");
-    print(filteredLeads.sublist(start, end));
+    debugPrint("list");
     return list.value=filteredLeads.sublist(start, end);
     // return filteredLeads.sublist(start, end);
     // }
@@ -177,7 +174,7 @@ class ProductController extends GetxController with GetSingleTickerProviderState
     if (result != null) {
       selectedFile.value = result.files.first;
 
-      print(selectedFile.value!.name); // file name
+      debugPrint(selectedFile.value!.name); // file name
     }
   }
 
@@ -219,8 +216,8 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       var response = await request.send();
       var responseData = await http.Response.fromStream(response);
 
-      print("STATUS CODE: ${response.statusCode}");
-      print("RAW RESPONSE: ${responseData.body}");
+      debugPrint("STATUS CODE: ${response.statusCode}");
+      debugPrint("RAW RESPONSE: ${responseData.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -239,14 +236,14 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       } else {
         utils.snackBar(context: context, msg: "Failed", color: Colors.red);
         productCtr.saveCtr.reset();
-        print("API Error: ${decoded["message"]}");
+        debugPrint("API Error: ${decoded["message"]}");
       }
       saveCtr.reset();
     } catch (e) {
       utils.snackBar(context: context, msg: "Failed", color: Colors.red);
       productCtr.saveCtr.reset();
       saveCtr.reset();
-      print("FLUTTER ERROR => $e");
+      debugPrint("FLUTTER ERROR => $e");
     }
   }
   Future<void> updateProduct(context,String id,String imagePath,String linkPath) async {
@@ -290,8 +287,8 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       var response = await request.send();
       var responseData = await http.Response.fromStream(response);
 
-      print("STATUS CODE: ${response.statusCode}");
-      print("RAW RESPONSE: ${responseData.body}");
+      debugPrint("STATUS CODE: ${response.statusCode}");
+      debugPrint("RAW RESPONSE: ${responseData.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -310,14 +307,14 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       } else {
         utils.snackBar(context: context, msg: "Failed", color: Colors.red);
         productCtr.saveCtr.reset();
-        print("API Error: ${decoded["message"]}");
+        debugPrint("API Error: ${decoded["message"]}");
       }
       saveCtr.reset();
     } catch (e) {
       utils.snackBar(context: context, msg: "Failed", color: Colors.red);
       productCtr.saveCtr.reset();
       saveCtr.reset();
-      print("FLUTTER ERROR => $e");
+      debugPrint("FLUTTER ERROR => $e");
     }
   }
   Future<void> deleteProduct(context) async {
@@ -329,7 +326,7 @@ class ProductController extends GetxController with GetSingleTickerProviderState
         "action": "delete_product",
         "id": idsList.value,
       };
-      print("Request: ${jsonEncode(data)}");
+      debugPrint("Request: ${jsonEncode(data)}");
       final response = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -340,8 +337,8 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       );
 
 
-      print("STATUS CODE: ${response.statusCode}");
-      print("RAW RESPONSE: ${response.body}");
+      debugPrint("STATUS CODE: ${response.statusCode}");
+      debugPrint("RAW RESPONSE: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -361,14 +358,14 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       } else {
         utils.snackBar(context: context, msg: "Failed", color: Colors.red);
         productCtr.saveCtr.reset();
-        print("API Error: ${decoded["message"]}");
+        debugPrint("API Error: ${decoded["message"]}");
       }
       saveCtr.reset();
     } catch (e) {
       utils.snackBar(context: context, msg: "Failed", color: Colors.red);
       productCtr.saveCtr.reset();
       saveCtr.reset();
-      print("FLUTTER ERROR => $e");
+      debugPrint("FLUTTER ERROR => $e");
     }
   }
 var idsList=[].obs;
@@ -421,8 +418,8 @@ var isSelectAll=false.obs;
         }),
       );
 
-      // print("STATUS CODE add_values: ${response.statusCode}");
-      // print("get_products...: ${response.body}");
+      // debugPrint("STATUS CODE add_values: ${response.statusCode}");
+      // debugPrint("get_products...: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -444,7 +441,6 @@ var isSelectAll=false.obs;
           return [];
       }
     } catch (e) {
-      log("FLUTTER ERROR => $e");
       return [];
     }
   }
@@ -532,8 +528,8 @@ var isSelectAll=false.obs;
         }),
       );
 
-      // print("STATUS CODE add_values: ${response.statusCode}");
-      // print("get_order_details..: ${response.body}");
+      // debugPrint("STATUS CODE add_values: ${response.statusCode}");
+      // debugPrint("get_order_details..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -551,7 +547,6 @@ var isSelectAll=false.obs;
           return [];
       }
     } catch (e) {
-      log("FLUTTER ERROR => $e");
       return [];
     }
   }
@@ -621,8 +616,8 @@ var isSelectAll=false.obs;
         matchesDate = activityDate.isAfter(start) &&
             activityDate.isBefore(todayStart.add(const Duration(days: 1)));
       }
-      // print("activityDate ${activityDate}");
-      // print("selectedRange ${selectedRange}");
+      // debugPrint("activityDate ${activityDate}");
+      // debugPrint("selectedRange ${selectedRange}");
 
       /// Date Range Filter (same date issue fixed)
       if (selectedRange != null) {
@@ -746,7 +741,7 @@ var isSelectAll=false.obs;
         return DateTime(1900);
       }
     }
-print("selectedDateFilter $selectedDateFilter");
+debugPrint("selectedDateFilter $selectedDateFilter");
     // final now = DateTime.now();
 
     final filtered = ordersList2.where((activity) {
@@ -794,8 +789,8 @@ print("selectedDateFilter $selectedDateFilter");
         matchesDate = activityDate.isAfter(start) &&
             activityDate.isBefore(todayStart.add(const Duration(days: 1)));
       }
-      print("activityDate ${activityDate}");
-      print("selectedRange ${selectedRange}");
+      debugPrint("activityDate ${activityDate}");
+      debugPrint("selectedRange ${selectedRange}");
 
       /// Date Range Filter (same date issue fixed)
       if (selectedRange != null) {
@@ -933,8 +928,8 @@ print("selectedDateFilter $selectedDateFilter");
       matchesDate = activityDate.isAfter(start) &&
       activityDate.isBefore(todayStart.add(const Duration(days: 1)));
       }
-      print("activityDate ${activityDate}");
-      print("selectedRange ${selectedRange}");
+      debugPrint("activityDate ${activityDate}");
+      debugPrint("selectedRange ${selectedRange}");
 
       /// Date Range Filter (same date issue fixed)
       if (selectedRange != null) {
@@ -1085,8 +1080,8 @@ print("selectedDateFilter $selectedDateFilter");
         }),
       );
 
-      // print("STATUS CODE add_values: ${response.statusCode}");
-      print("get_quotations..: ${response.body}");
+      // debugPrint("STATUS CODE add_values: ${response.statusCode}");
+      debugPrint("get_quotations..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1099,14 +1094,13 @@ print("selectedDateFilter $selectedDateFilter");
         final List data = jsonDecode(response.body);
         quotationsList.value =data.map((e) => Quotations.fromJson(e)).toList();
         quotationsList2.value =data.map((e) => Quotations.fromJson(e)).toList();
-        // print("get_quotations..: ${quotationsList.length}");
-        // print("get_quotations..: ${quotationsList2.length}");
+        // debugPrint("get_quotations..: ${quotationsList.length}");
+        // debugPrint("get_quotations..: ${quotationsList2.length}");
         return quotationsList;
       }else{
           return [];
       }
     } catch (e) {
-      log("FLUTTER ERROR => $e");
       return [];
     }
   }
@@ -1130,8 +1124,8 @@ print("selectedDateFilter $selectedDateFilter");
         }),
       );
 
-      print(id);
-      print("get_quotations..: ${response.body}");
+      debugPrint(id);
+      debugPrint("get_quotations..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1151,7 +1145,6 @@ print("selectedDateFilter $selectedDateFilter");
       }
     } catch (e) {
       dataRefresh.value=true;
-      log("FLUTTER ERROR => $e");
       return [];
     }
   }
@@ -1175,8 +1168,8 @@ print("selectedDateFilter $selectedDateFilter");
         }),
       );
 
-      // print("STATUS CODE add_values: ${response.statusCode}");
-      print("getTermsAndConditions..: ${response.body}");
+      // debugPrint("STATUS CODE add_values: ${response.statusCode}");
+      debugPrint("getTermsAndConditions..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1189,14 +1182,13 @@ print("selectedDateFilter $selectedDateFilter");
         final List data = jsonDecode(response.body);
         termsAndConditionsList.value =data;
         termsAndConditionsList2.value =data;
-        // print("get_quotations..: ${quotationsList.length}");
-        // print("get_quotations..: ${quotationsList2.length}");
+        // debugPrint("get_quotations..: ${quotationsList.length}");
+        // debugPrint("get_quotations..: ${quotationsList2.length}");
         return termsAndConditionsList;
       }else{
           return [];
       }
     } catch (e) {
-      log("FLUTTER ERROR => $e");
       return [];
     }
   }
@@ -1247,7 +1239,7 @@ print("selectedDateFilter $selectedDateFilter");
         "action": "insert_order",
         "productList": rows.toJson(),
       };
-      print("Request: ${jsonEncode(data)}");
+      debugPrint("Request: ${jsonEncode(data)}");
       final response = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -1258,8 +1250,8 @@ print("selectedDateFilter $selectedDateFilter");
       );
 
 
-      print("STATUS CODE: ${response.statusCode}");
-      print("RAW RESPONSE: ${response.body}");
+      debugPrint("STATUS CODE: ${response.statusCode}");
+      debugPrint("RAW RESPONSE: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1279,14 +1271,14 @@ print("selectedDateFilter $selectedDateFilter");
       } else {
         utils.snackBar(context: context, msg: "Failed", color: Colors.red);
         productCtr.saveCtr.reset();
-        print("API Error: ${decoded["message"]}");
+        debugPrint("API Error: ${decoded["message"]}");
       }
       saveCtr.reset();
     } catch (e) {
       utils.snackBar(context: context, msg: "Failed", color: Colors.red);
       productCtr.saveCtr.reset();
       saveCtr.reset();
-      print("FLUTTER ERROR => $e");
+      debugPrint("FLUTTER ERROR => $e");
     }
   }
 

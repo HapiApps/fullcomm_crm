@@ -659,7 +659,6 @@ class _SendQuotationState extends State<SendQuotation> {
   }
 
   Future<pw.Document> generateInvoicePdf() async {
-    print(".......printInvoice");
     final pdf = pw.Document();
 
     pdf.addPage(
@@ -838,7 +837,6 @@ class _SendQuotationState extends State<SendQuotation> {
     final bytes = await pdf.save();
     sizeInKB.value = bytes.length / 1024;
 
-    print("Size: ${sizeInKB.value}");
     return pdf;
   }
 

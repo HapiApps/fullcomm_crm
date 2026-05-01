@@ -93,9 +93,9 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: (){
-                          Get.back();
-                        },
+                          onPressed: (){
+                            Get.back();
+                          },
                           icon: Icon(Icons.arrow_back)),
                       CustomText(
                         text: "Invoice Settings",
@@ -118,12 +118,16 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                       color: Colors.grey
                   ),
                   CustomText(text: "Company Information", isCopy:  false,isBold: true,size: 17,),
+                  10.height,
                   SizedBox(
                     width: MediaQuery.of(context).size.width*0.7,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             CustomTextField(
                                 width: MediaQuery.of(context).size.width*0.3,
@@ -137,7 +141,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                   controllers.firstCaps(value.toString(),controllers.iNo);
                                 }
                             ),
-                            CustomTextField(text: "Company Name",hintText: "Company Name",
+                            CustomTextField(text: "Phone Number",hintText: "Phone Number",
                               controller: controllers.comNumber,
                               width: MediaQuery.of(context).size.width*0.3,
                               focusNode: phone,
@@ -164,6 +168,11 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 controller: controllers.comGSTNo,
                                 width: MediaQuery.of(context).size.width*0.3,
                                 focusNode: gst,
+                                inputFormatters: [
+                                  UpperCaseTextFormatter(),
+                                  LengthLimitingTextInputFormatter(15),
+                                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]"))
+                                ],
                                 onFieldSubmitted: (value){
                                   FocusScope.of(context).requestFocus(door);
                                 },
@@ -171,6 +180,144 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                   controllers.firstCaps(value.toString(),controllers.iNo);
                                 }
                             ),
+                            30.height,
+                            CustomText(text: "Bank Information", isCopy:  false,size: 17,isBold: true,),
+                            10.height,
+                            CustomTextField(text: "Bank Name",hintText: "Bank Name",
+                                controller: controllers.bankName,
+                                width: MediaQuery.of(context).size.width*0.3,
+                                focusNode: bank,
+                                onFieldSubmitted: (value){
+                                  FocusScope.of(context).requestFocus(branch);
+                                },
+                                onChanged: (value) {
+                                  controllers.firstCaps(value.toString(),controllers.iNo);
+                                }
+                            ),
+                            CustomTextField(text: "Branch Name",hintText: "Branch Name",
+                                controller: controllers.branchName,
+                                width: MediaQuery.of(context).size.width*0.3,
+                                focusNode: branch,
+                                onFieldSubmitted: (value){
+                                  FocusScope.of(context).requestFocus(ifsc);
+                                },
+                                onChanged: (value) {
+                                  controllers.firstCaps(value.toString(),controllers.iNo);
+                                }
+                            ),
+                            CustomTextField(text: "IFSC Code",hintText: "IFSC Code",
+                                controller: controllers.ifscCode,
+                                width: MediaQuery.of(context).size.width*0.3,
+                                focusNode: ifsc,
+                                inputFormatters: [
+                                  UpperCaseTextFormatter(),
+                                  LengthLimitingTextInputFormatter(11),
+                                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]"))
+                                ],
+                                onFieldSubmitted: (value){
+                                  FocusScope.of(context).requestFocus(acc);
+                                },
+                                onChanged: (value) {
+                                  controllers.fullCaps(value.toString(),controllers.iNo);
+                                }
+                            ),
+                            CustomTextField(text: "Account Number",hintText: "Account Number",
+                                controller: controllers.accNo,
+                                inputFormatters: [
+                                  UpperCaseTextFormatter(),
+                                  LengthLimitingTextInputFormatter(15),
+                                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]"))
+                                ],
+                                width: MediaQuery.of(context).size.width*0.3,
+                                focusNode: acc,
+                                onFieldSubmitted: (value){
+                                  FocusScope.of(context).requestFocus(upi);
+                                },
+                                onChanged: (value) {
+                                  controllers.fullCaps(value.toString(),controllers.iNo);
+                                }
+                            ),
+                            CustomTextField(text: "UPI ID",hintText: "UPI ID",
+                                width: MediaQuery.of(context).size.width*0.3,
+                                controller: controllers.upiNo,
+                                focusNode: upi,
+                                onFieldSubmitted: (value){
+                                  controllers.leadCtr.start();
+                                  if(controllers.comName.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill company name", color: Colors.red);
+                                  }else if(controllers.comNumber.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill phone number", color: Colors.red);
+                                  }else if(controllers.comNumber.text.length!=10){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please check phone number", color: Colors.red);
+                                  }else if(controllers.comEmail.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill email", color: Colors.red);
+                                  }else if(!utils.isValidEmail(controllers.comEmail.text.trim())){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please check email", color: Colors.red);
+                                  }else if(controllers.comGSTNo.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill GSTIN number", color: Colors.red);
+                                  }else if(controllers.comGSTNo.text.length!=15){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please check GSTIN number", color: Colors.red);
+                                  }else if(controllers.comDoor.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill door number", color: Colors.red);
+                                  }else if(controllers.comStreet.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill street name", color: Colors.red);
+                                  }else if(controllers.comCity.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill city", color: Colors.red);
+                                  }else if(controllers.comState.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill state", color: Colors.red);
+                                  }else if(controllers.comCountry.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill country", color: Colors.red);
+                                  }else if(controllers.comPincode.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill pincode", color: Colors.red);
+                                  }else if(controllers.comPincode.text.length!=6){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please check pincode", color: Colors.red);
+                                  }else if(controllers.bankName.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill bank name", color: Colors.red);
+                                  }else if(controllers.branchName.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill branch name", color: Colors.red);
+                                  }else if(controllers.ifscCode.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill IFSC code", color: Colors.red);
+                                  }else if(controllers.ifscCode.text.length!=11){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please check IFSC code", color: Colors.red);
+                                  }else if(controllers.accNo.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill account number", color: Colors.red);
+                                  }else if(controllers.upiNo.text.trim().isEmpty){
+                                    controllers.leadCtr.reset();
+                                    utils.snackBar(context: context, msg: "Please fill UPI ID", color: Colors.red);
+                                  }else{
+                                    controllers.insertSeriesNo(context,false);
+                                  }
+                                },
+                                onChanged: (value) {
+                                  controllers.firstCaps(value.toString(),controllers.iNo);
+                                }
+                            ),
+                          ],
+                        ),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CustomText(text: "Address Information", isCopy:  false,isBold: true,size: 17,),
+                            10.height,
                             CustomTextField(
                                 width: MediaQuery.of(context).size.width*0.3,
                                 text: "Door No",hintText: "Door No",
@@ -183,10 +330,6 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                   controllers.firstCaps(value.toString(),controllers.iNo);
                                 }
                             ),
-                          ],
-                        ),
-                        Column(
-                          children: [
                             CustomTextField(text: "Street Name",hintText: "Street Name",
                               controller: controllers.comStreet,
                               width: MediaQuery.of(context).size.width*0.3,
@@ -246,211 +389,72 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                   }
                                 }
                             ),
+                            CustomLoadingButton(
+                              callback: (){
+                                if(controllers.comName.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill company name", color: Colors.red);
+                                }else if(controllers.comNumber.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill phone number", color: Colors.red);
+                                }else if(controllers.comNumber.text.length!=10){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please check phone number", color: Colors.red);
+                                }else if(controllers.comEmail.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill email", color: Colors.red);
+                                }else if(!utils.isValidEmail(controllers.comEmail.text.trim())){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please check email", color: Colors.red);
+                                }else if(controllers.comGSTNo.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill GSTIN number", color: Colors.red);
+                                }else if(controllers.comDoor.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill door number", color: Colors.red);
+                                }else if(controllers.comStreet.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill street name", color: Colors.red);
+                                }else if(controllers.comCity.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill city", color: Colors.red);
+                                }else if(controllers.comState.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill state", color: Colors.red);
+                                }else if(controllers.comCountry.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill country", color: Colors.red);
+                                }else if(controllers.comPincode.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill pincode", color: Colors.red);
+                                }else if(controllers.comPincode.text.length!=6){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please check pincode", color: Colors.red);
+                                }else if(controllers.bankName.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill bank name", color: Colors.red);
+                                }else if(controllers.branchName.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill branch name", color: Colors.red);
+                                }else if(controllers.ifscCode.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill IFSC code", color: Colors.red);
+                                }else if(controllers.ifscCode.text.length!=11){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please check IFSC code", color: Colors.red);
+                                }else if(controllers.accNo.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill account number", color: Colors.red);
+                                }else if(controllers.upiNo.text.trim().isEmpty){
+                                  controllers.leadCtr.reset();
+                                  utils.snackBar(context: context, msg: "Please fill UPI number", color: Colors.red);
+                                }else{
+                                  controllers.insertSeriesNo(context,false);
+                                }
+                              }, isLoading: true, controller: controllers.leadCtr,
+                              backgroundColor: colorsConst.primary, radius: 10, width: 200,text: "Save",)
                           ],
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width*0.7,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomText(text: "Bank Information", isCopy:  false,size: 17,isBold: true,),
-                            CustomTextField(text: "Bank Name",hintText: "Bank Name",
-                                controller: controllers.bankName,
-                                width: MediaQuery.of(context).size.width*0.3,
-                                focusNode: bank,
-                                onFieldSubmitted: (value){
-                                  FocusScope.of(context).requestFocus(branch);
-                                },
-                                onChanged: (value) {
-                                  controllers.firstCaps(value.toString(),controllers.iNo);
-                                }
-                            ),
-                            CustomTextField(text: "Branch Name",hintText: "Branch Name",
-                                controller: controllers.branchName,
-                                width: MediaQuery.of(context).size.width*0.3,
-                                focusNode: branch,
-                                onFieldSubmitted: (value){
-                                  FocusScope.of(context).requestFocus(ifsc);
-                                },
-                                onChanged: (value) {
-                                  controllers.firstCaps(value.toString(),controllers.iNo);
-                                }
-                            ),
-                            CustomTextField(text: "IFSC Code",hintText: "IFSC Code",
-                                controller: controllers.ifscCode,
-                                width: MediaQuery.of(context).size.width*0.3,
-                                focusNode: ifsc,
-                                inputFormatters: [
-                                  UpperCaseTextFormatter(),
-                                  LengthLimitingTextInputFormatter(11),
-                                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]"))
-                                ],
-                                onFieldSubmitted: (value){
-                                  FocusScope.of(context).requestFocus(acc);
-                                },
-                                onChanged: (value) {
-                                  controllers.fullCaps(value.toString(),controllers.iNo);
-                                }
-                            ),
-                            CustomTextField(text: "Account Number",hintText: "Account Number",
-                                controller: controllers.accNo,
-                                inputFormatters: [
-                                  UpperCaseTextFormatter(),
-                                  LengthLimitingTextInputFormatter(15),
-                                  FilteringTextInputFormatter.allow(RegExp("[a-zA-Z0-9]"))
-                                ],
-                                width: MediaQuery.of(context).size.width*0.3,
-                                focusNode: acc,
-                                onFieldSubmitted: (value){
-                                  FocusScope.of(context).requestFocus(upi);
-                                },
-                                onChanged: (value) {
-                                  controllers.fullCaps(value.toString(),controllers.iNo);
-                                }
-                            ),
-                            CustomTextField(text: "UPI Number",hintText: "UPI Number",
-                                width: MediaQuery.of(context).size.width*0.3,
-                                controller: controllers.upiNo,
-                                focusNode: upi,
-                                onFieldSubmitted: (value){
-                                  controllers.leadCtr.start();
-                                  if(controllers.comName.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill company name", color: Colors.red);
-                                  }else if(controllers.comNumber.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill phone number", color: Colors.red);
-                                  }else if(controllers.comNumber.text.length!=10){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please check phone number", color: Colors.red);
-                                  }else if(controllers.comEmail.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill email", color: Colors.red);
-                                  }else if(!utils.isValidEmail(controllers.comEmail.text.trim())){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please check email", color: Colors.red);
-                                  }else if(controllers.comGSTNo.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill GSTIN number", color: Colors.red);
-                                  }else if(controllers.comDoor.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill door number", color: Colors.red);
-                                  }else if(controllers.comStreet.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill street name", color: Colors.red);
-                                  }else if(controllers.comCity.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill city", color: Colors.red);
-                                  }else if(controllers.comState.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill state", color: Colors.red);
-                                  }else if(controllers.comCountry.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill country", color: Colors.red);
-                                  }else if(controllers.comPincode.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill pincode", color: Colors.red);
-                                  }else if(controllers.comPincode.text.length!=6){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please check pincode", color: Colors.red);
-                                  }else if(controllers.bankName.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill bank name", color: Colors.red);
-                                  }else if(controllers.branchName.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill branch name", color: Colors.red);
-                                  }else if(controllers.ifscCode.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill IFSC code", color: Colors.red);
-                                  }else if(controllers.ifscCode.text.length!=11){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please check IFSC code", color: Colors.red);
-                                  }else if(controllers.accNo.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill account number", color: Colors.red);
-                                  }else if(controllers.upiNo.text.trim().isEmpty){
-                                    controllers.leadCtr.reset();
-                                    utils.snackBar(context: context, msg: "Please fill UPI number", color: Colors.red);
-                                  }else{
-                                    controllers.insertSeriesNo(context,false);
-                                  }
-                                },
-                                onChanged: (value) {
-                                  controllers.firstCaps(value.toString(),controllers.iNo);
-                                }
-                            ),
-                          ],
-                        ),
-                        CustomLoadingButton(
-                          callback: (){
-                            if(controllers.comName.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill company name", color: Colors.red);
-                            }else if(controllers.comNumber.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill phone number", color: Colors.red);
-                            }else if(controllers.comNumber.text.length!=10){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please check phone number", color: Colors.red);
-                            }else if(controllers.comEmail.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill email", color: Colors.red);
-                            }else if(!utils.isValidEmail(controllers.comEmail.text.trim())){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please check email", color: Colors.red);
-                            }else if(controllers.comGSTNo.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill GSTIN number", color: Colors.red);
-                            }else if(controllers.comDoor.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill door number", color: Colors.red);
-                            }else if(controllers.comStreet.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill street name", color: Colors.red);
-                            }else if(controllers.comCity.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill city", color: Colors.red);
-                            }else if(controllers.comState.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill state", color: Colors.red);
-                            }else if(controllers.comCountry.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill country", color: Colors.red);
-                            }else if(controllers.comPincode.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill pincode", color: Colors.red);
-                            }else if(controllers.comPincode.text.length!=6){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please check pincode", color: Colors.red);
-                            }else if(controllers.bankName.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill bank name", color: Colors.red);
-                            }else if(controllers.branchName.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill branch name", color: Colors.red);
-                            }else if(controllers.ifscCode.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill IFSC code", color: Colors.red);
-                            }else if(controllers.ifscCode.text.length!=11){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please check IFSC code", color: Colors.red);
-                            }else if(controllers.accNo.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill account number", color: Colors.red);
-                            }else if(controllers.upiNo.text.trim().isEmpty){
-                              controllers.leadCtr.reset();
-                              utils.snackBar(context: context, msg: "Please fill UPI number", color: Colors.red);
-                            }else{
-                              controllers.insertSeriesNo(context,false);
-                            }
-                          }, isLoading: true, controller: controllers.leadCtr,
-                          backgroundColor: colorsConst.primary, radius: 10, width: 200,text: "Save",)
                       ],
                     ),
                   ),

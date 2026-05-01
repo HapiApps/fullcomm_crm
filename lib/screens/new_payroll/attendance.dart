@@ -788,7 +788,6 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
         throw Exception('Failed to load album');
       }
     }catch(e){
-      log(e.toString());
       pyrlCtr.getData.value=true;
       pyrlCtr.isStored.value="";
       pyrlCtr.unitPayrollList.clear();

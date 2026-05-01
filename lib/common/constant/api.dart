@@ -11,8 +11,8 @@ const String versionNum  = "0.0.10";
 /// Prod
 // const String domain      = "https://aruu.in/";//Logo change panna nu
 // const bool isRelease     = true;
-// const String version     = "Version 0.0.11";
-// const String versionNum  = "0.0.11";
+// const String version     = "Version 0.0.12";
+// const String versionNum  = "0.0.12";
 
 const String version1        = "v1/CRM/web";
 const String appName         = "ARUU’s EasyCRM";

@@ -32,7 +32,6 @@ class EmployeeRepository {
         throw Exception('Failed to load getUser ${response.body}');
       }
     } catch (e) {
-      log("Error getUser : $e");
       throw Exception(e);
     }
   }
@@ -66,7 +65,6 @@ class EmployeeRepository {
 
         return StaffData.fromJson(data);
       } else {
-        log("Vendor Data Fetch Error");
         throw Exception();
       }
     }
@@ -141,7 +139,6 @@ class EmployeeRepository {
         final Map<String,dynamic> data =  jsonDecode(response.body);
         return CommonResponse.fromJson(data);
       }else{
-        log("Employee Insert Error");
         throw Exception();
       }
     }
@@ -191,7 +188,6 @@ class EmployeeRepository {
             },
           )
       );
-      log("Update Employee Repository if ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -212,7 +208,6 @@ class EmployeeRepository {
       }
       if(response.statusCode == 200){
 
-        log("Add Employee Repository if ${response.body}");
 
         final Map<String,dynamic> data =  jsonDecode(response.body);
 
@@ -230,7 +225,6 @@ class EmployeeRepository {
 
   Future<CommonResponse> deleteEmployee({List<String>? employeeIds,String? employeeId}) async{
     try{
-      log("Single Product Id: $employeeId");
       final response =   await  http.post(
           Uri.parse(scriptApi),
           headers: {

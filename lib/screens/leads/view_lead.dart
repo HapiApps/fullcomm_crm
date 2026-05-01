@@ -100,14 +100,14 @@ class _ViewLeadState extends State<ViewLead> {
     }
   }
 void checkType(){
-  print("type... $type");
+  debugPrint("type... $type");
   for (var i=0;i<controllers.leadCategoryList.length;i++){
-    print("widget.leadIndex... ${widget.leadIndex}");
-    print("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].leadStatus}");
-    print("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].displayOrder}");
+    debugPrint("widget.leadIndex... ${widget.leadIndex}");
+    debugPrint("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].leadStatus}");
+    debugPrint("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].displayOrder}");
     if(controllers.leadCategoryList[i].leadStatus==widget.leadIndex){
       type=controllers.leadCategoryList[i].displayOrder;
-      print("type... $type");
+      debugPrint("type... $type");
       break;
     }
   }
@@ -136,8 +136,8 @@ void checkType(){
 
   @override
   Widget build(BuildContext context) {
-    print("widget.id");
-    print(widget.id);
+    debugPrint("widget.id");
+    debugPrint(widget.id);
     double screenWidth = MediaQuery.of(context).size.width;
     return SelectionArea(
       child: Scaffold(
@@ -170,10 +170,10 @@ void checkType(){
                       final displayName = primaryPerson?.name ?? cust?.companyName ?? widget.name ?? "";
                       final displayMobile = primaryPerson?.phone ?? widget.mobileNumber ?? "";
                       final displayEmail = primaryPerson?.email ?? widget.email ?? "";
-                      // print("data.customer ${data.customer}");
-                      // print("primaryPerson?.name ${primaryPerson?.name}");
-                      // print("cust?.companyName ${cust?.companyName}");
-                      // print("widget.name ${widget.name}");
+                      // debugPrint("data.customer ${data.customer}");
+                      // debugPrint("primaryPerson?.name ${primaryPerson?.name}");
+                      // debugPrint("cust?.companyName ${cust?.companyName}");
+                      // debugPrint("widget.name ${widget.name}");
                       return GestureDetector(
                         onTap: () {
                           _focusNode.requestFocus();
@@ -562,8 +562,6 @@ void checkType(){
                                                                           .firstWhere((e) => e.leadStatus == value)
                                                                           .value;
 
-                                                                      print("stageId: $stageId");
-                                                                      print("selectedStage: $selectedStage");
 
                                                                       isEdit = true;
                                                                     });

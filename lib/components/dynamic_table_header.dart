@@ -23,7 +23,7 @@ class DynamicTableHeader extends StatefulWidget {
 void save()async{
   final prefs = await SharedPreferences.getInstance();
   await prefs.setString('tableHeadings', jsonEncode(tableController.tableHeadings));
-  print("saved");
+  debugPrint("saved");
   tableController.setHeadingFields(tableController.tableHeadings);
 }
 
@@ -38,9 +38,6 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
   }
   @override
   Widget build(BuildContext context) {
-    print("tableController.tableHeadings");
-    print(tableController.tableHeadings.length);
-    print(tableController.tableHeadings);
     return Obx(() {
       final headings = tableController.tableHeadings;
 
@@ -184,17 +181,15 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
                   onEditingComplete: () async {
                     final newValue = _controller.text;
                     for(var i=0;i<tableController.headingFields.length;i++){
-                      print("tableController.headingFields[i] ${tableController.headingFields[i]}");
-                      print("oldValue ${oldValue}");
-                      print("newValue ${newValue}");
+                      debugPrint("tableController.headingFields[i] ${tableController.headingFields[i]}");
+                      debugPrint("oldValue ${oldValue}");
+                      debugPrint("newValue ${newValue}");
                       if (tableController.headingFields[i].trim().toLowerCase() ==oldValue.trim().toLowerCase()) {
                         tableController.headingFields[i] = newValue;
                       }
                     }
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
-                    print("tableController.headingFields");
-                    print(tableController.headingFields);
 
                     tableController.updateColumnAPI(
                       context,
@@ -271,9 +266,9 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
   }
 ///
 //   Widget build(BuildContext context) {
-//     print("tableController.tableHeadings");
-//     print(tableController.tableHeadings.length);
-//     print(tableController.tableHeadings);
+//     debugPrint("tableController.tableHeadings");
+//     debugPrint(tableController.tableHeadings.length);
+//     debugPrint(tableController.tableHeadings);
 //     return Obx(() {
 //       final headings = tableController.tableHeadings;
 //
@@ -348,8 +343,8 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
 //       for (var h in validHeadings) {
 //         columnWidths[i++] = FixedColumnWidth(tableController.colWidth[h] ?? 150);
 //       }
-//       print("headerChildren length ${headerChildren.length}");
-//       print("columnWidths length ${columnWidths.length}");
+//       debugPrint("headerChildren length ${headerChildren.length}");
+//       debugPrint("columnWidths length ${columnWidths.length}");
 //       return Table(
 //         columnWidths: columnWidths,
 //         border: TableBorder(
@@ -423,17 +418,17 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
 //                   onEditingComplete: () async {
 //                     final newValue = _controller.text;
 //                     for(var i=0;i<tableController.headingFields.length;i++){
-//                       print("tableController.headingFields[i] ${tableController.headingFields[i]}");
-//                       print("oldValue ${oldValue}");
-//                       print("newValue ${newValue}");
+//                       debugPrint("tableController.headingFields[i] ${tableController.headingFields[i]}");
+//                       debugPrint("oldValue ${oldValue}");
+//                       debugPrint("newValue ${newValue}");
 //                       if (tableController.headingFields[i].trim().toLowerCase() ==oldValue.trim().toLowerCase()) {
 //                         tableController.headingFields[i] = newValue;
 //                       }
 //                     }
 //                     final prefs = await SharedPreferences.getInstance();
 //                     await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
-//                     print("tableController.headingFields");
-//                     print(tableController.headingFields);
+//                     debugPrint("tableController.headingFields");
+//                     debugPrint(tableController.headingFields);
 //
 //                     tableController.updateColumnAPI(
 //                       context,

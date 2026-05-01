@@ -175,11 +175,11 @@ class EmployeeProvider with ChangeNotifier {
   void toggleSelectionCustomer(String id) {
     if (_selectedCustomerIds.contains(id)) {
       _selectedCustomerIds.remove(id);
-      log("Selected Product Id for deletion:$_selectedCustomerIds");
+      debugPrint("Selected Product Id for deletion:$_selectedCustomerIds");
     } else {
       // Add ID if not in the list (selected)
       _selectedCustomerIds.add(id);
-      log("Selected Product Id for deletion:$_selectedCustomerIds");
+      debugPrint("Selected Product Id for deletion:$_selectedCustomerIds");
     }
     notifyListeners();
   }
@@ -203,11 +203,11 @@ class EmployeeProvider with ChangeNotifier {
   void toggleSelectionEmployee(String id) {
     if (_selectedEmployeeIds.contains(id)) {
       _selectedEmployeeIds.remove(id);
-      log("Selected Product Id for deletion:$_selectedEmployeeIds");
+      debugPrint("Selected Product Id for deletion:$_selectedEmployeeIds");
     } else {
       // Add ID if not in the list (selected)
       _selectedEmployeeIds.add(id);
-      log("Selected Product Id for deletion:$_selectedEmployeeIds");
+      debugPrint("Selected Product Id for deletion:$_selectedEmployeeIds");
     }
     notifyListeners();
   }
@@ -248,11 +248,11 @@ class EmployeeProvider with ChangeNotifier {
   void toggleSelectionRole(String id) {
     if (_selectedRoleIds.contains(id)) {
       _selectedRoleIds.remove(id);
-      log("Selected Product Id for deletion:$_selectedRoleIds");
+      debugPrint("Selected Product Id for deletion:$_selectedRoleIds");
     } else {
       // Add ID if not in the list (selected)
       _selectedRoleIds.add(id);
-      log("Selected Product Id for deletion:$_selectedRoleIds");
+      debugPrint("Selected Product Id for deletion:$_selectedRoleIds");
     }
     notifyListeners();
   }
@@ -276,11 +276,11 @@ class EmployeeProvider with ChangeNotifier {
   void toggleSelectionDelivery(String id) {
     if (_selectedDeliveryIds.contains(id)) {
       _selectedDeliveryIds.remove(id);
-      log("Selected Product Id for deletion:$_selectedDeliveryIds");
+      debugPrint("Selected Product Id for deletion:$_selectedDeliveryIds");
     } else {
       // Add ID if not in the list (selected)
       _selectedDeliveryIds.add(id);
-      log("Selected Product Id for deletion:$_selectedDeliveryIds");
+      debugPrint("Selected Product Id for deletion:$_selectedDeliveryIds");
     }
     notifyListeners();
   }
@@ -451,10 +451,10 @@ class EmployeeProvider with ChangeNotifier {
         _staffRoleData = response.employees ?? [];
         _initializeStaff();
       } else {
-        log("Vendor Provider: Something Went Wrong");
+        debugPrint("Vendor Provider: Something Went Wrong");
       }
     } catch (e) {
-      log("Vendor Provider: ${e}");
+      debugPrint("Vendor Provider: ${e}");
       throw Exception(e);
     } finally {
       _isLoading = false;
@@ -533,10 +533,10 @@ class EmployeeProvider with ChangeNotifier {
         empWhatsapp:empWhatsapp ,
         active : active,
       );
-      log("response:$response");
+      debugPrint("response:$response");
 
       if (response.responseCode == 200) {
-        log("response:$response");
+        debugPrint("response:$response");
         staffRoleDetailsData(context: context);
         Navigator.pop(context);
         utils.snackBar(msg: "Employee Updated Successfully",
@@ -610,7 +610,7 @@ class EmployeeProvider with ChangeNotifier {
         employeeId: eId,
       );
 
-      log("${response.toJson()}");
+      debugPrint("${response.toJson()}");
 
       if (response.responseCode == 200) {
         List<String> deletedIds = [];

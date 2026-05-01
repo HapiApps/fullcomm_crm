@@ -52,7 +52,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
         "action": "manage_lead",
         "active": active,
       };
-      print("Request: ${jsonEncode(data)}");
+      debugPrint("Request: ${jsonEncode(data)}");
       final response = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -63,7 +63,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
       );
 
       Map<String, dynamic> result = json.decode(response.body);
-      print("Response: ${response.body}");
+      debugPrint("Response: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -249,33 +249,33 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
         selectedMonthTarget.value = selected;
           DateTime? filterDate;
 
-          print("Selected Month >>> ${controllers.selectedPMonth}");
+          debugPrint("Selected Month >>> ${controllers.selectedPMonth}");
 
           try {
             filterDate = DateTime.parse(controllers.selectedPMonth.toString());
 
-            print("Filter Month >>> ${filterDate.month}");
-            print("Filter Year >>> ${filterDate.year}");
+            debugPrint("Filter Month >>> ${filterDate.month}");
+            debugPrint("Filter Year >>> ${filterDate.year}");
 
           } catch (e) {
             filterDate = null;
-            print("Parse error >>> $e");
+            debugPrint("Parse error >>> $e");
           }
 
           final suggestions = list2.where((user) {
 
             DateTime createdDate =
-            DateTime.parse(user.createdTs.toString());
+            DateTime.parse(user.updatedTs.toString());
 
-            print("------------");
-            print("User createdTs >>> ${user.createdTs}");
+            debugPrint("------------");
+            debugPrint("User createdTs >>> ${user.updatedTs}");
 
             if (filterDate != null) {
               bool match =
                   createdDate.month == filterDate.month &&
                       createdDate.year == filterDate.year;
 
-              print("Match >>> $match");
+              debugPrint("Match >>> $match");
 
               return match;
             }
@@ -283,7 +283,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
             return true;
           }).toList();
 
-          print("Filtered count >>> ${suggestions.length}");
+          debugPrint("Filtered count >>> ${suggestions.length}");
 
           list.value = suggestions;
       }
@@ -329,17 +329,17 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   //       selectedMonthTarget.value = selected;
   //         DateTime? filterDate;
   //
-  //         print("Selected Month >>> ${controllers.selectedPMonth}");
+  //         debugPrint("Selected Month >>> ${controllers.selectedPMonth}");
   //
   //         try {
   //           filterDate = DateTime.parse(controllers.selectedPMonth.toString());
   //
-  //           print("Filter Month >>> ${filterDate.month}");
-  //           print("Filter Year >>> ${filterDate.year}");
+  //           debugPrint("Filter Month >>> ${filterDate.month}");
+  //           debugPrint("Filter Year >>> ${filterDate.year}");
   //
   //         } catch (e) {
   //           filterDate = null;
-  //           print("Parse error >>> $e");
+  //           debugPrint("Parse error >>> $e");
   //         }
   //
   //         final suggestions = controllers.searchNewLeadList.where((user) {
@@ -347,15 +347,15 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   //           DateTime createdDate =
   //           DateTime.parse(user.createdTs.toString());
   //
-  //           print("------------");
-  //           print("User createdTs >>> ${user.createdTs}");
+  //           debugPrint("------------");
+  //           debugPrint("User createdTs >>> ${user.createdTs}");
   //
   //           if (filterDate != null) {
   //             bool match =
   //                 createdDate.month == filterDate.month &&
   //                     createdDate.year == filterDate.year;
   //
-  //             print("Match >>> $match");
+  //             debugPrint("Match >>> $match");
   //
   //             return match;
   //           }
@@ -363,7 +363,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   //           return true;
   //         }).toList();
   //
-  //         print("Filtered count >>> ${suggestions.length}");
+  //         debugPrint("Filtered count >>> ${suggestions.length}");
   //
   //         controllers.newLeadList.value = suggestions;
   //     }
@@ -407,27 +407,27 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   //       end: range.endDate!,
   //     );
   //
-  //     print("Start Date >>> ${range.startDate}");
-  //     print("End Date >>> ${range.endDate}");
+  //     debugPrint("Start Date >>> ${range.startDate}");
+  //     debugPrint("End Date >>> ${range.endDate}");
   //
   //     final suggestions = list2.where((user) {
   //
   //       DateTime createdDate = DateTime.parse(user.createdTs.toString());
   //
-  //       print("------------");
-  //       print("User createdTs >>> ${user.createdTs}");
+  //       debugPrint("------------");
+  //       debugPrint("User createdTs >>> ${user.createdTs}");
   //
   //       bool isInRange =
   //           createdDate.isAfter(range.startDate!.subtract(Duration(seconds: 1))) &&
   //               createdDate.isBefore(range.endDate!.add(Duration(days: 1)));
   //
-  //       print("Range Match >>> $isInRange");
+  //       debugPrint("Range Match >>> $isInRange");
   //
   //       return isInRange;
   //
   //     }).toList();
   //
-  //     print("Filtered count >>> ${suggestions.length}");
+  //     debugPrint("Filtered count >>> ${suggestions.length}");
   //     list.value = suggestions;
   //   }
   // }
@@ -443,35 +443,35 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
         end: range.endDate!,
       );
 
-      print("Start Date >>> ${range.startDate}");
-      print("End Date >>> ${range.endDate}");
+      debugPrint("Start Date >>> ${range.startDate}");
+      debugPrint("End Date >>> ${range.endDate}");
 
       final suggestions = list2.where((user) {
 
-        if (user.createdTs == null ||
-            user.createdTs!.isEmpty ||
-            user.createdTs == "null") {
+        if (user.updatedTs == null ||
+            user.updatedTs!.isEmpty ||
+            user.updatedTs == "null") {
           return false;
         }
 
-        DateTime? createdDate = DateTime.tryParse(user.createdTs!);
+        DateTime? createdDate = DateTime.tryParse(user.updatedTs!);
 
         if (createdDate == null) return false;
 
-        print("------------");
-        print("User createdTs >>> ${user.createdTs}");
+        debugPrint("------------");
+        debugPrint("User createdTs >>> ${user.updatedTs}");
 
         bool isInRange =
             createdDate.isAfter(range.startDate!.subtract(const Duration(days: 1))) &&
                 createdDate.isBefore(range.endDate!.add(const Duration(days: 1)));
 
-        print("Range Match >>> $isInRange");
+        debugPrint("Range Match >>> $isInRange");
 
         return isInRange;
 
       }).toList();
 
-      print("Filtered count >>> ${suggestions.length}");
+      debugPrint("Filtered count >>> ${suggestions.length}");
 
       list.value = suggestions;
     }
@@ -570,8 +570,8 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
                     TextButton(
                       onPressed: () {
                         if (tempRange != null) {
-                          print("Selected Start Date >>> ${tempRange.startDate}");
-                          print("Selected End Date >>> ${tempRange.endDate}");
+                          debugPrint("Selected Start Date >>> ${tempRange.startDate}");
+                          debugPrint("Selected End Date >>> ${tempRange.endDate}");
                           DateTime start = tempRange.startDate;
                           DateTime end = tempRange.endDate ?? tempRange.startDate;
 
@@ -1422,7 +1422,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
         return dateB.compareTo(dateA); // reverse order
       });
     }
-print("sortField ${sortField}");
+debugPrint("sortField ${sortField}");
     if (sortField.isNotEmpty) {
       filteredLeads.sort((a, b) {
         dynamic getFieldValue(NewLeadObj lead, String field) {
@@ -1497,8 +1497,7 @@ print("sortField ${sortField}");
 
     int end = start + itemsProspectPerPage;
     end = end > filteredLeads.length ? filteredLeads.length : end;
-    print("list");
-    print(filteredLeads.sublist(start, end));
+    debugPrint("list");
     return list.value=filteredLeads.sublist(start, end);
     // return filteredLeads.sublist(start, end);
   // }
@@ -1567,8 +1566,7 @@ print("sortField ${sortField}");
 
     int end = start + itemsProspectPerPage;
     end = end > filteredLeads.length ? filteredLeads.length : end;
-    print("list");
-    print(filteredLeads.sublist(start, end));
+    debugPrint("list");
     return list.value=filteredLeads.sublist(start, end);
     // return filteredLeads.sublist(start, end);
   // }
@@ -1904,7 +1902,7 @@ print("sortField ${sortField}");
   }
 
   // void selectRadio(){
-  //   print("radioo");
+  //   debugPrint("radioo");
   //   final query = searchProspects.value.toLowerCase();
   //   final ratingFilter = selectedProspectTemperature.value;
   //   final sortBy = selectedQualifiedSortBy.value;
@@ -2072,12 +2070,12 @@ print("sortField ${sortField}");
   // }
   // void selectRadio(RxList<NewLeadObj> list,RxList<NewLeadObj> list2){
   //   isLead.value=false;
-  //   print("radioo");
+  //   debugPrint("radioo");
   //   final query = searchProspects.value.toLowerCase();
   //   final ratingFilter = selectedProspectTemperature.value;
   //   final sortBy = selectedQualifiedSortBy.value;
   //   final now = DateTime.now();
-  //   print("radioo....${selectedQualifiedSortBy.value}");
+  //   debugPrint("radioo....${selectedQualifiedSortBy.value}");
   //
   //   final filteredLeads = list2.where((lead) {
   //     final matchesQuery =
@@ -2638,7 +2636,7 @@ print("sortField ${sortField}");
 
   // String? getUserHeading(String systemField) {
   //   try {
-  //     debugPrint('.....${fields}');
+  //     debugdebugPrint('.....${fields}');
   //     return fields.firstWhere((f) => f.systemField == systemField).userHeading;
   //   } catch (e) {
   //     return null;
@@ -2672,10 +2670,10 @@ print("sortField ${sortField}");
   }
 
   void selectCustomer(AllCustomersObj c) {
-    print("c.id");
-    print(c.id);
-    print(c.name);
-    print(c.email);
+    debugPrint("c.id");
+    debugPrint(c.id);
+    debugPrint(c.name);
+    debugPrint(c.email);
     selectedCustomerId.value = c.id;
     selectedCustomerName.value = c.name;
     selectedCustomerMobile.value = c.phoneNo;
@@ -2820,8 +2818,8 @@ print("sortField ${sortField}");
         }),
       );
 
-      print("STATUS CODE add_values: ${response.statusCode}");
-      print("RAW RESPONSE: ${response.body}");
+      debugPrint("STATUS CODE add_values: ${response.statusCode}");
+      debugPrint("RAW RESPONSE: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -2831,7 +2829,7 @@ print("sortField ${sortField}");
         }
       }
       if (response.statusCode != 200) {
-        // print("SERVER ERROR");
+        // debugPrint("SERVER ERROR");
         return;
       }
 
@@ -2846,13 +2844,13 @@ print("sortField ${sortField}");
         // ✅ Store into RxList
         hCallStatusList.assignAll(list);
 
-        // print("Loaded Items: ${hCallStatusList.length}");
+        // debugPrint("Loaded Items: ${hCallStatusList.length}");
 
       } else {
-        // print("API Error: ${decoded["message"]}");
+        // debugPrint("API Error: ${decoded["message"]}");
       }
     } catch (e) {
-      // print("FLUTTER ERROR => $e");
+      // debugPrint("FLUTTER ERROR => $e");
     }
   }
   var invoiceNo="".obs;
@@ -2934,8 +2932,8 @@ print("sortField ${sortField}");
         }),
       );
 
-      print("STATUS CODE insert_series: ${response.statusCode}");
-      print("RAW RESPONSE: ${response.body}");
+      debugPrint("STATUS CODE insert_series: ${response.statusCode}");
+      debugPrint("RAW RESPONSE: ${response.body}");
       controllers.leadCtr.reset();
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -2946,7 +2944,7 @@ print("sortField ${sortField}");
         }
       }
       if (response.statusCode != 200) {
-        // print("SERVER ERROR");
+        // debugPrint("SERVER ERROR");
         return;
       }
 
@@ -2982,7 +2980,7 @@ print("sortField ${sortField}");
       if(isFetch==false){
         utils.snackBar(context: context, msg: "Failed", color: Colors.red);
       }
-      // print("FLUTTER ERROR => $e");
+      // debugPrint("FLUTTER ERROR => $e");
     }
   }
 
@@ -3012,9 +3010,9 @@ print("sortField ${sortField}");
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
 
-      print("STATUS CODE range_report: ${request.statusCode}");
-      print("RAW RESPONSE: ${data}");
-      print("RAW RESPONSE: ${request.body}");
+      debugPrint("STATUS CODE range_report: ${request.statusCode}");
+      debugPrint("RAW RESPONSE: ${data}");
+      debugPrint("RAW RESPONSE: ${request.body}");
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3024,7 +3022,7 @@ print("sortField ${sortField}");
         }
       }
       if (request.statusCode != 200) {
-        // print("SERVER ERROR");
+        // debugPrint("SERVER ERROR");
         return;
       }
 
@@ -3051,17 +3049,17 @@ print("sortField ${sortField}");
               .map((e) => double.parse(e["total_customers"].toString()))
               .toList();
         } else {
-          print("Unexpected format");
+          debugPrint("Unexpected format");
         }
 
-        print("rangeStatusList Items: ${rangeStatusList.length}");
+        debugPrint("rangeStatusList Items: ${rangeStatusList.length}");
 
       } else {
-        print("API Error: ${decoded["message"]}");
+        debugPrint("API Error: ${decoded["message"]}");
       }
 
     } catch (e) {
-      print("FLUTTER ERROR => $e");
+      debugPrint("FLUTTER ERROR => $e");
     }
   }
 
@@ -3084,8 +3082,8 @@ var refreshValue=true.obs;
         }),
       );
 
-      // print("STATUS CODE add_values: ${response.statusCode}");
-      // print("RAW RESPONSE: ${response.body}");
+      // debugPrint("STATUS CODE add_values: ${response.statusCode}");
+      // debugPrint("RAW RESPONSE: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3095,7 +3093,7 @@ var refreshValue=true.obs;
         }
       }
       if (response.statusCode != 200) {
-        // print("SERVER ERROR");
+        // debugPrint("SERVER ERROR");
         return;
       }
 
@@ -3110,16 +3108,16 @@ var refreshValue=true.obs;
         // ✅ Store into RxList
         industriesList.assignAll(list);
         refreshValue.value=true;
-        print("Loaded Items: ${industriesList}");
+        debugPrint("Loaded Items: ${industriesList}");
 
       } else {
         refreshValue.value=true;
-        print("API Error: ${decoded["message"]}");
+        debugPrint("API Error: ${decoded["message"]}");
       }
 
     } catch (e) {
       refreshValue.value=true;
-      print("FLUTTER ERROR => $e");
+      debugPrint("FLUTTER ERROR => $e");
     }
   }
 
@@ -3570,7 +3568,7 @@ var otp = "".obs,sentOtp = "".obs;
   var selectCityList = [];
   Future correctionStatus(BuildContext context,String ops,String id,String value) async {
     try{
-      print("statusCrt.text..........${statusCrt.text}");
+      debugPrint("statusCrt.text..........${statusCrt.text}");
       Map data = {
         "action": "correction_status",
         "ops": ops,
@@ -3586,8 +3584,8 @@ var otp = "".obs,sentOtp = "".obs;
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${data}");
-      print("request ${request.body}");
+      debugPrint("request ${data}");
+      debugPrint("request ${request.body}");
       // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -3615,7 +3613,7 @@ var otp = "".obs,sentOtp = "".obs;
   }
   Future insertIndustries(BuildContext context) async {
     try{
-      print("insert_industry..........${industryValueCtr.text.trim()}");
+      debugPrint("insert_industry..........${industryValueCtr.text.trim()}");
       Map data = {
         "action": "insert_industry",
         "value": industryValueCtr.text.trim(),
@@ -3630,8 +3628,8 @@ var otp = "".obs,sentOtp = "".obs;
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${data}");
-      print("request ${request.body}");
+      debugPrint("request ${data}");
+      debugPrint("request ${request.body}");
       // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -3663,7 +3661,7 @@ var otp = "".obs,sentOtp = "".obs;
   }
   Future refreshToken() async {
     try{
-      // print("refreshToken..........");
+      // debugPrint("refreshToken..........");
       Map data = {
         "action": "refresh_tokens",
         "id": controllers.storage.read("id"),
@@ -3677,8 +3675,8 @@ var otp = "".obs,sentOtp = "".obs;
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      // print("request ${billing_data}");
-      // print("request ${request.body}");
+      // debugPrint("request ${billing_data}");
+      // debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 200){
         TokenStorage().writeToken(response['access_token']);
@@ -3785,7 +3783,6 @@ var otp = "".obs,sentOtp = "".obs;
 
       final responseBody = await streamedResponse.stream.bytesToString();
 
-      debugPrint("Server response: $responseBody");
 
       if (responseBody.isEmpty) {
         Get.snackbar(
@@ -3826,7 +3823,6 @@ var otp = "".obs,sentOtp = "".obs;
       return true;
 
     } catch (e, st) {
-      debugPrint("❌ saveVisitingCard error: $e\n$st");
 
       Get.snackbar(
         "Error",
@@ -3956,7 +3952,7 @@ var otp = "".obs,sentOtp = "".obs;
           controllers.setLogOut();
         }
       }
-      print(response.body);
+      debugPrint(response.body);
       if (response.statusCode == 200 &&body.contains("Customer saved successfully")) {
         var res = jsonDecode(response.body);
 
@@ -3966,9 +3962,6 @@ var otp = "".obs,sentOtp = "".obs;
         int index=0;
         for(var i=0;i<controllers.leadCategoryList.length;i++){
           if(controllers.leadCategoryList[i].leadStatus=="1"){
-            log("dataaaa: ${controllers.leadCategoryList[i]}");
-            log("dataaaa: ${controllers.leadCategoryList[i].list.length}");
-            log("dataaaa: ${controllers.leadCategoryList[i].list2.length}");
             controllers.leadCategoryList[i].list.add(NewLeadObj(
               select: false,
               userId:customerId.toString(),
@@ -4085,10 +4078,7 @@ var otp = "".obs,sentOtp = "".obs;
             break;
           }
         }
-        log("dataaaa: ${data}");
-        log("dataaaa: ${data!.list.length}");
-        log("dataaaa: ${data.list2.length}");
-        controllers.selectedIndex.value=int.parse(data.leadStatus.toString());
+        controllers.selectedIndex.value=int.parse(data!.leadStatus.toString());
         controllers.selectedQualifiedSortBy.value="All";
         dashController.getDashboardReport();
         controllers.leadCategoryList.refresh();

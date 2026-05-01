@@ -301,7 +301,6 @@ class _ReminderCalenderState extends State<ReminderCalender> {
         // Format: 21-02-2025 11:00 PM
         parsedDate = DateFormat('dd-MM-yyyy hh:mm a').parse(dateStr);
       } catch (e) {
-        print("Date parse failed: $dateStr");
         return dateStr; // fallback
       }
     }

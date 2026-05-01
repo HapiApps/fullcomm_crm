@@ -77,7 +77,7 @@ class _DashboardPageState extends State<DashboardPage>
         return DateFormat("dd-MM-yyyy").format(parsedDate);
       }
     } catch (e) {
-      print("Error parsing: $e");
+      debugPrint("Error parsing: $e");
       return "";
     }
   }
@@ -412,10 +412,10 @@ void checkDate(){
             icon: "icons/Icon-192.png", // optional, must be in web/icons/
           );
         } catch (e) {
-          print("Error showing notification: $e");
+          debugPrint("Error showing notification: $e");
         }
       } else {
-        print("Permission not granted for notifications");
+        debugPrint("Permission not granted for notifications");
       }
     });
   }
@@ -459,7 +459,7 @@ void checkDate(){
     // final isTablet = width >= 768 && width < 1100;
     // final isDesktop = width >= 1100;
     // final dashboard = context.watch<DashboardProvider>();
-    // debugPrint("dashController.selectedCallSortBy.value ${dashController.selectedSortBy.value}");
+    // debugdebugPrint("dashController.selectedCallSortBy.value ${dashController.selectedSortBy.value}");
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F8),
       appBar: PreferredSize(
@@ -562,13 +562,13 @@ void checkDate(){
                   subLabelBuilder: (item) => item.phoneNo, // 🔥 optional
                   itemBuilder: (item) => SizedBox(), // not used now
                   onSelected: (item) {
-                    print("item.name");
-                    print(item.name);
+                    debugPrint("item.name");
+                    debugPrint(item.name);
                     controllers.search.text = item.name.toString();
                     for (var i = 0; i < controllers.leadCategoryList.length; i++) {
                       if(controllers.leadCategoryList[i].value==item.category.toString()){
-                        print(controllers.leadCategoryList[i].value);
-                        print(item.category.toString());
+                        debugPrint(controllers.leadCategoryList[i].value);
+                        debugPrint(item.category.toString());
 
                         controllers.selectedIndex.value =int.tryParse(item.leadStatus.toString()) ?? 0;
                         Get.off(
@@ -899,13 +899,13 @@ void checkDate(){
                               //           subLabelBuilder: (item) => item.phoneNo, // 🔥 optional
                               //           itemBuilder: (item) => SizedBox(), // not used now
                               //           onSelected: (item) {
-                              //             print("item.name");
-                              //             print(item.name);
+                              //             debugPrint("item.name");
+                              //             debugPrint(item.name);
                               //             controllers.search.text = item.name.toString();
                               //             for (var i = 0; i < controllers.leadCategoryList.length; i++) {
                               //               if(controllers.leadCategoryList[i].value==item.category.toString()){
-                              //                 print(controllers.leadCategoryList[i].value);
-                              //                 print(item.category.toString());
+                              //                 debugPrint(controllers.leadCategoryList[i].value);
+                              //                 debugPrint(item.category.toString());
                               //
                               //                 controllers.selectedIndex.value =int.tryParse(item.leadStatus.toString()) ?? 0;
                               //                 Get.off(
@@ -1268,7 +1268,7 @@ void checkDate(){
                                       setState(() {
                                         controllers.selectedIndex.value =int.parse(controllers.leadCategoryList[0].leadStatus);
                                       });
-                                      // print(controllers.selectedIndex.value);
+                                      // debugPrint(controllers.selectedIndex.value);
                                       Navigator.push(
                                         context,
                                         PageRouteBuilder(
@@ -3299,7 +3299,7 @@ void checkDate(){
                               isCopy: false,colors: Colors.white,isBold: true,
                             ),5.height,
                             CustomText(
-                              text: "${controllers.leadCategoryList.value.last.list2.length}",size: 16,
+                              text: "${controllers.leadCategoryList.isEmpty?0:controllers.leadCategoryList.value.last.list2.length}",size: 16,
                               isCopy: false,colors: Colors.white,isBold: true,
                             )
                           ],

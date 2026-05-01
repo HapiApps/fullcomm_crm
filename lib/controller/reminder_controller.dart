@@ -1028,8 +1028,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     controllers.selectedEmployeeName.value = assignedNames.value;
     controllers.selectedEmployeeMobile.value = assignedNumbers.value;
     controllers.selectedEmployeeEmail.value = assignedEmail.value;
-    // print("Assigned IDs: $_assignedId");
-    // print("Assigned Names: $_assignedNames");
+    // debugPrint("Assigned IDs: $_assignedId");
+    // debugPrint("Assigned Names: $_assignedNames");
   }
 
   TextEditingController updateTitleController   = TextEditingController();
@@ -1380,7 +1380,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       try {
         return DateFormat("dd-MM-yyyy hh.mm a").parse(dateStr);
       } catch (e) {
-        // print("❌ Date parse error: $dateStr");
+        // debugPrint("❌ Date parse error: $dateStr");
         return DateTime(1900);
       }
     }
@@ -1544,8 +1544,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           0, (sum, item) => sum + ((item["count"] ?? 0) as int));
 
 
-      log("Total Calls: $totalCount");
-      log("Merged Status List: ${controllers.hCallStatusList}");
       controllers.allCalls.value = list.length.toString();
 
       return matchesCallType && matchesSearch && matchesDate && matchesFilterType;
@@ -1649,7 +1647,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //       } catch (_) {}
   //     }
   //
-  //     print("❌ Date parse error: $dateStr");
+  //     debugPrint("❌ Date parse error: $dateStr");
   //     return DateTime(1900);
   //   }
   //
@@ -1806,7 +1804,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //   }
   //
   //   callMailsFilterList.assignAll(filtered);
-  //   debugPrint("callMailsFilterList ${callMailsFilterList.length}");
+  //   debugdebugPrint("callMailsFilterList ${callMailsFilterList.length}");
   //   // apiService.mergeStatusWithCount();
   // }
   ///
@@ -1820,7 +1818,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //   required DateTime? selectedMonth,
   //   required DateTimeRange? selectedRange,
   // }) {
-  //   print("dataList length: ${dataList.length}");
+  //   debugPrint("dataList length: ${dataList.length}");
   //
   //   DateTime parseDate(String dateStr) {
   //     final formats = [
@@ -1836,7 +1834,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //       } catch (_) {}
   //     }
   //
-  //     print("❌ Date parse error: $dateStr");
+  //     debugPrint("❌ Date parse error: $dateStr");
   //     return DateTime(1900);
   //   }
   //
@@ -1844,9 +1842,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //   final today = DateTime(now.year, now.month, now.day);
   //
   //   final filtered = dataList.where((activity) {
-  //     print("\n----------------------------");
-  //     print("Customer: ${activity.customerName}");
-  //     print("Raw Date: ${activity.sentDate}");
+  //     debugPrint("\n----------------------------");
+  //     debugPrint("Customer: ${activity.customerName}");
+  //     debugPrint("Raw Date: ${activity.sentDate}");
   //
   //     /// Mine / Team Filter
   //     final matchesFilterType =
@@ -1855,17 +1853,17 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //                 activity.name == controllers.storage.read("f_name")) ||
   //             (filterCall.value == "Team" &&
   //                 activity.name != controllers.storage.read("f_name"));
-  //     print("matchesFilterType: $matchesFilterType");
+  //     debugPrint("matchesFilterType: $matchesFilterType");
   //
   //     /// Search
   //     final matchesSearch =
   //         searchText.isEmpty ||
   //             activity.customerName.toLowerCase().contains(searchText.toLowerCase()) ||
   //             activity.sentDate.toLowerCase().contains(searchText.toLowerCase());
-  //     print("matchesSearch: $matchesSearch");
+  //     debugPrint("matchesSearch: $matchesSearch");
   //
   //     final activityDate = parseDate(activity.sentDate);
-  //     print("Parsed Date: $activityDate");
+  //     debugPrint("Parsed Date: $activityDate");
   //
   //     bool matchesDate = true;
   //
@@ -1889,8 +1887,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //       matchesDate = activityDate.isAfter(start.subtract(const Duration(seconds: 1))) &&
   //           activityDate.isBefore(end.add(const Duration(seconds: 1)));
   //
-  //       print("Filter: Range → $matchesDate");
-  //       print("Start: $start | End: $end");
+  //       debugPrint("Filter: Range → $matchesDate");
+  //       debugPrint("Start: $start | End: $end");
   //     }
   //
   //     /// Month Filter
@@ -1898,7 +1896,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //       matchesDate = activityDate.month == selectedMonth.month &&
   //           activityDate.year == selectedMonth.year;
   //
-  //       print("Filter: Month → $matchesDate");
+  //       debugPrint("Filter: Month → $matchesDate");
   //     }
   //
   //     /// Quick Filters
@@ -1908,7 +1906,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //             activityDate.month == now.month &&
   //             activityDate.day == now.day;
   //
-  //         print("Filter: Today → $matchesDate");
+  //         debugPrint("Filter: Today → $matchesDate");
   //       }
   //
   //       else if (selectedDateFilter == "Yesterday") {
@@ -1917,7 +1915,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //         matchesDate = activityDate.isAfter(yesterday.subtract(const Duration(seconds: 1))) &&
   //             activityDate.isBefore(today);
   //
-  //         print("Filter: Yesterday → $matchesDate");
+  //         debugPrint("Filter: Yesterday → $matchesDate");
   //       }
   //
   //       else if (selectedDateFilter == "Last 7 Days") {
@@ -1925,7 +1923,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //
   //         matchesDate = activityDate.isAfter(sevenDaysAgo.subtract(const Duration(seconds: 1)));
   //
-  //         print("Filter: Last 7 Days → $matchesDate");
+  //         debugPrint("Filter: Last 7 Days → $matchesDate");
   //       }
   //
   //       else if (selectedDateFilter == "Last 30 Days") {
@@ -1933,11 +1931,11 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //
   //         matchesDate = activityDate.isAfter(thirtyDaysAgo.subtract(const Duration(seconds: 1)));
   //
-  //         print("Filter: Last 30 Days → $matchesDate");
+  //         debugPrint("Filter: Last 30 Days → $matchesDate");
   //       }
   //     }
   //
-  //     print("FINAL matchesDate: $matchesDate");
+  //     debugPrint("FINAL matchesDate: $matchesDate");
   //
   //     final finalResult =
   //         matchesSearch &&
@@ -1945,9 +1943,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //         matchesFilterType;
   //
   //     if (!finalResult) {
-  //       print("❌ Rejected: ${activity.customerName}");
+  //       debugPrint("❌ Rejected: ${activity.customerName}");
   //     } else {
-  //       print("✅ Included: ${activity.customerName}");
+  //       debugPrint("✅ Included: ${activity.customerName}");
   //     }
   //
   //     return finalResult;
@@ -2006,8 +2004,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //
   //   callMailsFilterList.assignAll(filtered);
   //
-  //   print("\n============================");
-  //   print("FINAL COUNT: ${callMailsFilterList.length}");
+  //   debugPrint("\n============================");
+  //   debugPrint("FINAL COUNT: ${callMailsFilterList.length}");
   // }
   void dashboardCommunicationFilterList({
     required List<CustomerActivity> dataList,
@@ -2019,7 +2017,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required DateTime? selectedMonth,
     required DateTimeRange? selectedRange,
   }) {
-    print("dataList length: ${dataList.length}");
+    debugPrint("dataList length: ${dataList.length}");
 
     DateTime parseDate(String dateStr) {
       final formats = [
@@ -2035,7 +2033,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         } catch (_) {}
       }
 
-      print("❌ Date parse error: $dateStr");
+      debugPrint("❌ Date parse error: $dateStr");
       return DateTime(1900);
     }
 
@@ -2282,7 +2280,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
     remController.callMailsDetailsList.assignAll(filtered);
 
-    print("FINAL COUNT: ${remController.callMailsDetailsList.length}");
+    debugPrint("FINAL COUNT: ${remController.callMailsDetailsList.length}");
   }
   // void filterAndSortMeetings({
   //   required String searchText,
@@ -2522,7 +2520,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           try {
             return DateFormat("dd-MM-yyyy").parse(date);
           } catch (e) {
-            print("❌ Date parse error: $date");
+            debugPrint("❌ Date parse error: $date");
             return DateTime(2000);
           }
         }
@@ -2535,7 +2533,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       }
 
     } catch (e) {
-      print("❌ Range parse error: $input");
+      debugPrint("❌ Range parse error: $input");
       return [];
     }
   }
@@ -2545,7 +2543,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required String sortField,
     required String sortOrder,
   }) {
-    print("Calling dMeetings.......");
+    debugPrint("Calling dMeetings.......");
 
     var filtered = [...controllers.meetingActivity];
 
@@ -2558,8 +2556,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
     // ✅ Safe Date Parsing
     DateTime _parseMeetingDate(String input) {
-      print("input");
-      print(input);
+      debugPrint("input");
+      debugPrint(input);
       try {
         // ✅ 24-hour format (your current data)
         return DateFormat("dd-MM-yyyy HH:mm").parse(input);
@@ -2572,7 +2570,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
             // ✅ another fallback (dot format)
             return DateFormat("dd-MM-yyyy hh.mm a").parse(input);
           } catch (e) {
-            print("❌ Date parse error: $input");
+            debugPrint("❌ Date parse error: $input");
             return DateTime(2000);
           }
         }
@@ -2736,7 +2734,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     // controllers.allCancelled.value = cancelled.length.toString();
 
 
-    print("dMeetings ${dMeetings.length}");
+    debugPrint("dMeetings ${dMeetings.length}");
   }
 
   void sortMeetings({
@@ -2756,8 +2754,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
     // ✅ Safe Date Parsing
     DateTime _parseMeetingDate(String input) {
-      print("input");
-      print(input);
+      debugPrint("input");
+      debugPrint(input);
       try {
         // ✅ 24-hour format (your current data)
         return DateFormat("dd-MM-yyyy HH:mm").parse(input);
@@ -2770,7 +2768,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
             // ✅ another fallback (dot format)
             return DateFormat("dd-MM-yyyy hh.mm a").parse(input);
           } catch (e) {
-            print("❌ Date parse error: $input");
+            debugPrint("❌ Date parse error: $input");
             return DateTime(2000);
           }
         }
@@ -2948,7 +2946,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //         break;
   //       case 'Today':
   //         filteredList = filteredList.where((r) {
-  //           // print("r.updatedTs ${r.updatedTs}");
+  //           // debugPrint("r.updatedTs ${r.updatedTs}");
   //           final date = _parseReminderDate(r.updatedTs, dateFormatter);
   //           return _isSameDay(date, now);
   //         }).toList();
@@ -3080,7 +3078,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   ///
   // void dashboardSortReminders() {
   //
-  //   print("reminderList.....length ${reminderList.toJson()}");
+  //   debugPrint("reminderList.....length ${reminderList.toJson()}");
   //   var filteredList = [...reminderList];
   //   final dateFormatter = DateFormat("dd-MM-yyyy h:mm a");
   //   final now = DateTime.now();
@@ -3248,7 +3246,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   // }
 ///
   void dashboardSortReminders() {
-    // print("📦 reminderList length: ${reminderList.length}");
+    // debugPrint("📦 reminderList length: ${reminderList.length}");
 
     var filteredList = [...reminderList];
     final now = DateTime.now();
@@ -3280,7 +3278,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         } catch (_) {}
       }
 
-      // print("❌ Date parse error: $date");
+      // debugPrint("❌ Date parse error: $date");
       return DateTime(1900);
     }
 
@@ -3300,7 +3298,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
               (startDate.isAtSameMomentAs(rangeEnd) ||
                   startDate.isBefore(rangeEnd));
 
-      // print("🔍 ${r.title} -> $startDate | Match: $match");
+      // debugPrint("🔍 ${r.title} -> $startDate | Match: $match");
 
       return match;
     }
@@ -3338,7 +3336,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           final start = _startOfDay(now);
           final end = _endOfDay(now.add(const Duration(days: 7)));
 
-          print("📅 RANGE: $start → $end");
+          debugPrint("📅 RANGE: $start → $end");
 
           filteredList = filteredList.where((r) {
             return _matchesRange(start, end, r);
@@ -3382,7 +3380,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       }
     }
 
-    // print("📊 After Date Filter: ${filteredList.length}");
+    // debugPrint("📊 After Date Filter: ${filteredList.length}");
 
     /// 🔖 TYPE FILTER
     filteredList = filteredList.where((a) {
@@ -3406,7 +3404,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
                   .contains(currentUser.toLowerCase()));
     }).toList();
 
-    // print("📊 After User Filter: ${filteredList.length}");
+    // debugPrint("📊 After User Filter: ${filteredList.length}");
 
     /// 🔃 SORTING (BY START DATE)
     filteredList.sort((a, b) {
@@ -3423,7 +3421,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     // meetingReminderCount.value =reminderFilteredList.where((r) => r.type.toString() == '2').length;
   }
   void sortReminders() {
-    // print("📦 reminderList length: ${reminderList.length}");
+    // debugPrint("📦 reminderList length: ${reminderList.length}");
 
     var filteredList = [...reminderList];
     final now = DateTime.now();
@@ -3455,7 +3453,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         } catch (_) {}
       }
 
-      // print("❌ Date parse error: $date");
+      // debugPrint("❌ Date parse error: $date");
       return DateTime(1900);
     }
 
@@ -3475,7 +3473,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
               (startDate.isAtSameMomentAs(rangeEnd) ||
                   startDate.isBefore(rangeEnd));
 
-      // print("🔍 ${r.title} -> $startDate | Match: $match");
+      // debugPrint("🔍 ${r.title} -> $startDate | Match: $match");
 
       return match;
     }
@@ -3513,7 +3511,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           final start = _startOfDay(now);
           final end = _endOfDay(now.add(const Duration(days: 7)));
 
-          print("📅 RANGE: $start → $end");
+          debugPrint("📅 RANGE: $start → $end");
 
           filteredList = filteredList.where((r) {
             return _matchesRange(start, end, r);
@@ -3558,7 +3556,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     }
     followUpReminderCount.value =filteredList.where((r) => r.type.toString() == '1').length;
     meetingReminderCount.value =filteredList.where((r) => r.type.toString() == '2').length;
-    // print("📊 After Date Filter: ${filteredList.length}");
+    // debugPrint("📊 After Date Filter: ${filteredList.length}");
 
     /// 🔖 TYPE FILTER
     filteredList = filteredList.where((a) {
@@ -3582,7 +3580,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
                   .contains(currentUser.toLowerCase()));
     }).toList();
 
-    // print("📊 After User Filter: ${filteredList.length}");
+    // debugPrint("📊 After User Filter: ${filteredList.length}");
 
     /// 🔃 SORTING (BY START DATE)
     filteredList.sort((a, b) {
@@ -3594,15 +3592,15 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           : bDate.compareTo(aDate);
     });
 
-    // print("✅ Final Count: ${filteredList.length}");
+    // debugPrint("✅ Final Count: ${filteredList.length}");
     filteredList.sort((a, b) => b.startDt.compareTo(a.startDt));
     reminderFilteredList.assignAll(filteredList);
   }
 ///
   // DateTime _parseReminderDate(String dateStr, DateFormat fallbackFormatter) {
   //   try {
-  //     print("dateStr");
-  //     print(dateStr);
+  //     debugPrint("dateStr");
+  //     debugPrint(dateStr);
   //     final cleaned = dateStr.trim().replaceAll(RegExp(r'[^0-9:\-\sT]'), '');
   //     // Try direct parse first (handles yyyy-MM-dd HH:mm:ss and ISO)
   //     final parsed = DateTime.tryParse(cleaned);
@@ -3650,7 +3648,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       // 4️⃣ Last fallback
       return DateTime(1900);
     } catch (e) {
-      print("Date parse error: $e");
+      debugPrint("Date parse error: $e");
       return DateTime(1900);
     }
   }
@@ -3753,8 +3751,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //     return sortOrderCallActivity.value == 'asc' ? result : -result;
   //   });
   //   mailFilteredList.assignAll(filteredList);
-  //   print("selectedMailMonth.value");
-  //   print(selectedMailMonth.value);
+  //   debugPrint("selectedMailMonth.value");
+  //   debugPrint(selectedMailMonth.value);
   // }
   ///
   // void sortMails() {
@@ -4029,9 +4027,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     filteredList.sort((a, b) => b.sentDate.compareTo(a.sentDate));
     mailFilteredList.assignAll(filteredList);
 
- // debugPrint("remController.selectedMailSortBy.value ${remController.selectedMailSortBy.value}");
- // debugPrint("controllers.mailActivity ${controllers.mailActivity}");
- // debugPrint("mailFilteredList ${mailFilteredList.length}");
+ // debugdebugPrint("remController.selectedMailSortBy.value ${remController.selectedMailSortBy.value}");
+ // debugdebugPrint("controllers.mailActivity ${controllers.mailActivity}");
+ // debugdebugPrint("mailFilteredList ${mailFilteredList.length}");
   }
 
   DateTime _parseMailDate(String? date, DateFormat formatter) {
@@ -4054,7 +4052,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //     final clean = dateStr.trim().replaceAll(RegExp(r'\s+'), ' ').toUpperCase();
   //     return formatter.parseStrict(clean);
   //   } catch (e) {
-  //     print("Date parse failed for: $dateStr -> $e");
+  //     debugPrint("Date parse failed for: $dateStr -> $e");
   //     return DateTime(1900);
   //   }
   // }
@@ -4091,9 +4089,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     selectedRecordCallIds.assignAll(callFilteredList.map((e) => e.id.toString()).toList());
   }
   void selectAllAppointments() {
-    print("selectedMeetingIds....${selectedMeetingIds}");
+    debugPrint("selectedMeetingIds....${selectedMeetingIds}");
     selectedMeetingIds.assignAll(meetingFilteredList.map((e) => e.id.toString()).toList());
-    print("selectedMeetingIds....${selectedMeetingIds}");
+    debugPrint("selectedMeetingIds....${selectedMeetingIds}");
   }
 void unSelectAllAppointments() {
     selectedMeetingIds.clear();
@@ -4161,8 +4159,8 @@ void unSelectAllAppointments() {
           "search_type": "allReminders"
         }),
       );
-      // print("allReminders");
-      // print(response.body);
+      // debugPrint("allReminders");
+      // debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -4196,7 +4194,7 @@ void unSelectAllAppointments() {
 
             // Skip empty dates
             if (dateStr.trim().isEmpty) {
-              print("Empty date skipped");
+              debugPrint("Empty date skipped");
               continue;
             }
 
@@ -4211,7 +4209,7 @@ void unSelectAllAppointments() {
                 // Format: 26-10-2025 09:50 PM
                 parsedDate = DateFormat('dd-MM-yyyy hh:mm a').parse(dateStr);
               } catch (e) {
-                print("Date parse failed => $dateStr");
+                debugPrint("Date parse failed => $dateStr");
                 continue;
               }
             }
@@ -4253,14 +4251,14 @@ void unSelectAllAppointments() {
         reminderList.value = [];
         followUpReminderCount.value = 0;
         meetingReminderCount.value = 0;
-        print("Failed API Response: ${response.body}");
+        debugPrint("Failed API Response: ${response.body}");
       }
 
     } catch (e) {
       reminderList.value = [];
       followUpReminderCount.value = 0;
       meetingReminderCount.value = 0;
-      print("Reminder API Error: $e");
+      debugPrint("Reminder API Error: $e");
     } finally {
       isLoadingReminders.value = false;
     }
@@ -4299,7 +4297,7 @@ void unSelectAllAppointments() {
           };
         }).toList(),
       };
-      print("Reminder billing_data $data");
+      debugPrint("Reminder billing_data $data");
       final request = await http.post(Uri.parse(scriptApi),
           // headers: {
           //   "Accept": "application/text",
@@ -4312,7 +4310,7 @@ void unSelectAllAppointments() {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
+      debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -4380,7 +4378,7 @@ void unSelectAllAppointments() {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
+      debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -4422,7 +4420,7 @@ void unSelectAllAppointments() {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      print("request ${request.body}");
+      debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -4495,7 +4493,7 @@ void unSelectAllAppointments() {
         "meetingList": selectedMeetingIds,
         "action": "delete_meeting",
       };
-      print("Request: ${jsonEncode(data)}");
+      debugPrint("Request: ${jsonEncode(data)}");
       final response = await http.post(
         Uri.parse(scriptApi), // your endpoint for delete_meeting.php
         // headers: {
@@ -4510,7 +4508,7 @@ void unSelectAllAppointments() {
       );
 
       Map<String, dynamic> result = json.decode(response.body);
-      print("Response: ${response.body}");
+      debugPrint("Response: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -4548,7 +4546,7 @@ void unSelectAllAppointments() {
         "cos_id": controllers.storage.read("cos_id"),
         "recordList": selectedRecordCallIds,
       };
-      print("delete record $data");
+      debugPrint("delete record $data");
       final response = await http.post(
         Uri.parse(scriptApi),
         // headers: {
@@ -4561,7 +4559,7 @@ void unSelectAllAppointments() {
         },
         body: jsonEncode(data),
       );
-      print("Response body: ${response.body}");
+      debugPrint("Response body: ${response.body}");
       Map<String, dynamic> result = json.decode(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -4605,7 +4603,7 @@ void unSelectAllAppointments() {
         "cos_id": controllers.storage.read("cos_id"),
         "recordList": selectedRecordMailIds,
       };
-      print("Response bodyjsonEncode(billing_data): ${jsonEncode(data)}");
+      debugPrint("Response bodyjsonEncode(billing_data): ${jsonEncode(data)}");
       final response = await http.post(
         Uri.parse(scriptApi),
         // headers: {
@@ -4619,7 +4617,7 @@ void unSelectAllAppointments() {
         body: jsonEncode(data),
       );
 
-      print("Response body: ${response.body}");
+      debugPrint("Response body: ${response.body}");
 
       Map<String, dynamic> result = json.decode(response.body);
       if (response.statusCode == 401) {

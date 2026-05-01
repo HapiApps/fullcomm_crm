@@ -663,14 +663,12 @@ class _OrderPageState extends State<OrderPage> {
                           _focusNode.requestFocus();
                           controllers.currentProspectPage.value--;
                           controllers.changeOrderPage(productCtr.ordersList,productCtr.ordersList2);
-                          print("controllers.currentProspectPage.value --- ${controllers.currentProspectPage.value}");
                         }),
                         ...utils.buildPagination(totalPages, currentPage),
                         utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
                           controllers.currentProspectPage.value++;
                           _focusNode.requestFocus();
                           controllers.changeOrderPage(productCtr.ordersList,productCtr.ordersList2);
-                          print("controllers.currentProspectPage.value +++ ${controllers.currentProspectPage.value}");
                         }),
                       ],
                     );

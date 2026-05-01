@@ -95,8 +95,8 @@ class BillingProvider with ChangeNotifier{
     if (range != null) {
       final start = range.startDate!;
       final end = range.endDate ?? DateTime.now();
-      log("stdat:$stDate");
-      log("stddat:$enDate");
+      debugPrint("stdat:$stDate");
+      debugPrint("stddat:$enDate");
 
       stDate = _formatDate(start);
       enDate = _formatDate(end);
@@ -184,15 +184,15 @@ class BillingProvider with ChangeNotifier{
       if(response.responseCode==200){
         _productsList = response.productList ?? [];
         dropdownFocusNode.requestFocus();
-        //print("products ${_productsList.length}");
+        //debugPrint("products ${_productsList.length}");
         for(int i = 0; i<_productsList.length;i++){
-          //print("barcode ${_productsList[i].barcode} ${_productsList[i].pTitle} ${_productsList[i].pVariation}${_productsList[i].unit}");
+          //debugPrint("barcode ${_productsList[i].barcode} ${_productsList[i].pTitle} ${_productsList[i].pVariation}${_productsList[i].unit}");
         }
       }else{
         _productsList=[];
       }
 
-      log("Products List : ${_productsList.length}");
+      debugPrint("Products List : ${_productsList.length}");
 
     }catch(e){
       Exception("getProducts Error : $e");
@@ -211,15 +211,15 @@ class BillingProvider with ChangeNotifier{
       if(response.responseCode==200){
         _productsList = response.productList ?? [];
         dropdownFocusNode.requestFocus();
-        //print("products ${_productsList.length}");
+        //debugPrint("products ${_productsList.length}");
         for(int i = 0; i<_productsList.length;i++){
-          //print("barcode ${_productsList[i].barcode} ${_productsList[i].pTitle} ${_productsList[i].pVariation}${_productsList[i].unit}");
+          //debugPrint("barcode ${_productsList[i].barcode} ${_productsList[i].pTitle} ${_productsList[i].pVariation}${_productsList[i].unit}");
         }
       }else{
         _productsList=[];
       }
 
-      log("Products List : ${_productsList.length}");
+      debugPrint("Products List : ${_productsList.length}");
 
     }catch(e){
       Exception("getProducts Error : $e");
@@ -266,7 +266,7 @@ class BillingProvider with ChangeNotifier{
 
 
   // void addBillingItem(BillingItem newItem) {
-  //   print("QTY ${newItem.quantity}");
+  //   debugPrint("QTY ${newItem.quantity}");
   //
   //   final existingIndex =
   //   _billingItems.indexWhere((item) => item.product.id == newItem.product.id);
@@ -338,7 +338,7 @@ class BillingProvider with ChangeNotifier{
     notifyListeners();
   }
   // void addBillingItem(BillingItem newItem) {
-  //   print("QTY ${newItem.quantity}");
+  //   debugPrint("QTY ${newItem.quantity}");
   //   // Check if the product already exists in the list
   //   final existingIndex = _billingItems.indexWhere((item) => item.product.id == newItem.product.id);
   //
@@ -382,7 +382,7 @@ class BillingProvider with ChangeNotifier{
   // Update Billing Items : (For Edit Option)
 // void updateBillingItem(int index, {required String isLoose, double? variation, int? quantity}) {
   //   if (index < 0 || index >= billingItems.length) {
-  //     log("Invalid index: $index");
+  //     debugPrint("Invalid index: $index");
   //     return; // Exit if index is invalid
   //   }
   //
@@ -397,7 +397,7 @@ class BillingProvider with ChangeNotifier{
   //       );
   //       initQtyFocusNodes(billingItems.length);
   //     } else {
-  //       log("Variation controller for index $index is null");
+  //       debugPrint("Variation controller for index $index is null");
   //     }
   //   }
   //
@@ -413,11 +413,11 @@ class BillingProvider with ChangeNotifier{
   //       );
   //       initQtyFocusNodes(billingItems.length);
   //     } else {
-  //       log("Quantity controller for index $index is null");
+  //       debugPrint("Quantity controller for index $index is null");
   //     }
   //   }
   //   initQtyFocusNodes(billingItems.length);
-  //   log("UpdateBillingItem: index=$index, variation=$variation, quantity=$quantity, quantityController=${quantityControllers[index]?.text}");
+  //   debugPrint("UpdateBillingItem: index=$index, variation=$variation, quantity=$quantity, quantityController=${quantityControllers[index]?.text}");
   //   notifyListeners();
   // }
 
@@ -494,7 +494,7 @@ class BillingProvider with ChangeNotifier{
       quantityControllers.add(
           TextEditingController(text: newItem.quantity.toString()));
     }
-    print("_billingItems $_billingItems");
+    debugPrint("_billingItems $_billingItems");
 
     notifyListeners();
   }
@@ -503,25 +503,25 @@ class BillingProvider with ChangeNotifier{
       {required String isLoose, double? variation, int? quantity}) {
 
     if (index < 0 || index >= billingItems.length) {
-      log("Invalid index: $index");
+      debugPrint("Invalid index: $index");
       return;
     }
 
     final item = billingItems[index];
 
-    print("===== MANUAL UPDATE DEBUG START =====");
-    print("Product: ${item.product.pTitle}");
-    print("Entered quantity: $quantity");
-    print("isFree: ${item.product.isFree}");
-    print("buyQty: ${item.product.buyQty}");
-    print("getQty: ${item.product.getQty}");
+    debugPrint("===== MANUAL UPDATE DEBUG START =====");
+    debugPrint("Product: ${item.product.pTitle}");
+    debugPrint("Entered quantity: $quantity");
+    debugPrint("isFree: ${item.product.isFree}");
+    debugPrint("buyQty: ${item.product.buyQty}");
+    debugPrint("getQty: ${item.product.getQty}");
 
     // LOOSE
     if (variation != null && isLoose == '1') {
 
       item.variation = variation;
 
-      print("Loose updated variation: ${item.variation}");
+      debugPrint("Loose updated variation: ${item.variation}");
 
       variationControllers[index]?.value = TextEditingValue(
         text: variation.toString(),
@@ -538,7 +538,7 @@ class BillingProvider with ChangeNotifier{
       int buy = int.tryParse(item.product.buyQty ?? '') ?? 0;
       int free = int.tryParse(item.product.getQty ?? '') ?? 0;
 
-      print("Parsed buy: $buy free: $free");
+      debugPrint("Parsed buy: $buy free: $free");
 
       if (isOffer && buy > 0 && free > 0) {
 
@@ -555,16 +555,16 @@ class BillingProvider with ChangeNotifier{
           item.quantity = groups * groupSize;
           item.scanCount = quantity;
 
-          print("Offer applied (manual)");
-          print("groupSize: $groupSize");
-          print("groups: $groups");
-          print("Final quantity: ${item.quantity}");
+          debugPrint("Offer applied (manual)");
+          debugPrint("groupSize: $groupSize");
+          debugPrint("groups: $groups");
+          debugPrint("Final quantity: ${item.quantity}");
         }
       }
 
       else {
         item.quantity = quantity;
-        print("Normal product → quantity set: ${item.quantity}");
+        debugPrint("Normal product → quantity set: ${item.quantity}");
       }
 
       quantityControllers[index]?.value = TextEditingValue(
@@ -574,7 +574,7 @@ class BillingProvider with ChangeNotifier{
       );
     }
 
-    print("===== MANUAL UPDATE DEBUG END =====");
+    debugPrint("===== MANUAL UPDATE DEBUG END =====");
 
     notifyListeners();
   }
@@ -654,7 +654,7 @@ class BillingProvider with ChangeNotifier{
     final totalDiscount = billingItems.fold(0.0,
             (total, item) => total + item.calculateDiscount());
 
-    // log("formattedAmount ${totalDiscount}");
+    // debugPrint("formattedAmount ${totalDiscount}");
 
     return totalDiscount.toStringAsFixed(2);   // ⭐ TWO DECIMAL POINTS
   }
@@ -709,7 +709,7 @@ class BillingProvider with ChangeNotifier{
           // );
 
         } catch (e) {
-          print("PRINT ERROR: $e");
+          debugPrint("PRINT ERROR: $e");
           Toasts.showToastBar(
             context: context,
             text: "Printer error. Try again.",
@@ -775,11 +775,11 @@ class BillingProvider with ChangeNotifier{
         context: context,
       );
 
-      print("response...: ${order.products.length}");
-      print("response...rrrr: $response");
-      print("response...oed: ${response.responseCode}");
-      print("response...oed: ${jsonDecode(order.savings)}");
-      print("response...oed: ${jsonDecode(order.savings)}");
+      debugPrint("response...: ${order.products.length}");
+      debugPrint("response...rrrr: $response");
+      debugPrint("response...oed: ${response.responseCode}");
+      debugPrint("response...oed: ${jsonDecode(order.savings)}");
+      debugPrint("response...oed: ${jsonDecode(order.savings)}");
 
       if (response.responseCode == 200) {
         // ✅ SAVE SUCCESS WITHOUT PRINTING
@@ -869,7 +869,7 @@ class BillingProvider with ChangeNotifier{
       final product = productsList.firstWhere((p) => p.barcode == barcode);
 
       selectedProduct = product;
-      print("selectedProduct ${selectedProduct!.pTitle}");
+      debugPrint("selectedProduct ${selectedProduct!.pTitle}");
       barcodeScanner.text = selectedProduct!.pTitle.toString();
       updateTemporaryFields(
         variation: product.isLoose == '1' ? 1.0 : null,
@@ -1251,11 +1251,11 @@ class BillingProvider with ChangeNotifier{
         stDate: stDate,
         enDate: enDate,
       );
-      print("ONLINE ORDER RESPONSE 123 : ${response.toString()}");
+      debugPrint("ONLINE ORDER RESPONSE 123 : ${response.toString()}");
       if (response.responseCode == 200) {
-        print("ONLINE ORDER RESPONSE : ${response.toString()}");
-        print("RESPONSE CODE : ${response.responseCode}");
-        print("DATA : ${response.data}");
+        debugPrint("ONLINE ORDER RESPONSE : ${response.toString()}");
+        debugPrint("RESPONSE CODE : ${response.responseCode}");
+        debugPrint("DATA : ${response.data}");
         _orderStatusData = response.data;
 
         totalOrders = _orderStatusData?.totalOrders ?? 0;
@@ -1306,8 +1306,8 @@ class BillingProvider with ChangeNotifier{
 
       if(response.responseCode == '200'){
         _lastOrder = response.ordersList ?? [];
-        log("_lastOrder.toString()");
-        log(_lastOrder.toString());
+        debugPrint("_lastOrder.toString()");
+        debugPrint(_lastOrder.toString());
         // await pdfService.printCustomBill(
         //     context,
         //     data: _lastOrder[0]);
@@ -1471,7 +1471,7 @@ class BillingProvider with ChangeNotifier{
       notifyListeners();
 
       final result = await _placeOrderRepo.updateStock(products: products);
-      print("response2: ${result['responseCode'] == 200}");
+      debugPrint("response2: ${result['responseCode'] == 200}");
       if (result['result'] == "Success") {
         Navigator.pop(context);
         snackBar(context: context, msg: "Return Quantity added successfully", color: Colors.green);
@@ -1532,7 +1532,7 @@ class BillingProvider with ChangeNotifier{
   //   final prefs = await SharedPreferences.getInstance();
   //   final orderData = jsonEncode(order.toJson());
   //   await prefs.setString('holdBill', orderData);
-  //   print("Hold Bill saved successfully");
+  //   debugPrint("Hold Bill saved successfully");
   // }
   // Future<void> loadHoldBillDetails() async {
   //   final prefs = await SharedPreferences.getInstance();
@@ -1764,7 +1764,7 @@ class BillingProvider with ChangeNotifier{
       _toast(context, "Select Category & Sub Category");
       return;
     }
-    print("barcode: ${barcode.text.trim()}");
+    debugPrint("barcode: ${barcode.text.trim()}");
     final int qtyVal = int.tryParse(qty.text.trim()) ?? 0;
     final double mrpVal = double.tryParse(mrp.text.trim()) ?? 0;
     final double outPriceVal = double.tryParse(outPrice.text.trim()) ?? 0;
@@ -2070,17 +2070,17 @@ class BillingProvider with ChangeNotifier{
         DateFormat('yyyy-MM-dd').format(tomorrow),
       );
 
-      print("Order$_responseMessage");
+      debugPrint("Order$_responseMessage");
     } else {
       _responseMessage = response['ResponseMsg'] ?? "Failed to cancel the order.";
-      print("$_responseMessage");
+      debugPrint("$_responseMessage");
     }
     _isLoading = false;
     notifyListeners(); // Notify the UI after loading is done
   }
 
   Future<void> getDataByDate(String date) async {
-    print("Selected Date: $date");
+    debugPrint("Selected Date: $date");
 
     stDate = date;
 

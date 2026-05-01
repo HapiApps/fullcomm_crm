@@ -540,9 +540,9 @@ class CustomersProvider with ChangeNotifier {
     customerMobileController.text = customerMobile;
     customerNameController.text = customerName;
     customerDropController.text = "$customerName - $customerMobile";
-    print("Address ${customerAddressController.text}");
-    print("Name ${customerDropController.text}");
-    print("Name 2${customerNameController.text}");
+    debugPrint("Address ${customerAddressController.text}");
+    debugPrint("Name ${customerDropController.text}");
+    debugPrint("Name 2${customerNameController.text}");
     selectedCustomer = CustomerData(
       userId: customerId,
       name: customerName,

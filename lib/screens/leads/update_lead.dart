@@ -273,9 +273,6 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.leadActions.text = safeValue(widget.points);
 
       controllers.selectPinCodeList = [];
-
-      print("widget.industry ${widget.industry}");
-      print("controllers.industry ${controllers.industry}");
     });
   }
   String _formatHeading(String heading) {
@@ -321,6 +318,7 @@ class _UpdateLeadState extends State<UpdateLead> {
   final FocusNode state = FocusNode();
   final FocusNode pincode = FocusNode();
   final FocusNode throughByF = FocusNode();
+  final FocusNode ins = FocusNode();
 
   @override
   void initState(){
@@ -342,6 +340,7 @@ class _UpdateLeadState extends State<UpdateLead> {
   void dispose() {
     _controller.dispose();
     _focusNode.dispose();
+    ins.dispose();
     name.dispose();
     throughByF.dispose();
     phone.dispose();
@@ -1021,10 +1020,9 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             setState(() {
                                               controllers.industry = val?['value'];
                                             });
-                                            print(val?['id']);
-                                            print(val?['value']);
                                           },
                                           onAdd: () {
+                                            FocusScope.of(context).requestFocus(ins);
                                             controllers.industryValueCtr.clear();
                                             showDialog(
                                               context: context,
@@ -1045,14 +1043,14 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                     child: SizedBox(
                                                       width: 350,
                                                       child: CustomTextField(
-                                                        focusNode: cNo,
+                                                        focusNode: ins,
                                                         hintText: "Industry",
                                                         text: "Industry",
                                                         controller: controllers.industryValueCtr,
                                                         width: textFieldSize,
                                                         keyboardType: TextInputType.text,
                                                         textInputAction: TextInputAction.done,
-                                                        isOptional: false,
+                                                        isOptional: true,
                                                       ),
                                                     ),
                                                   ),
@@ -1088,11 +1086,8 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                             if (controllers.industryValueCtr.text.trim().isNotEmpty) {
                                                               controllers.insertIndustries(context);
                                                             } else {
-                                                              utils.snackBar(
-                                                                context: context,
-                                                                msg: "Please enter industry value",
-                                                                color: Colors.red,
-                                                              );
+                                                              controllers.productCtr.reset();
+                                                              utils.showToast("Please enter industry value",Colors.red);
                                                             }
                                                           },
                                                           controller: controllers.productCtr,
@@ -1857,7 +1852,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                             }
                                           }
                                         }}
-                                      print("lead id ${widget.id.toString()}");
                                     },
                                     text: "Save ${widget.pageName}",
                                     height: 60,
