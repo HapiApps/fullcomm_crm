@@ -1474,6 +1474,7 @@ class Utils {
     controllers.emailToCtr.clear();
     controllers.emailSubjectCtr.clear();
     controllers.emailMessageCtr.clear();
+    imageController.images.clear();
     imageController.photo1.value="";
     final formatProvider = Provider.of<ReminderProvider>(context, listen: false);
     formatProvider.resetFormatting();
@@ -1512,51 +1513,6 @@ class Utils {
                         )),
 
                         /// 🔹 Autocomplete
-                        // SizedBox(
-                        //   // width: 220,
-                        //   child: Autocomplete<AllCustomersObj>(
-                        //
-                        //     /// 🔥 FILTER + SEARCH
-                        //     optionsBuilder: (text) {
-                        //       final query = text.text.toLowerCase();
-                        //
-                        //       return controllers.customers.where((c) {
-                        //         final email = (c.email ?? "").toLowerCase().trim();
-                        //         final name = (c.name ?? "").toLowerCase();
-                        //
-                        //         if (email.isEmpty || email == "null") return false;
-                        //
-                        //         return email.contains(query) || name.contains(query);
-                        //       });
-                        //     },
-                        //
-                        //     displayStringForOption: (c) => '${c.name} - ${c.email} - ${c.category}',
-                        //
-                        //     fieldViewBuilder:(context, controller, focusNode, onSubmit) {
-                        //       return TextField(
-                        //         controller: controller,
-                        //         focusNode: focusNode,
-                        //         decoration: InputDecoration(
-                        //           hintText: emailList.isEmpty?"Search email":"Add email",
-                        //           border: UnderlineInputBorder(),
-                        //         ),
-                        //       );
-                        //     },
-                        //     /// 🔥 SELECT → EMAIL மட்டும் add
-                        //     onSelected: (c) {
-                        //       final email = c.email ?? "";
-                        //       if (email.isEmpty) return;
-                        //
-                        //       setState(() {
-                        //         if (!emailList.contains(email)) {
-                        //           emailList.add(email);
-                        //           nameList.add(c.name);
-                        //           idList.add(c.id);
-                        //         }
-                        //       });
-                        //     },
-                        //   ),
-                        // ),
                         SizedBox(
                           child: Autocomplete<AllCustomersObj>(
                             optionsBuilder: (text) {
@@ -1841,11 +1797,34 @@ class Utils {
                       ),
                       14.height,
                       InkWell(
-                        onTap: (){
-                          utils.chooseFile(
-                              mediaDataV: imageController.empMediaData,
-                              fileName: imageController.empFileName,
-                              pathName: imageController.photo1);
+                        onTap: () async {
+
+                          FilePickerResult? result =
+                          await FilePicker.platform.pickFiles(
+                            allowMultiple: true,
+
+                            /// ALL TYPES
+                            type: FileType.any,
+
+                            withData: true,
+                          );
+
+                          if (result != null) {
+
+                            for (var file in result.files) {
+                              imageController.images.add({
+                                "fileName": file.name,
+                                "bytes": file.bytes,
+                              });
+                            }
+
+                            debugPrint(
+                              "Selected files : ${imageController.images.length}",
+                            );
+
+                          } else {
+                            debugPrint('No file selected');
+                          }
                         },
                         child: Row(
                           children: [
@@ -1858,27 +1837,75 @@ class Utils {
                         ),
                       ),
                       10.height,
-                      Obx(() => imageController.photo1.value.isEmpty
-                          ? 0.height
-                          :  Container( padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Color(0xff86BAE3FF),
-                          borderRadius: BorderRadius.circular(20),
+                      // Obx(() => imageController.photo1.value.isEmpty
+                      //     ? 0.height
+                      //     :  Container( padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      //   decoration: BoxDecoration(
+                      //     color: Color(0xff86BAE3FF),
+                      //     borderRadius: BorderRadius.circular(20),
+                      //   ),
+                      //   child: Row(
+                      //     mainAxisSize: MainAxisSize.min,
+                      //     children: [
+                      //       Obx(()=>CustomText(text: imageController.empFileName.value,isCopy: false,)),
+                      //       SizedBox(width: 10,),
+                      //       IconButton( padding: EdgeInsets.zero,
+                      //         constraints: const BoxConstraints(),
+                      //         onPressed: () {
+                      //           imageController.photo1.value = "";
+                      //         }, icon: const Icon(Icons.close, size: 10),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),),
+                      Obx(
+                            () => imageController.images.isEmpty
+                            ? 0.height
+                            : ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: imageController.images.length,
+                          itemBuilder: (context, index) {
+
+                            final item = imageController.images[index];
+
+                            return Container(
+                              margin: EdgeInsets.only(bottom: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 8,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xff86BAE3FF),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Row(
+                                children: [
+
+                                  Expanded(
+                                    child: CustomText(
+                                      text: item["fileName"],
+                                      isCopy: false,
+                                    ),
+                                  ),
+
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    constraints: const BoxConstraints(),
+                                    onPressed: () {
+                                      imageController.images.removeAt(index);
+                                    },
+                                    icon: const Icon(
+                                      Icons.close,
+                                      size: 14,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Obx(()=>CustomText(text: imageController.empFileName.value,isCopy: false,)),
-                            SizedBox(width: 10,),
-                            IconButton( padding: EdgeInsets.zero,
-                              constraints: const BoxConstraints(),
-                              onPressed: () {
-                                imageController.photo1.value = "";
-                              }, icon: const Icon(Icons.close, size: 10),
-                            ),
-                          ],
-                        ),
-                      ),),
+                      ),
                       /// 🔹 ACTIONS
                       Divider(color: Colors.grey),
                       Row(

@@ -1208,6 +1208,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                               email: widget.companyEmail.toString(), leadStatus: "", category: ""));
                               controllers.directNavigate.value=true;
                               controllers.qId.value=widget.id.toString();
+                              controllers.selectedIndex.value=107;
                               productCtr.changeTab(1);
                               Get.to(QuotationPage());
                             }

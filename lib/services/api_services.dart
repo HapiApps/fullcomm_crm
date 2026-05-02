@@ -3387,6 +3387,7 @@ class ApiService {
       request.fields['quotation_name'] = "Product Quotation";
       request.fields['body'] = controllers.emailMessageCtr.text;
       request.fields['cus_id'] = controllers.storage.read("id").toString();
+      request.fields['created_by'] = controllers.storage.read("id").toString();
       request.fields['customer_id'] = controllers.selectedCustomerId.value;
       request.fields['notes'] = controllers.notesCtr.text;
       request.fields['validity_date'] = "${DateFormat('dd-MM-yyyy').format(DateTime.now())} to ${DateFormat('dd-MM-yyyy').format(DateTime.now().add(Duration(days: 15)))}";
@@ -3456,6 +3457,7 @@ class ApiService {
       request.fields['quotation_name'] = "Product Quotation";
       request.fields['body'] = controllers.emailMessageCtr.text;
       request.fields['cus_id'] = controllers.storage.read("id").toString();
+      request.fields['created_by'] = controllers.storage.read("id").toString();
       request.fields['customer_id'] = controllers.selectedCustomerId.value;
       request.fields['notes'] = controllers.notesCtr.text;
       request.fields['type'] = controllers.type.value;
@@ -3689,7 +3691,7 @@ class ApiService {
       request.fields['user_id'] = controllers.storage.read("id").toString();
       request.fields['id'] = id;
       request.fields['date'] = "${controllers.dateTime.day.toString().padLeft(2, "0")}-${controllers.dateTime.month.toString().padLeft(2, "0")}-${controllers.dateTime.year.toString()} ${DateFormat('hh:mm a').format(DateTime.now())}";
-      request.fields['action'] = 'mail_receive';
+      request.fields['action'] = 'send_email';
       request.fields['customer_name'] = controllers.selectedCustomerName.value;
       request.headers.addAll({
         'X-API-TOKEN': "${TokenStorage().readToken()}",
@@ -3756,16 +3758,28 @@ class ApiService {
       request.fields['customer_name'] = nameList.join(',');
       request.headers.addAll({
         'X-API-TOKEN': "${TokenStorage().readToken()}",
-        'Content-Type': 'application/json'
       });
-      if (imageController.empFileName.value.isNotEmpty) {
-        var picture1 = http.MultipartFile.fromBytes(
-          "attachment",
-          imageController.empMediaData,
-          filename: imageController.empFileName.value,
-          //contentType: http.MediaType('image', 'jpeg'),
-        );
-        request.files.add(picture1);
+      // if (imageController.empFileName.value.isNotEmpty) {
+      //   var picture1 = http.MultipartFile.fromBytes(
+      //     "attachment",
+      //     imageController.empMediaData,
+      //     filename: imageController.empFileName.value,
+      //     //contentType: http.MediaType('image', 'jpeg'),
+      //   );
+      //   request.files.add(picture1);
+      // }
+      if (imageController.images.isNotEmpty) {
+
+        for (var file in imageController.images) {
+
+          request.files.add(
+            http.MultipartFile.fromBytes(
+              "attachment[]",
+              file["bytes"],
+              filename: file["fileName"],
+            ),
+          );
+        }
       }
       var response = await request.send();
       var body = await response.stream.bytesToString();
@@ -3777,6 +3791,8 @@ class ApiService {
           controllers.setLogOut();
         }
       }
+      debugPrint("body");
+      debugPrint(body);
       if (response.statusCode == 200) {
         utils.snackBar(
             msg: "Mail has been sent",

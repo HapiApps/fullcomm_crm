@@ -1843,7 +1843,8 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                         children: [
                                                                           CustomText(text: "Quotation", isCopy: false,size: 13,),
                                                                           if(data.poNumber!="null"&&data.poNumber!="")
-                                                                            CustomText(text: "PO", isCopy: false,size: 13,colors: Colors.blue,),
+                                                                          CustomText(text: "PO", isCopy: false,size: 13,colors: Colors.blue,),
+                                                                          if(data.invoiceDate!="null"&&data.invoiceDate!="")
                                                                           CustomText(text: "Invoice", isCopy: false,size: 13,colors: Colors.green,),
                                                                         ],
                                                                       ),
@@ -1869,7 +1870,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                               isCopy: true,
                                                                               colors: Colors.blue,
                                                                             ),
-                                                                          if(data.iNo!="null"&&data.iNo!="")
+                                                                          if(data.invoiceDate!="null"&&data.invoiceDate!="")
                                                                             CustomText(
                                                                               textAlign: TextAlign.center,
                                                                               text: data.iNo,
@@ -1901,7 +1902,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                               isCopy: true,
                                                                               colors: Colors.blue,
                                                                             ),
-                                                                          if(data.iNo!="null"&&data.iNo!="")
+                                                                          if(data.invoiceDate!="null"&&data.invoiceDate!="")
                                                                             CustomText(
                                                                               textAlign: TextAlign.left,
                                                                               text: productCtr.showCrtDate(data.invoiceDate.toString()),

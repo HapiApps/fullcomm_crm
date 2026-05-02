@@ -6,10 +6,12 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 import '../common/constant/api.dart';
 import '../common/utilities/jwt_storage.dart';
+import '../components/month_calender.dart';
 import '../models/month_report_obj.dart';
 import 'controller.dart';
 
@@ -712,5 +714,88 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
     //   visitStatusReport.clear();
     //   throw Exception('Failed to load dashboard report $e');
     // }
+  }
+  var startDate = "".obs,endDate="".obs,month="".obs;
+  var increase=false.obs;
+  var monthCount=0.obs;
+  late DateTime date3;
+  late DateTime date4;
+  void incrementMonth(RxString st,RxString en,RxString month) {
+    if(increase.value==false){
+      // print("FALSE");
+    }else{
+      date3 = DateTime(date3.year, date3.month + 1, 1);
+      date4 = DateTime(date4.year, date4.month + 1, 1);
+      st.value = DateFormat('dd-MM-yyyy').format(date3);
+      en.value = DateFormat('dd-MM-yyyy').format(DateTime(date4.year, date4.month + 1, 0));
+      month.value = DateFormat('MMMM').format(date3);
+      monthCount.value = date3.month;
+    }
+    if(month.value==DateFormat('MMMM').format(DateTime.now())){
+      increase.value=false;
+    }else{
+      increase.value=true;
+    }
+  }
+
+  void decrementMonth(RxString st,RxString en,RxString month) {
+    date3 = DateTime(date3.year, date3.month - 1, 1);
+    date4 = DateTime(date4.year, date4.month - 1, 1);
+    st.value = DateFormat('dd-MM-yyyy').format(date3);
+    en.value = DateFormat('dd-MM-yyyy').format(DateTime(date4.year, date4.month + 1, 0));
+    month.value = DateFormat('MMMM').format(date3);
+    monthCount.value = date3.month;
+    if(month.value==DateFormat('MMMM').format(DateTime.now())){
+      increase.value=false;
+    }else{
+      increase.value=true;
+    }
+  }
+var year;
+  void showCustomMonthPicker({
+    required BuildContext context,
+    required RxString date1,
+    required RxString date2,
+    required RxString month,
+    required void Function() function,
+  }) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        final now = DateTime.now();
+
+        return Dialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          child: SizedBox(
+            width: 300,
+            height: 400,
+            child: CustomMonthPicker(
+              // initialMonth: DateTime.now().month,
+              // initialYear:  DateTime.now().year,
+              initialMonth: monthCount.value,
+
+              initialYear: (year != null && year != 0)
+                  ? year
+                  : now.year,
+              firstYear: 2024,
+              lastYear: now.year,
+              // onSelected: onSelected,
+              onSelected: (value) {
+                var m  =value.month ;
+                var y = value.year;
+                year = value.year;
+                var ex = ("01-${(m.toString().padLeft(2, "0"))}-$y").split("-");
+                var date = DateTime(int.parse(ex.first), int.parse(ex[1]) + 1,0);
+                month.value = DateFormat('MMMM').format(DateTime(0, int.parse(m.toString().padLeft(2, "0"))));
+                monthCount.value = date.month;
+                date1.value=("01-${(m.toString().padLeft(2, "0"))}-$y");
+                date2.value="${date.day.toString().padLeft(2, "0")}-${m.toString().padLeft(2, "0")}-$y";
+                function();
+              },
+            ),
+          ),
+        );
+      },
+    );
   }
 }

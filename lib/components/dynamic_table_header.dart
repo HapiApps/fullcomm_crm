@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/colors_constant.dart';
@@ -190,12 +191,15 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
                     }
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
-
-                    tableController.updateColumnAPI(
-                      context,
-                      oldValue,
-                      newValue,
-                    );
+                    if(_controller.text.trim().isNotEmpty){
+                      tableController.updateColumnAPI(
+                        context,
+                        oldValue,
+                        newValue,
+                      );
+                    }else{
+                      utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
+                    }
                   },
                 ),
               ),

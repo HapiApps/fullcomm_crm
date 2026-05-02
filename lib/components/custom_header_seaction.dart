@@ -331,13 +331,17 @@ class _HeaderSectionState extends State<HeaderSection> {
                                   LengthLimitingTextInputFormatter(40),
                                 ],
                                 onFieldSubmitted: (value) async {
-                                  tableController.isLoading.value = true;
-                                  final id = controllers.fields[i].id;
-                                  tableController.headingFields[i]=value;
-                                  print(tableController.headingFields);
-                                  final prefs = await SharedPreferences.getInstance();
-                                  await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
-                                  tableController.updateColumnNameAPI(context, value, id);
+                                  if(value.trim().isNotEmpty){
+                                    tableController.isLoading.value = true;
+                                    final id = controllers.fields[i].id;
+                                    tableController.headingFields[i]=value;
+                                    print(tableController.headingFields);
+                                    final prefs = await SharedPreferences.getInstance();
+                                    await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
+                                    tableController.updateColumnNameAPI(context, value, id);
+                                  }else{
+                                    utils.showToast("Enter a value",Colors.red);
+                                  }
                                 },
                                 decoration: InputDecoration(
                                   fillColor: Colors.purple,
@@ -349,11 +353,8 @@ class _HeaderSectionState extends State<HeaderSection> {
                         ],
                       ),
                       if (tableController.isLoading.value)
-                        Container(
-                          color: colorsConst.secondary,
-                          child: Center(
-                            child: CircularProgressIndicator(color: Colors.blue),
-                          ),
+                        Center(
+                          child: CircularProgressIndicator(color: Colors.blue),
                         ),
                     ],
                   );

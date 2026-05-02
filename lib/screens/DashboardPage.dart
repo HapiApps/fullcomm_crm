@@ -92,6 +92,22 @@ class _DashboardPageState extends State<DashboardPage>
     // });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      var selectedMeetRange = Rxn<DateTimeRange>(
+        DateTimeRange(
+          start: DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().day,
+          ),
+          end: DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().day,
+          ),
+        ),
+      );
+      remController.selectedMeetRange=selectedMeetRange;
+      remController.selectedReminderRange=selectedMeetRange;
       _focusNode.requestFocus();
       if(controllers.leadCategoryList.isEmpty){
         apiService.getLeadCategories();
@@ -1432,9 +1448,119 @@ void checkDate(){
                                                       child: Icon(Icons.add,color: Colors.white,size: 18,),
                                                     ),
                                                   ),
-                                                ),10.width,
-                                                CustomText(text: dashController.selectedSortBy.value=="Last 7 Days"?"Next 7 Days":
-                                                dashController.selectedSortBy.value=="Last 30 Days"?"Next 30 Days":"", isCopy: false,)
+                                                ),
+                                                10.width,
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: (){
+                                                        final currentRange =remController.selectedMeetRange.value;
+                                                        if (currentRange != null) {
+                                                          final difference =currentRange.end.difference(currentRange.start);
+
+                                                          final newStart =
+                                                          currentRange.start.subtract(
+                                                            Duration(days: difference.inDays + 1),
+                                                          );
+                                                          final newEnd =
+                                                          currentRange.end.subtract(
+                                                            Duration(days: difference.inDays + 1),
+                                                          );
+
+                                                          remController.selectedMeetRange.value =
+                                                              DateTimeRange(
+                                                                start: newStart,
+                                                                end: newEnd,
+                                                              );
+
+                                                          remController.dashboardMeetings(
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectMeetingType.value,
+                                                            sortField: controllers.sortFieldMeetingActivity.value,
+                                                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                          );
+                                                        }
+                                                      },
+                                                      child: Icon(Icons.arrow_back,color: colorsConst.primary,size: 17,),
+                                                    ),10.width,
+                                                    InkWell(
+                                                      onTap: (){
+                                                        remController.showDatePickerDialog(context, (pickedRange) {
+                                                          remController.selectedMeetSortBy.value = "Custom Range";
+                                                          remController.selectedMeetRange.value = pickedRange;
+                                                          remController.dashboardMeetings(
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectMeetingType.value,
+                                                            sortField: controllers.sortFieldMeetingActivity.value,
+                                                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                          );
+                                                        });
+                                                      },
+                                                      child: Obx(() {
+                                                        final range = remController.selectedMeetRange.value;
+                                                        if (range == null) {
+                                                          return CustomText(
+                                                            text:DateFormat("dd-MM-yyyy").format(DateTime.now()),isCopy: false,
+                                                          );
+                                                        }
+                                                        return CustomText(
+                                                          text: range.start.day == range.end.day &&
+                                                              range.start.month == range.end.month &&
+                                                              range.start.year == range.end.year
+                                                              ? DateFormat("dd-MM-yyyy").format(range.start)
+                                                              : "${DateFormat("dd-MM-yyyy").format(range.start)}"
+                                                              " - "
+                                                              "${DateFormat("dd-MM-yyyy").format(range.end)}",
+                                                          isCopy: false,
+                                                        );
+                                                      }),
+                                                    ),10.width,
+                                                    InkWell(
+                                                      onTap: (){
+                                                        final currentRange =
+                                                            remController.selectedMeetRange.value;
+
+                                                        if (currentRange != null) {
+
+                                                          final difference =
+                                                          currentRange.end.difference(currentRange.start);
+
+                                                          final newStart =
+                                                          currentRange.start.add(
+                                                            Duration(days: difference.inDays + 1),
+                                                          );
+
+                                                          final newEnd =
+                                                          currentRange.end.add(
+                                                            Duration(days: difference.inDays + 1),
+                                                          );
+
+                                                          /// FUTURE DATE CHECK
+                                                          if (newEnd.isAfter(DateTime.now())) {
+                                                            return;
+                                                          }
+
+                                                          remController.selectedMeetRange.value =
+                                                              DateTimeRange(
+                                                                start: newStart,
+                                                                end: newEnd,
+                                                              );
+
+                                                          remController.dashboardMeetings(
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectMeetingType.value,
+                                                            sortField: controllers.sortFieldMeetingActivity.value,
+                                                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                          );
+                                                        }
+                                                      },
+                                                      child: Icon(Icons.arrow_forward,color: colorsConst.primary,size: 17,),
+                                                    ),
+                                                  ],
+                                                ),
+                                                // CustomText(text: dashController.selectedSortBy.value=="Last 7 Days"?"Next 7 Days":
+                                                // dashController.selectedSortBy.value=="Last 30 Days"?"Next 30 Days":"", isCopy: false,)
                                               ],
                                             ),
                                             Obx(() {
@@ -1458,7 +1584,7 @@ void checkDate(){
                                                           );
                                                         },
                                                         child: Container(
-                                                          width: MediaQuery.of(context).size.width*0.05,
+                                                          width: MediaQuery.of(context).size.width*0.03,
                                                           decoration: BoxDecoration(
                                                             color: isSelected
                                                                 ? Colors.white
@@ -1830,8 +1956,89 @@ void checkDate(){
                                                   ),
                                                 ),
                                                 10.width,
-                                                CustomText(text: dashController.selectedSortBy.value=="Last 7 Days"?"Next 7 Days":
-                                                dashController.selectedSortBy.value=="Last 30 Days"?"Next 30 Days":"", isCopy: false,)
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: [
+                                                    InkWell(
+                                                      onTap: (){
+                                                        final currentRange =remController.selectedReminderRange.value;
+                                                        if (currentRange != null) {
+                                                          final difference =currentRange.end.difference(currentRange.start);
+                                                          final newStart =
+                                                          currentRange.start.subtract(
+                                                            Duration(days: difference.inDays + 1),
+                                                          );
+                                                          final newEnd =
+                                                          currentRange.end.subtract(
+                                                            Duration(days: difference.inDays + 1),
+                                                          );
+                                                          remController.selectedReminderRange.value =
+                                                              DateTimeRange(
+                                                                start: newStart,
+                                                                end: newEnd,
+                                                              );
+                                                          remController.dashboardSortReminders();
+                                                        }
+                                                      },
+                                                      child: Icon(Icons.arrow_back,color: colorsConst.primary,size: 17,),
+                                                    ),10.width,
+                                                    InkWell(
+                                                      onTap: (){
+                                                        remController.showDatePickerDialog(context, (pickedRange) {
+                                                          remController.selectedReminderSortBy.value = "Custom Range";
+                                                          remController.selectedReminderRange.value = pickedRange;
+                                                          remController.dashboardSortReminders();
+                                                        });
+                                                      },
+                                                      child: Obx(() {
+                                                        final range = remController.selectedReminderRange.value;
+                                                        if (range == null) {
+                                                          return CustomText(
+                                                            text:DateFormat("dd-MM-yyyy").format(DateTime.now()),isCopy: false,
+                                                          );
+                                                        }
+                                                        return CustomText(
+                                                          text: range.start.day == range.end.day &&
+                                                              range.start.month == range.end.month &&
+                                                              range.start.year == range.end.year
+                                                              ? DateFormat("dd-MM-yyyy").format(range.start)
+                                                              : "${DateFormat("dd-MM-yyyy").format(range.start)}"
+                                                              " - "
+                                                              "${DateFormat("dd-MM-yyyy").format(range.end)}",
+                                                          isCopy: false,
+                                                        );
+                                                      }),
+                                                    ),10.width,
+                                                    InkWell(
+                                                      onTap: (){
+                                                        final currentRange =remController.selectedReminderRange.value;
+                                                        if (currentRange != null) {
+                                                          final difference =currentRange.end.difference(currentRange.start);
+                                                          final newStart =
+                                                          currentRange.start.add(
+                                                            Duration(days: difference.inDays + 1),
+                                                          );
+                                                          final newEnd =
+                                                          currentRange.end.add(
+                                                            Duration(days: difference.inDays + 1),
+                                                          );
+                                                          if (newEnd.isAfter(DateTime.now())) {
+                                                            return;
+                                                          }
+                                                          remController.selectedReminderRange.value =
+                                                              DateTimeRange(
+                                                                start: newStart,
+                                                                end: newEnd,
+                                                              );
+                                                          remController.dashboardSortReminders();
+                                                        }
+                                                      },
+                                                      child: Icon(Icons.arrow_forward,color: colorsConst.primary,size: 17,),
+                                                    ),
+                                                  ],
+                                                ),
+                                                // CustomText(text: dashController.selectedSortBy.value=="Last 7 Days"?"Next 7 Days":
+                                                // dashController.selectedSortBy.value=="Last 30 Days"?"Next 30 Days":"", isCopy: false,)
                                               ],
                                             ),
                                             Obx(() {
