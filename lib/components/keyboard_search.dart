@@ -393,3 +393,351 @@ class _KeyboardDropdownFieldState2<T extends Object>
   }
 }
 
+///
+class SelectKeyboardDropdownField<T extends Object> extends StatefulWidget {
+  final List<T> items;
+  final Widget Function(T item) itemBuilder;
+  final String Function(T item) labelBuilder;
+  final void Function(T item)? onSelected;
+  final String? initialText;
+  final FocusNode? focusNode;
+  final String? hintText;
+  final String? labelText;
+  final double borderRadius;
+  final Color borderColor;
+  final TextEditingController? textEditingController;
+  final bool Function(String input, T item)? filterFn;
+  final VoidCallback? onClear;
+
+  const SelectKeyboardDropdownField({
+    super.key,
+    required this.items,
+    required this.itemBuilder,
+    required this.labelBuilder,
+    this.onSelected,
+    this.initialText,
+    this.filterFn,
+    this.focusNode,
+    this.hintText,
+    this.labelText,
+    this.textEditingController,
+    this.onClear,
+    required this.borderRadius,
+    required this.borderColor,
+  });
+
+  @override
+  State<SelectKeyboardDropdownField<T>> createState() =>
+      _SelectKeyboardDropdownFieldState<T>();
+}
+
+class _SelectKeyboardDropdownFieldState<T extends Object>
+    extends State<SelectKeyboardDropdownField<T>> {
+
+  late TextEditingController controller;
+  late FocusNode focusNode;
+  late ScrollController scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller =
+        widget.textEditingController ?? TextEditingController();
+
+    focusNode =
+        widget.focusNode ?? FocusNode();
+
+    scrollController = ScrollController();
+
+    if (widget.initialText != null &&
+        controller.text.isEmpty) {
+      controller.text = widget.initialText!;
+    }
+  }
+
+  @override
+  void dispose() {
+
+    if (widget.textEditingController == null) {
+      controller.dispose();
+    }
+
+    if (widget.focusNode == null) {
+      focusNode.dispose();
+    }
+
+    scrollController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    return RawAutocomplete<T>(
+
+      textEditingController: controller,
+      focusNode: focusNode,
+      optionsBuilder: (TextEditingValue value) {
+
+        final input =
+        value.text.trim().toLowerCase();
+
+        List<T> results =
+        widget.items.toList();
+
+        results.sort(
+              (a, b) =>
+              widget.labelBuilder(a)
+                  .toLowerCase()
+                  .compareTo(
+                widget.labelBuilder(b)
+                    .toLowerCase(),
+              ),
+        );
+
+        if (input.isEmpty) {
+          return results;
+        }
+
+        results = results.where((item) {
+
+          final label =
+          widget.labelBuilder(item)
+              .toLowerCase();
+
+          if (widget.filterFn != null) {
+            return widget.filterFn!(input, item);
+          }
+
+          return label.contains(input);
+
+        }).toList();
+
+        return results;
+      },
+
+      displayStringForOption:
+      widget.labelBuilder,
+
+      onSelected: widget.onSelected,
+
+      fieldViewBuilder:
+          (context, ctrl, focus, onSubmit) {
+
+        return SizedBox(
+
+          height: 40,
+
+          child: TextField(
+            controller: ctrl,
+            focusNode: focus,
+
+            // ENTER PRESS AUTO SELECT REMOVE
+            onSubmitted: (_) {},
+
+            style: GoogleFonts.lato(
+              fontSize: 15,
+            ),
+
+            decoration: InputDecoration(
+
+              contentPadding:
+              const EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 8.0,
+              ),
+
+              filled: true,
+              fillColor: Colors.white,
+
+              labelText: widget.labelText,
+
+              labelStyle: const TextStyle(
+                fontSize: 13,
+                color: Colors.grey,
+              ),
+
+              hintText: widget.hintText,
+
+              border: OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(
+                  widget.borderRadius,
+                ),
+                borderSide: BorderSide(
+                  width: 0,
+                  color: widget.borderColor,
+                ),
+              ),
+
+              enabledBorder:
+              OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(
+                  widget.borderRadius,
+                ),
+                borderSide: BorderSide(
+                  width: 0,
+                  color: widget.borderColor,
+                ),
+              ),
+
+              focusedBorder:
+              OutlineInputBorder(
+                borderRadius:
+                BorderRadius.circular(
+                  widget.borderRadius,
+                ),
+                borderSide: BorderSide(
+                  width: 0,
+                  color: widget.borderColor,
+                ),
+              ),
+
+              suffixIcon: IconButton(
+
+                onPressed: () {
+
+                  setState(() {
+
+                    ctrl.clear();
+                    controller.clear();
+
+                  });
+
+                  if (widget.onClear != null) {
+                    widget.onClear!();
+                  }
+                },
+
+                icon: Icon(
+
+                  controller.text.isEmpty
+                      ? Icons.arrow_drop_down
+                      : Icons.clear,
+
+                  color: Colors.black,
+                  size: 25,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+
+      optionsViewBuilder:
+          (context, onSelected, options) {
+
+        final highlightedIndex =
+        AutocompleteHighlightedOption.of(
+          context,
+        );
+
+        WidgetsBinding.instance
+            .addPostFrameCallback((_) {
+
+          if (scrollController.hasClients &&
+              highlightedIndex >= 0) {
+
+            scrollController.animateTo(
+
+              highlightedIndex * 48.0,
+
+              duration:
+              const Duration(
+                milliseconds: 100,
+              ),
+
+              curve: Curves.easeInOut,
+            );
+          }
+        });
+
+        return Align(
+
+          alignment: Alignment.topLeft,
+
+          child: Material(
+
+            elevation: 4,
+
+            child: Container(
+
+              constraints:
+              const BoxConstraints(
+                maxHeight: 200,
+              ),
+
+              width: 450,
+
+              child: options.isEmpty &&
+                  controller.text.isNotEmpty
+
+                  ? const ListTile(
+                title: Text(
+                  "No results found",
+                ),
+              )
+
+                  : ListView.builder(
+
+                controller:
+                scrollController,
+
+                itemCount:
+                options.length,
+
+                itemBuilder:
+                    (context, index) {
+
+                  final option =
+                  options.elementAt(
+                    index,
+                  );
+
+                  final isHighlighted =
+                      index ==
+                          highlightedIndex;
+
+                  return InkWell(
+
+                    onTap: () {
+                      onSelected(option);
+                    },
+
+                    child: Container(
+
+                      color: isHighlighted
+                          ? Theme.of(context)
+                          .highlightColor
+                          : null,
+
+                      height: 45,
+                      width: 450,
+
+                      alignment:
+                      Alignment.topLeft,
+
+                      padding:
+                      const EdgeInsets
+                          .symmetric(
+                        horizontal: 12,
+                      ),
+
+                      child:
+                      widget.itemBuilder(
+                        option,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

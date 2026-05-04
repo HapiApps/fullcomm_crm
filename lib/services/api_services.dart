@@ -3093,6 +3093,12 @@ class ApiService {
         // controllers.allScheduleMeet.value = scheduled.length.toString();
         // controllers.allCompletedMeet.value = completed.length.toString();
         // controllers.allCancelled.value = cancelled.length.toString();
+        remController.sortMeetings(
+          searchText: controllers.searchText.value.toLowerCase(),
+          callType: controllers.selectMeetingType.value,
+          sortField: controllers.sortFieldMeetingActivity.value,
+          sortOrder: controllers.sortOrderMeetingActivity.value,
+        );
         remController.dashboardMeetings(
           searchText: controllers.searchText.value.toLowerCase(),
           callType: controllers.selectMeetingType.value,
@@ -5116,14 +5122,14 @@ class ApiService {
           encoding: Encoding.getByName("utf-8"));
 
       Map<String, dynamic> response = json.decode(request.body.trim());
-      if (request.statusCode == 401) {
-        final refreshed = await controllers.refreshToken();
-        if (refreshed) {
-          return resetPasswordAPI(mobile: mobile,pass: pass);
-        } else {
-          controllers.setLogOut();
-        }
-      }
+      // if (request.statusCode == 401) {
+      //   final refreshed = await controllers.refreshToken();
+      //   if (refreshed) {
+      //     return resetPasswordAPI(mobile: mobile,pass: pass);
+      //   } else {
+      //     controllers.setLogOut();
+      //   }
+      // }
       if (request.statusCode == 200) {
         debugPrint("res $response");
         controllers.storage.write("f_name", response["data"]["s_name"]);

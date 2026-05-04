@@ -40,17 +40,17 @@ class _QuotationHistoryState extends State<QuotationHistory> {
   List<double> colWidths = [
     60,//s no
     170,//Action
-    350,//q no
-    150,//status
-    150,//cus
-    130,//com
-    140,//cum no
-    130,//prd
-    110,//ite
-    130,//amt
+    270,//q no
+    130,//status
+    170,//cus
+    190,//com
+    120,//cum no
+    100,//prd
+    100,//ite
+    100,//amt
     // 170,//date
-    130,//vali
-    140,//quo
+    100,//vali
+    100,//quo
   ];
   final ScrollController _controller = ScrollController();
   final ScrollController _horizontalController = ScrollController();
@@ -393,7 +393,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                     children: [
                                                       CustomText(
                                                         textAlign: TextAlign.left,
-                                                        text: "Quotation No - Date",
+                                                        text: "Quotation Number - Date",
                                                         size: 15,
                                                         isBold: true,
                                                         isCopy: true,
@@ -752,7 +752,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                     children: [
                                                       CustomText(
                                                         textAlign: TextAlign.left,
-                                                        text: "Tot Products",
+                                                        text: "Tot Prds",
                                                         size: 15,
                                                         isBold: true,
                                                         isCopy: true,

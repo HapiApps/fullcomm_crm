@@ -11,6 +11,7 @@ import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
+import '../../components/pagination.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
 
@@ -79,10 +80,8 @@ class _CallCommentsState extends State<CallComments> {
     // TODO: implement initState
     super.initState();
     _focusNode = FocusNode();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _focusNode.requestFocus();
-    });
     Future.delayed(Duration.zero,(){
+      _focusNode.requestFocus();
       remController.filterAndSortCalls(
         allCalls: controllers.callActivity,
         searchText: controllers.searchText.value.toLowerCase(),
@@ -514,7 +513,6 @@ class _CallCommentsState extends State<CallComments> {
                         });
                       },
                     )
-
                   ],
                 ),
                 15.height,
@@ -560,7 +558,7 @@ class _CallCommentsState extends State<CallComments> {
                                             side: WidgetStateBorderSide.resolveWith(
                                                   (states) => const BorderSide(width: 1.0, color: Colors.white),
                                             ),
-                                            value: remController.selectedRecordCallIds.length == remController.callFilteredList.length && remController.callFilteredList.isNotEmpty,
+                                            value: remController.selectedRecordCallIds.length == remController.paginatedItems.length && remController.paginatedItems.isNotEmpty,
                                             onChanged: (value) {
                                               setState(() {
                                                 if (value == true) {
@@ -975,16 +973,16 @@ class _CallCommentsState extends State<CallComments> {
                                 // BODY LIST
                                 Expanded(
                                   child: Obx(() {
-                                    if (remController.callFilteredList.isEmpty) {
+                                    if (remController.paginatedItems.isEmpty) {
                                       return const Center(child: Text("No reminders found"));
                                     }
                                     return ListView.builder(
                                       controller: _controller,
                                       shrinkWrap: true,
                                       physics: const ScrollPhysics(),
-                                      itemCount: remController.callFilteredList.length,
+                                      itemCount: remController.paginatedItems.length,
                                       itemBuilder: (context, index) {
-                                        final data = remController.callFilteredList[index];
+                                        final data = remController.paginatedItems[index];
                                         return Table(
                                           columnWidths: {
                                             for (int i = 0; i < colWidths.length; i++)
@@ -1582,6 +1580,22 @@ class _CallCommentsState extends State<CallComments> {
                                       },
                                     );
                                   }),
+                                ),
+                                PaginationWidget(
+
+                                  currentPage: remController.currentPage,
+
+                                  totalPages:
+                                  (remController.callFilteredList.length / remController.itemsPerPage).ceil(),
+
+                                  onPageChanged: (page) {
+
+                                    setState(() {
+
+                                      remController.currentPage = page;
+
+                                    });
+                                  },
                                 ),
                               ],
                             ),

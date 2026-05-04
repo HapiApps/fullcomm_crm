@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import '../common/constant/colors_constant.dart';
 import '../models/all_customers_obj.dart';
 import '../models/new_lead_obj.dart';
+import '../screens/DashboardPage.dart';
 import '../screens/leads/new_lead_page.dart';
 import 'action_button.dart';
 import 'custom_search_textfield.dart';
@@ -135,32 +136,6 @@ class FilterSection extends StatelessWidget {
                       );
                     },
                     textEditingController: controllers.cusController,
-                    // onSelected: (value) {
-                    //  controllers.search.text=value.name.toString();
-                    //   print("value.leadStatus ${value.leadStatus}");
-                    //   print("leadIndex ${leadIndex}");
-                    //   if(value.leadStatus==leadIndex){
-                    //     print("one");
-                    //   }else{
-                    //     print("two");
-                    //     for(var i=0;i<controllers.leadCategoryList.length;i++){
-                    //       if(controllers.leadCategoryList[i].leadStatus==value.leadStatus){
-                    //         controllers.selectedIndex.value=int.parse(value.leadStatus);
-                    //         // controllers.search=value;
-                    //         Get.off(
-                    //           NewLeadPage(
-                    //             index: controllers.leadCategoryList[i].leadStatus,
-                    //             name: controllers.leadCategoryList[i].value,
-                    //             list: controllers.leadCategoryList[i].list,
-                    //             list2: controllers.leadCategoryList[i].list2, listIndex: i,
-                    //           ),
-                    //         );
-                    //         break;
-                    //       }
-                    //     }
-                    //   }
-                    //   // controllers.selectCustomer(value);
-                    // },
                     onSelected: (value) {
                       controllers.selectCustomer(value);
                       controllers.search.text = value.name.toString();

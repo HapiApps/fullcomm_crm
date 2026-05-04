@@ -1073,7 +1073,26 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   var selectedReminderIds = <String>[].obs;
   var selectedMeetingIds = <String>[].obs;
   var selectedRecordMailIds = <String>[].obs;
-  var selectedRecordCallIds = <String>[].obs;
+  var selectedRecordCallIds = <String>[].obs;int currentPage = 1;
+
+  int itemsPerPage = 20;
+
+  List get paginatedItems {
+
+    final start =
+        (currentPage - 1) * itemsPerPage;
+
+    final end =
+        start + itemsPerPage;
+
+    return callFilteredList.sublist(
+      start,
+      end > callFilteredList.length
+          ? callFilteredList.length
+          : end,
+    );
+  }
+
   RxList<CustomerActivity> callMailsDetailsList  = <CustomerActivity>[].obs;
   RxList<CustomerActivity> callMailsDetailsList2  = <CustomerActivity>[].obs;
   RxList<CustomerActivity> callFilteredList  = <CustomerActivity>[].obs;
@@ -4246,7 +4265,8 @@ void unSelectAllAppointments() {
           followUpReminderCount.value = 0;
           meetingReminderCount.value = 0;
         }
-        remController.dashboardSortReminders();
+        sortReminders();
+        dashboardSortReminders();
       } else {
         reminderList.value = [];
         followUpReminderCount.value = 0;
@@ -4470,7 +4490,7 @@ void unSelectAllAppointments() {
         }
       }
       if (request.statusCode == 200 && response["message"]=="OK"){
-        allReminders("type");
+        allReminders("2");
         Navigator.pop(context);
         utils.snackBar(context: context, msg: "Reminder deleted successfully.", color: Colors.green);
         controllers.productCtr.reset();
