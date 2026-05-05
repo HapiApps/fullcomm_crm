@@ -1830,7 +1830,7 @@ class Utils {
                           children: [
                             Icon(Icons.attach_file, size: 18, color: Colors.black),
                             SizedBox(width: 6),
-                            Text("Attach Quotation",
+                            Text("Attach Quotation / Supported Files",
                                 style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.bold)),
                           ],

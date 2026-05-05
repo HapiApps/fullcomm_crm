@@ -8,8 +8,8 @@ import '../controller/controller.dart';
 import '../models/common_response.dart';
 import '../models/employee_details.dart';
 
-
 class EmployeeRepository {
+
   Future<List<Map<String, dynamic>>> getRole() async {
     try {
       final response = await http.post(
@@ -20,6 +20,32 @@ class EmployeeRepository {
         },
         body: jsonEncode({
           'search_type': "all_roles",
+          'action': "get_data",
+          "cos_id": controllers.storage.read("cos_id"),
+        }),
+      );
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonList = jsonDecode(response.body);
+        final List<Map<String, dynamic>> dataMap = jsonList.map((e) => Map<String, dynamic>.from(e)).toList();
+        return dataMap;
+      } else {
+        throw Exception('Failed to load getUser ${response.body}');
+      }
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getDepartment() async {
+    try {
+      final response = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'search_type': "all_departments",
           'action': "get_data",
           "cos_id": controllers.storage.read("cos_id"),
         }),
@@ -87,6 +113,7 @@ class EmployeeRepository {
     required empSalary,
     required empBonus,
     required  active,
+    required  empDep,
     })
   async{
 
@@ -106,6 +133,7 @@ class EmployeeRepository {
             "emp_address": empAddress,
             "emp_password": empPassword,
             "emp_role": empRole,
+            "emp_dep": empDep,
             "emp_join_date": empJoinDate,
             "emp_salary": empSalary,
             "emp_bonus": empBonus,
@@ -116,7 +144,7 @@ class EmployeeRepository {
           },
         ),
       );
-      // print(response.body);
+      print(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -130,6 +158,7 @@ class EmployeeRepository {
             empJoinDate: empJoinDate,
             empSalary: empSalary,
             empBonus: empBonus,
+            empDep: empDep,
             active:  active);
         } else {
           controllers.setLogOut();
@@ -160,6 +189,7 @@ class EmployeeRepository {
     required  empSalary,
     required  empBonus,
     required  active,
+    required  empDep,
   })
   async{
     try{
@@ -178,6 +208,7 @@ class EmployeeRepository {
               "emp_address": empAddress,
               "emp_password": empPassword,
               "emp_role": empRole,
+              "emp_dep": empDep,
               "emp_join_date": empJoinDate,
               "emp_salary": empSalary,
               "emp_bonus": empBonus,
@@ -201,6 +232,7 @@ class EmployeeRepository {
               empJoinDate: empJoinDate,
               empSalary: empSalary,
               empBonus: empBonus,
+              empDep: empDep,
               active:  active);
         } else {
           controllers.setLogOut();

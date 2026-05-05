@@ -13,6 +13,7 @@ import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
 import '../../components/date_filter_bar.dart';
 import '../../components/keyboard_search.dart';
+import '../../components/pagination.dart';
 import '../../components/search_custom_dropdown.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
@@ -1545,9 +1546,9 @@ class _MeetingCommentsState extends State<MeetingComments> {
                           controller: _controller,
                           shrinkWrap: true,
                           physics: const ScrollPhysics(),
-                          itemCount: remController.meetingFilteredList.length,
+                          itemCount: remController.paginatedAppItems.length,
                           itemBuilder: (context, index) {
-                            final data = remController.meetingFilteredList[index];
+                            final data = remController.paginatedAppItems[index];
                             return Table(
                               columnWidths: {
                                 for (int i = 0; i < colWidths.length; i++)
@@ -2755,6 +2756,27 @@ class _MeetingCommentsState extends State<MeetingComments> {
                     })
                 ),
                 20.height,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    PaginationWidget(
+
+                      currentPage: remController.currentAppPage,
+
+                      totalPages:
+                      (remController.paginatedAppItems.length / remController.itemsAppPerPage).ceil(),
+
+                      onPageChanged: (page) {
+
+                        setState(() {
+
+                          remController.currentAppPage = page;
+
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

@@ -12,6 +12,7 @@ import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/date_filter_bar.dart';
 import '../../components/custom_text.dart';
+import '../../components/pagination.dart';
 import '../../controller/controller.dart';
 import '../../controller/product_controller.dart';
 
@@ -50,7 +51,6 @@ class _ProductPageState extends State<ProductPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       productCtr.isSelectAll.value = false;
       productCtr.idsList.value.clear();
-      productCtr.totalProspectPages.value = (productCtr.products.length / productCtr.itemsPerPage).ceil();
       _focusNode.requestFocus();
       productCtr.filterAndSortProducts(
         searchText: controllers.searchText.value.toLowerCase(),
@@ -793,12 +793,12 @@ class _ProductPageState extends State<ProductPage> {
                                   // BODY LIST
                                   Expanded(
                                     child: Obx(() {
-                                      if (productCtr.products.isEmpty) return const Center(child: Text("No Data Found"));
+                                      if (productCtr.paginatedPrdItems.isEmpty) return const Center(child: Text("No Data Found"));
                                       return ListView.builder(
                                         controller: _controller,
-                                        itemCount: productCtr.products.length,
+                                        itemCount: productCtr.paginatedPrdItems.length,
                                         itemBuilder: (context, index) {
-                                          var p = productCtr.products[index];
+                                          var p = productCtr.paginatedPrdItems[index];
                                           return Table(
                                             columnWidths: tableWidthMap,
                                               border: TableBorder(
@@ -841,27 +841,21 @@ class _ProductPageState extends State<ProductPage> {
                       ),
                     ),
                   ),
-                  productCtr.products.isNotEmpty? Obx(() {
-                    int totalPages = productCtr.totalProspectPages.value == 0 ? 1 : productCtr.totalProspectPages.value;
-                    final currentPage = productCtr.currentProspectPage.value;
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
-                          _focusNode.requestFocus();
-                          productCtr.currentProspectPage.value--;
-                          productCtr.changeProductPage(productCtr.products,productCtr.products2);
-                        }),
-                        ...utils.buildPagination(totalPages, currentPage),
-                        utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
-                          productCtr.currentProspectPage.value++;
-                          _focusNode.requestFocus();
-                          productCtr.changeProductPage(productCtr.products,productCtr.products2);
-                        }),
-                      ],
-                    );
-                  }):0.height,
-                  20.height
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      PaginationWidget(
+                        currentPage: productCtr.currentPrdPage,
+                        totalPages:(productCtr.paginatedPrdItems.length / productCtr.itemsPrdPerPage).ceil(),
+                        onPageChanged: (page) {
+                          setState(() {
+                            productCtr.currentPrdPage = page;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

@@ -12,6 +12,7 @@ import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../components/date_filter_bar.dart';
+import '../../components/pagination.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
 import '../../services/api_services.dart';
@@ -831,7 +832,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                Expanded(
                                  child: Obx(() {
                                    final searchText = remController.searchText.value.toLowerCase();
-                                   final filteredList = remController.reminderFilteredList.where((activity) {
+                                   final filteredList = remController.paginatedRemItems.where((activity) {
                                      final matchesSearch = searchText.isEmpty ||
                                          (activity.customerName.toString().toLowerCase().contains(searchText)) ||
                                          (activity.employeeName.toString().toLowerCase().contains(searchText)) ||
@@ -1088,6 +1089,28 @@ class _ReminderPageState extends State<ReminderPage> {
                      ),
                    ),
                  ),
+               ),
+               20.height,
+               Row(
+                 mainAxisAlignment: MainAxisAlignment.end,
+                 children: [
+                   PaginationWidget(
+
+                     currentPage: remController.currentRemPage,
+
+                     totalPages:
+                     (remController.paginatedRemItems.length / remController.itemsRemPerPage).ceil(),
+
+                     onPageChanged: (page) {
+
+                       setState(() {
+
+                         remController.currentRemPage = page;
+
+                       });
+                     },
+                   ),
+                 ],
                ),
              ],
            ),

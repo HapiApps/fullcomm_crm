@@ -1131,17 +1131,19 @@ void checkType(){
                                       child: Padding(
                                         padding: const EdgeInsets.all(10),
                                         child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             CustomText(text: "Activity Timeline",isCopy: true,isBold: true,size: 17),
                                             5.height,
                                             Container(
+                                              width: screenWidth/3,
                                               decoration: customDecoration.baseBackgroundDecoration(
                                                color: colorsConst.primary,radius: 5
                                               ),
                                               child: Padding(
                                                 padding: const EdgeInsets.all(10),
                                                 child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     CustomText(text: "Total Activities",isCopy: true,colors: Colors.white,),10.width,
                                                     CustomText(text: "${calls.length+meetings.length+reminders.length}",isCopy: true,isBold: true,size: 17,colors: Colors.white),
@@ -1149,6 +1151,80 @@ void checkType(){
                                                 ),
                                               ),
                                             ),
+                                            10.height,
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  width: screenWidth/10,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Colors.white,radius: 5,borderColor: Colors.grey.shade200
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(10),
+                                                    child: Row(
+                                                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Icon(Icons.call),20.width,
+                                                        CustomText(text: "Call Log",isCopy: true,isBold: true,)
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: screenWidth/10,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Colors.white,radius: 5,borderColor: Colors.grey.shade200
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(10),
+                                                    child: Row(
+                                                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Icon(Icons.calendar_month_sharp),20.width,
+                                                        CustomText(text: "Meeting",isCopy: true,isBold: true,)
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            10.height,
+                                            Row(
+                                              children: [
+                                                Container(
+                                                  width: screenWidth/10,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Colors.white,radius: 5,borderColor: Colors.grey.shade200
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(10),
+                                                    child: Row(
+                                                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Icon(Icons.alarm),20.width,
+                                                        CustomText(text: "Reminder",isCopy: true,isBold: true,)
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                                Container(
+                                                  width: screenWidth/10,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Colors.white,radius: 5,borderColor: Colors.grey.shade200
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(10),
+                                                    child: Row(
+                                                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                      children: [
+                                                        Icon(Icons.mail_outline_outlined),20.width,
+                                                        CustomText(text: "Mail",isCopy: true,isBold: true,)
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),10.height,
                                             if (calls.isNotEmpty) ...[
                                               SizedBox(
                                                   width: screenWidth / 4.5,
@@ -1978,53 +2054,95 @@ void checkType(){
       return words[0][0].toUpperCase();
     }
   }
+  // Widget _buildCallRecords(List<CallRecord> calls) {
+  //   return Container(
+  //     padding: const EdgeInsets.all(12),
+  //     decoration: BoxDecoration(
+  //       color: Colors.white,
+  //       border: Border.all(color: Colors.black12),
+  //       borderRadius: BorderRadius.circular(8),
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         CustomText(text: "Call Records (${calls.length})", colors: colorsConst.textColor, isBold: true,isCopy: true, size: 14),
+  //         10.height,
+  //         ...calls.map((c) => InkWell(
+  //           onTap: () => _showRecordDialog(
+  //             title: "Call Detail",
+  //             fields: {
+  //               "Type": c.callType ?? "",
+  //               "Status": c.callStatus ?? "",
+  //               "To": c.toData ?? "",
+  //               "From": c.fromData ?? "",
+  //               "Message": c.message ?? "",
+  //               "Sent Date": c.sentDate ?? "",
+  //               "Created By": c.createdBy?.toString() ?? "",
+  //               "Created Ts": c.createdTs ?? "",
+  //             },
+  //           ),
+  //           child: Padding(
+  //             padding: const EdgeInsets.symmetric(vertical: 8.0),
+  //             child: Column(
+  //               crossAxisAlignment: CrossAxisAlignment.start,
+  //               children: [
+  //                 CustomText(text:c.createdBy ?? "", size: 12,colors: Colors.black,isCopy: false,isBold: true,),
+  //                 Row(
+  //                   children: [
+  //                     Expanded(child: Text("${c.callType ?? ''} • ${c.callStatus ?? ''}", style: TextStyle(fontSize: 13))),
+  //                     Text(c.sentDate ?? "", style: TextStyle(fontSize: 12)),
+  //                     10.width,
+  //                     Icon(Icons.chevron_right, size: 18, color: Colors.grey),
+  //                   ],
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         )).toList(),
+  //       ],
+  //     ),
+  //   );
+  // }
   Widget _buildCallRecords(List<CallRecord> calls) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.black12),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CustomText(text: "Call Records (${calls.length})", colors: colorsConst.textColor, isBold: true,isCopy: true, size: 14),
-          10.height,
-          ...calls.map((c) => InkWell(
-            onTap: () => _showRecordDialog(
-              title: "Call Detail",
-              fields: {
-                "Type": c.callType ?? "",
-                "Status": c.callStatus ?? "",
-                "To": c.toData ?? "",
-                "From": c.fromData ?? "",
-                "Message": c.message ?? "",
-                "Sent Date": c.sentDate ?? "",
-                "Created By": c.createdBy?.toString() ?? "",
-                "Created Ts": c.createdTs ?? "",
-              },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        10.height,
+        ...calls.map((c) => InkWell(
+          onTap: () => _showRecordDialog(
+            title: "Call Detail",
+            fields: {
+              "Type": c.callType ?? "",
+              "Status": c.callStatus ?? "",
+              "To": c.toData ?? "",
+              "From": c.fromData ?? "",
+              "Message": c.message ?? "",
+              "Sent Date": c.sentDate ?? "",
+              "Created By": c.createdBy?.toString() ?? "",
+              "Created Ts": c.createdTs ?? "",
+            },
+          ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 20,height: 20,
+                ),
+                CustomText(text:"${c.callType ?? ''} - ${c.callStatus ?? ''}",isCopy: false,isBold: true,),10.height,
+                Row(
+                  children: [
+                    CustomText(text:c.createdBy ?? "", size: 12,colors: Colors.grey,isCopy: false,),5.width,
+                    CircleAvatar(radius: 2,backgroundColor: Colors.grey,),5.width,
+                    CustomText(text:c.sentDate ?? "", size: 12,colors: Colors.grey,isCopy: false,),
+                  ],
+                ),
+              ],
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CustomText(text:c.createdBy ?? "", size: 12,colors: Colors.black,isCopy: false,isBold: true,),
-                  Row(
-                    children: [
-                      Expanded(child: Text("${c.callType ?? ''} • ${c.callStatus ?? ''}", style: TextStyle(fontSize: 13))),
-                      Text(c.sentDate ?? "", style: TextStyle(fontSize: 12)),
-                      10.width,
-                      Icon(Icons.chevron_right, size: 18, color: Colors.grey),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          )).toList(),
-        ],
-      ),
+          ),
+        )).toList(),
+      ],
     );
   }
 

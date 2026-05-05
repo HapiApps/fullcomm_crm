@@ -26,6 +26,7 @@ class CustomPasswordTextField extends StatefulWidget {
   final String? image;
   final String? prefixText;
   final VoidCallback? onEdit;
+  final ValueChanged<String>? onFieldSubmitted;
 
   const CustomPasswordTextField({
     super.key,
@@ -49,7 +50,7 @@ class CustomPasswordTextField extends StatefulWidget {
     this.image,
     this.prefixText,
     this.onEdit,
-    required this.isOptional,
+    required this.isOptional, this.onFieldSubmitted,
   });
 
   @override
@@ -89,6 +90,7 @@ class _CustomPasswordTextFieldState extends State<CustomPasswordTextField> {
           height: widget.height,
           child: Center(
             child: TextFormField(
+              onFieldSubmitted: widget.onFieldSubmitted,
               key: ValueKey(widget.text),
               controller: widget.controller,
               focusNode: widget.focusNode,

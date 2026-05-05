@@ -1904,7 +1904,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                       CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
                                       if(controllers.selectedCompanyName.value!="")
                                         CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
-                                      CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                      CustomText(text: " - ${controllers.selectedCustomerMobile.value.toString().split("||").where((e) => e.isNotEmpty).join(", ")}", isCopy: false,size: 16,),
                                     ],
                                   ),
                                 ),

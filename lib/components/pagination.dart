@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 
+import 'Customtext.dart';
+
 class PaginationWidget extends StatelessWidget {
 
   final int currentPage;
@@ -124,16 +126,13 @@ class PaginationWidget extends StatelessWidget {
 
           color: isSelected
               ? colorsConst.primary
-              : Colors.grey.shade100,
+              : Colors.white,
 
           borderRadius: BorderRadius.circular(8),
         ),
 
-        child: Text(
-          page.toString(),
-          style: const TextStyle(
-            fontWeight: FontWeight.w500,
-          ),
+        child: CustomText(
+          text:page.toString(),isCopy: false,isBold: true,colors: isSelected?Colors.white:Colors.black,
         ),
       ),
     );
@@ -158,7 +157,7 @@ class PaginationWidget extends StatelessWidget {
         alignment: Alignment.center,
 
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
+          color: Colors.white,
           borderRadius: BorderRadius.circular(8),
         ),
 

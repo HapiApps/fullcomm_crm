@@ -12,6 +12,7 @@ import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
 import '../../components/date_filter_bar.dart';
+import '../../components/pagination.dart';
 import '../../controller/controller.dart';
 import '../../controller/reminder_controller.dart';
 
@@ -566,7 +567,7 @@ class _MailCommentsState extends State<MailComments> {
                 Expanded(
                     child: Obx((){
                       final searchText = remController.searchText.value.toLowerCase();
-                      final filteredList = remController.mailFilteredList.where((activity) {
+                      final filteredList = remController.paginatedMailItems.where((activity) {
                         final matchesSearch = searchText.isEmpty ||
                             (activity.toData.toString().toLowerCase().contains(searchText)) ||
                             (activity.subject.toString().toLowerCase().contains(searchText));
@@ -607,6 +608,7 @@ class _MailCommentsState extends State<MailComments> {
                           itemCount: filteredList.length,
                           itemBuilder: (context, index) {
                             final data = filteredList[index];
+                            var imageList =data.attachment.toString().split("||");
                             return Table(
                               columnWidths: {
                                 for (int i = 0; i < colWidths.length; i++)
@@ -679,55 +681,79 @@ class _MailCommentsState extends State<MailComments> {
                                           ),
                                         ),
                                       ),
-                                      data.attachment.isNotEmpty
-                                          ? Builder(
-                                        builder: (context) {
-                                          final file = data.attachment.toLowerCase();
-                                          final pdfUrl = "$getImage?path=${Uri.encodeComponent(data.attachment)}";
-                                          if (file.endsWith(".pdf")) {
-                                            return InkWell(
-                                              onTap: () async {
-                                                if (await canLaunchUrl(Uri.parse(pdfUrl))) {
-                                                  await launchUrl(Uri.parse(pdfUrl), mode: LaunchMode.platformDefault);
-                                                } else {
-                                                  utils.snackBar(context: context, msg: 'Could not launch $pdfUrl', color: Colors.red);
-                                                }
-                                              },
-                                              child: Container(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    const Icon(Icons.picture_as_pdf, color: Colors.red, size: 40),
-                                                    const SizedBox(height: 5),
-                                                    const Text("View PDF", style: TextStyle(fontSize: 12)),
-                                                  ],
+                                      InkWell(
+                                        onTap:(){
+                                          showMailImageDialog(context, imageList,0);
+                                        },
+                                        child: imageList.isNotEmpty
+                                            ? Builder(
+                                          builder: (context) {
+                                            final file = imageList.first.toLowerCase();
+                                            final pdfUrl = "$getImage?path=${Uri.encodeComponent(imageList.first)}";
+                                            if (file.endsWith(".pdf")) {
+                                              return InkWell(
+                                                onTap: () async {
+                                                  if (await canLaunchUrl(Uri.parse(pdfUrl))) {
+                                                    await launchUrl(Uri.parse(pdfUrl), mode: LaunchMode.platformDefault);
+                                                  } else {
+                                                    utils.snackBar(context: context, msg: 'Could not launch $pdfUrl', color: Colors.red);
+                                                  }
+                                                },
+                                                child: Container(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    mainAxisSize: MainAxisSize.min,
+                                                    children: [
+                                                      const Icon(Icons.picture_as_pdf, color: Colors.red, size: 40),
+                                                      const SizedBox(height: 5),
+                                                      const Text("View PDF", style: TextStyle(fontSize: 12)),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                            );
-                                          } else if (file.endsWith(".jpg") ||
-                                              file.endsWith(".jpeg") ||
-                                              file.endsWith(".png")) {
-                                            return Padding(
-                                              padding: const EdgeInsets.only(top: 5),
-                                              child: Image.network(
-                                                "$getImage?path=${Uri.encodeComponent(data.attachment)}",
+                                              );
+                                            } else if(file.toString()=="null"||file.toString()==""){
+                                              return Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child: CustomText(
+                                                  isCopy: false,textAlign: TextAlign.center,
+                                                  text:"No attachment",colors: Colors.grey, size: 14,
+                                                ),
+                                              );
+                                            } else if(file.endsWith(".svg")){
+                                              return SvgPicture.network(
+                                                imageList.first,
                                                 height: 50,
                                                 fit: BoxFit.cover,
-                                              ),
-                                            );
-                                          } else {
-                                            return ListTile(
-                                              title: Text("Unsupported file"),
-                                            );
-                                          }
-                                        },
-                                      )
-                                          : Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: CustomText(
-                                          isCopy: false,textAlign: TextAlign.center,
-                                          text:"No attachment",colors: Colors.grey, size: 14,
+                                                placeholderBuilder: (context) =>
+                                                const CircularProgressIndicator(),
+                                              );
+                                            }  else {
+                                              // else if (file.endsWith(".jpg"
+                                              //   }) ||
+                                              //   file.endsWith(".jpeg") ||
+                                              //   file.endsWith(".png")) {
+                                              return Padding(
+                                                padding: const EdgeInsets.only(top: 5),
+                                                child: Image.network(
+                                                  "$getImage?path=${Uri.encodeComponent(imageList.first)}",
+                                                  height: 50,
+                                                  fit: BoxFit.cover,
+                                                ),
+                                              );
+                                            }
+                                            // else {
+                                            //   return ListTile(
+                                            //     title: Text("Unsupported file"),
+                                            //   );
+                                            // }
+                                          },
+                                        )
+                                            : Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            isCopy: false,textAlign: TextAlign.center,
+                                            text:"No attachment",colors: Colors.grey, size: 14,
+                                          ),
                                         ),
                                       ),
                                       Padding(
@@ -748,6 +774,28 @@ class _MailCommentsState extends State<MailComments> {
                         ),
                       );
                     })
+                ),
+                20.height,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    PaginationWidget(
+
+                      currentPage: remController.currentMailPage,
+
+                      totalPages:
+                      (remController.mailFilteredList.length / remController.itemsMailPerPage).ceil(),
+
+                      onPageChanged: (page) {
+
+                        setState(() {
+
+                          remController.currentMailPage = page;
+
+                        });
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),

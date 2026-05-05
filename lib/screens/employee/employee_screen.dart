@@ -31,6 +31,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) async{
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       await employeeData.fetchRoleList();
+      await employeeData.fetchDepList();
       employeeData.staffRoleDetailsData(context: context);
     });
   }
@@ -93,6 +94,8 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   }else if(plan=="business fit"&&(employeeProvider.filteredStaff.length) < 10){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
                                   }else if(plan=="business pro"||plan=="enterprise"){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
+                                  }else if(plan==""){
                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
                                   }else{
                                     utils.snackBar(
@@ -256,15 +259,15 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                   Table(
                     columnWidths: const {
                       0: FlexColumnWidth(2),//S.No
-                      1: FlexColumnWidth(3.5),//Employee Name
-                      2: FlexColumnWidth(3),//Role.
-                      3: FlexColumnWidth(2),//Mobile No
-                      4: FlexColumnWidth(3),//Email
-                      5: FlexColumnWidth(2.5),//Action
-                      6: FlexColumnWidth(2.5),
-                      7: FlexColumnWidth(2.5),
-                      8: FlexColumnWidth(2.5),
-                      //6: FlexColumnWidth(4.5),//Actions
+                      1: FlexColumnWidth(2),//action
+                      2: FlexColumnWidth(4),//emp
+                      3: FlexColumnWidth(2),//role
+                      4: FlexColumnWidth(2),//dep
+                      5: FlexColumnWidth(3),//no
+                      6: FlexColumnWidth(3),//email
+                      7: FlexColumnWidth(3.5),//add
+                      8: FlexColumnWidth(1.5),//sal
+                      9: FlexColumnWidth(1.5),//bo
                     },
                     border: TableBorder(
                       horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -352,6 +355,36 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                   GestureDetector(
                                     onTap: (){
                                       employeeProvider.setFieldAndToggle('role');
+                                    },
+                                    child: Image.asset(
+                                      employeeProvider.sortField.isEmpty
+                                          ? "assets/images/arrow.png"
+                                          : employeeProvider.sortOrder == 'asc'
+                                          ? "assets/images/arrow_up.png"
+                                          : "assets/images/arrow_down.png",
+                                      width: 15,
+                                      height: 15,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Row(
+                                children: [
+                                  CustomText(//2
+                                    textAlign: TextAlign.left,
+                                    text: "Department",
+                                    size: 15,
+                                    isBold: true,
+                                    isCopy: false,
+                                    colors: Colors.white,
+                                  ),
+                                  5.width,
+                                  GestureDetector(
+                                    onTap: (){
+                                      employeeProvider.setFieldAndToggle('dep');
                                     },
                                     child: Image.asset(
                                       employeeProvider.sortField.isEmpty
@@ -537,14 +570,15 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                               child: Table(
                                 columnWidths:const {
                                   0: FlexColumnWidth(2),//S.No
-                                  1: FlexColumnWidth(3.5),//Employee Name
-                                  2: FlexColumnWidth(3),//Role.
-                                  3: FlexColumnWidth(2),//Mobile No
-                                  4: FlexColumnWidth(3),//Email
-                                  5: FlexColumnWidth(2.5),//Action
-                                  6: FlexColumnWidth(2.5),
-                                  7: FlexColumnWidth(2.5),
-                                  8: FlexColumnWidth(2.5),
+                                  1: FlexColumnWidth(2),//action
+                                  2: FlexColumnWidth(4),//emp
+                                  3: FlexColumnWidth(2),//role
+                                  4: FlexColumnWidth(2),//dep
+                                  5: FlexColumnWidth(3),//no
+                                  6: FlexColumnWidth(3),//email
+                                  7: FlexColumnWidth(3.5),//add
+                                  8: FlexColumnWidth(1.5),//sal
+                                  9: FlexColumnWidth(1.5),//bo
                                 },
                                 border: TableBorder(
                                   horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -673,7 +707,18 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                           child: CustomText(
                                             textAlign: TextAlign.left,
                                             isCopy: false,
-                                            text:employeeProvider.getRoleName(staffData.role.toString()=="null"?"1":staffData.role.toString()),
+                                            text:staffData.roleTitle.toString(),
+                                            // text:employeeProvider.getRoleName(staffData.role.toString()=="null"?"1":staffData.role.toString()),
+                                            size: 14,
+                                            colors: colorsConst.textColor,
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            textAlign: TextAlign.left,
+                                            isCopy: false,
+                                            text:staffData.department.toString(),
                                             size: 14,
                                             colors: colorsConst.textColor,
                                           ),
@@ -846,7 +891,6 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                         // ),
                                       ]
                                   ),
-
                                 ],
                               ),
                             );

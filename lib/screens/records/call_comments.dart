@@ -1581,21 +1581,27 @@ class _CallCommentsState extends State<CallComments> {
                                     );
                                   }),
                                 ),
-                                PaginationWidget(
+                                20.height,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    PaginationWidget(
 
-                                  currentPage: remController.currentPage,
+                                      currentPage: remController.currentPage,
 
-                                  totalPages:
-                                  (remController.callFilteredList.length / remController.itemsPerPage).ceil(),
+                                      totalPages:
+                                      (remController.callFilteredList.length / remController.itemsPerPage).ceil(),
 
-                                  onPageChanged: (page) {
+                                      onPageChanged: (page) {
 
-                                    setState(() {
+                                        setState(() {
 
-                                      remController.currentPage = page;
+                                          remController.currentPage = page;
 
-                                    });
-                                  },
+                                        });
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

@@ -61,6 +61,8 @@ class Staff {
   String? updatedBy;
   String? createdBy;
   String? cosId;
+  String? department;
+  String? dId;
 
   Staff({
     this.id,
@@ -85,6 +87,8 @@ class Staff {
     this.updatedBy,
     this.createdBy,
     this.cosId,
+    this.department,
+    this.dId,
   });
 
   factory Staff.fromJson(Map<String, dynamic> json) => Staff(
@@ -110,10 +114,14 @@ class Staff {
     updatedBy: json["updated_by"]?.toString() ?? '',
     createdBy: json["created_by"]?.toString() ?? '',
     cosId: json["cos_id"]?.toString() ?? '',
+    department: json["department"]?.toString() ?? '',
+    dId: json["d_id"]?.toString() ?? '',
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
+    "department": department,
+    "d_id": dId,
     "s_name": sName,
     "s_mobile": sMobile,
     "email": email,

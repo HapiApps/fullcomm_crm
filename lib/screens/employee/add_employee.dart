@@ -24,15 +24,33 @@ class AddEmployeePage extends StatefulWidget {
 }
 
 class _AddEmployeePageState extends State<AddEmployeePage> {
-
+  /// FOCUS NODES
+  final FocusNode nameFocus = FocusNode();
+  final FocusNode mobileFocus = FocusNode();
+  final FocusNode whatsappFocus = FocusNode();
+  final FocusNode passwordFocus = FocusNode();
+  final FocusNode emailFocus = FocusNode();
+  final FocusNode doorFocus = FocusNode();
+  final FocusNode areaFocus = FocusNode();
+  final FocusNode streetFocus = FocusNode();
+  final FocusNode cityFocus = FocusNode();
+  final FocusNode stateFocus = FocusNode();
+  final FocusNode salaryFocus = FocusNode();
+  final FocusNode bonusFocus = FocusNode();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
+      FocusScope.of(context).requestFocus(nameFocus);
       employeeData.clearAllEmployeeControllers();
-      employeeData.fetchRoleList();
+      if(employeeData.roleList.isEmpty){
+        employeeData.fetchRoleList();
+      }
+      if(employeeData.depList.isEmpty){
+        employeeData.fetchDepList();
+      }
     });
   }
   @override
@@ -89,6 +107,10 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                 children: [
                                   CustomTextField(
                                     width: textFieldSize,
+                                    focusNode: nameFocus,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(mobileFocus);
+                                    },
                                     text: "Employee Name",
                                     hintText: "Enter Employee Name",
                                     controller: employeeProvider.nameController,
@@ -188,6 +210,10 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     inputFormatters: constInputFormatters.mobileNumberInput,
                                     controller: employeeProvider.mobileController,
                                     textInputAction: TextInputAction.next,
+                                    focusNode: mobileFocus,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(whatsappFocus);
+                                    },
                                     isOptional: true,
                                   ),
                                   CustomTextField(
@@ -195,6 +221,10 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     text: "Whatsapp No",
                                     hintText: "Enter Whatsapp No",
                                     isOptional: false,
+                                    focusNode: whatsappFocus,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(passwordFocus);
+                                    },
                                     controller: employeeProvider.WhatsappController,
                                     textInputAction: TextInputAction.next,
                                     inputFormatters: constInputFormatters.mobileNumberInput,
@@ -204,6 +234,10 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     height: 45,
                                     text: "Password",
                                     hintText: "Enter Password",
+                                    focusNode: passwordFocus,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(emailFocus);
+                                    },
                                     controller: employeeProvider.password,
                                     inputFormatters: constInputFormatters.passwordInput,
                                     textInputAction: TextInputAction.next,
@@ -212,40 +246,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     Icons.visibility_off : Icons.visibility,
                                   ),
                                   20.height,
-                                  CustomTextField(
-                                    width: textFieldSize,
-                                    text: "Door No",
-                                    hintText: "Enter Door No",
-                                    isOptional: false,
-                                    controller: employeeProvider.door,
-                                    textInputAction: TextInputAction.next,
-                                  ),
-                                  CustomTextField(
-                                    width: textFieldSize,
-                                    text: "Area",
-                                    hintText: "Enter Area",
-                                    isOptional: false,
-                                    controller: employeeProvider.area,
-                                    textInputAction: TextInputAction.next,
-                                  ),
-                                  CustomTextField(
-                                    hintText: "State",
-                                    text: "State",
-                                    controller: controllers.stateController,
-                                    width: textFieldSize,
-                                    keyboardType: TextInputType.text,
-                                    textInputAction: TextInputAction.next,
-                                    isOptional: false,
-                                  ),
-                                  20.height,
-                                ],
-                              ),
-                            ),
-                            20.width,
-                            /// Right Column
-                            Expanded(
-                              child: Column(
-                                children: [
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -314,9 +314,84 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       ),
                                     ],
                                   ),
-                                  25.height,
+                                  20.height,
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          CustomText(
+                                            text: "Department",
+                                            colors: const Color(0xff757575),
+                                            size: 13,
+                                            isCopy: false,
+                                          ),
+                                          const CustomText(
+                                            text: "*",
+                                            colors: Colors.red,
+                                            size: 25,
+                                            isCopy: false,
+                                          ),
+                                          IconButton(onPressed: (){
+                                            employeeProvider.addDepartmentDialog(context);
+                                          }, icon: Icon(Icons.add))
+                                        ],
+                                      ),
+                                      Container(
+                                        width: textFieldSize,
+                                        height: 40,
+                                        decoration: customDecoration.baseBackgroundDecoration(
+                                            radius: 8,
+                                            color: Colors.white,
+                                            borderColor: Colors.grey.shade400),
+                                        child: DropdownButtonHideUnderline(
+                                          child: ButtonTheme(
+                                            alignedDropdown: true,
+                                            child: DropdownButton(
+                                              underline: const SizedBox(),
+                                              isExpanded: true,
+                                              value: employeeProvider.dep,
+                                              iconEnabledColor: Colors.black,
+                                              hint: CustomText(
+                                                text: "",
+                                                colors: Colors.grey.shade400,
+                                                size: 13,
+                                                isBold: false,
+                                                isStyle: true,
+                                                isCopy: true,
+                                              ),
+                                              items: employeeProvider.depList.map((item) {
+                                                return DropdownMenuItem(
+                                                  value: item,
+                                                  child: CustomText(
+                                                      text: item["department"],
+                                                      colors: Colors.black,
+                                                      size: 13,
+                                                      isCopy: false,
+                                                      isBold: false),
+                                                );
+                                              }).toList(),
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  employeeProvider.dep = value!;
+                                                  var list = [];
+                                                  list.add(value);
+                                                  employeeProvider.depId = list[0]["id"];
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  20.height,
                                   CustomTextField(
                                     width: textFieldSize,
+                                    focusNode: emailFocus,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(doorFocus);
+                                    },
                                     text: "Email",
                                     hintText: "Enter Email",
                                     isOptional: false,
@@ -325,38 +400,47 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     textInputAction: TextInputAction.next,
                                   ),
                                   10.height,
-                                  // CustomTextField(
-                                  //   width: textFieldSize,
-                                  //   text: "Address",
-                                  //   hintText: "Enter Address",
-                                  //   controller: employeeProvider.door,
-                                  //   textInputAction: TextInputAction.next,
-                                  //   isOptional: false,
-                                  //   inputFormatters: constInputFormatters.addressInput,
-                                  // ),
+                                ],
+                              ),
+                            ),
+                            20.width,
+                            /// Right Column
+                            Expanded(
+                              child: Column(
+                                children: [
                                   CustomTextField(
-                                    text: "Salary",
                                     width: textFieldSize,
+                                    text: "Door No",
+                                    hintText: "Enter Door No",
                                     isOptional: false,
-                                    hintText: "Enter Salary",
-                                    controller: employeeProvider.salary,
+                                    focusNode: doorFocus,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(areaFocus);
+                                    },
+                                    controller: employeeProvider.door,
                                     textInputAction: TextInputAction.next,
-                                    inputFormatters: constInputFormatters.numberInput,
                                   ),
                                   CustomTextField(
                                     width: textFieldSize,
-                                    text: "Bonus",
+                                    text: "Area",
+                                    hintText: "Enter Area",
                                     isOptional: false,
-                                    hintText: "Enter Bonus",
-                                    controller: employeeProvider.bonus,
+                                    focusNode: areaFocus,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(streetFocus);
+                                    },
+                                    controller: employeeProvider.area,
                                     textInputAction: TextInputAction.next,
-                                    inputFormatters: constInputFormatters.numberInput,
                                   ),
                                   CustomTextField(
                                     width: textFieldSize,
                                     text: "Street",
                                     hintText: "Enter Street",
                                     isOptional: false,
+                                    focusNode: streetFocus,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(cityFocus);
+                                    },
                                     controller: employeeProvider.street,
                                     textInputAction: TextInputAction.next,
                                   ),
@@ -365,9 +449,26 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     text: "City",
                                     hintText: "Enter City",
                                     isOptional: false,
+                                    focusNode: cityFocus,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(stateFocus);
+                                    },
                                     controller: employeeProvider.city,
                                     textInputAction: TextInputAction.next,
                                     inputFormatters: constInputFormatters.textInput,
+                                  ),
+                                  CustomTextField(
+                                    hintText: "State",
+                                    text: "State",
+                                    focusNode: stateFocus,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(salaryFocus);
+                                    },
+                                    controller: controllers.stateController,
+                                    width: textFieldSize,
+                                    keyboardType: TextInputType.text,
+                                    textInputAction: TextInputAction.next,
+                                    isOptional: false,
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -399,7 +500,177 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                         ],
                                       ),
                                     ],
-                                  )
+                                  ),
+                                  20.height,
+                                  CustomTextField(
+                                    text: "Salary",
+                                    width: textFieldSize,
+                                    isOptional: false,
+                                    focusNode: salaryFocus,
+                                    onFieldSubmitted: (_) {
+                                      FocusScope.of(context).requestFocus(bonusFocus);
+                                    },
+                                    hintText: "Enter Salary",
+                                    controller: employeeProvider.salary,
+                                    textInputAction: TextInputAction.next,
+                                    inputFormatters: constInputFormatters.numberInput,
+                                  ),
+                                  CustomTextField(
+                                    width: textFieldSize,
+                                    text: "Bonus",
+                                    focusNode: bonusFocus,
+                                    onFieldSubmitted: (_) {
+                                      employeeProvider.addEmployeeButtonController.start();
+                                      final addressParts = [
+                                        employeeProvider.door.text,
+                                        employeeProvider.street.text,
+                                        employeeProvider.area.text,
+                                        employeeProvider.city.text,
+                                        controllers.stateController.text,
+                                        controllers.selectedCountry.value,
+                                      ];
+                                      final filtered = addressParts.where((e) => e.trim().isNotEmpty).toList();
+                                      final finalAddress = filtered.join(',');
+                                      if(employeeProvider.nameController.text.isEmpty){
+                                        employeeProvider.addEmployeeButtonController.reset();
+                                        utils.snackBar(
+                                          context: context,
+                                          msg: "Please Enter Employee Name",
+                                          color: Colors.red,
+                                        );
+                                      }
+                                      else if(employeeProvider.mobileController.text.isEmpty){
+                                        employeeProvider.addEmployeeButtonController.reset();
+                                        utils.snackBar(
+                                          context: context,
+                                          msg: "Please Enter Mobile Number",
+                                          color: Colors.red,
+                                        );
+                                      }
+                                      else if(employeeProvider.mobileController.text.length!=10){
+                                        employeeProvider.addEmployeeButtonController.reset();
+                                        utils.snackBar(
+                                          context: context,
+                                          msg: "Please Enter 10 digit Mobile Number",
+                                          color: Colors.red,
+                                        );
+                                      }
+                                      else if(employeeProvider.WhatsappController.text.isNotEmpty&&employeeProvider.WhatsappController.text.length!=10){
+                                        employeeProvider.addEmployeeButtonController.reset();
+                                        utils.snackBar(
+                                          context: context,
+                                          msg: "Please Enter 10 digit Mobile Number",
+                                          color: Colors.red,
+                                        );
+                                      }
+                                      else if(employeeProvider.password.text.isEmpty){
+                                        employeeProvider.addEmployeeButtonController.reset();
+                                        utils.snackBar(
+                                          context: context,
+                                          msg: "Please Enter Password",
+                                          color: Colors.red,
+                                        );
+                                      }
+                                      else if(employeeProvider.password.text.length<8) {
+                                        employeeProvider.addEmployeeButtonController.reset();
+                                        utils.snackBar(
+                                          context: context,
+                                          msg: "Please Enter above 8 digit Password",
+                                          color: Colors.red,
+                                        );
+                                      }
+                                      else if(employeeProvider.roleId==null){
+                                        employeeProvider.addEmployeeButtonController.reset();
+                                        utils.snackBar(
+                                          context: context,
+                                          msg: "Please Select Role",
+                                          color: Colors.red,
+                                        );
+                                      }
+                                      else if(employeeProvider.depId==null){
+                                        employeeProvider.addEmployeeButtonController.reset();
+                                        utils.snackBar(
+                                          context: context,
+                                          msg: "Please Select Department",
+                                          color: Colors.red,
+                                        );
+                                      }
+                                      else {
+                                        // final int currentLimit = int.tryParse(controllers.currentUserCount.value) ?? 0;
+                                        // if (employeeProvider.filteredStaff.length >= currentLimit) {
+                                        //   print("Only after making a payment, you can add employees.");
+                                        //   utils.expiredEmpDialog();
+                                        //   employeeProvider.addEmployeeButtonController.reset();
+                                        // }else{
+                                        if(employeeProvider.emailController.text.isEmpty){
+                                          employeeProvider.employeeInsert(
+                                            context: context,
+                                            empName: employeeProvider.nameController.text.toString(),
+                                            empMobile: employeeProvider.mobileController.text.toString(),
+                                            empAddress: finalAddress,
+                                            empBonus: employeeProvider.bonus.text.toString(),
+                                            empEmail: employeeProvider.emailController.text.toString(),
+                                            empPassword: employeeProvider.password.text.toString(),
+                                            empJoinDate: employeeProvider.date.text.toString(),
+                                            empRole:employeeProvider.roleId,
+                                            empDep:employeeProvider.depId,
+                                            empSalary: employeeProvider.salary.text.toString(),
+                                            empWhatsapp: employeeProvider.mobileController.text.trim().toString(),
+                                            active: employeeProvider.selectedPublication ?? "1",
+                                          );
+                                        }else{
+                                          if (employeeProvider.emailController.text.isEmpty) {
+                                            employeeProvider.employeeInsert(
+                                              context: context,
+                                              empName: employeeProvider.nameController.text.toString(),
+                                              empMobile: employeeProvider.mobileController.text.toString(),
+                                              empAddress:finalAddress,
+                                              empBonus: employeeProvider.bonus.text.toString(),
+                                              empEmail: employeeProvider.emailController.text.toString(),
+                                              empPassword: employeeProvider.password.text.toString(),
+                                              empJoinDate: employeeProvider.date.text.toString(),
+                                              empRole:employeeProvider.roleId,
+                                              empDep:employeeProvider.depId,
+                                              empSalary: employeeProvider.salary.text.toString(),
+                                              empWhatsapp: employeeProvider.WhatsappController.text.trim().toString(),
+                                              active: employeeProvider.selectedPublication ?? "1",
+                                            );
+                                          } else {
+                                            if(employeeProvider.emailController.text.isEmail){
+                                              employeeProvider.employeeInsert(
+                                                context: context,
+                                                empName: employeeProvider.nameController.text.toString(),
+                                                empMobile: employeeProvider.mobileController.text.toString(),
+                                                empAddress: finalAddress,
+                                                empBonus: employeeProvider.bonus.text.toString(),
+                                                empEmail: employeeProvider.emailController.text.toString(),
+                                                empPassword: employeeProvider.password.text.toString(),
+                                                empJoinDate: employeeProvider.date.text.toString(),
+                                                empRole:employeeProvider.roleId,
+                                                empDep:employeeProvider.depId,
+                                                empSalary: employeeProvider.salary.text.toString(),
+                                                empWhatsapp: employeeProvider.WhatsappController.text.trim().toString(),
+                                                active: employeeProvider.selectedPublication ?? "1",
+                                              );
+                                            }else{
+                                              employeeProvider.addEmployeeButtonController.reset();
+                                              utils.snackBar(
+                                                context: context,
+                                                msg: "Please Enter Valid Email",
+                                                color: Colors.red,
+                                              );
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    isOptional: false,
+                                    hintText: "Enter Bonus",
+                                    controller: employeeProvider.bonus,
+                                    textInputAction: TextInputAction.next,
+                                    inputFormatters: constInputFormatters.numberInput,
+                                  ),
+                                  20.height,
                                 ],
                               ),
                             ),
@@ -445,14 +716,16 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       msg: "Please Enter Mobile Number",
                                       color: Colors.red,
                                     );
-                                  }else if(employeeProvider.mobileController.text.length!=10){
+                                  }
+                                  else if(employeeProvider.mobileController.text.length!=10){
                                     employeeProvider.addEmployeeButtonController.reset();
                                     utils.snackBar(
                                       context: context,
                                       msg: "Please Enter 10 digit Mobile Number",
                                       color: Colors.red,
                                     );
-                                  }else if(employeeProvider.WhatsappController.text.isNotEmpty&&employeeProvider.WhatsappController.text.length!=10){
+                                  }
+                                  else if(employeeProvider.WhatsappController.text.isNotEmpty&&employeeProvider.WhatsappController.text.length!=10){
                                    employeeProvider.addEmployeeButtonController.reset();
                                    utils.snackBar(
                                      context: context,
@@ -480,10 +753,19 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                     employeeProvider.addEmployeeButtonController.reset();
                                     utils.snackBar(
                                       context: context,
-                                      msg: "Please Enter Role",
+                                      msg: "Please Select Role",
                                       color: Colors.red,
                                     );
-                                  } else {
+                                  }
+                                  else if(employeeProvider.depId==null){
+                                    employeeProvider.addEmployeeButtonController.reset();
+                                    utils.snackBar(
+                                      context: context,
+                                      msg: "Please Select Department",
+                                      color: Colors.red,
+                                    );
+                                  }
+                                  else {
                                    // final int currentLimit = int.tryParse(controllers.currentUserCount.value) ?? 0;
                                    // if (employeeProvider.filteredStaff.length >= currentLimit) {
                                    //   print("Only after making a payment, you can add employees.");
@@ -501,6 +783,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                          empPassword: employeeProvider.password.text.toString(),
                                          empJoinDate: employeeProvider.date.text.toString(),
                                          empRole:employeeProvider.roleId,
+                                         empDep:employeeProvider.depId,
                                          empSalary: employeeProvider.salary.text.toString(),
                                          empWhatsapp: employeeProvider.mobileController.text.trim().toString(),
                                          active: employeeProvider.selectedPublication ?? "1",
@@ -517,6 +800,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                              empPassword: employeeProvider.password.text.toString(),
                                              empJoinDate: employeeProvider.date.text.toString(),
                                              empRole:employeeProvider.roleId,
+                                             empDep:employeeProvider.depId,
                                              empSalary: employeeProvider.salary.text.toString(),
                                              empWhatsapp: employeeProvider.WhatsappController.text.trim().toString(),
                                              active: employeeProvider.selectedPublication ?? "1",
@@ -533,6 +817,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                                empPassword: employeeProvider.password.text.toString(),
                                                empJoinDate: employeeProvider.date.text.toString(),
                                                empRole:employeeProvider.roleId,
+                                               empDep:employeeProvider.depId,
                                                empSalary: employeeProvider.salary.text.toString(),
                                                empWhatsapp: employeeProvider.WhatsappController.text.trim().toString(),
                                                active: employeeProvider.selectedPublication ?? "1",
@@ -548,7 +833,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                          }
                                      }
                                    }
-                                  // }
                                 },
                                 child: CustomText(
                                   text: "Save",

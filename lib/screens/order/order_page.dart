@@ -14,6 +14,7 @@ import '../../components/Customtext.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/date_filter_bar.dart';
+import '../../components/pagination.dart';
 import '../../controller/controller.dart';
 import '../../controller/product_controller.dart';
 import '../../controller/reminder_controller.dart';
@@ -31,7 +32,6 @@ class _OrderPageState extends State<OrderPage> {
     super.initState();
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controllers.totalProspectPages.value=(productCtr.ordersList.length / controllers.itemsPerPage).ceil();
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero,(){
@@ -484,7 +484,7 @@ class _OrderPageState extends State<OrderPage> {
                   /// 🟢 TABLE BODY
                   Expanded(
                       child: Obx((){
-                        return productCtr.ordersList.isEmpty? Container(
+                        return productCtr.paginatedOrdersItems.isEmpty? Container(
                             width: MediaQuery.of(context).size.width,
                             height: MediaQuery.of(context).size.height/2,
                             alignment: Alignment.center,
@@ -518,9 +518,9 @@ class _OrderPageState extends State<OrderPage> {
                               controller: _controller,
                               shrinkWrap: true,
                               physics: const ScrollPhysics(),
-                              itemCount: productCtr.ordersList.length,
+                              itemCount: productCtr.paginatedOrdersItems.length,
                               itemBuilder: (context, index) {
-                                final data = productCtr.ordersList[index];
+                                final data = productCtr.paginatedOrdersItems[index];
                                 return Table(
                                   columnWidths: const {
                                     0: FixedColumnWidth(150),//o no
@@ -653,26 +653,21 @@ class _OrderPageState extends State<OrderPage> {
                         );
                       })
                   ),
-                  productCtr.ordersList.isNotEmpty? Obx(() {
-                    int totalPages = controllers.totalProspectPages.value == 0 ? 1 : controllers.totalProspectPages.value;
-                    final currentPage = controllers.currentProspectPage.value;
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
-                          _focusNode.requestFocus();
-                          controllers.currentProspectPage.value--;
-                          controllers.changeOrderPage(productCtr.ordersList,productCtr.ordersList2);
-                        }),
-                        ...utils.buildPagination(totalPages, currentPage),
-                        utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
-                          controllers.currentProspectPage.value++;
-                          _focusNode.requestFocus();
-                          controllers.changeOrderPage(productCtr.ordersList,productCtr.ordersList2);
-                        }),
-                      ],
-                    );
-                  }):0.height,
+                  20.height,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      PaginationWidget(
+                        currentPage: productCtr.currentOrdersPage,
+                        totalPages:(productCtr.paginatedOrdersItems.length / productCtr.itemsOrdersPerPage).ceil(),
+                        onPageChanged: (page) {
+                          setState(() {
+                            productCtr.currentOrdersPage = page;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                   20.height,
                 ],
               ),

@@ -2555,8 +2555,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      // debugPrint("request.body");
-      // debugPrint(request.body);
+      debugPrint("request.body");
+      debugPrint(request.body);
 
       final Map<String, dynamic> response = json.decode(request.body);
 
@@ -4361,7 +4361,7 @@ class ApiService {
         },
         body: jsonEncode(data),
       );
-
+// debugPrint(response.body);
       controllers.isLeadLoading.value = false;
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();

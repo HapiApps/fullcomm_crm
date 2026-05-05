@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:math' hide log;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
@@ -15,6 +16,7 @@ import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../common/constant/api.dart';
 import '../common/utilities/jwt_storage.dart';
 import '../common/utilities/mobile_snackbar.dart';
@@ -388,6 +390,181 @@ void showMeetingDialog(
                               ],
                             ),
                           ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
+void showMailImageDialog(
+    BuildContext context,
+    List images,
+    int index,
+    ) {
+  PageController controller = PageController(initialPage: index);
+
+  if (images.isEmpty) return;
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      int currentPage = index;
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+            child: Container(
+              width: 420,
+              // height: 400,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.white,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  /// 🔵 HEADER
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    decoration: BoxDecoration(
+                      color: colorsConst.primary,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: CustomText(
+                            text: "Attachments",
+                            size: 16,
+                            isBold: true,
+                            colors: Colors.white,
+                            isCopy: false,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: Color(0XFFE2E8F0),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            children: [
+                              InkWell(
+                                child: const Icon(Icons.arrow_back_ios, size: 15),
+                                onTap: () {
+                                  controller.previousPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.ease,
+                                  );
+                                },
+                              ),5.width,
+                              CustomText(
+                                text: "${currentPage + 1} / ${images.length}",
+                                size: 14,isBold: true,
+                                isCopy: false,
+                              ),5.width,
+                              InkWell(
+                                child: const Icon(Icons.arrow_forward_ios_sharp, size: 15),
+                                onTap: () {
+                                  controller.nextPage(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.ease,
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        8.width,
+
+                        GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: const Icon(Icons.close, color: Colors.white),
+                        )
+                      ],
+                    ),
+                  ),
+                  /// 📄 BODY
+                  SizedBox(
+                    height: 350, // ✅ மட்டும் இங்க height
+                    child: PageView.builder(
+                      controller: controller,
+                      itemCount: images.length,
+                      onPageChanged: (i) {
+                        setState((){
+                          currentPage = i;
+                        });
+                      },
+                      itemBuilder: (context, i) {
+                        final m = images[i];
+                        return Builder(
+                          builder: (context) {
+                            final file = m.toLowerCase();
+                            final pdfUrl = "$getImage?path=${Uri.encodeComponent(m)}";
+                            if (file.endsWith(".pdf")) {
+                              return InkWell(
+                                onTap: () async {
+                                  if (await canLaunchUrl(Uri.parse(pdfUrl))) {
+                                    await launchUrl(Uri.parse(pdfUrl), mode: LaunchMode.platformDefault);
+                                  } else {
+                                    utils.snackBar(context: context, msg: 'Could not launch $pdfUrl', color: Colors.red);
+                                  }
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(Icons.picture_as_pdf, color: Colors.red, size: 40),
+                                      const SizedBox(height: 5),
+                                      const Text("View PDF", style: TextStyle(fontSize: 12)),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            } else if(file.endsWith(".svg")){
+                              return SvgPicture.network(
+                                m,
+                                height: 50,
+                                fit: BoxFit.cover,
+                                placeholderBuilder: (context) =>
+                                const CircularProgressIndicator(),
+                              );
+                            } else {
+                              // else if (file.endsWith(".jpg"
+                              //   }) ||
+                              //   file.endsWith(".jpeg") ||
+                              //   file.endsWith(".png")) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Column(
+                                  children: [
+                                    Text(m),
+                                    Image.network(
+                                      "$getImage?path=${Uri.encodeComponent(m)}",
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                            // else {
+                            //   return ListTile(
+                            //     title: Text("Unsupported file"),
+                            //   );
+                            // }
+                          },
                         );
                       },
                     ),
@@ -1073,9 +1250,16 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   var selectedReminderIds = <String>[].obs;
   var selectedMeetingIds = <String>[].obs;
   var selectedRecordMailIds = <String>[].obs;
-  var selectedRecordCallIds = <String>[].obs;int currentPage = 1;
+  var selectedRecordCallIds = <String>[].obs;
+  int currentPage = 1;
+  int currentMailPage = 1;
+  int currentAppPage = 1;
+  int currentRemPage = 1;
 
   int itemsPerPage = 20;
+  int itemsMailPerPage = 20;
+  int itemsAppPerPage = 20;
+  int itemsRemPerPage = 20;
 
   List get paginatedItems {
 
@@ -1089,6 +1273,51 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       start,
       end > callFilteredList.length
           ? callFilteredList.length
+          : end,
+    );
+  }
+  List get paginatedMailItems {
+
+    final start =
+        (currentMailPage - 1) * itemsMailPerPage;
+
+    final end =
+        start + itemsMailPerPage;
+
+    return mailFilteredList.sublist(
+      start,
+      end > mailFilteredList.length
+          ? mailFilteredList.length
+          : end,
+    );
+  }
+  List get paginatedAppItems {
+
+    final start =
+        (currentAppPage - 1) * itemsAppPerPage;
+
+    final end =
+        start + itemsAppPerPage;
+
+    return meetingFilteredList.sublist(
+      start,
+      end > meetingFilteredList.length
+          ? meetingFilteredList.length
+          : end,
+    );
+  }
+  List get paginatedRemItems {
+
+    final start =
+        (currentRemPage - 1) * itemsRemPerPage;
+
+    final end =
+        start + itemsRemPerPage;
+
+    return reminderFilteredList.sublist(
+      start,
+      end > reminderFilteredList.length
+          ? reminderFilteredList.length
           : end,
     );
   }

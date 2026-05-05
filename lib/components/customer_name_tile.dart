@@ -1201,10 +1201,10 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                   });
                             }
                             else if(value=="Create Quotation"){
-                              controllers.cusController.text="${widget.name} - ${widget.companyName}- ${widget.companyNumber}";
+                              controllers.cusController.text="${widget.name} - ${widget.companyName}- ${widget.mobileNumber}";
                               controllers.selectCustomer(AllCustomersObj(
                               id: widget.id.toString(), name: widget.name.toString(),
-                              companyName: widget.companyName.toString(), phoneNo: widget.companyNumber.toString(),
+                              companyName: widget.companyName.toString(), phoneNo: widget.mobileNumber.toString(),
                               email: widget.companyEmail.toString(), leadStatus: "", category: ""));
                               controllers.directNavigate.value=true;
                               controllers.qId.value=widget.id.toString();

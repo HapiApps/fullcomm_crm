@@ -1,9 +1,20 @@
+import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/components/custom_loading_button.dart';
+import 'package:fullcomm_crm/components/custom_textfield.dart';
+import 'package:fullcomm_crm/controller/controller.dart';
+import 'package:http/http.dart' as http;
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 
+import '../billing_utils/sized_box.dart';
+import '../common/constant/api.dart';
+import '../common/constant/colors_constant.dart';
+import '../common/utilities/jwt_storage.dart';
 import '../common/utilities/utils.dart';
+import '../components/Customtext.dart';
 import '../models/employee_details.dart';
+import '../services/api_services.dart';
 import 'employee_repo.dart';
 
 class EmployeeProvider with ChangeNotifier {
@@ -75,6 +86,10 @@ class EmployeeProvider with ChangeNotifier {
       switch (_sortField) {
         case 'role':
           cmp = compareStrings(a.role, b.role);
+          if (cmp == 0) cmp = compareStrings(a.sName, b.sName); // tie-breaker: name
+          break;
+          case 'dep':
+          cmp = compareStrings(a.department, b.department);
           if (cmp == 0) cmp = compareStrings(a.sName, b.sName); // tie-breaker: name
           break;
         case 'mobile':
@@ -467,7 +482,7 @@ class EmployeeProvider with ChangeNotifier {
     required empName,
     required empMobile, required empAddress,
     required empBonus, required empEmail, required empJoinDate, required empPassword,
-    required empRole , required empSalary, required empWhatsapp, required active
+    required empRole ,required empDep , required empSalary, required empWhatsapp, required active
   })
   async {
     try {
@@ -484,6 +499,7 @@ class EmployeeProvider with ChangeNotifier {
         empSalary:empSalary ,
         empWhatsapp:empWhatsapp ,
         active : active,
+        empDep : empDep,
       );
       if (response.responseCode == 200) {
         Navigator.pop(context);
@@ -513,7 +529,7 @@ class EmployeeProvider with ChangeNotifier {
     required BuildContext context,required id,
     required empName,  required empMobile, required empAddress,
     required empBonus, required empEmail, required empJoinDate, required empPassword,
-    required empRole , required empSalary, required empWhatsapp, required active,
+    required empRole , required empDep , required empSalary, required empWhatsapp, required active,
   })
   async {
     try {
@@ -530,6 +546,7 @@ class EmployeeProvider with ChangeNotifier {
         empPassword:empPassword ,
         empRole: empRole,
         empSalary:empSalary ,
+        empDep:empDep ,
         empWhatsapp:empWhatsapp ,
         active : active,
       );
@@ -569,6 +586,12 @@ class EmployeeProvider with ChangeNotifier {
   List<dynamic> get roleList => _roleList;
   List<Map<String, dynamic>> get fRoleList => List<Map<String, dynamic>>.from(_roleList);
 
+
+  var dep;
+  var depId;
+  List<dynamic> _depList = [];
+  List<dynamic> get depList => _depList;
+
   String getRoleName(String? staffRoleId) {
     if (staffRoleId == null || staffRoleId == "null") return "";
     final match = fRoleList.firstWhere(
@@ -597,6 +620,27 @@ class EmployeeProvider with ChangeNotifier {
     } catch (e) {
       print("fetchRoleList error $e");
       _roleList = [];
+      notifyListeners();
+    }
+  }
+  Future<void> fetchDepList() async {
+    dep = null;
+    _depList = [];
+    notifyListeners();
+    try {
+      final response = await _employeeRepository.getDepartment();
+
+      if (response.isNotEmpty) {
+        _depList = response;
+        print("Department List: $_depList");
+
+      } else {
+        _depList = [];
+      }
+      notifyListeners();
+    } catch (e) {
+      print("fetchDepartment error $e");
+      _depList = [];
       notifyListeners();
     }
   }
@@ -667,6 +711,136 @@ class EmployeeProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  void addDepartmentDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Container(
+                width: 420,
+                // height: 400,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    /// 🔵 HEADER
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      decoration: BoxDecoration(
+                        color: colorsConst.primary,
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: CustomText(
+                              text: "Add Department",
+                              size: 16,
+                              isBold: true,
+                              colors: Colors.white,
+                              isCopy: false,
+                            ),
+                          ),
+
+                          8.width,
+
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Icon(Icons.close, color: Colors.white),
+                          )
+                        ],
+                      ),
+                    ),30.height,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomTextField(isOptional: true, width: MediaQuery.of(context).size.width*0.3,
+                          onChanged: (value){
+                            controllers.firstCaps(value.toString(), nameRoleController);
+                          },
+                          text: "Department", hintText: "Department", controller: nameRoleController),
+                    ),20.height,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomTextField(isOptional: false, width: MediaQuery.of(context).size.width*0.3,
+                          onChanged: (value){
+                            controllers.firstCaps(value.toString(), descriptionRoleController);
+                          },
+                          text: "Description", hintText: "Description", controller: descriptionRoleController),
+                    ),20.height,
+                    CustomLoadingButton(
+                        callback: (){
+                          if(nameRoleController.text.trim().isEmpty){
+                            utils.showToast("Please fill department name", Colors.red);
+                            addRoleButtonController.reset();
+                          }else{
+                            insertDepartmentAPI(context);
+                          }
+                        }, isLoading: true, controller: addRoleButtonController,text: "Save",
+                        backgroundColor: colorsConst.primary, radius: 10, width: 100)
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future insertDepartmentAPI(BuildContext context) async {
+    try{
+      Map data = {
+        "action": "insert_depart",
+        "department": nameRoleController.text.trim(),
+        "description": descriptionRoleController.text.trim(),
+        "created_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      debugPrint("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return insertDepartmentAPI(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200 && response["message"]=="Department added successfully"){
+        nameRoleController.clear();
+        descriptionRoleController.clear();
+        Navigator.pop(context);
+        utils.snackBar(context: context, msg: "Department added successfully", color: Colors.green);
+        fetchDepList();
+        addRoleButtonController.reset();
+      } else {
+        apiService.errorDialog(context,request.body);
+        addRoleButtonController.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(context,e.toString());
+      addRoleButtonController.reset();
+    }
+  }
+
 
 }
 

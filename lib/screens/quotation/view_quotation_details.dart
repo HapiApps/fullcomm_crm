@@ -73,6 +73,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                         var gst=widget.list.gst.toString().split("||");
                         var price=widget.list.price.toString().split("||");
                         var amt=widget.list.amount.toString().split("||");
+                        var dis=widget.list.dis.toString().split("||");
                         List<Map<String, dynamic>> products = [];
                         for (int i = 0; i < pName.length; i++) {
                           products.add({
@@ -81,6 +82,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                             "price": price[i],
                             "amount": amt[i],
                             "gst": gst[i],
+                            "dis": dis[i],
                           });
                         }
                         products.sort((a, b) =>a['name'].toLowerCase().compareTo(b['name'].toLowerCase()));
@@ -89,6 +91,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                         var gst2=data.gst.toString().split("||");
                         var price2=data.price.toString().split("||");
                         var amt2=data.amount.toString().split("||");
+                        var dis2=data.dis.toString().split("||");
                         List<Map<String, dynamic>> products2 = [];
                         for (int i = 0; i < pName2.length; i++) {
                           products2.add({
@@ -97,6 +100,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                             "price": price2[i],
                             "amount": amt2[i],
                             "gst": gst2[i],
+                            "dis": dis2[i],
                           });
                         }
                         // print("$getImage?path=${data.po}");
@@ -204,14 +208,14 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 expandedStep(
-                                                  width: screenWidth/5.6,
+                                                  width: screenWidth/9.5,
                                                   title: "Quotation Sent",
                                                   subTitle: DateFormat("dd MMM yyyy").format(DateTime.parse(widget.list.createdTs)),
                                                   isCompleted: true,
                                                   isLast: false,
                                                 ),
                                                 expandedStep(
-                                                  width: screenWidth/5.6,
+                                                  width: screenWidth/9.5,
                                                   title: "PO Received",
                                                   subTitle: widget.list.poDate==""?"-":widget.list.poDate,
                                                   isCompleted: widget.list.poDate==""?false:true,
@@ -220,7 +224,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                                   stepNumber: "2",
                                                 ),
                                                 expandedStep(
-                                                  width: screenWidth/5.6,
+                                                  width: screenWidth/9.5,
                                                   title: "Proforma Invoice",
                                                   subTitle: "Optional",
                                                   isCompleted: widget.list.status=="Invoice Sent"||widget.list.status=="Proforma Invoice Sent"?true:false,
@@ -230,12 +234,28 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                                       widget.list.status!="Invoice Sent"?true:false,
                                                 ),
                                                 expandedStep(
-                                                  width: screenWidth/5.6,
+                                                  width: screenWidth/9.5,
                                                   title: "Invoice Sent",
                                                   subTitle: widget.list.status=="PO Received"?"In Progress":"-",
                                                   isCompleted: widget.list.status=="Invoice Sent"?true:false,
-                                                  isLast: true,
+                                                  isLast: false,
                                                   stepNumber: "4",
+                                                ),
+                                                expandedStep(
+                                                  width: screenWidth/9.5,
+                                                  title: "Payment Received",
+                                                  subTitle: "",
+                                                  isCompleted: widget.list.status=="Payment Received"?true:false,
+                                                  isLast: false,
+                                                  stepNumber: "5",
+                                                ),
+                                                expandedStep(
+                                                  width: screenWidth/9.5,
+                                                  title: "Closed",
+                                                  subTitle: "",
+                                                  isCompleted: widget.list.status=="Closed"?true:false,
+                                                  isLast: true,
+                                                  stepNumber: "6",
                                                 ),
                                               ],
                                             ),
@@ -385,7 +405,8 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                             2: FixedColumnWidth(80),
                                             3: FixedColumnWidth(80),
                                             4: FixedColumnWidth(80),
-                                            5: FixedColumnWidth(100),
+                                            5: FixedColumnWidth(80),
+                                            6: FixedColumnWidth(100),
                                           },
                                           children: [
 
@@ -404,6 +425,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                                 header("QTY"),
                                                 header("PRICE"),
                                                 header("GST"),
+                                                header("DIS"),
                                                 header("TOTAL"),
                                               ],
                                             ),
@@ -430,6 +452,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                                   cell(products[i]["qty"]),
                                                   cell(productCtr.formatAmount(products[i]["price"])),
                                                   cell(products[i]["gst"]),
+                                                  cell(products[i]["dis"]),
                                                   cell(productCtr.formatAmount(products[i]["amount"])),
                                                 ],
                                               );
@@ -445,6 +468,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                                 cell(""),
                                                 cell(""),
                                                 // cell(widget.list.totalItem.toString()),
+                                                cell(""),
                                                 cell(""),
                                                 cell(""),
                                                 cell("TOTAL",colors: colorsConst.primary),
@@ -667,7 +691,8 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                                 2: FixedColumnWidth(80),
                                                 3: FixedColumnWidth(80),
                                                 4: FixedColumnWidth(80),
-                                                5: FixedColumnWidth(100),
+                                                5: FixedColumnWidth(80),
+                                                6: FixedColumnWidth(100),
                                               },
                                               children: [
 
@@ -686,6 +711,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                                     header("QTY"),
                                                     header("PRICE"),
                                                     header("GST"),
+                                                    header("DIS"),
                                                     header("TOTAL"),
                                                   ],
                                                 ),
@@ -712,6 +738,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                                       cell(products2[i]["qty"]),
                                                       cell(productCtr.formatAmount(products2[i]["price"])),
                                                       cell(products2[i]["gst"]),
+                                                      cell(products2[i]["dis"]),
                                                       cell(productCtr.formatAmount(products2[i]["amount"])),
                                                     ],
                                                   );
@@ -727,6 +754,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                                     cell(""),
                                                     cell(""),
                                                     // cell(widget.list.totalItem.toString()),
+                                                    cell(""),
                                                     cell(""),
                                                     cell(""),
                                                     cell("TOTAL",colors: colorsConst.primary),

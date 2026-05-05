@@ -37,6 +37,59 @@ class ProductController extends GetxController with GetSingleTickerProviderState
     controllers.search.clear();
     // productsList.value.remove(value);
   }
+  int currentPage = 1;
+  int currentPrdPage = 1;
+  int currentOrdersPage = 1;
+
+  int itemsPerPage = 20;
+  int itemsPrdPerPage = 20;
+  int itemsOrdersPerPage = 20;
+
+  List get paginatedItems {
+
+    final start =
+        (currentPage - 1) * itemsPerPage;
+
+    final end =
+        start + itemsPerPage;
+
+    return quotationsList.sublist(
+      start,
+      end > quotationsList.length
+          ? quotationsList.length
+          : end,
+    );
+  }
+  List get paginatedPrdItems {
+
+    final start =
+        (currentPrdPage - 1) * itemsPrdPerPage;
+
+    final end =
+        start + itemsPrdPerPage;
+
+    return products.sublist(
+      start,
+      end > products.length
+          ? products.length
+          : end,
+    );
+  }
+  List get paginatedOrdersItems {
+
+    final start =
+        (currentOrdersPage - 1) * itemsOrdersPerPage;
+
+    final end =
+        start + itemsOrdersPerPage;
+
+    return ordersList.sublist(
+      start,
+      end > ordersList.length
+          ? ordersList.length
+          : end,
+    );
+  }
 
   final TextEditingController title = TextEditingController();
   final TextEditingController description = TextEditingController();
@@ -55,7 +108,6 @@ class ProductController extends GetxController with GetSingleTickerProviderState
   var currentProspectPage = 1.obs;
   final itemsProspectPerPage = 20;
   var  totalProspectPages =0.obs;
-  final itemsPerPage = 20; // Adjust based on your needs
 
   List<ProductData> changeProductPage(RxList<ProductData> list,RxList<ProductData> list2){
     final query = searchProspects.value.trim().toLowerCase();
