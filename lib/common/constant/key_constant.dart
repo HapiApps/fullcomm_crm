@@ -10,7 +10,9 @@ class InputFormatters {
     FilteringTextInputFormatter.digitsOnly,
     FilteringTextInputFormatter.allow(RegExp("[0-9]"))
   ];
-
+  final List<TextInputFormatter> decimalInput=[
+    FilteringTextInputFormatter.allow(RegExp("[0-9.]"))
+  ];
   final List<TextInputFormatter> passwordInput = [
     LengthLimitingTextInputFormatter(16)
   ];

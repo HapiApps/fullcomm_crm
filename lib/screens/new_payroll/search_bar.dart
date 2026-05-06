@@ -1,11 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../billing_utils/sized_box.dart';
+import '../../components/Customtext.dart';
 import '../../controller/new_payroll_controller.dart';
+import '../../models/all_customers_obj.dart';
+import '../../models/employee_details.dart';
 
 class EmployeeSearchBox extends StatefulWidget {
-  final List<EmployeeModel2> allEmployees;
-  final Function(EmployeeModel2) onEmployeeSelected;
+  final List<Staff> allEmployees;
+  final Function(Staff) onEmployeeSelected;
 
   const EmployeeSearchBox({
     super.key,
@@ -19,7 +22,7 @@ class EmployeeSearchBox extends StatefulWidget {
 
 class _EmployeeSearchBoxState extends State<EmployeeSearchBox> {
   final TextEditingController _controller = TextEditingController();
-  List<EmployeeModel2> _filteredList = [];
+  List<Staff> _filteredList = [];
 
   void _onSearchChanged(String value) {
     setState(() {
@@ -28,9 +31,8 @@ class _EmployeeSearchBoxState extends State<EmployeeSearchBox> {
       } else {
         _filteredList = widget.allEmployees
             .where((emp) =>
-        (emp.empCode?.toLowerCase().contains(value.toLowerCase()) ?? false) ||
-            (emp.fName?.toLowerCase().contains(value.toLowerCase()) ?? false) ||
-            (emp.mobileNumber?.toLowerCase().contains(value.toLowerCase()) ?? false))
+        (emp.sName.toString().toLowerCase().contains(value.toLowerCase()) ?? false) ||
+            (emp.sMobile.toString().toLowerCase().contains(value.toLowerCase()) ?? false))
             .toList();
       }
     });
@@ -39,7 +41,7 @@ class _EmployeeSearchBoxState extends State<EmployeeSearchBox> {
   @override
   Widget build(BuildContext context) {
     var mobileSize= MediaQuery.of(context).size.width*0.95;
-    var webSize= MediaQuery.of(context).size.width*0.97;
+    var webSize= MediaQuery.of(context).size.width*0.8;
     return SizedBox(
       width: kIsWeb?webSize:mobileSize,
       child: Column(
@@ -50,7 +52,7 @@ class _EmployeeSearchBoxState extends State<EmployeeSearchBox> {
             decoration: InputDecoration(
               fillColor: Colors.white,
               filled: true,
-              labelText: "Enter Employee Code Or Name Or Number",
+              labelText: "Enter Employee Name Or Number",
               border: const OutlineInputBorder(),
               enabledBorder: OutlineInputBorder(
                   borderSide:  const BorderSide(color: Colors.white,),
@@ -83,19 +85,23 @@ class _EmployeeSearchBoxState extends State<EmployeeSearchBox> {
                 itemBuilder: (context, index) {
                   final emp = _filteredList[index];
                   return ListTile(
+                    tileColor: Colors.white,
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(emp.fName ?? ''),
                         Row(
                           children: [
-                            Text(emp.roleName ?? ''),10.width,
-                            Text(emp.mobileNumber ?? ''),
+                            CustomText(text:emp.sName ?? '',isCopy: false,isBold: true,),10.width,
+                            CustomText(text:emp.roleTitle ?? '',isCopy: false,colors: Colors.grey,),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            CustomText(text:emp.sMobile ?? '',isCopy: false,),
                           ],
                         ),
                       ],
                     ),
-                    subtitle: Text("Code: ${emp.empCode ?? ''}"),
                     onTap: () {
                       widget.onEmployeeSelected(emp);
 

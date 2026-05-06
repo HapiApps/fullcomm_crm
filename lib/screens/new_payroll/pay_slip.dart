@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import '../../billing_utils/sized_box.dart';
 import '../../common/constant/api.dart' as assets;
 import '../../common/constant/colors_constant.dart';
@@ -21,6 +22,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
 import '../../models/payroll/monthly_unit_payroll.dart';
+import '../../provider/employee_provider.dart';
 import '../../services/new_payroll_api_services.dart';
 
 class PaySlip extends StatefulWidget {
@@ -51,7 +53,8 @@ class _PaySlipState extends State<PaySlip> {
         .of(context)
         .size
         .width * 0.97;
-    return SelectionArea(
+    return Consumer<EmployeeProvider>(builder: (context, employeeProvider, _) {
+      return SelectionArea(
       child: Scaffold(
           backgroundColor: colorsConst.backgroundColor,
           body: Row(
@@ -81,6 +84,7 @@ class _PaySlipState extends State<PaySlip> {
                             ),
                           ],
                         ),
+                        Divider(color: Colors.grey.shade500,thickness: 0.5,),
                         10.height,
                         InkWell(
                             onTap: () {
@@ -106,12 +110,12 @@ class _PaySlipState extends State<PaySlip> {
                               ],
                             )),
                         EmployeeSearchBox(
-                          allEmployees: pyrlCtr.allEmpList,
+                          allEmployees: employeeProvider.filteredStaff,
                           onEmployeeSelected: (selectedEmployee) {
                             setState(() {
                               // Save selected employee details
                               controllers.storage.write("p_emp_id", selectedEmployee.id);
-                              controllers.storage.write("p_emp_name", selectedEmployee.fName);
+                              controllers.storage.write("p_emp_name", selectedEmployee.sName);
                               empId=selectedEmployee.id.toString();
                               newPyrlServ.getPaySlip(empId);
                             });
@@ -159,21 +163,20 @@ class _PaySlipState extends State<PaySlip> {
                                                 color: Colors.grey.shade300),
                                             columnWidths: const {
                                               0: FlexColumnWidth(0.5), // no
-                                              1: FlexColumnWidth(1), // id
-                                              2: FlexColumnWidth(1.2), // role
-                                              3: FlexColumnWidth(2.5), // name
-                                              4: FlexColumnWidth(1), // duty
-                                              5: FlexColumnWidth(1.2), // basic
-                                              6: FlexColumnWidth(1.3), // da
-                                              7: FlexColumnWidth(1.2), // hra
-                                              8: FlexColumnWidth(1.3), // total
-                                              9: FlexColumnWidth(1.3), // Advance
-                                              10: FlexColumnWidth(1.3), // pe
-                                              11: FlexColumnWidth(1.3), // un
-                                              12: FlexColumnWidth(1), // esi
-                                              13: FlexColumnWidth(1), // pf
-                                              14: FlexColumnWidth(1.3), // Deduction
-                                              15: FlexColumnWidth(1.7), // netAmt
+                                              1: FlexColumnWidth(1.2), // role
+                                              2: FlexColumnWidth(2.5), // name
+                                              3: FlexColumnWidth(1), // duty
+                                              4: FlexColumnWidth(1.2), // basic
+                                              5: FlexColumnWidth(1.3), // da
+                                              6: FlexColumnWidth(1.2), // hra
+                                              7: FlexColumnWidth(1.3), // total
+                                              8: FlexColumnWidth(1.3), // Advance
+                                              9: FlexColumnWidth(1.3), // pe
+                                              10: FlexColumnWidth(1.3), // un
+                                              11: FlexColumnWidth(1), // esi
+                                              12: FlexColumnWidth(1), // pf
+                                              13: FlexColumnWidth(1.3), // Deduction
+                                              14: FlexColumnWidth(1.7), // netAmt
                                             },
                                             children: [
                                               // Header Row
@@ -182,7 +185,6 @@ class _PaySlipState extends State<PaySlip> {
                                                     color: Colors.black12),
                                                 children: [
                                                   customWid("S.No",bold: true,),
-                                                  customWid("ID",bold: true,),
                                                   customWid("Rank",bold: true,),
                                                   customWid("Name",bold: true,),
                                                   customWid("Duty",bold: true,),
@@ -206,7 +208,6 @@ class _PaySlipState extends State<PaySlip> {
                                                 TableRow(
                                                   children: [
                                                     customWid((i+1).toString()),
-                                                    customWid(pyrlCtr.unitPayrollList[i].empcd.toString()),
                                                     customWid(pyrlCtr.unitPayrollList[i].roleName.toString()),
                                                     customWid(pyrlCtr.unitPayrollList[i].name.toString()),
                                                     customWid(pyrlCtr.unitPayrollList[i].duty.toString()),
@@ -242,6 +243,7 @@ class _PaySlipState extends State<PaySlip> {
           )
       ),
     );
+    });
   }
 
   Widget customWid(String value, {double? width = 8,bool? bold = false}){
@@ -249,128 +251,6 @@ class _PaySlipState extends State<PaySlip> {
         padding: const EdgeInsets.all(8),
         child: CustomText(text: value,isBold: bold!, isCopy: true,));
   }
-  // static Future<void> generatePayrollPdf(RxList<UnitPayroll> unitPayrollList) async {
-  //   final pdf = pw.Document();
-  //
-  //   // Load logo
-  //   final imageByteData = await rootBundle.load(assets.logo);
-  //   final imageList = imageByteData.buffer.asUint8List(
-  //       imageByteData.offsetInBytes, imageByteData.lengthInBytes);
-  //   final image = pw.MemoryImage(imageList);
-  //
-  //   pdf.addPage(
-  //     pw.MultiPage(
-  //       pageFormat: PdfPageFormat.a4,
-  //       margin: const pw.EdgeInsets.all(20),
-  //       build: (context) {
-  //         return [
-  //           // Header
-  //           pw.Row(
-  //             crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //             children: [
-  //               pw.Image(image, width: 80, height: 80),
-  //               pw.SizedBox(width: 10),
-  //               pw.Column(
-  //                 crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //                 children: [
-  //                   pw.Text(
-  //                     "Thirumal Facilities Service",
-  //                     style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 14),
-  //                   ),
-  //                   pw.Text(
-  //                     "Address: 44/1, V.V. Koil Street, Tambaram Sanatorium,\nChennai-600 045, Tamilnadu, India.",
-  //                     style: pw.TextStyle(fontSize: 10),
-  //                   ),
-  //                 ],
-  //               ),
-  //               pw.Text(
-  //                 pyrlCtr.month.value,
-  //                 style: pw.TextStyle(fontSize: 10,fontWeight: pw.FontWeight.bold),
-  //               ),
-  //             ],
-  //           ),
-  //           pw.SizedBox(height: 20),
-  //
-  //           // Payroll Table for each employee
-  //           ...unitPayrollList.map((e) {
-  //             final json = e.toJson();
-  //
-  //             return pw.Container(
-  //               margin: const pw.EdgeInsets.only(bottom: 15),
-  //               padding: const pw.EdgeInsets.all(8),
-  //               decoration: pw.BoxDecoration(
-  //                 border: pw.Border.all(color: PdfColor.fromInt(0xffcccccc)),
-  //                 borderRadius: pw.BorderRadius.circular(4),
-  //               ),
-  //               child: pw.Column(
-  //                 crossAxisAlignment: pw.CrossAxisAlignment.start,
-  //                 children: [
-  //                   // Employee Info Table
-  //                   pw.Table(
-  //                     columnWidths: {
-  //                       0: const pw.FlexColumnWidth(2),
-  //                       1: const pw.FlexColumnWidth(3),
-  //                       2: const pw.FlexColumnWidth(2),
-  //                       3: const pw.FlexColumnWidth(3),
-  //                     },
-  //                     border: pw.TableBorder.all(color: PdfColor.fromInt(0xffcccccc)),
-  //                     children: [
-  //                       _tableRow("Name", json['name'], "Rank", json['role_name']),
-  //                       _tableRow("Father Name", json['fathername'], "ESI No", json['esi_no']),
-  //                       _tableRow("PF No", json['pf_no'], "Site Name", json['unit_name']),
-  //                       _tableRow("ID No", json['emp_cd_1'], "Phone", json['phoneNo']),
-  //                       _tableRow("D.O.B", json['dob'], "D.O.J", json['doj']),
-  //                     ],
-  //                   ),
-  //                   pw.SizedBox(height: 8),
-  //
-  //                   // Salary Table
-  //                   pw.Table(
-  //                     columnWidths: {
-  //                       0: const pw.FlexColumnWidth(2),
-  //                       1: const pw.FlexColumnWidth(2),
-  //                       2: const pw.FlexColumnWidth(2),
-  //                       3: const pw.FlexColumnWidth(2),
-  //                     },
-  //                     border: pw.TableBorder.all(color: PdfColor.fromInt(0xffcccccc)),
-  //                     children: [
-  //                       _tableRow("Duty", json['duty'], "Basic", json['basic']),
-  //                       _tableRow("DA", json['da'], "HRA", json['hra']),
-  //                       _tableRow("NFH", json['nfh'], "SFH", json['sfh']),
-  //                       _tableRow("Others", json['others'], "Total", json['total']),
-  //                       _tableRow("Net Amount", json['net_amount'], "ESI", json['esi']),
-  //                       _tableRow("PF", json['pf'], "PT", json['pt']),
-  //                       _tableRow("Advance", json['advance'], "Uniform", json['uniform']),
-  //                       _tableRow("Penalty", json['penalty'], "Deduction", json['deduction']),
-  //                     ],
-  //                   ),
-  //                   pw.SizedBox(height: 5),
-  //
-  //                   // Bank Details
-  //                   pw.Text('Bank Name: ${json['bank_name'] ?? ''}'),
-  //                   pw.Text('A/C No: ${json['acc_no'] ?? ''}'),
-  //                   pw.Text('IFSC Code: ${json['ifsc_code'] ?? ''}'),
-  //                 ],
-  //               ),
-  //             );
-  //           }).toList(),
-  //         ];
-  //       },
-  //     ),
-  //   );
-  //
-  //   // Mobile vs Web
-  //   if (kIsWeb) {
-  //     await Printing.sharePdf(
-  //       bytes: await pdf.save(),
-  //       filename: 'payroll_report.pdf',
-  //     );
-  //   } else {
-  //     final dir = await getApplicationDocumentsDirectory();
-  //     final file = File('${dir.path}/payroll_report.pdf');
-  //     await file.writeAsBytes(await pdf.save());
-  //   }
-  // }
   static Future<void> generatePayrollPdf(RxList<UnitPayroll> unitPayrollList) async {
     final pdf = pw.Document();
 
@@ -395,14 +275,13 @@ class _PaySlipState extends State<PaySlip> {
                 pw.Column(
                   crossAxisAlignment: pw.CrossAxisAlignment.start,
                   children: [
-                    pw.Text(
-                      controllers.storage.read("com_name"),
+                    pw.Text(controllers.comName.text,
                       style: pw.TextStyle(
                           fontWeight: pw.FontWeight.bold, fontSize: 14),
                     ),
                     pw.Text(
-                      "Address: 44/1, V.V. Koil Street, Tambaram Sanatorium,\n"
-                          "Chennai-600 045, Tamilnadu, India.",
+                      "Address: ${controllers.comDoor.text}, ${controllers.comStreet.text}\n${controllers.comCity.text}, ${controllers.comState.text},"
+                          " ${controllers.comCountry.text}, ${controllers.comPincode.text}",
                       style: pw.TextStyle(fontSize: 10),
                     ),
                   ],

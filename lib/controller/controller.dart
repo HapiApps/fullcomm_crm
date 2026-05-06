@@ -387,7 +387,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
     }
     final hasTime = inputDateTime.contains(':');
 
-    final outputFormat = hasTime ? DateFormat('yyyy-MM-dd hh:mm a') : DateFormat('yyyy-MM-dd');
+    final outputFormat = hasTime ? DateFormat('dd-MM-yyyy hh:mm a') : DateFormat('dd-MM-yyyy');
 
     return outputFormat.format(dateTime.toLocal());
   }

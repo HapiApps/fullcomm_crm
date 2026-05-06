@@ -388,11 +388,11 @@ class _ReorderState extends State<Reorder> {
                                                   // ✅ If highlighted item exists → select it
                                                   if (highlighted != null) {
                                                     dropdownState?.setText(
-                                                        "${highlighted.name} - ${highlighted.mobile}");
+                                                        "${highlighted.f1} - ${highlighted.mobile}");
 
                                                     customerProvider.setCustomerDetails(
                                                       customerId: highlighted.userId.toString(),
-                                                      customerName: highlighted.name.toString(),
+                                                      customerName: highlighted.f1.toString(),
                                                       customerMobile: highlighted.mobile.toString(),
                                                       customerAddress:
                                                       "${highlighted.addressLine1 ?? ''} ${highlighted.area ?? ''} "

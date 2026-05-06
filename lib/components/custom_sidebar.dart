@@ -18,6 +18,7 @@ import '../screens/new_payroll/attendance.dart';
 import '../screens/new_payroll/esi_wages.dart';
 import '../screens/new_payroll/pay_slip.dart';
 import '../screens/new_payroll/pf_wages.dart';
+import '../screens/new_payroll/role_settings.dart';
 import '../screens/new_payroll/salary_slip.dart';
 import '../screens/new_payroll/wages_sheet.dart';
 import '../screens/order/order_page.dart';
@@ -405,7 +406,8 @@ class SideBar extends StatelessWidget {
                           subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "ESI Wages", 803, const ESIWages()),
                           subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "PF Wages", 804, const PFWages()),
                           subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "Pay Slip", 805, const PaySlip()),
-                          subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "Salary Slip", 805, const SalarySlip()),
+                          // subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "Salary Slip", 805, const SalarySlip()),
+                          subItem(context,controllers.isPayrollExpanded,controllers.isPayrollExpanded, "Setting", 806, const RoleSetting()),
                         ],
                       ),
                     )

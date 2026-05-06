@@ -78,6 +78,7 @@ class _PFWagesState extends State<PFWages> {
                             ),
                           ],
                         ),
+                        Divider(color: Colors.grey.shade500,thickness: 0.5,),
                         10.height,
                         InkWell(
                             onTap: () {
@@ -148,19 +149,18 @@ class _PFWagesState extends State<PFWages> {
                                                   color: Colors.grey.shade300),
                                               columnWidths: const {
                                                 0: FlexColumnWidth(0.7), // S.No
-                                                1: FlexColumnWidth(1.5), // Site
-                                                2: FlexColumnWidth(1.2), // ID
-                                                3: FlexColumnWidth(2.2), // Name
-                                                4: FlexColumnWidth(1.5), // UAN No
-                                                5: FlexColumnWidth(1.3), // Working Days
-                                                6: FlexColumnWidth(1.5), // Salary Wages
-                                                7: FlexColumnWidth(1.5), // PF Wages
-                                                8: FlexColumnWidth(1.5), // Pay Amount
-                                                9: FlexColumnWidth(1.5), // DOB
-                                                10: FlexColumnWidth(1.5), // DOJ
-                                                11: FlexColumnWidth(1.5), // Age
-                                                12: FlexColumnWidth(1.5), // Father Name
-                                                13: FlexColumnWidth(1.5), // Phone Number
+                                                1: FlexColumnWidth(1.2), // ID
+                                                2: FlexColumnWidth(2.2), // Name
+                                                3: FlexColumnWidth(1.5), // UAN No
+                                                4: FlexColumnWidth(1.3), // Working Days
+                                                5: FlexColumnWidth(1.5), // Salary Wages
+                                                6: FlexColumnWidth(1.5), // PF Wages
+                                                7: FlexColumnWidth(1.5), // Pay Amount
+                                                8: FlexColumnWidth(1.5), // DOB
+                                                9: FlexColumnWidth(1.5), // DOJ
+                                                10: FlexColumnWidth(1.5), // Age
+                                                11: FlexColumnWidth(1.5), // Father Name
+                                                12: FlexColumnWidth(1.5), // Phone Number
                                               },
                                               children: [
                                                 // Header Row
@@ -169,8 +169,7 @@ class _PFWagesState extends State<PFWages> {
                                                       color: Colors.black12),
                                                   children: [
                                                     customWid("S.No", bold: true),
-                                                    customWid("Site Name", bold: true),
-                                                    customWid("ID No", bold: true),
+                                                    customWid("Rank", bold: true),
                                                     customWid("Name", bold: true),
                                                     customWid("UAN No", bold: true),
                                                     customWid("Working Days", bold: true),
@@ -190,8 +189,7 @@ class _PFWagesState extends State<PFWages> {
                                                   TableRow(
                                                     children: [
                                                       customWid((i + 1).toString()),
-                                                      customWid(pyrlCtr.unitPayrollList[i].unitName ?? ''),
-                                                      customWid(pyrlCtr.unitPayrollList[i].empcd ?? ''),
+                                                      customWid(pyrlCtr.unitPayrollList[i].roleName ?? ''),
                                                       customWid(pyrlCtr.unitPayrollList[i].name ?? ''),
                                                       customWid(pyrlCtr.unitPayrollList[i].pfNo ?? ''),
                                                       customWid(pyrlCtr.unitPayrollList[i].duty ?? ''),
@@ -357,15 +355,15 @@ class _PFWagesState extends State<PFWages> {
 
 
     worksheet.getRangeByName("A2").setText(
-        "${controllers.storage.read("com_name")}\n Address : 44/1, V.V. Koil Street, Tambaram Sanatorium,Chennai-600 045,Tamilnadu, India.");
+        "${controllers.comName.text}\n Address : ${controllers.comDoor.text}, ${controllers.comStreet.text}\n${controllers.comCity.text}, ${controllers.comState.text},"
+            " ${controllers.comCountry.text}, ${controllers.comPincode.text}");
     worksheet.getRangeByName("I2").setText(
         "Month : ${pyrlCtr.month.value}");
 
     // Headers`
     List<String> headers = [
       "S.No",
-      "Site Name",
-      "ID No",
+      "Rank",
       "Name",
       "UAN No",
       "Working Days",
@@ -386,22 +384,21 @@ class _PFWagesState extends State<PFWages> {
     // Fill data
     for (int i = 0; i < pyrlCtr.unitPayrollList.length; i++) {
       worksheet.getRangeByIndex(i + 4, 1).setText("${i + 1}"); // S.No
-      worksheet.getRangeByIndex(i + 4, 2).setText(pyrlCtr.unitPayrollList[i].unitName); // Site Name
-      worksheet.getRangeByIndex(i + 4, 3).setText(pyrlCtr.unitPayrollList[i].empcd); // ID No
-      worksheet.getRangeByIndex(i + 4, 4).setText(pyrlCtr.unitPayrollList[i].name); // ID No
-      worksheet.getRangeByIndex(i + 4, 5).setText(pyrlCtr.unitPayrollList[i].pfNo); // ID No
-      worksheet.getRangeByIndex(i + 4, 6).setText(pyrlCtr.unitPayrollList[i].duty); // ID No
-      worksheet.getRangeByIndex(i + 4, 7).setText(pyrlCtr.unitPayrollList[i].total); // ID No
+      worksheet.getRangeByIndex(i + 4, 2).setText(pyrlCtr.unitPayrollList[i].roleName); // ID No
+      worksheet.getRangeByIndex(i + 4, 3).setText(pyrlCtr.unitPayrollList[i].name); // ID No
+      worksheet.getRangeByIndex(i + 4, 4).setText(pyrlCtr.unitPayrollList[i].pfNo); // ID No
+      worksheet.getRangeByIndex(i + 4, 5).setText(pyrlCtr.unitPayrollList[i].duty); // ID No
+      worksheet.getRangeByIndex(i + 4, 6).setText(pyrlCtr.unitPayrollList[i].total); // ID No
       // worksheet.getRangeByIndex(i + 4, 7).setText("${((int.parse(pyrlCtr.unitPayrollList[i].pfWages.toString()) /
       //     int.parse(payrollCtr.lastDate.toString())) *
       //     int.parse(pyrlCtr.unitPayrollList[i].duty.toString())).round()}"); // ID No
-      worksheet.getRangeByIndex(i + 4, 8).setText(pyrlCtr.unitPayrollList[i].pfWagesAmt); // ID No
-      worksheet.getRangeByIndex(i + 4, 9).setText(pyrlCtr.unitPayrollList[i].pf); // ID No
-      worksheet.getRangeByIndex(i + 4, 10).setText(pyrlCtr.unitPayrollList[i].dob.toString()=="null"?"":utils.formatDob(pyrlCtr.unitPayrollList[i].dob.toString())); // ID No
-      worksheet.getRangeByIndex(i + 4, 11).setText(pyrlCtr.unitPayrollList[i].doj.toString()=="null"?"":utils.formatDob(pyrlCtr.unitPayrollList[i].doj.toString())); // ID No
-      worksheet.getRangeByIndex(i + 4, 12).setText(calculateAge(pyrlCtr.unitPayrollList[i].dob.toString())); // ID No
-      worksheet.getRangeByIndex(i + 4, 13).setText(pyrlCtr.unitPayrollList[i].fn); // ID No
-      worksheet.getRangeByIndex(i + 4, 14).setText(pyrlCtr.unitPayrollList[i].phoneNo); // ID No
+      worksheet.getRangeByIndex(i + 4, 7).setText(pyrlCtr.unitPayrollList[i].pfWagesAmt); // ID No
+      worksheet.getRangeByIndex(i + 4, 8).setText(pyrlCtr.unitPayrollList[i].pf); // ID No
+      worksheet.getRangeByIndex(i + 4, 9).setText(pyrlCtr.unitPayrollList[i].dob.toString()=="null"?"":utils.formatDob(pyrlCtr.unitPayrollList[i].dob.toString())); // ID No
+      worksheet.getRangeByIndex(i + 4, 10).setText(pyrlCtr.unitPayrollList[i].doj.toString()=="null"?"":utils.formatDob(pyrlCtr.unitPayrollList[i].doj.toString())); // ID No
+      worksheet.getRangeByIndex(i + 4, 11).setText(calculateAge(pyrlCtr.unitPayrollList[i].dob.toString())); // ID No
+      worksheet.getRangeByIndex(i + 4, 12).setText(pyrlCtr.unitPayrollList[i].fn); // ID No
+      worksheet.getRangeByIndex(i + 4, 13).setText(pyrlCtr.unitPayrollList[i].phoneNo); // ID No
     }
 
     // Save

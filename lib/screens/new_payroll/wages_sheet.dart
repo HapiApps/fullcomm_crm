@@ -36,13 +36,13 @@ class UnitSlip extends StatefulWidget {
 
 class _UnitSlipState extends State<UnitSlip> {
   var newPyrlServ = NewPayrollApiServices.instance;
-  var unitname,unitId;
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       pyrlCtr.users.clear();
       pyrlCtr.unitPayrollList.clear();
+      newPyrlServ.getUnitPayroll();
     });
     super.initState();
   }
@@ -87,6 +87,7 @@ class _UnitSlipState extends State<UnitSlip> {
                             ),
                           ],
                         ),
+                        Divider(color: Colors.grey.shade500,thickness: 0.5,),
                         10.height,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -97,9 +98,7 @@ class _UnitSlipState extends State<UnitSlip> {
                                     context: context,
                                     month: pyrlCtr.month,
                                     function: (){
-                                      if(pyrlCtr.unitName!=null){
-                                        newPyrlServ.getUnitPayroll(unitId);
-                                      }
+                                      newPyrlServ.getUnitPayroll();
                                     }
                                   );
                                 },
@@ -117,27 +116,6 @@ class _UnitSlipState extends State<UnitSlip> {
                           ],
                         ),
                         10.height,
-                        Center(
-                          child: pyrlCtr.getUnits.value == false ?
-                          const CircularProgressIndicator() :
-                          pyrlCtr.unitList.isEmpty ?
-                          const CustomText(text: "No Unit Found", isCopy: true,) :
-                          PayrollUnitDropDown(
-                            size: kIsWeb ? webSize : mobileSize,
-                            color: Colors.white,
-                            text: "Unit Name",
-                            unitList: pyrlCtr.unitList,
-                            onChanged: (units? unit) {
-                              setState(() {
-                                pyrlCtr.unitName = unit;
-                                if (unit != null) {
-                                  unitname = unit.unit_name.toString();
-                                  unitId = unit.id.toString();
-                                  newPyrlServ.getUnitPayroll(unitId);
-                                }
-                              });
-                            },),
-                        ),
                         pyrlCtr.getData.value == false ?
                         const Padding(
                           padding: EdgeInsets.all(25.0),
@@ -188,29 +166,16 @@ class _UnitSlipState extends State<UnitSlip> {
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.end,
                                             children: [
-                                              // ElevatedButton(onPressed: () {
-                                              //   esiWagesPayrollExport(index, unitname);
-                                              // },
-                                              //     child: const CustomText(text: "ESI Wages",
-                                              //       isBold: true,
-                                              //       colors: Colors.white,)),
-                                              // 10.width,
-                                              // ElevatedButton(onPressed: () {
-                                              //   pfWagesPayrollExport(index, unitname);
-                                              // },
-                                              //     child: const CustomText(text: "PF Wages",
-                                              //         isBold: true,
-                                              //         colors: Colors.white)), 10.width,
                                               ElevatedButton(onPressed: () {
                                                 // generateSinglePayrollPdf(pyrlCtr.unitPayrollList[index]);
-                                                unitPayrollExport(index, unitName: unitname);
+                                                unitPayrollExport(index, unitName: "unitname");
                                               },
                                                   child: const CustomText(text: "Excel",
                                                     isBold: true,
                                                     colors: Colors.white, isCopy: true,)),
                                               10.width,
                                               ElevatedButton(onPressed: () {
-                                                unitPayrollPreviewPdf(index, unitName: unitname);
+                                                unitPayrollPreviewPdf(index, unitName: "unitname");
                                               },
                                                   child: const CustomText(text: "PDF",
                                                       isBold: true,
@@ -220,7 +185,7 @@ class _UnitSlipState extends State<UnitSlip> {
                                         Table(
                                           border: TableBorder.all(
                                               color: Colors.grey.shade300),
-                                          columnWidths:controllers.storage.read("com_id")=="1"? {
+                                          columnWidths: {
                                             0: FlexColumnWidth(0.5), // no
                                             1: FlexColumnWidth(1), // id
                                             2: FlexColumnWidth(1.2), // role
@@ -238,50 +203,6 @@ class _UnitSlipState extends State<UnitSlip> {
                                             14: FlexColumnWidth(1.3), // Deduction
                                             15: FlexColumnWidth(1.7), // netAmt 16 c
                                             16: FlexColumnWidth(1.7), // netAmt 16 c
-                                            17: FlexColumnWidth(1.7), // netAmt 16 c
-                                          }:
-                                          controllers.storage.read("com_id")!="1"? {
-                                            0: FlexColumnWidth(0.5), // no
-                                            1: FlexColumnWidth(1), // id
-                                            2: FlexColumnWidth(1.2), // role
-                                            3: FlexColumnWidth(2.5), // name
-                                            4: FlexColumnWidth(1), // duty
-                                            5: FlexColumnWidth(1.2), // basic
-                                            6: FlexColumnWidth(1.3), // da
-                                            7: FlexColumnWidth(1.2), // hra
-                                            8: FlexColumnWidth(1.3), // total
-                                            9: FlexColumnWidth(1.3), // Advance
-                                            10: FlexColumnWidth(1.3), // pe
-                                            11: FlexColumnWidth(1.3), // un
-                                            12: FlexColumnWidth(1), // esi
-                                            13: FlexColumnWidth(1), // pf
-                                            14: FlexColumnWidth(1), // admin charges
-                                            15: FlexColumnWidth(1.3), // Deduction
-                                            16: FlexColumnWidth(1.3), // Deduction
-                                            17: FlexColumnWidth(1.3), // Deduction
-                                            // 16: FlexColumnWidth(1.7), // netAmt
-                                          }:
-                                          {
-                                            0: FlexColumnWidth(0.7), // no
-                                            1: FlexColumnWidth(2), // unit Name
-                                            2: FlexColumnWidth(1), // id
-                                            3: FlexColumnWidth(1.2), // role
-                                            4: FlexColumnWidth(2), // name
-                                            5: FlexColumnWidth(1), // duty
-                                            6: FlexColumnWidth(1.1), // basic
-                                            7: FlexColumnWidth(1.2), // da
-                                            8: FlexColumnWidth(1.1), // hra
-                                            9: FlexColumnWidth(1.3), // total
-                                            10: FlexColumnWidth(1.3), // Advance
-                                            11: FlexColumnWidth(1.3), // pe
-                                            12: FlexColumnWidth(1.2), // un
-                                            13: FlexColumnWidth(1), // esi
-                                            14: FlexColumnWidth(1), // pf
-                                            15: FlexColumnWidth(1), // pf
-                                            16: FlexColumnWidth(1.1), // Deduction
-                                            17: FlexColumnWidth(1.7), // netAmt
-                                            18: FlexColumnWidth(1.7), // netAmt
-                                            19: FlexColumnWidth(1.7), // netAmt
                                           },
                                           children: [
                                             // Header Row
@@ -291,22 +212,13 @@ class _UnitSlipState extends State<UnitSlip> {
                                                     color: Colors.black12),
                                                 children: [
                                                   customWid("S.No",bold: true,),
-                                                  customWid("Unit Name",bold: true,),
-                                                  customWid("ID",bold: true,),
                                                   customWid("Rank",bold: true,),
                                                   customWid("Name",bold: true,),
                                                   customWid("Duty",bold: true,),
                                                   customWid("OT",bold: true,),
-                                                  if(controllers.storage.read("com_id")=="1")
                                                   customWid("Basic",bold: true,),
-                                                  if(controllers.storage.read("com_id")=="1")
                                                   customWid("DA",bold: true,),
-                                                  if(controllers.storage.read("com_id")=="1")
                                                   customWid("HRA",bold: true,),
-                                                  if(controllers.storage.read("com_id")!="1")
-                                                  customWid("Optional Salary",bold: true,),
-                                                  if(controllers.storage.read("com_id")!="1")
-                                                  customWid("Bonus",bold: true,),
                                                   customWid("Earning",bold: true,),
                                                   customWid("Advance",bold: true,),
                                                   customWid("Uniform",bold: true,),
@@ -315,8 +227,6 @@ class _UnitSlipState extends State<UnitSlip> {
                                                   customWid("Food Charges",bold: true,),
                                                   customWid("ESI",bold: true,),
                                                   customWid("PF",bold: true,),
-                                                  if(controllers.storage.read("com_id")!="1")
-                                                  customWid("Admin\nCharges",bold: true,),
                                                   customWid("Deduction",bold: true,),
                                                   customWid("Net Amt",bold: true,),
                                                 ],
@@ -327,7 +237,6 @@ class _UnitSlipState extends State<UnitSlip> {
                                                 TableRow(
                                                   children: [
                                                     customWid((i+1).toString()),
-                                                    customWid(codeList[i]),
                                                     customWid(roleList[i]),
                                                     customWid(namesList[i]),
                                                     Padding(
@@ -342,18 +251,9 @@ class _UnitSlipState extends State<UnitSlip> {
                                                         text: otList[i], isCopy: true,
                                                       ),
                                                     ),
-                                                    // customWid(dutyList[i]),
-                                                    // customWid(otList[i]),
-                                                    if(controllers.storage.read("com_id")=="1")
                                                     customWid(basicList[i]),
-                                                    if(controllers.storage.read("com_id")=="1")
                                                     customWid(daList[i]),
-                                                    if(controllers.storage.read("com_id")=="1")
                                                     customWid(hraList[i]),
-                                                    if(controllers.storage.read("com_id")!="1")
-                                                    customWid("${double.parse(opList[i])*double.parse(dutyList[i])}"),
-                                                    if(controllers.storage.read("com_id")!="1")
-                                                    customWid("${double.parse(bonusList[i])*double.parse(dutyList[i])}"),
                                                     customWid(totalList[i]),
                                                     customWid(advanceList[i]),
                                                     customWid(uniformList[i]),
@@ -362,8 +262,6 @@ class _UnitSlipState extends State<UnitSlip> {
                                                     customWid(foodList[i]),
                                                     customWid(esiList[i]),
                                                     customWid(pfList[i]),
-                                                    if(controllers.storage.read("com_id")!="1")
-                                                    customWid("${double.parse(acList[i]=="null"||acList[i]==""?"0":acList[i])*int.parse(dutyList[i])}"),
                                                     customWid(deductionList[i]),
                                                     customWid(netAmtList[i]),
                                                   ],
@@ -518,16 +416,13 @@ class _UnitSlipState extends State<UnitSlip> {
 
 
     worksheet.getRangeByName("A3").setText(
-        "${controllers.storage.read("com_name")}\n Address : 44/1, V.V. Koil Street, Tambaram Sanatorium,Chennai-600 045,Tamilnadu, India.");
+        "${controllers.comName.text}\n Address : ${controllers.comDoor.text}, ${controllers.comStreet.text}\n${controllers.comCity.text}, ${controllers.comState.text},"
+            " ${controllers.comCountry.text}, ${controllers.comPincode.text}");
     worksheet.getRangeByName("L3").setText(
-        "Client Name : ${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName}\nMonth : ${pyrlCtr.month.value}");
-    List<String> headers=[];
-    if(controllers.storage.read("com_id")=="1"){
-      headers = [
+        "Month : ${pyrlCtr.month.value}");
+    List<String> headers = [
         "S.No",
-        "ID No",
         "Rank",
-        "Unit Name",
         "Name",
         "Site Salary",
         "Duty",
@@ -549,34 +444,6 @@ class _UnitSlipState extends State<UnitSlip> {
         "A/C No",
         "IFSC Code"
       ];
-    }else{
-      headers = [
-        "S.No",
-        "ID No",
-        "Rank",
-        "Unit Name",
-        "Name",
-        "Site Salary",
-        "Duty",
-        "OT",
-        "Optional Salary",
-        "Bonus",
-        "Earning",
-        "ESI",
-        "PF",
-        "Admin charges",
-        "Advance",
-        "Penalty",
-        "Uniform",
-        "Bonus",
-        "Food Charges",
-        "Deduction",
-        "Net salary",
-        "A/C Name",
-        "A/C No",
-        "IFSC Code"
-      ];
-    }
     // Headers`
     for (int j = 0; j < headers.length; j++) {
       worksheet.getRangeByIndex(4, j + 1).setText(headers[j]);
@@ -617,178 +484,53 @@ class _UnitSlipState extends State<UnitSlip> {
         ',');
     var salaryList = pyrlCtr.unitPayrollList[index].salary.toString().split(
         ',');
-    int rowCountEx;
-    if(controllers.storage.read("com_id")=="1"){
-      rowCountEx = [
-        namesList.length,
-        empcdList.length,
-        roleList.length,
-        dutyList.length,
-        otList.length,
-        netAmtList.length,
-        advanceList.length,
-        uniformList.length,
-        penaltyList.length,
-        deductionList.length,
-        totalList.length,
-        basicList.length,
-        daList.length,
-        hraList.length,
-        totalList.length,
-        totalList.length,//
-        totalList.length,//
-        esiList.length,
-        pfList.length,
-        accNoList.length,
-        ifscList.length,
-        bkNameList.length
-      ].reduce((a, b) => a > b ? a : b);
-    }else{
-      rowCountEx = [
-        namesList.length,
-        empcdList.length,
-        roleList.length,
-        dutyList.length,
-        otList.length,
-        netAmtList.length,
-        advanceList.length,
-        uniformList.length,
-        penaltyList.length,
-        deductionList.length,
-        totalList.length,
-        // basicList.length,
-        opList.length,
-        bonusList.length,
-        totalList.length,
-        esiList.length,
-        pfList.length,
-        pfList.length,//
-        pfList.length,//
-        acList.length,
-        accNoList.length,
-        ifscList.length,
-        bkNameList.length
-      ].reduce((a, b) => a > b ? a : b);
-    }
-    if(controllers.storage.read("com_id")=="1"){
-      // Fill data
-      if(unitName!=""){
+    int rowCountEx = [
+      namesList.length,
+      roleList.length,
+      dutyList.length,
+      otList.length,
+      netAmtList.length,
+      advanceList.length,
+      uniformList.length,
+      penaltyList.length,
+      deductionList.length,
+      totalList.length,
+      basicList.length,
+      daList.length,
+      hraList.length,
+      totalList.length,
+      totalList.length,//
+      totalList.length,//
+      esiList.length,
+      pfList.length,
+      accNoList.length,
+      ifscList.length,
+      bkNameList.length
+    ].reduce((a, b) => a > b ? a : b);
         for (int i = 0; i < rowCountEx; i++) {
           worksheet.getRangeByIndex(i + 5, 1).setText("${i + 1}");
-          worksheet.getRangeByIndex(i + 5, 2).setText(getSafe(empcdList, i));
-          worksheet.getRangeByIndex(i + 5, 3).setText(getSafe(roleList, i));
-          worksheet.getRangeByIndex(i + 5, 4).setText(
-              pyrlCtr.unitPayrollList[index].unitName.toString());
-          worksheet.getRangeByIndex(i + 5, 5).setText(getSafe(namesList, i));
-          worksheet.getRangeByIndex(i + 5, 6).setText(getSafe(salaryList, i));
-          worksheet.getRangeByIndex(i + 5, 7).setText(getSafe(dutyList, i,isName: true));
-          worksheet.getRangeByIndex(i + 5, 8).setText(getSafe(otList, i,isName: true));
-          worksheet.getRangeByIndex(i + 5, 9).setText(getSafe(basicList, i));
-          worksheet.getRangeByIndex(i + 5, 10).setText(getSafe(daList, i));
-          worksheet.getRangeByIndex(i + 5, 11).setText(getSafe(hraList, i));
-          worksheet.getRangeByIndex(i + 5, 12).setText(getSafe(totalList, i));
-          worksheet.getRangeByIndex(i + 5, 13).setText(getSafe(esiList, i));
-          worksheet.getRangeByIndex(i + 5, 14).setText(getSafe(pfList, i));
-          worksheet.getRangeByIndex(i + 5, 15).setText(getSafe(advanceList, i));
-          worksheet.getRangeByIndex(i + 5, 16).setText(getSafe(penaltyList, i));
-          worksheet.getRangeByIndex(i + 5, 17).setText(getSafe(uniformList, i));
-          worksheet.getRangeByIndex(i + 5, 18).setText(getSafe(bonus2List, i));
-          worksheet.getRangeByIndex(i + 5, 19).setText(getSafe(foodList, i));
-          worksheet.getRangeByIndex(i + 5, 20).setText(getSafe(deductionList, i));
-          worksheet.getRangeByIndex(i + 5, 21).setText(getSafe(netAmtList, i));
-          worksheet.getRangeByIndex(i + 5, 22).setText(getSafe(bkNameList, i));
-          worksheet.getRangeByIndex(i + 5, 23).setText(getSafe(accNoList, i,isName: true));
-          worksheet.getRangeByIndex(i + 5, 24).setText(getSafe(ifscList, i));
+          worksheet.getRangeByIndex(i + 5, 2).setText(getSafe(roleList, i));
+          worksheet.getRangeByIndex(i + 5, 3).setText(getSafe(namesList, i));
+          worksheet.getRangeByIndex(i + 5, 4).setText(getSafe(salaryList, i));
+          worksheet.getRangeByIndex(i + 5, 5).setText(getSafe(dutyList, i,isName: true));
+          worksheet.getRangeByIndex(i + 5, 6).setText(getSafe(otList, i,isName: true));
+          worksheet.getRangeByIndex(i + 5, 7).setText(getSafe(basicList, i));
+          worksheet.getRangeByIndex(i + 5, 8).setText(getSafe(daList, i));
+          worksheet.getRangeByIndex(i + 5, 9).setText(getSafe(hraList, i));
+          worksheet.getRangeByIndex(i + 5, 10).setText(getSafe(totalList, i));
+          worksheet.getRangeByIndex(i + 5, 11).setText(getSafe(esiList, i));
+          worksheet.getRangeByIndex(i + 5, 12).setText(getSafe(pfList, i));
+          worksheet.getRangeByIndex(i + 5, 13).setText(getSafe(advanceList, i));
+          worksheet.getRangeByIndex(i + 5, 14).setText(getSafe(penaltyList, i));
+          worksheet.getRangeByIndex(i + 5, 15).setText(getSafe(uniformList, i));
+          worksheet.getRangeByIndex(i + 5, 16).setText(getSafe(bonus2List, i));
+          worksheet.getRangeByIndex(i + 5, 17).setText(getSafe(foodList, i));
+          worksheet.getRangeByIndex(i + 5, 18).setText(getSafe(deductionList, i));
+          worksheet.getRangeByIndex(i + 5, 19).setText(getSafe(netAmtList, i));
+          worksheet.getRangeByIndex(i + 5, 20).setText(getSafe(bkNameList, i));
+          worksheet.getRangeByIndex(i + 5, 21).setText(getSafe(accNoList, i,isName: true));
+          worksheet.getRangeByIndex(i + 5, 22).setText(getSafe(ifscList, i));
         }
-      }else{
-        for (int i = 0; i < pyrlCtr.unitPayrollList.length; i++) {
-          worksheet.getRangeByIndex(i + 5, 1).setText("${i + 1}");
-          worksheet.getRangeByIndex(i + 5, 2).setText(getSafe2(pyrlCtr.unitPayrollList[i].empcd.toString()));
-          worksheet.getRangeByIndex(i + 5, 3).setText(getSafe2(pyrlCtr.unitPayrollList[i].roleName.toString()));
-          worksheet.getRangeByIndex(i + 5, 4).setText(getSafe2(pyrlCtr.unitPayrollList[i].unitName.toString()));
-          worksheet.getRangeByIndex(i + 5, 5).setText(getSafe2(pyrlCtr.unitPayrollList[i].name.toString()));
-          worksheet.getRangeByIndex(i + 5, 6).setText(getSafe2(pyrlCtr.unitPayrollList[i].salary.toString()));
-          worksheet.getRangeByIndex(i + 5, 7).setText(getSafe2(pyrlCtr.unitPayrollList[i].duty.toString(),isName: true));
-          worksheet.getRangeByIndex(i + 5, 8).setText(getSafe2(pyrlCtr.unitPayrollList[i].ot.toString(),isName: true));
-          worksheet.getRangeByIndex(i + 5, 9).setText(getSafe2(pyrlCtr.unitPayrollList[i].basic.toString()));
-          worksheet.getRangeByIndex(i + 5, 10).setText(getSafe2(pyrlCtr.unitPayrollList[i].da.toString()));
-          worksheet.getRangeByIndex(i + 5, 11).setText(getSafe2(pyrlCtr.unitPayrollList[i].hra.toString()));
-          worksheet.getRangeByIndex(i + 5, 12).setText(getSafe2(pyrlCtr.unitPayrollList[i].total.toString()));
-          worksheet.getRangeByIndex(i + 5, 13).setText(getSafe2(pyrlCtr.unitPayrollList[i].esi.toString()));
-          worksheet.getRangeByIndex(i + 5, 14).setText(getSafe2(pyrlCtr.unitPayrollList[i].pf.toString()));
-          worksheet.getRangeByIndex(i + 5, 15).setText(getSafe2(pyrlCtr.unitPayrollList[i].advance.toString()));
-          worksheet.getRangeByIndex(i + 5, 16).setText(getSafe2(pyrlCtr.unitPayrollList[i].penalty.toString()));
-          worksheet.getRangeByIndex(i + 5, 17).setText(getSafe2(pyrlCtr.unitPayrollList[i].uniform.toString()));
-          worksheet.getRangeByIndex(i + 5, 18).setText(getSafe2(pyrlCtr.unitPayrollList[i].bonus2.toString()));
-          worksheet.getRangeByIndex(i + 5, 19).setText(getSafe2(pyrlCtr.unitPayrollList[i].food.toString()));
-          worksheet.getRangeByIndex(i + 5, 20).setText(getSafe2(pyrlCtr.unitPayrollList[i].deduction.toString()));
-          worksheet.getRangeByIndex(i + 5, 21).setText(getSafe2(pyrlCtr.unitPayrollList[i].netAmount.toString()));
-          worksheet.getRangeByIndex(i + 5, 22).setText(getSafe2(pyrlCtr.unitPayrollList[i].bankName.toString()));
-          worksheet.getRangeByIndex(i + 5, 23).setText(getSafe2(pyrlCtr.unitPayrollList[i].accNo.toString(),isName: true));
-          worksheet.getRangeByIndex(i + 5, 24).setText(getSafe2(pyrlCtr.unitPayrollList[i].ifscCode.toString()));
-        }
-      }
-    }
-    else{
-      // Fill data
-      if(unitName!=""){
-        for (int i = 0; i < rowCountEx; i++) {
-          worksheet.getRangeByIndex(i + 5, 1).setText("${i + 1}");
-          worksheet.getRangeByIndex(i + 5, 2).setText(getSafe(empcdList, i));
-          worksheet.getRangeByIndex(i + 5, 3).setText(getSafe(roleList, i));
-          worksheet.getRangeByIndex(i + 5, 4).setText(
-              pyrlCtr.unitPayrollList[index].unitName.toString());
-          worksheet.getRangeByIndex(i + 5, 5).setText(getSafe(namesList, i));
-          worksheet.getRangeByIndex(i + 5, 6).setText(getSafe(salaryList, i));
-          worksheet.getRangeByIndex(i + 5, 7).setText(getSafe(dutyList, i,isName: true));
-          worksheet.getRangeByIndex(i + 5, 8).setText(getSafe(otList, i,isName: true));
-          worksheet.getRangeByIndex(i + 5, 9).setText("${double.parse(opList[i])*double.parse(dutyList[i])}");
-          worksheet.getRangeByIndex(i + 5, 10).setText("${double.parse(bonusList[i])*double.parse(dutyList[i])}");
-          worksheet.getRangeByIndex(i + 5, 11).setText(getSafe(totalList, i));
-          worksheet.getRangeByIndex(i + 5, 12).setText(getSafe(esiList, i));
-          worksheet.getRangeByIndex(i + 5, 13).setText(getSafe(pfList, i));
-          worksheet.getRangeByIndex(i + 5, 14).setText("${double.parse(acList[i])*double.parse(dutyList[i])}");
-          worksheet.getRangeByIndex(i + 5, 15).setText(getSafe(advanceList, i));
-          worksheet.getRangeByIndex(i + 5, 16).setText(getSafe(penaltyList, i));
-          worksheet.getRangeByIndex(i + 5, 17).setText(getSafe(uniformList, i));
-          worksheet.getRangeByIndex(i + 5, 18).setText(getSafe(bonus2List, i));
-          worksheet.getRangeByIndex(i + 5, 19).setText(getSafe(foodList, i));
-          worksheet.getRangeByIndex(i + 5, 20).setText(getSafe(deductionList, i));
-          worksheet.getRangeByIndex(i + 5, 21).setText(getSafe(netAmtList, i));
-          worksheet.getRangeByIndex(i + 5, 22).setText(getSafe(bkNameList, i));
-          worksheet.getRangeByIndex(i + 5, 23).setText(getSafe(accNoList, i,isName: true));
-          worksheet.getRangeByIndex(i + 5, 24).setText(getSafe(ifscList, i));
-        }
-      }else{
-        for (int i = 0; i < pyrlCtr.unitPayrollList.length; i++) {
-          worksheet.getRangeByIndex(i + 5, 1).setText("${i + 1}");
-          worksheet.getRangeByIndex(i + 5, 2).setText(getSafe2(pyrlCtr.unitPayrollList[i].empcd.toString()));
-          worksheet.getRangeByIndex(i + 5, 3).setText(getSafe2(pyrlCtr.unitPayrollList[i].roleName.toString()));
-          worksheet.getRangeByIndex(i + 5, 4).setText(getSafe2(pyrlCtr.unitPayrollList[i].unitName.toString()));
-          worksheet.getRangeByIndex(i + 5, 5).setText(getSafe2(pyrlCtr.unitPayrollList[i].name.toString()));
-          worksheet.getRangeByIndex(i + 5, 6).setText(getSafe2(pyrlCtr.unitPayrollList[i].salary.toString()));
-          worksheet.getRangeByIndex(i + 5, 7).setText(getSafe2(pyrlCtr.unitPayrollList[i].duty.toString(),isName: true));
-          worksheet.getRangeByIndex(i + 5, 8).setText(getSafe2(pyrlCtr.unitPayrollList[i].ot.toString(),isName: true));
-          // worksheet.getRangeByIndex(i + 5, 9).setText(getSafe2(pyrlCtr.unitPayrollList[i].basic.toString()));
-          worksheet.getRangeByIndex(i + 5, 9).setText(getSafe2("${double.parse(pyrlCtr.unitPayrollList[i].op.toString())*double.parse(pyrlCtr.unitPayrollList[i].duty.toString())}"));
-          worksheet.getRangeByIndex(i + 5, 10).setText(getSafe2("${double.parse(pyrlCtr.unitPayrollList[i].bonus.toString())*double.parse(pyrlCtr.unitPayrollList[i].duty.toString())}"));
-          worksheet.getRangeByIndex(i + 5, 11).setText(getSafe2(pyrlCtr.unitPayrollList[i].total.toString()));
-          worksheet.getRangeByIndex(i + 5, 12).setText(getSafe2(pyrlCtr.unitPayrollList[i].esi.toString()));
-          worksheet.getRangeByIndex(i + 5, 13).setText(getSafe2(pyrlCtr.unitPayrollList[i].pf.toString()));
-          worksheet.getRangeByIndex(i + 5, 14).setText(getSafe2("${double.parse(pyrlCtr.unitPayrollList[i].aC.toString())*double.parse(pyrlCtr.unitPayrollList[i].duty.toString())}"));
-          worksheet.getRangeByIndex(i + 5, 15).setText(getSafe2(pyrlCtr.unitPayrollList[i].advance.toString()));
-          worksheet.getRangeByIndex(i + 5, 16).setText(getSafe2(pyrlCtr.unitPayrollList[i].penalty.toString()));
-          worksheet.getRangeByIndex(i + 5, 17).setText(getSafe2(pyrlCtr.unitPayrollList[i].uniform.toString()));
-          worksheet.getRangeByIndex(i + 5, 18).setText(getSafe2(pyrlCtr.unitPayrollList[i].bonus2.toString()));
-          worksheet.getRangeByIndex(i + 5, 19).setText(getSafe2(pyrlCtr.unitPayrollList[i].food.toString()));
-          worksheet.getRangeByIndex(i + 5, 20).setText(getSafe2(pyrlCtr.unitPayrollList[i].deduction.toString()));
-          worksheet.getRangeByIndex(i + 5, 21).setText(getSafe2(pyrlCtr.unitPayrollList[i].netAmount.toString()));
-          worksheet.getRangeByIndex(i + 5, 22).setText(getSafe2(pyrlCtr.unitPayrollList[i].bankName.toString()));
-          worksheet.getRangeByIndex(i + 5, 23).setText(getSafe2(pyrlCtr.unitPayrollList[i].accNo.toString(),isName: true));
-          worksheet.getRangeByIndex(i + 5, 24).setText(getSafe2(pyrlCtr.unitPayrollList[i].ifscCode.toString()));
-        }
-      }
-    }
 
     // Save
     final List<int> bytes = workbook.saveAsStream();
@@ -799,11 +541,11 @@ class _UnitSlipState extends State<UnitSlip> {
         href: 'data:application/octet-stream;charset=utf-161e;base64,${base64
             .encode(bytes)}',
       )
-        ..setAttribute('download', '${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.xlsx')
+        ..setAttribute('download', 'Register Of Wages - ${pyrlCtr.month.value}.xlsx')
         ..click();
     } else {
       final String path = (await getApplicationSupportDirectory()).path;
-      final String filename = '$path/${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.xlsx';
+      final String filename = '$path/Register Of Wages - ${pyrlCtr.month.value}.xlsx';
       final File file = File(filename);
       await file.writeAsBytes(bytes, flush: true);
       OpenFile.open(filename, linuxByProcess: true);
@@ -866,58 +608,28 @@ class _UnitSlipState extends State<UnitSlip> {
     var foodList = pyrlCtr.unitPayrollList[index].food.toString().split(','); // ✅ Fix A/C Name
     var salaryList = pyrlCtr.unitPayrollList[index].salary.toString().split(
         ',');
-    int rowCount;
-    if(controllers.storage.read("com_id")=="1"){
-      rowCount = [
-        namesList.length,
-        empcdList.length,
-        roleList.length,
-        dutyList.length,
-        otList.length,
-        netAmtList.length,
-        advanceList.length,
-        uniformList.length,
-        penaltyList.length,
-        deductionList.length,
-        totalList.length,
-        basicList.length,
-        hraList.length,
-        daList.length,
-        esiList.length,
-        pfList.length,
-        accNoList.length,
-        accNoList.length,//
-        accNoList.length,//
-        ifscList.length,
-        bkNameList.length
-      ].reduce((a, b) => a > b ? a : b);
-    }else{
-      rowCount = [
-        namesList.length,
-        empcdList.length,
-        roleList.length,
-        dutyList.length,
-        otList.length,
-        netAmtList.length,
-        advanceList.length,
-        uniformList.length,
-        penaltyList.length,
-        deductionList.length,
-        totalList.length,
-        // basicList.length,
-        hraList.length,
-        daList.length,
-        esiList.length,
-        pfList.length,
-        acList.length,
-        accNoList.length,
-        accNoList.length,//
-        accNoList.length,//
-        ifscList.length,
-        bkNameList.length
-      ].reduce((a, b) => a > b ? a : b);
-    }
-
+    int rowCount = [
+      namesList.length,
+      roleList.length,
+      dutyList.length,
+      otList.length,
+      netAmtList.length,
+      advanceList.length,
+      uniformList.length,
+      penaltyList.length,
+      deductionList.length,
+      totalList.length,
+      basicList.length,
+      hraList.length,
+      daList.length,
+      esiList.length,
+      pfList.length,
+      accNoList.length,
+      accNoList.length,//
+      accNoList.length,//
+      ifscList.length,
+      bkNameList.length
+    ].reduce((a, b) => a > b ? a : b);
     // ✅ Totals calculation for all numeric fields
     double totalDuty = 0.0;
     double totalOt = 0.0;
@@ -939,50 +651,27 @@ class _UnitSlipState extends State<UnitSlip> {
     int totalB2 = 0;
     int totalFood = 0;
 
-    if(unitName!=""){
-       totalDuty = dutyList.fold(0.0, (sum, v) => sum + (double.tryParse(v) ?? 0.0));
-       totalOt = otList.fold(0.0, (sum, v) => sum + (double.tryParse(v) ?? 0.0));
-       totalEarning = totalList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalAdvance = advanceList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalPenalty = penaltyList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalUniform = uniformList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalDeduction = deductionList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalNetAmt = netAmtList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalDuty = dutyList.fold(0.0, (sum, v) => sum + (double.tryParse(v) ?? 0.0));
+    totalOt = otList.fold(0.0, (sum, v) => sum + (double.tryParse(v) ?? 0.0));
+    totalEarning = totalList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalAdvance = advanceList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalPenalty = penaltyList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalUniform = uniformList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalDeduction = deductionList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalNetAmt = netAmtList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
 
-       totalBasic = basicList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalHra = hraList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalDa = daList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalBasic = basicList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalHra = hraList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalDa = daList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
 
-       totalAd = basicList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalB = hraList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalOp = daList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalEsi = esiList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalPf = pfList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalPf = pfList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalB2 = bonus2List.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-       totalFood = foodList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
-    }else{
-       totalDuty = pyrlCtr.unitPayrollList.map((e) => double.tryParse(clean(e.duty.toString())) ?? 0.0).fold(0.0, (sum, v) => sum + v);
-       totalOt = pyrlCtr.unitPayrollList.map((e) => double.tryParse(clean(e.ot.toString())) ?? 0.0).fold(0.0, (sum, v) => sum + v);
-       totalEarning = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.total.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalAdvance = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.advance.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalPenalty = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.penalty.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalUniform = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.uniform.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalDeduction = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.deduction.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalNetAmt = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.netAmount.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-
-       totalBasic = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.basic.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalHra = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.hra.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalDa = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.da.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalEsi = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.esi.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalPf = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.pf.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalAd = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.aC.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalOp = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.op.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalB = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.bonus.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalB2 = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.bonus2.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-       totalFood = pyrlCtr.unitPayrollList.map((e) => int.tryParse(clean(e.food.toString())) ?? 0).fold(0, (sum, v) => sum + v);
-    }
-
+    totalAd = basicList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalB = hraList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalOp = daList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalEsi = esiList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalPf = pfList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalPf = pfList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalB2 = bonus2List.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
+    totalFood = foodList.fold(0, (sum, v) => sum + (int.tryParse(clean(v)) ?? 0));
     // Build PDF content
     pdf.addPage(
       pw.MultiPage(
@@ -1017,24 +706,23 @@ class _UnitSlipState extends State<UnitSlip> {
                       pw.Column(
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
-                            pw.Text(controllers.storage.read("com_name"),
+                            pw.Text(controllers.comName.text,
                                 style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
                             pw.Text(
-                                "Address: 44/1, V.V. Koil Street, Tambaram Sanatorium,\nChennai-600 045, Tamilnadu, India."),
+                                "Address: ${controllers.comDoor.text}, ${controllers.comStreet.text}\n${controllers.comCity.text}, ${controllers.comState.text},"
+                                    " ${controllers.comCountry.text}, ${controllers.comPincode.text}"),
                           ]
                       ),
                       pw.SizedBox(width: 20),
                       pw.Column(
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
-                            pw.Text("Client Name"),
                             pw.Text("Month")
                           ]
                       ),
                       pw.Column(
                           crossAxisAlignment: pw.CrossAxisAlignment.start,
                           children: [
-                            pw.Text(" : ${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName}"),
                             pw.Text(" : ${pyrlCtr.month.value}")
                           ]
                       ),
@@ -1043,14 +731,9 @@ class _UnitSlipState extends State<UnitSlip> {
               ],
             ),
             pw.SizedBox(height: 15),
-            if(controllers.storage.read("com_id")=="1")
-           // Table
-            unitName!=""?
             pw.Table.fromTextArray(
               headers: [
                 "S.No",
-                "Unit",
-                "ID",
                 "Name",
                 "Rank",
                 "Salary",
@@ -1077,8 +760,6 @@ class _UnitSlipState extends State<UnitSlip> {
                 rowCount,
                     (i) => [
                   (i+1).toString(),
-                  pyrlCtr.unitPayrollList[index].unitName.toString(),
-                  getSafe(empcdList, i),
                   getSafe(namesList, i),
                   getSafe(roleList, i),
                   getSafe(salaryList, i),
@@ -1104,8 +785,6 @@ class _UnitSlipState extends State<UnitSlip> {
               )..add([ // ✅ Total row update
                 "",
                 "",
-                "",
-                "",
                 "Total",
                 "",
                 "$totalDuty",
@@ -1136,400 +815,30 @@ class _UnitSlipState extends State<UnitSlip> {
               cellAlignment: pw.Alignment.center,
               cellPadding: const pw.EdgeInsets.all(2),
               border: pw.TableBorder.all(width: 0.5),
-
-              // ✅ Adjust column widths properly
-                columnWidths: {
+               columnWidths: {
                 0: const pw.FixedColumnWidth(35),   // S.No
-                1: const pw.FixedColumnWidth(50),   // Unit
-                2: const pw.FixedColumnWidth(40),   // ID
-                3: const pw.FixedColumnWidth(57),   // Name
-                4: const pw.FixedColumnWidth(35),   // Rank
-                5: const pw.FixedColumnWidth(45),   // Salary
-                6: const pw.FixedColumnWidth(32),   // Duty
-                7: const pw.FixedColumnWidth(25),   // OT
-                8: const pw.FixedColumnWidth(40),   // Basic
-                9: const pw.FixedColumnWidth(35),   // DA
-                10: const pw.FixedColumnWidth(40),   // HRA
-                11: const pw.FixedColumnWidth(50),  // Total
-                12: const pw.FixedColumnWidth(54),  // Advance
-                13: const pw.FixedColumnWidth(50),  // Penalty
-                14: const pw.FixedColumnWidth(50),  // Uniform
-                15: const pw.FixedColumnWidth(40),  // ESI
-                16: const pw.FixedColumnWidth(35),  // PF
-                17: const pw.FixedColumnWidth(25),  // Deduction
-                18: const pw.FixedColumnWidth(25),  // Net Salary
-                19: const pw.FixedColumnWidth(53),  // A/C Name
-                20: const pw.FixedColumnWidth(50),  // A/C No
+                1: const pw.FixedColumnWidth(57),   // Name
+                2: const pw.FixedColumnWidth(35),   // Rank
+                3: const pw.FixedColumnWidth(45),   // Salary
+                4: const pw.FixedColumnWidth(32),   // Duty
+                5: const pw.FixedColumnWidth(25),   // OT
+                6: const pw.FixedColumnWidth(40),   // Basic
+                7: const pw.FixedColumnWidth(35),   // DA
+                8: const pw.FixedColumnWidth(40),   // HRA
+                9: const pw.FixedColumnWidth(50),  // Total
+                10: const pw.FixedColumnWidth(54),  // Advance
+                11: const pw.FixedColumnWidth(50),  // Penalty
+                12: const pw.FixedColumnWidth(50),  // Uniform
+                13: const pw.FixedColumnWidth(40),  // ESI
+                14: const pw.FixedColumnWidth(35),  // PF
+                15: const pw.FixedColumnWidth(25),  // Deduction
+                16: const pw.FixedColumnWidth(25),  // Net Salary
+                17: const pw.FixedColumnWidth(53),  // A/C Name
+                18: const pw.FixedColumnWidth(50),  // A/C No
+                19: const pw.FixedColumnWidth(50),  // IFSC Code
+                20: const pw.FixedColumnWidth(50),  // IFSC Code
                 21: const pw.FixedColumnWidth(50),  // IFSC Code
-                22: const pw.FixedColumnWidth(50),  // IFSC Code
-                23: const pw.FixedColumnWidth(50),  // IFSC Code
               },
-            )
-                :pw.Table.fromTextArray(
-              headers: [
-                "S.No",
-                "Unit",
-                "ID",
-                "Name",
-                "Rank",
-                "Salary",
-                "Duty",
-                "OT",
-                "Basic",
-                "DA",
-                "HRA",
-                "Earning",
-                "Advance",
-                "Penalty",
-                "Uniform",
-                "Bonus",
-                "Food Chg",
-                "ESI",
-                "PF",
-                "Deduction",
-                "Net salary",
-                "A/C Name",  // ✅ Fixed
-                "A/C No",
-                "IFSC Code"
-              ],
-              data: List<List<String>>.generate(
-                pyrlCtr.unitPayrollList.length,
-                    (i) => [
-                  (i+1).toString(),
-                  pyrlCtr.unitPayrollList[i].unitName.toString(),
-                  getSafe2(pyrlCtr.unitPayrollList[i].empcd.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].name.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].roleName.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].salary.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].duty.toString(),isName: true),
-                  getSafe2(pyrlCtr.unitPayrollList[i].ot.toString(),isName: true),
-                  getSafe2(pyrlCtr.unitPayrollList[i].basic.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].da.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].hra.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].total.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].advance.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].penalty.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].uniform.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].bonus2.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].food.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].esi.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].pf.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].deduction.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].netAmount.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].bankName.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].accNo.toString(),isName: true),
-                  getSafe2(pyrlCtr.unitPayrollList[i].ifscCode.toString()),
-                ],
-              )..add([ // ✅ Total row update
-                "",
-                "",
-                "",
-                "",
-                "Total",
-                "",
-                "$totalDuty",
-                "$totalOt",
-                "$totalBasic",
-                "$totalDa",
-                "$totalHra",
-                "$totalEarning",
-                "$totalAdvance",
-                "$totalPenalty",
-                "$totalUniform",
-                "$totalB2",
-                "$totalFood",
-                "$totalEsi",
-                "$totalPf",
-                "$totalDeduction",
-                "$totalNetAmt",
-                "",
-                "",
-                ""
-              ]),
-              headerStyle: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColors.white,
-                  fontSize: 9),
-              cellStyle: pw.TextStyle(fontSize: 8),
-              headerDecoration: pw.BoxDecoration(color: PdfColors.red),
-              cellAlignment: pw.Alignment.center,
-              cellPadding: const pw.EdgeInsets.all(2),
-              border: pw.TableBorder.all(width: 0.5),
-
-              // ✅ Adjust column widths properly
-                columnWidths: {
-                  0: const pw.FixedColumnWidth(35),   // S.No
-                  1: const pw.FixedColumnWidth(50),   // Unit
-                  2: const pw.FixedColumnWidth(40),   // ID
-                  3: const pw.FixedColumnWidth(57),   // Name
-                  4: const pw.FixedColumnWidth(35),   // Rank
-                  5: const pw.FixedColumnWidth(45),   // Salary
-                  6: const pw.FixedColumnWidth(32),   // Duty
-                  7: const pw.FixedColumnWidth(25),   // OT
-                  8: const pw.FixedColumnWidth(40),   // Basic
-                  9: const pw.FixedColumnWidth(35),   // DA
-                  10: const pw.FixedColumnWidth(40),   // HRA
-                  11: const pw.FixedColumnWidth(50),  // Total
-                  12: const pw.FixedColumnWidth(54),  // Advance
-                  13: const pw.FixedColumnWidth(50),  // Penalty
-                  14: const pw.FixedColumnWidth(50),  // Uniform
-                  15: const pw.FixedColumnWidth(40),  // ESI
-                  16: const pw.FixedColumnWidth(35),  // PF
-                  17: const pw.FixedColumnWidth(25),  // Deduction
-                  18: const pw.FixedColumnWidth(25),  // Net Salary
-                  19: const pw.FixedColumnWidth(55),  // A/C Name
-                  20: const pw.FixedColumnWidth(50),  // A/C No
-                  21: const pw.FixedColumnWidth(50),  // IFSC Code
-                  22: const pw.FixedColumnWidth(50),  // IFSC Code
-                  23: const pw.FixedColumnWidth(50),  // IFSC Code
-                },
-            ),
-            if(controllers.storage.read("com_id")!="1")
-           // Table
-            unitName!=""?
-            pw.Table.fromTextArray(
-              headers: [
-                "S.No",
-                "Unit",
-                "ID",
-                "Name",
-                "Rank",
-                "Salary",
-                "Duty",
-                "OT",
-                // "Basic",
-                "Optional Salary",
-                "Bonus",
-                "Earning",
-                "Advance",
-                "Penalty",
-                "Uniform",
-                "Bonus",
-                "Food Charges",
-                "ESI",
-                "PF",
-                "Admin\nCharges",
-                "Deduction",
-                "Net salary",
-                "A/C Name",  // ✅ Fixed
-                "A/C No",
-                "IFSC Code"
-              ],
-              data: List<List<String>>.generate(
-                rowCount,
-                    (i) => [
-                  (i+1).toString(),
-                  pyrlCtr.unitPayrollList[index].unitName.toString(),
-                  getSafe(empcdList, i),
-                  getSafe(namesList, i),
-                  getSafe(roleList, i),
-                  getSafe(salaryList, i),
-                  getSafe(dutyList, i,isName: true),
-                  getSafe(otList, i,isName: true),
-                  // getSafe(basicList, i),
-                  "${double.parse(opList[i])*double.parse(dutyList[i])}",
-                  "${double.parse(bonusList[i])*double.parse(dutyList[i])}",
-                  getSafe(totalList, i),
-                  getSafe(advanceList, i),
-                  getSafe(penaltyList, i),
-                  getSafe(uniformList, i),
-                  getSafe(bonus2List, i),
-                  getSafe(foodList, i),
-                  getSafe(esiList, i),
-                  getSafe(pfList, i),
-                  "${double.parse(acList[i])*double.parse(dutyList[i])}",
-                  getSafe(deductionList, i),
-                  getSafe(netAmtList, i),
-                  getSafe(bkNameList, i), // ✅ A/C Name working
-                  getSafe(accNoList, i,isName: true),
-                  getSafe(ifscList, i),
-                ],
-              )..add([ // ✅ Total row update
-                "",
-                "",
-                "",
-                "",
-                "Total",
-                "",
-                "$totalDuty",
-                "$totalOt",
-                // "$totalBasic",
-                "",
-                "",
-                "$totalEarning",
-                "$totalAdvance",
-                "$totalPenalty",
-                "$totalUniform",
-                "$totalB2",
-                "$totalFood",
-                "$totalEsi",
-                "$totalPf",
-                "",
-                "$totalDeduction",
-                "$totalNetAmt",
-                "",
-                "",
-                ""
-              ]),
-              headerStyle: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColors.white,
-                  fontSize: 9),
-              cellStyle: pw.TextStyle(fontSize: 8),
-              headerDecoration: pw.BoxDecoration(color: PdfColors.red),
-              cellAlignment: pw.Alignment.center,
-              cellPadding: const pw.EdgeInsets.all(2),
-              border: pw.TableBorder.all(width: 0.5),
-
-              // ✅ Adjust column widths properly
-                columnWidths: {
-                0: const pw.FixedColumnWidth(35),   // S.No
-                1: const pw.FixedColumnWidth(50),   // Unit
-                2: const pw.FixedColumnWidth(40),   // ID
-                3: const pw.FixedColumnWidth(57),   // Name
-                4: const pw.FixedColumnWidth(35),   // Rank
-                5: const pw.FixedColumnWidth(45),   // Salary
-                6: const pw.FixedColumnWidth(32),   // Duty
-                7: const pw.FixedColumnWidth(25),   // OT
-                8: const pw.FixedColumnWidth(57),   // op
-                9: const pw.FixedColumnWidth(42),   // b
-                10: const pw.FixedColumnWidth(50),   // HRA
-                11: const pw.FixedColumnWidth(57),  // Total
-                12: const pw.FixedColumnWidth(54),  // Advance
-                13: const pw.FixedColumnWidth(50),  // Penalty
-                14: const pw.FixedColumnWidth(47),  // Uniform
-                15: const pw.FixedColumnWidth(38),  // ESI
-                16: const pw.FixedColumnWidth(70),  // PF
-                17: const pw.FixedColumnWidth(25),  // PF
-                18: const pw.FixedColumnWidth(25),  // Deduction
-                19: const pw.FixedColumnWidth(38),  // Net Salary
-                20: const pw.FixedColumnWidth(55),  // A/C Name
-                21: const pw.FixedColumnWidth(50),  // A/C No
-                22: const pw.FixedColumnWidth(50),  // IFSC Code
-                23: const pw.FixedColumnWidth(50),  // IFSC Code
-              },
-            )
-                :pw.Table.fromTextArray(
-              headers: [
-                "S.No",
-                "Unit",
-                "ID",
-                "Name",
-                "Rank",
-                "Salary",
-                "Duty",
-                "OT",
-                // "Basic",
-                "Optional Salary",
-                "Bonus",
-                "Earning",
-                "Advance",
-                "Penalty",
-                "Uniform",
-                "Bonus",
-                "Food Charges",
-                "ESI",
-                "PF",
-                "Admin\nCharges",
-                "Deduction",
-                "Net salary",
-                "A/C Name",  // ✅ Fixed
-                "A/C No",
-                "IFSC Code"
-              ],
-              data: List<List<String>>.generate(
-                pyrlCtr.unitPayrollList.length,
-                    (i) => [
-                  (i+1).toString(),
-                  pyrlCtr.unitPayrollList[i].unitName.toString(),
-                  getSafe2(pyrlCtr.unitPayrollList[i].empcd.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].name.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].roleName.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].salary.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].duty.toString(),isName: true),
-                  getSafe2(pyrlCtr.unitPayrollList[i].ot.toString(),isName: true),
-                  // getSafe2(pyrlCtr.unitPayrollList[i].basic.toString()),
-                  getSafe2("${double.parse(pyrlCtr.unitPayrollList[i].op.toString())*double.parse(pyrlCtr.unitPayrollList[i].duty.toString())}"),
-                  getSafe2("${double.parse(pyrlCtr.unitPayrollList[i].bonus.toString())*double.parse(pyrlCtr.unitPayrollList[i].duty.toString())}"),
-                  getSafe2(pyrlCtr.unitPayrollList[i].total.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].advance.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].penalty.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].uniform.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].bonus2.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].food.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].esi.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].pf.toString()),
-                  getSafe2("${double.parse(pyrlCtr.unitPayrollList[i].aC.toString())*double.parse(pyrlCtr.unitPayrollList[i].duty.toString())}"),
-                  getSafe2(pyrlCtr.unitPayrollList[i].deduction.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].netAmount.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].bankName.toString()),
-                  getSafe2(pyrlCtr.unitPayrollList[i].accNo.toString(),isName: true),
-                  getSafe2(pyrlCtr.unitPayrollList[i].ifscCode.toString()),
-                ],
-              )..add([ // ✅ Total row update
-                "",
-                "",
-                "",
-                "",
-                "Total",
-                "",
-                "$totalDuty",
-                "$totalOt",
-                // "$totalBasic",
-                "",
-                "",
-                "$totalEarning",
-                "$totalAdvance",
-                "$totalPenalty",
-                "$totalUniform",
-                "$totalB2",
-                "$totalFood",
-                "$totalEsi",
-                "$totalPf",
-                "",
-                "$totalDeduction",
-                "$totalNetAmt",
-                "",
-                "",
-                ""
-              ]),
-              headerStyle: pw.TextStyle(
-                  fontWeight: pw.FontWeight.bold,
-                  color: PdfColors.white,
-                  fontSize: 9),
-              cellStyle: pw.TextStyle(fontSize: 8),
-              headerDecoration: pw.BoxDecoration(color: PdfColors.red),
-              cellAlignment: pw.Alignment.center,
-              cellPadding: const pw.EdgeInsets.all(2),
-              border: pw.TableBorder.all(width: 0.5),
-
-              // ✅ Adjust column widths properly
-                columnWidths: {
-                  0: const pw.FixedColumnWidth(35),   // S.No
-                  1: const pw.FixedColumnWidth(50),   // Unit
-                  2: const pw.FixedColumnWidth(40),   // ID
-                  3: const pw.FixedColumnWidth(57),   // Name
-                  4: const pw.FixedColumnWidth(35),   // Rank
-                  5: const pw.FixedColumnWidth(45),   // Salary
-                  6: const pw.FixedColumnWidth(32),   // Duty
-                  7: const pw.FixedColumnWidth(25),   // OT
-                  8: const pw.FixedColumnWidth(57),   // op
-                  9: const pw.FixedColumnWidth(42),   // b
-                  10: const pw.FixedColumnWidth(50),   // HRA
-                  11: const pw.FixedColumnWidth(57),  // Total
-                  12: const pw.FixedColumnWidth(54),  // Advance
-                  13: const pw.FixedColumnWidth(50),  // Penalty
-                  14: const pw.FixedColumnWidth(47),  // Uniform
-                  15: const pw.FixedColumnWidth(38),  // ESI
-                  16: const pw.FixedColumnWidth(70),  // PF
-                  17: const pw.FixedColumnWidth(25),  // PF
-                  18: const pw.FixedColumnWidth(25),  // Deduction
-                  19: const pw.FixedColumnWidth(38),  // Net Salary
-                  20: const pw.FixedColumnWidth(55),  // A/C Name
-                  21: const pw.FixedColumnWidth(50),  // A/C No
-                  22: const pw.FixedColumnWidth(50),  // IFSC Code
-                  23: const pw.FixedColumnWidth(50),  // IFSC Code
-                },
             ),
           ];
         },
@@ -1547,11 +856,11 @@ class _UnitSlipState extends State<UnitSlip> {
         href: 'data:application/octet-stream;charset=utf-161e;base64,${base64
             .encode(bytes)}',
       )
-        ..setAttribute('download', '${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.pdf')
+        ..setAttribute('download', 'Register Of Wages - ${pyrlCtr.month.value}.pdf')
         ..click();
     } else {
       final String path = (await getApplicationSupportDirectory()).path;
-      final String filename = '$path/${unitName==""?"Team ${controllers.storage.read("team_report_name")}":unitName} Register Of Wages - ${pyrlCtr.month.value}.pdf';
+      final String filename = '$path/"Register Of Wages - ${pyrlCtr.month.value}.pdf';
       final File file = File(filename);
       await file.writeAsBytes(bytes, flush: true);
       OpenFile.open(filename, linuxByProcess: true);

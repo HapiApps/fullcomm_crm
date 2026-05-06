@@ -46,7 +46,9 @@ class units {
   String? deduction;
   String? totalAmt;
   String? salary;
+  String? perDay;
   String? roleId;
+  String? roleName;
   String? pfWages;
   String? esiWages;
   String? workingDays;
@@ -105,6 +107,7 @@ class units {
     this.allowance,
     this.hra,
     this.basicDa,
+    this.roleName,
     this.email,
     this.gstNumber,
     this.panNumber,
@@ -136,6 +139,7 @@ class units {
     this.landmark,
     this.active,
     this.workingDays,
+    this.perDay,
     this.updatedTs,
     this.roleId,
     // Payroll
@@ -180,6 +184,8 @@ class units {
     }
 
     return units(
+      perDay: json["per_day"],
+      roleName: json["role_name"],
       updatedTs: json["updated_ts"],
       roleId: json["role_id"],
       pfWages: json["pf_wages"],
@@ -207,7 +213,7 @@ class units {
       landmark: json["land_mark"],
       unit_emps: json["unit_emps"],
       emp_names: json["emp_names"],
-      id: json["id"],
+      id: json["id"].toString(),
       unit_name: json["unit_name"],
       unit_id: json["unit_id"],
       leader_name: json["leader_name"],

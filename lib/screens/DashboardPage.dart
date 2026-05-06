@@ -109,6 +109,7 @@ class _DashboardPageState extends State<DashboardPage>
       remController.selectedMeetRange=selectedMeetRange;
       remController.selectedReminderRange=selectedMeetRange;
       _focusNode.requestFocus();
+      controllers.insertSeriesNo(context,true);
       if(controllers.leadCategoryList.isEmpty){
         apiService.getLeadCategories();
       }

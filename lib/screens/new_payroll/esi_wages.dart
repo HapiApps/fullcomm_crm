@@ -79,6 +79,7 @@ class _ESIWagesState extends State<ESIWages> {
                             ),
                           ],
                         ),
+                        Divider(color: Colors.grey.shade500,thickness: 0.5,),
                         10.height,
                         InkWell(
                             onTap: () {
@@ -149,16 +150,15 @@ class _ESIWagesState extends State<ESIWages> {
                                                   color: Colors.grey.shade300),
                                               columnWidths: const {
                                                 0: FlexColumnWidth(0.7), // S.No
-                                                1: FlexColumnWidth(1.5), // Site
-                                                2: FlexColumnWidth(1.2), // ID
-                                                3: FlexColumnWidth(2.2), // Name
-                                                4: FlexColumnWidth(1.5), // ESI No
-                                                5: FlexColumnWidth(1.3), // Working Days
-                                                6: FlexColumnWidth(1.5), // Salary Wages
-                                                7: FlexColumnWidth(1.5), // ESI Wages
-                                                8: FlexColumnWidth(1.5), // Pay Amount
+                                                1: FlexColumnWidth(1.2), // ID
+                                                2: FlexColumnWidth(2.2), // Name
+                                                3: FlexColumnWidth(1.5), // ESI No
+                                                4: FlexColumnWidth(1.3), // Working Days
+                                                5: FlexColumnWidth(1.5), // Salary Wages
+                                                6: FlexColumnWidth(1.5), // ESI Wages
+                                                7: FlexColumnWidth(1.5), // Pay Amount
+                                                8: FlexColumnWidth(1.5), // DOB
                                                 9: FlexColumnWidth(1.5), // DOB
-                                                10: FlexColumnWidth(1.5), // DOB
                                               },
                                               children: [
                                                 // Header Row
@@ -167,8 +167,7 @@ class _ESIWagesState extends State<ESIWages> {
                                                       color: Colors.black12),
                                                   children: [
                                                     customWid("S.No", bold: true),
-                                                    customWid("Site Name", bold: true),
-                                                    customWid("ID No", bold: true),
+                                                    customWid("Rank", bold: true),
                                                     customWid("Name", bold: true),
                                                     customWid("ESI No", bold: true),
                                                     customWid("Working Days", bold: true),
@@ -185,8 +184,7 @@ class _ESIWagesState extends State<ESIWages> {
                                                   TableRow(
                                                     children: [
                                                       customWid((i + 1).toString()),
-                                                      customWid(pyrlCtr.unitPayrollList[i].unitName ?? ''),
-                                                      customWid(pyrlCtr.unitPayrollList[i].empcd ?? ''),
+                                                      customWid(pyrlCtr.unitPayrollList[i].roleName ?? ''),
                                                       customWid(pyrlCtr.unitPayrollList[i].name ?? ''),
                                                       customWid(pyrlCtr.unitPayrollList[i].esiNo ?? ''),
                                                       customWid(pyrlCtr.unitPayrollList[i].duty ?? ''),
@@ -295,15 +293,15 @@ class _ESIWagesState extends State<ESIWages> {
 
 
     worksheet.getRangeByName("A2").setText(
-        "Thirumal facilities service\n Address : 44/1, V.V. Koil Street, Tambaram Sanatorium,Chennai-600 045,Tamilnadu, India.");
+        "${controllers.comName.text}\n Address : ${controllers.comDoor.text}, ${controllers.comStreet.text}\n${controllers.comCity.text}, ${controllers.comState.text},"
+            " ${controllers.comCountry.text}, ${controllers.comPincode.text}");
     worksheet.getRangeByName("G2").setText(
         "Month : ${pyrlCtr.month.value}");
 
     // Headers`
     List<String> headers = [
       "S.No",
-      "Site Name",
-      "ID No",
+      "Rank",
       "Name",
       "ESI No",
       "Working Days",
@@ -321,19 +319,18 @@ class _ESIWagesState extends State<ESIWages> {
     // Fill data
     for (int i = 0; i < pyrlCtr.unitPayrollList.length; i++) {
       worksheet.getRangeByIndex(i + 4, 1).setText("${i + 1}"); // S.No
-      worksheet.getRangeByIndex(i + 4, 2).setText(pyrlCtr.unitPayrollList[i].unitName); // Site Name
-      worksheet.getRangeByIndex(i + 4, 3).setText(pyrlCtr.unitPayrollList[i].empcd); // ID No
-      worksheet.getRangeByIndex(i + 4, 4).setText(pyrlCtr.unitPayrollList[i].name); // ID No
-      worksheet.getRangeByIndex(i + 4, 5).setText(pyrlCtr.unitPayrollList[i].esiNo); // ID No
-      worksheet.getRangeByIndex(i + 4, 6).setText(pyrlCtr.unitPayrollList[i].duty); // ID No
-      worksheet.getRangeByIndex(i + 4, 7).setText(pyrlCtr.unitPayrollList[i].total); // ID No
+      worksheet.getRangeByIndex(i + 4, 2).setText(pyrlCtr.unitPayrollList[i].roleName); // ID No
+      worksheet.getRangeByIndex(i + 4, 3).setText(pyrlCtr.unitPayrollList[i].name); // ID No
+      worksheet.getRangeByIndex(i + 4, 4).setText(pyrlCtr.unitPayrollList[i].esiNo); // ID No
+      worksheet.getRangeByIndex(i + 4, 5).setText(pyrlCtr.unitPayrollList[i].duty); // ID No
+      worksheet.getRangeByIndex(i + 4, 6).setText(pyrlCtr.unitPayrollList[i].total); // ID No
       // worksheet.getRangeByIndex(i + 4, 7).setText("${((int.parse(pyrlCtr.unitPayrollList[i].esiWages.toString()) /
       // int.parse(payrollCtr.lastDate.toString())) *
       // int.parse(pyrlCtr.unitPayrollList[i].duty.toString())).round()}"); // ID No
-      worksheet.getRangeByIndex(i + 4, 8).setText(pyrlCtr.unitPayrollList[i].esiWagesAmt); // ID No
-      worksheet.getRangeByIndex(i + 4, 9).setText(pyrlCtr.unitPayrollList[i].esi); // ID No
-      worksheet.getRangeByIndex(i + 4, 10).setText(pyrlCtr.unitPayrollList[i].dob.toString()=="null"?"":utils.formatDob(pyrlCtr.unitPayrollList[i].dob.toString())); // ID No
-      worksheet.getRangeByIndex(i + 4, 11).setText(calculateAge(pyrlCtr.unitPayrollList[i].dob.toString())); // ID No
+      worksheet.getRangeByIndex(i + 4, 7).setText(pyrlCtr.unitPayrollList[i].esiWagesAmt); // ID No
+      worksheet.getRangeByIndex(i + 4, 8).setText(pyrlCtr.unitPayrollList[i].esi); // ID No
+      worksheet.getRangeByIndex(i + 4, 9).setText(pyrlCtr.unitPayrollList[i].dob.toString()=="null"?"":utils.formatDob(pyrlCtr.unitPayrollList[i].dob.toString())); // ID No
+      worksheet.getRangeByIndex(i + 4, 10).setText(calculateAge(pyrlCtr.unitPayrollList[i].dob.toString())); // ID No
     }
 
     // Save
