@@ -31,6 +31,7 @@ import '../models/all_customers_obj.dart';
 import '../provider/employee_provider.dart';
 import '../services/api_services.dart';
 import 'dart:html' as html;
+import '../services/new_payroll_api_services.dart';
 import '../view_models/billing_provider.dart';
 import 'leads/new_lead_page.dart';
 import 'leads/rating_customer_page.dart';
@@ -46,6 +47,7 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage>
     with SingleTickerProviderStateMixin {
   late FocusNode _focusNode;
+  var services=NewPayrollApiServices.instance;
   final ScrollController _controller = ScrollController();
   String formatFirstDate(String input) {
     try {
@@ -140,6 +142,7 @@ class _DashboardPageState extends State<DashboardPage>
       productCtr.getOrderDetails();
       productCtr.getQuotationDetails();
       productCtr.getTermsAndConditions();
+      services.getRoleSettings(context);
       apiService.currentVersion();
       controllers.selectedIndex.value = 100;
       // final prefs = await SharedPreferences.getInstance();

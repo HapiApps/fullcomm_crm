@@ -51,15 +51,73 @@ class _RoleSettingState extends State<RoleSetting> {
   final FocusNode f17 = FocusNode();
   final FocusNode f18 = FocusNode();
   final FocusNode f19 = FocusNode();
+  late FocusNode _focusNode;
+  final ScrollController _controller = ScrollController();
+  final ScrollController _horizontalController = ScrollController();
   var services=NewPayrollApiServices.instance;
+  List<double> colWidths = [
+    80,   // 0 Checkbox
+    100,  // 1 Actions
+    130,  // 2 type
+    120,  // 2 role
+    90,  // 2 sal
+    80,  // 2 ba
+    70,  // 3 da
+    80,  // 4 hra
+    70,  // 5 pf
+    70,  // 6 esi
+    90,  // 7 bonus
+    80,  // 8 lwf
+    70,  // 8 nh
+    70,  // 8 sh
+    70,  // 8 oh
+    70,  // 8 pt
+    120,  // 8 pf w
+    120,  // 8 esi w
+    120,  // 8 dedu
+    120,  // 8 total A
+    100,  // 8 net pay
+  ];
+  Widget headerCell(int index, Widget child) {
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          alignment: index==0?Alignment.center:Alignment.centerLeft,
+          child: child,
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          bottom: 0,
+          width: 10,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onHorizontalDragUpdate: (details) {
+              setState(() {
+                colWidths[index] += details.delta.dx;
+                if (colWidths[index] < 60) colWidths[index] = 60;
+              });
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.resizeColumn,
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _focusNode = FocusNode();
     Future.delayed(Duration.zero, () {
+      _focusNode.requestFocus();
       controllers.storage.write("com_id","1");
       FocusScope.of(context).requestFocus(f1);
-      services.getRoleSettings(context);
+      pyrlCtr.isAdd.value=false;
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       if(employeeData.roleList.isEmpty){
         employeeData.fetchRoleList();
@@ -86,10 +144,53 @@ class _RoleSettingState extends State<RoleSetting> {
     f17.dispose();
     f18.dispose();
     f19.dispose();
+    _controller.dispose();
+    _horizontalController.dispose();
+    _focusNode.dispose();
     super.dispose();
+  }
+  void _handleKeyEvent(KeyEvent event) {
+    if (event is KeyDownEvent) {
+      const double horizontalScrollAmount = 60.0;
+      const double verticalScrollAmount = 50.0; // Adjust for row height
+
+      // --- HORIZONTAL SCROLLING ---
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        _horizontalController.animateTo(
+          (_horizontalController.offset + horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        _horizontalController.animateTo(
+          (_horizontalController.offset - horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      }
+
+      // --- VERTICAL SCROLLING (Add this part) ---
+      else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+        _controller.animateTo(
+          (_controller.offset + verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+        _controller.animateTo(
+          (_controller.offset - verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      }
+    }
   }
   @override
   Widget build(BuildContext context) {
+    final Map<int, TableColumnWidth> tableWidthMap = {
+      for (int i = 0; i < colWidths.length; i++) i: FixedColumnWidth(colWidths[i])
+    };
+    double totalTableWidth = colWidths.reduce((a, b) => a + b);
     double screenWidth = MediaQuery.of(context).size.width;
     return Consumer<EmployeeProvider>(builder: (context, employeeProvider, _) {
       return Scaffold(
@@ -125,8 +226,1130 @@ class _RoleSettingState extends State<RoleSetting> {
                 Divider(
                     color: Colors.grey
                 ),20.height,
+                if(pyrlCtr.isAdd.value==false)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    CustomLoadingButton(
+                        callback: (){
+                          pyrlCtr.isAdd.value=!pyrlCtr.isAdd.value;
+                          pyrlCtr.addSetting();
+                          pyrlCtr.editIndex.value=pyrlCtr.settingList.length;
+                        }, isLoading: false, text: pyrlCtr.isAdd.value==false?"Add Role":"View",isImage: false,height: 40,
+                        backgroundColor: colorsConst.primary, radius: 5, width: 100),
+                  ],
+                ),10.height,
+                if(pyrlCtr.isAdd.value==false)
                 pyrlCtr.getUnits.value==false?
                 CircularProgressIndicator():
+                pyrlCtr.settingList.isEmpty?
+                Center(child: CustomText(text: "No settings found", isCopy: false)):
+                Expanded(
+                  child: KeyboardListener(
+                    focusNode: _focusNode,
+                    autofocus: true,
+                    onKeyEvent: _handleKeyEvent,
+                    child: Scrollbar(
+                      controller: _horizontalController,
+                      thumbVisibility: true,
+                      child: NotificationListener<ScrollNotification>(
+                        onNotification: (scrollNotification) {
+                          _focusNode.requestFocus();
+                          return false;
+                        },
+                        child: SingleChildScrollView(
+                          controller: _horizontalController,
+                          scrollDirection: Axis.horizontal,
+                          child: SizedBox(
+                            width: totalTableWidth,
+                            child: Column(
+                              children: [
+                                // HEADER
+                                Table(
+                                  columnWidths: tableWidthMap,
+                                  border: TableBorder(
+                                    horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                    verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                  ),
+                                  children: [
+                                    TableRow(
+                                        decoration: BoxDecoration(
+                                            color: colorsConst.primary,
+                                            borderRadius: const BorderRadius.only(
+                                                topLeft: Radius.circular(5),
+                                                topRight: Radius.circular(5))),
+                                        children: [
+                                          headerCell(0, Obx(() => Checkbox(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(2.0),
+                                            ),
+                                            side: WidgetStateBorderSide.resolveWith(
+                                                  (states) => const BorderSide(width: 1.0, color: Colors.white),
+                                            ),
+                                            value: pyrlCtr.selectedSettingIds.length == pyrlCtr.settingList.length && pyrlCtr.settingList.isNotEmpty,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                if (value == true) {
+                                                  pyrlCtr.selectAllCalls();
+                                                } else {
+                                                  pyrlCtr.unselectAllCalls();
+                                                }
+                                              });
+                                            },
+                                            activeColor: Colors.white,
+                                            checkColor: colorsConst.primary,
+                                          ))),
+                                          headerCell(1, CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: "Actions",//1
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: false,
+                                            colors: Colors.white,
+                                          ),),
+                                          headerCell(
+                                            2,  Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: "Type",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='type' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='type';
+                                                  pyrlCtr.sorting(
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(
+                                            2,  Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: "Role Name",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='role' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='role';
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(3, Row(
+                                            children: [
+                                              CustomText(//2
+                                                textAlign: TextAlign.left,
+                                                text: "Salary",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='salary' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='salary';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(4, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: "Basic",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='basic' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='basic';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(5, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: "DA",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='da' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='da';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(6, Row(
+                                            children: [
+                                              CustomText(//4
+                                                textAlign: TextAlign.left,
+                                                text: "HRA",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='hra' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='hra';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(7, Row(
+                                            children: [
+                                              CustomText(//4
+                                                textAlign: TextAlign.left,
+                                                text: "PF",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='pf' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='pf';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(8, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: "ESI",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='esi' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='esi';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "Bonus",
+                                                isCopy: true,
+                                                size: 15,
+                                                isBold: true,
+                                                colors: Colors.white,
+                                              ),3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='bonus' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='bonus';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "LWF",
+                                                isCopy: true,
+                                                size: 15,
+                                                isBold: true,
+                                                colors: Colors.white,
+                                              ),3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='lwf' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='lwf';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "NH",
+                                                isCopy: true,
+                                                size: 15,
+                                                isBold: true,
+                                                colors: Colors.white,
+                                              ),3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='nh' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='nh';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "SH",
+                                                isCopy: true,
+                                                size: 15,
+                                                isBold: true,
+                                                colors: Colors.white,
+                                              ),3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='sh' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='sh';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "OH",
+                                                isCopy: true,
+                                                size: 15,
+                                                isBold: true,
+                                                colors: Colors.white,
+                                              ),3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='oh' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='oh';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "PT",
+                                                isCopy: true,
+                                                size: 15,
+                                                isBold: true,
+                                                colors: Colors.white,
+                                              ),3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='pt' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='pt';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "PF Wages",
+                                                isCopy: true,
+                                                size: 15,
+                                                isBold: true,
+                                                colors: Colors.white,
+                                              ),3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='pfwages' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='pfwages';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "ESI Wages",
+                                                isCopy: true,
+                                                size: 15,
+                                                isBold: true,
+                                                colors: Colors.white,
+                                              ),3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='esiwages' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='esiwages';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "Deduction",
+                                                isCopy: true,
+                                                size: 15,
+                                                isBold: true,
+                                                colors: Colors.white,
+                                              ),3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='dedu' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='dedu';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "Total Amt",
+                                                isCopy: true,
+                                                size: 15,
+                                                isBold: true,
+                                                colors: Colors.white,
+                                              ),3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='total' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='total';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "Net Pay",
+                                                isCopy: true,
+                                                size: 15,
+                                                isBold: true,
+                                                colors: Colors.white,
+                                              ),3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='net' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='net';
+                                                  pyrlCtr.sorting(
+                                                      sortField: controllers.sortFieldCallActivity.value,
+                                                      sortOrder: controllers.sortOrderCallActivity.value);
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),
+                                        ]),
+                                  ],
+                                ),
+                                // BODY LIST
+                                Expanded(
+                                  child: Obx(() {
+                                    if (pyrlCtr.settingList.isEmpty) {
+                                      return const Center(child: Text("No Settings found"));
+                                    }
+                                    return ListView.builder(
+                                      controller: _controller,
+                                      shrinkWrap: true,
+                                      physics: const ScrollPhysics(),
+                                      itemCount: pyrlCtr.settingList.length,
+                                      itemBuilder: (context, index) {
+                                        final data = pyrlCtr.settingList[index];
+                                        return Table(
+                                          columnWidths: {
+                                            for (int i = 0; i < colWidths.length; i++)
+                                              i: FixedColumnWidth(colWidths[i]),
+                                          },
+                                          border: TableBorder(
+                                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                            verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                            bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                          ),
+                                          children:[
+                                            TableRow(
+                                                decoration: BoxDecoration(
+                                                  color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                                ),
+                                                children:[
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: Checkbox(
+                                                      value: pyrlCtr.isCheckedRecordCall(data.id.toString()),
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          pyrlCtr.toggleRecordSelectionCall(data.id.toString());
+                                                        });
+                                                      },
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: Row(
+                                                      mainAxisAlignment: MainAxisAlignment.start,
+                                                      children: [
+                                                        IconButton(
+                                                            onPressed: (){
+                                                              pyrlCtr.isAdd.value=true;
+                                                              pyrlCtr.editIndex.value=index;
+                                                            },
+                                                            icon: SvgPicture.asset(
+                                                              "assets/images/a_edit.svg",
+                                                              width: 16,
+                                                              height: 16,
+                                                            )),
+                                                        IconButton(
+                                                            onPressed: (){
+                                                              showDialog(
+                                                                context: context,
+                                                                builder: (BuildContext context) {
+                                                                  return AlertDialog(
+                                                                    content: CustomText(
+                                                                      text: "Are you sure delete this Call records?",
+                                                                      size: 16,
+                                                                      isBold: true,
+                                                                      isCopy: true,
+                                                                      colors: colorsConst.textColor,
+                                                                    ),
+                                                                    actions: [
+                                                                    Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                      children: [
+                                                                        Container(
+                                                                          decoration: BoxDecoration(
+                                                                              border: Border.all(color: colorsConst.primary),
+                                                                              color: Colors.white),
+                                                                          width: 80,
+                                                                          height: 25,
+                                                                          child: ElevatedButton(
+                                                                              style: ElevatedButton.styleFrom(
+                                                                                shape: const RoundedRectangleBorder(
+                                                                                  borderRadius: BorderRadius.zero,
+                                                                                ),
+                                                                                backgroundColor: Colors.white,
+                                                                              ),
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: CustomText(
+                                                                                text: "Cancel",
+                                                                                colors: colorsConst.primary,
+                                                                                size: 14,
+                                                                                isCopy: false,
+                                                                              )),
+                                                                        ),
+                                                                        10.width,
+                                                                        CustomLoadingButton(
+                                                                          callback: ()async{
+                                                                            pyrlCtr.selectedSettingIds.add(data.id.toString());
+                                                                          },
+                                                                          height: 35,
+                                                                          isLoading: true,
+                                                                          backgroundColor: colorsConst.primary,
+                                                                          radius: 2,
+                                                                          width: 80,
+                                                                          controller: controllers.productCtr,
+                                                                          isImage: false,
+                                                                          text: "Delete",
+                                                                          textColor: Colors.white,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                  );
+                                                                },
+                                                              );
+                                                            },
+                                                            icon: SvgPicture.asset(
+                                                              "assets/images/a_delete.svg",
+                                                              width: 16,
+                                                              height: 16,
+                                                            ))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.left,
+                                                      text: pyrlCtr.settingList[index].monthlyWages==true?"Monthly Wages":"Daily Wages",
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.left,
+                                                      text: pyrlCtr.settingList[index].roleName.toString(),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].salary.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].basic.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].da.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].hra.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].pf.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].esi.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].bonus.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.left,
+                                                      text: pyrlCtr.settingList[index].tds.text,
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.left,
+                                                      text: pyrlCtr.settingList[index].nH.text,
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.left,
+                                                      text: pyrlCtr.settingList[index].sH.text,
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.left,
+                                                      text: pyrlCtr.settingList[index].oH.text,
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].pt.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].pfWages.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].esiWages.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].deduction.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].totalAmt.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.right,
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].netPay.text),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
+                                                    ),
+                                                  ),
+                                                ]
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // ListView.builder(
+                //     itemCount: pyrlCtr.settingList.length,
+                //     shrinkWrap: true,
+                //     physics: const NeverScrollableScrollPhysics(),
+                //     itemBuilder: (context,index){
+                //       return Column(
+                //         crossAxisAlignment: CrossAxisAlignment.start,
+                //         children: [
+                //           Row(
+                //             children: [
+                //               CustomText(text: pyrlCtr.settingList[index].monthlyWages==true?"Monthly Wages":"Daily Wages",isBold: true,colors: colorsConst.primary, isCopy: false,),
+                //               20.width,
+                //               CustomText(text: clearText(pyrlCtr.settingList[index].roleName.toString()),colors: colorsConst.primary, isCopy: false,),
+                //               10.width,
+                //               CustomText(text: productCtr.formatAmount(pyrlCtr.settingList[index].netPay.text),isBold: true,isCopy: false,),
+                //             ],
+                //           ),
+                //           Row(
+                //             children: [
+                //               AppCustomDataText(title: 'Salary', value: productCtr.formatAmount(pyrlCtr.settingList[index].salary.text),),
+                //               AppCustomDataText(title: 'Basic', value: productCtr.formatAmount(pyrlCtr.settingList[index].basic.text)),
+                //               AppCustomDataText(title: 'DA', value: productCtr.formatAmount(pyrlCtr.settingList[index].da.text)),
+                //               AppCustomDataText(title: 'HRA', value: productCtr.formatAmount(pyrlCtr.settingList[index].hra.text)),
+                //             ],
+                //           ),
+                //           Row(
+                //             children: [
+                //               AppCustomDataText(title: 'PF', value: productCtr.formatAmount(pyrlCtr.settingList[index].pf.text)),
+                //               AppCustomDataText(title: 'ESI', value: productCtr.formatAmount(pyrlCtr.settingList[index].esi.text)),
+                //               AppCustomDataText(title: 'Bonus', value: productCtr.formatAmount(pyrlCtr.settingList[index].bonus.text)),
+                //               AppCustomDataText(title: 'LWF', value: productCtr.formatAmount(pyrlCtr.settingList[index].tds.text)),
+                //             ],
+                //           ),
+                //           Row(
+                //             children: [
+                //               AppCustomDataText(title: 'National Holidays', value: pyrlCtr.settingList[index].nH.text,),
+                //               AppCustomDataText(title: 'State Holidays', value: pyrlCtr.settingList[index].sH.text,),
+                //               AppCustomDataText(title: 'Others Holidays', value: pyrlCtr.settingList[index].oH.text,),
+                //               AppCustomDataText(title: 'PT', value: productCtr.formatAmount(pyrlCtr.settingList[index].pt.text)),
+                //             ],
+                //           ),
+                //           Row(
+                //             children: [
+                //               AppCustomDataText(title: 'PF Wages', value: productCtr.formatAmount(pyrlCtr.settingList[index].pfWages.text)),
+                //               AppCustomDataText(title: 'ESI Wages', value: productCtr.formatAmount(pyrlCtr.settingList[index].esiWages.text)),
+                //               AppCustomDataText(title: 'Deduction', value: productCtr.formatAmount(pyrlCtr.settingList[index].deduction.text)),
+                //               AppCustomDataText(title: 'Total Amount', value: productCtr.formatAmount(pyrlCtr.settingList[index].totalAmt.text)),
+                //             ],
+                //           ),
+                //           Divider(thickness: 0.5,color: colorsConst.third,),
+                //         ],
+                //       );
+                //     }),
+                if(pyrlCtr.isAdd.value==true)
                 Expanded(
                   child: Center(
                     child: SizedBox(
@@ -140,23 +1363,29 @@ class _RoleSettingState extends State<RoleSetting> {
                             children: [
                               CustomLoadingButton(
                                   callback: (){
-                                    bool hasInvalid = false;
-
-                                    for (var data in pyrlCtr.settingList) {
-                                      // Check if role or salary missing
-                                      if (data.roleName ==""  ||(data.salary.text.trim().isEmpty&& data.perDay.text.trim().isEmpty)) {
-                                        hasInvalid = true;
-                                        break;
-                                      }
-                                    }
-
-                                    if (hasInvalid) {
-                                      utils.snackBar(context: context, msg: "Please fill Role and Salary", color: Colors.red);
-                                    } else {
-                                      pyrlCtr.addSetting();
-                                    }
-                                  }, isLoading: false, text: "Add Role",isImage: false,textColor: colorsConst.primary,
+                                    pyrlCtr.isAdd.value=false;
+                                    pyrlCtr.settingList.removeAt(pyrlCtr.editIndex.value);
+                                  }, isLoading: false, text: "Cancel",isImage: false,textColor: colorsConst.primary,
                                   backgroundColor: Colors.white, radius: 5, width: 100,height: 35,),10.width,
+                              // CustomLoadingButton(
+                              //     callback: (){
+                              //       bool hasInvalid = false;
+                              //
+                              //       for (var data in pyrlCtr.settingList) {
+                              //         // Check if role or salary missing
+                              //         if (data.roleName ==""  ||(data.salary.text.trim().isEmpty&& data.perDay.text.trim().isEmpty)) {
+                              //           hasInvalid = true;
+                              //           break;
+                              //         }
+                              //       }
+                              //
+                              //       if (hasInvalid) {
+                              //         utils.snackBar(context: context, msg: "Please fill Role and Salary", color: Colors.red);
+                              //       } else {
+                              //         pyrlCtr.addSetting();
+                              //       }
+                              //     }, isLoading: false, text: "Add Role",isImage: false,textColor: colorsConst.primary,
+                              //     backgroundColor: Colors.white, radius: 5, width: 100,height: 35,),10.width,
                               CustomLoadingButton(
                                   callback: (){
                                     bool hasInvalid = false;
@@ -188,10 +1417,10 @@ class _RoleSettingState extends State<RoleSetting> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               physics: const ScrollPhysics(),
-                              itemCount: pyrlCtr.settingList.length,
+                              itemCount: 1,
                               itemBuilder: (context, index) {
-                                final data = pyrlCtr.settingList[index];
-                  
+                                final data = pyrlCtr.settingList[pyrlCtr.editIndex.value];
+
                                 void calculateAmounts() {
                                   setState(() {
                                     double perDay = double.tryParse(data.perDay.text) ?? 0.0;
@@ -203,45 +1432,45 @@ class _RoleSettingState extends State<RoleSetting> {
                                     double sh = double.tryParse(data.sH.text) ?? 0.0;
                                     double others = double.tryParse(data.oH.text) ?? 0.0;
                                     double oSalary = double.tryParse(data.optionSalary.text) ?? 0.0;
-                  
+
                                     double total = perDay+basic + hra + da + bonus + nh + sh + others + oSalary;
                                     data.totalAmt.text = total.toStringAsFixed(2);
-                  
+
                                     double esi = double.tryParse(data.esi.text) ?? 0.0;
                                     double pf = double.tryParse(data.pf.text) ?? 0.0;
                                     double tds = double.tryParse(data.tds.text) ?? 0.0;
                                     double pt = double.tryParse(data.pt.text) ?? 0.0;
                                     double adCharge = double.tryParse(data.adminCharges.text) ?? 0.0;
-                  
+
                                     double deductions = esi + pf + tds + pt+adCharge;
                                     data.deduction.text = deductions.toStringAsFixed(2);
-                  
+
                                     double netPay = total - deductions;
                                     data.netPay.text = netPay.toStringAsFixed(2);
                                   });
                                 }
-                  
+
                                 void calculatePFandESI() {
                                   setState(() {
                                     double pfWages = double.tryParse(data.pfWages.text) ?? 0.0;
                                     double esiWages = double.tryParse(data.esiWages.text) ?? 0.0;
-                  
+
                                     if(data.monthlyWages==true){
                                       double pf = (pfWages * 0.12).roundToDouble(); // 12% rounded
                                       double esi = (esiWages * 0.0075).roundToDouble(); // 0.75% rounded
-                  
+
                                       data.pf.text = pf.toStringAsFixed(0);
                                       data.esi.text = esi.toStringAsFixed(0);
                                     }else{
                                       double pf = pfWages * 0.12; // 12% rounded
                                       double esi = esiWages * 0.0075; // 0.75% rounded
-                  
+
                                       data.pf.text = pf.toString();
                                       data.esi.text = esi.toString();
                                     }
                                   });
                                 }
-                  
+
                                 return Column(
                                   children: [
                                     Row(
@@ -327,16 +1556,16 @@ class _RoleSettingState extends State<RoleSetting> {
                                               ),
                                           ],
                                         ),
-                                        Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              InkWell(
-                                                  onTap:(){
-                                                    pyrlCtr.settingList.removeAt(index);
-                                                  },
-                                                  child: const Icon(Icons.delete_outline_outlined,color: Colors.red,))
-                                            ],
-                                          ),
+                                        // Row(
+                                        //     mainAxisAlignment: MainAxisAlignment.end,
+                                        //     children: [
+                                        //       InkWell(
+                                        //           onTap:(){
+                                        //             pyrlCtr.settingList.removeAt(index);
+                                        //           },
+                                        //           child: const Icon(Icons.delete_outline_outlined,color: Colors.red,))
+                                        //     ],
+                                        //   ),
                                       ],
                                     ),5.height,
                                     Row(
@@ -606,36 +1835,30 @@ class _RoleSettingState extends State<RoleSetting> {
                                             }).toList(),
                                             onChanged: (value) {
                                               if (value == null) return;
+
                                               final selectedRole = value;
-                  
+                                              final selectedRoleId = selectedRole["u_id"].toString();
+
                                               bool roleExists = pyrlCtr.settingList.any((item) =>
-                                              item.role != null &&
-                                                  item.role["u_id"] == selectedRole["u_id"] &&
-                                                  item != data);
-                  
+                                              item != data &&
+                                                  item.roleId.toString() == selectedRoleId);
+
                                               if (roleExists) {
-                                                Get.snackbar(
-                                                  "Duplicate Role",
-                                                  "This role is already added in another payroll setting.",
-                                                  backgroundColor: Colors.red.withOpacity(0.8),
-                                                  colorText: Colors.white,
-                                                  snackPosition: SnackPosition.BOTTOM,
-                                                  margin: const EdgeInsets.all(10),
-                                                );
-                  
-                                                // Reset the selection properly
+                                                utils.snackBar(context: context, msg: "This role is already added in another payroll setting.", color: Colors.red);
                                                 setState(() {
-                                                  data.roleId = ""; // reset ID
+                                                  data.role = null;
+                                                  data.roleId = "";
                                                   data.roleName = "";
-                                                  data.role = null; // reset value (will trigger rebuild due to key)
                                                 });
-                                              } else {
-                                                setState(() {
-                                                  data.role = selectedRole;
-                                                  data.roleId = selectedRole["u_id"].toString();
-                                                  data.roleName = selectedRole["role_name"].toString();
-                                                });
+
+                                                return;
                                               }
+
+                                              setState(() {
+                                                data.role = selectedRole;
+                                                data.roleId = selectedRoleId;
+                                                data.roleName = selectedRole["role_name"].toString();
+                                              });
                                             },
                                           ),
                                         ),
@@ -659,5 +1882,61 @@ class _RoleSettingState extends State<RoleSetting> {
       ),
     );
     });
+  }
+  String clearText(String value){
+    if(value==""||value=="null"){
+      return "-";
+    }else{
+      return value;
+    }
+  }
+}
+
+
+class AppCustomDataText extends StatelessWidget {
+  const AppCustomDataText(
+      {super.key, required this.title, required this.value,this.isLocation=false, this.lat, this.lng, this.isDSA=false, this.dsaCallback, this.height});
+
+  final String title;
+  final String value;
+  final double? height;
+  final double? lat;
+  final double? lng;
+  final bool? isLocation;
+  final bool? isDSA;
+  final VoidCallback? dsaCallback;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(0, 10, 10, 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            // color: Colors.pink,
+            width: MediaQuery.of(context).size.width*0.1,
+            child: CustomText(
+              textAlign: TextAlign.start,
+                text: title,
+                colors: Colors.grey,
+                size: 14,
+                isBold: true, isCopy: false,),
+          ),
+          10.width, // TODO:: Change this width dynamically
+          SizedBox(
+            // color: Colors.yellow,
+            // 0.3-0.43
+            width: MediaQuery.of(context).size.width*0.05,
+            child: CustomText(
+                text: value,
+              textAlign: TextAlign.end,
+              size: 14,
+                isBold: true, isCopy: false,),
+          ),
+        ],
+      ),
+    );
   }
 }

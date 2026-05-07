@@ -130,7 +130,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
               padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
               child: Obx(()=>Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
+                // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   30.height,
                   Row(
@@ -224,7 +224,10 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                             if(pyrlCtr.users.isNotEmpty)
                             Obx(() => Table(
                               defaultColumnWidth: const IntrinsicColumnWidth(),
-                              border: TableBorder.all(color: Colors.grey.shade300),
+                              border: TableBorder(
+                                horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                              ),
                               columnWidths: {
                                 0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.03),
                                 1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.06),
@@ -243,7 +246,11 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                               children: [
                                 // Header row
                                 TableRow(
-                                  decoration: BoxDecoration(color: Colors.grey.shade200),
+                                  decoration: BoxDecoration(
+                                      color: colorsConst.primary,
+                                      borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(5),
+                                          topRight: Radius.circular(5))),
                                   children: [
                                     textBox("S.No"),
                                     textBox("Rank"),
@@ -265,7 +272,11 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                                 ...List.generate(pyrlCtr.users.length, (index) {
                                   final user = pyrlCtr.users[index];
                                   if (user.active == "2") {
-                                    return TableRow(children: [
+                                    return TableRow(
+                                        decoration: BoxDecoration(
+                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                        ),
+                                        children: [
                                     0.height,
                                     0.height,
                                     0.height,
@@ -282,6 +293,9 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                                   ]);
                                   }
                                   return TableRow(
+                                    decoration: BoxDecoration(
+                                      color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                    ),
                                     children: [
                                       valueBox((index + 1).toString()),
                                       valueBox(pyrlCtr.users[index].rank.toString()),
@@ -498,7 +512,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ],
               )),
             ),
@@ -511,8 +525,8 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
 
   Widget textBox(String text, {double? width = 70}){
     return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: CustomText(text: text, isCopy: true,colors: Colors.black,),
+      padding: const EdgeInsets.all(10),
+      child: CustomText(text: text, isCopy: true,colors: Colors.white,isBold: true,size: 15,),
     );
   }
   Widget valueBox(String value, {double? width = 90}){
@@ -799,6 +813,8 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
 
       if (!roleFound) {
         print("❌ Role not found");
+        utils.snackBar(context: context, msg: "“This role has no payroll setting", color: Colors.red);
+        pyrlCtr.users.removeAt(index);
         return;
       }
 

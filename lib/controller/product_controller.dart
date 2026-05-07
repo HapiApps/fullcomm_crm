@@ -75,6 +75,7 @@ class ProductController extends GetxController with GetSingleTickerProviderState
           : end,
     );
   }
+
   List get paginatedOrdersItems {
 
     final start =

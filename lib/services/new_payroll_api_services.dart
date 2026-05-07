@@ -22,11 +22,13 @@ class NewPayrollApiServices{
   static final instance = NewPayrollApiServices._();
   Future addRoleSetting(BuildContext context) async {
     final url = Uri.parse(scriptApi);
+    RxList<RolePayrollSetting> sendList=<RolePayrollSetting> [].obs;
+    sendList.add(pyrlCtr.settingList[pyrlCtr.editIndex.value]);
     Map data = {
       "action":"add_unit_payroll_setting",
       "created_by":controllers.storage.read("id"),
       "cos_id":controllers.storage.read("cos_id"),
-      "settingList":pyrlCtr.settingList,
+      "settingList":sendList,
     };
     final response = await http.post(
       url,
@@ -52,7 +54,7 @@ class NewPayrollApiServices{
     }
     if (response.statusCode == 200) {
       pyrlCtr.submit.success();
-      Get.back();
+      pyrlCtr.isAdd.value=false;
       utils.snackBar(context: context,msg: "Saved Successfully",color:Colors.green);
     } else {
       utils.snackBar(context: context,msg: "Failed",color: Colors.red);
@@ -79,8 +81,8 @@ class NewPayrollApiServices{
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
       final List dataValue= json.decode(request.body);
-      // debugPrint(data);
-      // debugPrint(request.body.toString());
+      debugPrint(data.toString());
+      debugPrint(request.body.toString());
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -127,6 +129,9 @@ class NewPayrollApiServices{
               esiWages: TextEditingController(text: unitList[i].esiWages),
               monthlyWages: unitList[i].salary=="0"||unitList[i].salary==""||unitList[i].salary=="null"?false:true
           ));
+          pyrlCtr.settingList.sort(
+                (a, b) => a.roleName.toString().compareTo(b.roleName.toString()),
+          );
         }
         pyrlCtr.getUnits.value=true;
         // return dataValue.map((json) => units.fromJson(json)).toList();

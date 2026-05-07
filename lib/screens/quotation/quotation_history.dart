@@ -1229,9 +1229,9 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                         controllers.qId.value="";
                                                                         data .dropValue = value;
                                                                         if (data .status != "Order Confirmed" && data .dropValue == "Create Invoice") {
-                                                                          controllers.cusController.text="${data.f1} - ${data.company}- ${data.number}";
+                                                                          controllers.cusController.text="${data.name} - ${data.company}- ${data.number}";
                                                                           controllers.selectCustomer(AllCustomersObj(
-                                                                              id: data.cusId.toString(), name: data.f1,
+                                                                              id: data.cusId.toString(), name: data.name,
                                                                               companyName: data.company, phoneNo: data.number,
                                                                               email: data.email, leadStatus: "", category: ""));
                                                                           var idList=data.pId.split("||");
@@ -1430,7 +1430,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                                                     data.email,
                                                                                                     data.cusId.toString(),
                                                                                                     data.id.toString(),
-                                                                                                    data.f1.toString());
+                                                                                                    data.name.toString());
                                                                                               },
                                                                                               controller: controllers.emailCtr,
                                                                                               isImage: false,
@@ -1951,21 +1951,21 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                               Get.to(ViewQuotationDetails(id:data.id.toString(), list: data,));
                                                             },
                                                             child: Tooltip(
-                                                              message: data.f1
+                                                              message: data.name
                                                                   .toString() ==
                                                                   "null" ? "" : data
-                                                                  .f1.toString(),
+                                                                  .name.toString(),
                                                               child: Padding(
                                                                 padding: const EdgeInsets
                                                                     .all(10.0),
                                                                 child: CustomText(
                                                                   textAlign: TextAlign
                                                                       .left,
-                                                                  text: data.f1
+                                                                  text: data.name
                                                                       .toString() ==
                                                                       "null"
                                                                       ? ""
-                                                                      : data.f1
+                                                                      : data.name
                                                                       .toString(),
                                                                   size: 14,
                                                                   isCopy: true,

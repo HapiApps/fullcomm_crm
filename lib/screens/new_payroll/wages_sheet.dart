@@ -120,7 +120,7 @@ class _UnitSlipState extends State<UnitSlip> {
                         const Padding(
                           padding: EdgeInsets.all(25.0),
                           child: CircularProgressIndicator(),
-                        ) :
+                        ):
                         pyrlCtr.unitPayrollList.isEmpty ?
                         const CustomText(text: "\n\n\n\n\n\nNo Data Found", isCopy: true,) :
                         Expanded(

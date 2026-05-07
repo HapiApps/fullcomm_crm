@@ -359,7 +359,7 @@ class SideBar extends StatelessWidget {
                               size: 20,
                               color: isSelected
                                   ? colorsConst.primary
-                                  : isSettingsHovered.value
+                                  : isPayrollHovered.value
                                   ? colorsConst.primary.withOpacity(0.7)
                                   : Colors.black,
                             ),
@@ -372,7 +372,7 @@ class SideBar extends StatelessWidget {
                                     fontSize: 15,
                                     color: isSelected
                                         ? colorsConst.primary
-                                        : isSettingsHovered.value
+                                        : isPayrollHovered.value
                                         ? colorsConst.primary
                                         : Colors.black,
                                   ),
