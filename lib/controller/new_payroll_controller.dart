@@ -14,8 +14,12 @@ class PyrlCtr extends GetxController {
 
   RxList<RolePayrollSetting> settingList=<RolePayrollSetting>[].obs;
   void addSetting(){
-    if(controllers.storage.read("com_id")=="1"){
-      settingList.add(RolePayrollSetting(
+    settingList.add(RolePayrollSetting(
+          perDay: TextEditingController(),
+          leave: TextEditingController(),
+          gravity: TextEditingController(),
+          adminCharges: TextEditingController(),
+          optionSalary: TextEditingController(),
           salary: TextEditingController(),
           basic: TextEditingController(),
           hra: TextEditingController(),
@@ -33,29 +37,12 @@ class PyrlCtr extends GetxController {
           netPay: TextEditingController(),
           pfWages: TextEditingController(),
           esiWages: TextEditingController(),
+          convin: TextEditingController(),
           monthlyWages: true
       ));
-    }else{
-      settingList.add(RolePayrollSetting(
-          perDay: TextEditingController(),
-          leave: TextEditingController(),
-          gravity: TextEditingController(),
-          adminCharges: TextEditingController(),
-          optionSalary: TextEditingController(),
-          bonus: TextEditingController(),
-          esi: TextEditingController(),
-          pf: TextEditingController(),
-          tds: TextEditingController(),
-          pt: TextEditingController(),
-          deduction: TextEditingController(),
-          totalAmt: TextEditingController(),
-          netPay: TextEditingController(),
-          pfWages: TextEditingController(),
-          esiWages: TextEditingController(),
-          convin: TextEditingController(),
-          monthlyWages: false
-      ));
-    }
+    pyrlCtr.editIndex.value=settingList.length-1;
+    print("pyrlCtr.editIndex.value ${pyrlCtr.editIndex.value}");
+    print("settingList.length ${settingList.length}");
   }
   void sorting({
     required String sortField,

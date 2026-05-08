@@ -3659,7 +3659,7 @@ class ApiService {
         // controllers.clearSelectedCustomer();
         // productCtr.clearProduct();
         // Navigator.pop(Get.context!);
-        controllers.emailCtr.reset();
+        controllers.productCtr.reset();
         productCtr.getQuotationDetails();
         productCtr.getOrderDetails();
         remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
@@ -3674,12 +3674,12 @@ class ApiService {
         controllers.oldIndex.value = controllers.selectedIndex.value;
         controllers.selectedIndex.value = 101;
       } else {
-        controllers.emailCtr.reset();
+        controllers.productCtr.reset();
         errorDialog(Get.context!, "Mail has been not sent");
       }
     } catch (e) {
       errorDialog(Get.context!, e.toString());
-      controllers.emailCtr.reset();
+      controllers.productCtr.reset();
     }
   }
 

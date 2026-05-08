@@ -48,6 +48,7 @@ class units {
   String? salary;
   String? perDay;
   String? roleId;
+  String? type;
   String? roleName;
   String? pfWages;
   String? esiWages;
@@ -110,6 +111,7 @@ class units {
     this.roleName,
     this.email,
     this.gstNumber,
+    this.type,
     this.panNumber,
     this.workOrderNumber,
     this.unit_name,
@@ -184,6 +186,7 @@ class units {
     }
 
     return units(
+      type: json["type"],
       perDay: json["per_day"],
       roleName: json["role_name"],
       updatedTs: json["updated_ts"],
@@ -280,6 +283,9 @@ class RolePayrollSetting {
   String? roleId;
   String? roleName;
   dynamic role;
+  String? dId;
+  String? dName;
+  dynamic dep;
   String? workingDays;
   String? active;
   String? newE;
@@ -318,6 +324,9 @@ class RolePayrollSetting {
     this.role,
     this.roleId,
     this.roleName,
+    this.dep,
+    this.dId,
+    this.dName,
     this.workingDays="31",
     this.active = "1",
     this.newE="0",
@@ -386,6 +395,9 @@ class RolePayrollSetting {
       roleId: json["roleId"]?.toString(),
       roleName: json["roleName"]?.toString(),
       role: json["role"],
+      dId: json["dId"]?.toString(),
+      dName: json["dName"]?.toString(),
+      dep: json["dep"],
       workingDays: json["working_days"]?.toString(),
       active: json["active"]?.toString() ?? "1",
       newE: json["new"]?.toString(),
@@ -423,9 +435,10 @@ class RolePayrollSetting {
   Map<String, dynamic> toJson() {
     return {
       "id": id,
-      "role_id": roleId,
-      "role_name": roleName,
+      "role_id": roleId!=""?roleId:dId,
+      "role_name": roleName!=""?roleName:dName,
       "role": role,
+      "type": roleName!=""?"1":"2",
       "working_days": workingDays,
       "active": active,
       "new": newE,

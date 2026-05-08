@@ -61,6 +61,48 @@ class NewPayrollApiServices{
       pyrlCtr.submit.success();
     }
   }
+  Future deleteSetting(BuildContext context) async {
+    final url = Uri.parse(scriptApi);
+    Map data = {
+      "action":"delete_payroll_setting",
+      "created_by":controllers.storage.read("id"),
+      "cos_id":controllers.storage.read("cos_id"),
+      "settingList":pyrlCtr.settingList,
+    };
+    final response = await http.post(
+      url,
+      // headers: {'Content-Type': 'application/json'},
+      headers: {
+        'X-API-TOKEN': "${TokenStorage().readToken()}",
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(data),
+    );
+
+    // json.decode(request.body);
+    print("request.body");
+    debugPrint(response.body);
+    // unitCtr.submitController.reset();
+    if (response.statusCode == 401) {
+      final refreshed = await controllers.refreshToken();
+      if (refreshed) {
+        return addRoleSetting(context);
+      } else {
+        controllers.setLogOut();
+      }
+    }
+    if (response.statusCode == 200) {
+      pyrlCtr.submit.success();
+      pyrlCtr.isAdd.value=false;
+      pyrlCtr.selectedSettingIds.clear();
+      Navigator.pop(context);
+      utils.snackBar(context: context,msg: "Deleted Successfully",color:Colors.green);
+      getRoleSettings(context);
+    } else {
+      utils.snackBar(context: context,msg: "Failed",color: Colors.red);
+      pyrlCtr.submit.success();
+    }
+  }
   Future getRoleSettings(context) async {
     try{
       pyrlCtr.getUnits.value=false;
@@ -96,19 +138,42 @@ class NewPayrollApiServices{
         for(var i=0;i<unitList.length;i++){
           Map<String, dynamic>? match;
 
-          if (unitList[i].roleId != "null") {
-            try {
-              debugPrint(Provider.of<EmployeeProvider>(context, listen: false).roleList.toString());
-              match = Provider.of<EmployeeProvider>(context, listen: false).roleList
-                  .firstWhere(
-                    (item) => item['u_id'].toString() == unitList[i].roleId,
-              );
-            } catch (e) {
-              match = null;
+
+          Map<String, dynamic>? match2;
+            print("unitList[i].type ${unitList[i].type}");
+          if(unitList[i].type=="2"){
+            if (unitList[i].roleId != "null") {
+              try {
+                debugPrint(Provider.of<EmployeeProvider>(context, listen: false).depList.toString());
+                match2 = Provider.of<EmployeeProvider>(context, listen: false).depList
+                    .firstWhere(
+                      (item) => item['id'].toString() == unitList[i].roleId,
+                );
+              } catch (e) {
+                match2 = null;
+              }
+            }
+          }else{
+            if (unitList[i].roleId != "null") {
+              try {
+                debugPrint(Provider.of<EmployeeProvider>(context, listen: false).roleList.toString());
+                match = Provider.of<EmployeeProvider>(context, listen: false).roleList
+                    .firstWhere(
+                      (item) => item['u_id'].toString() == unitList[i].roleId,
+                );
+              } catch (e) {
+                match = null;
+              }
             }
           }
           pyrlCtr.settingList.add(RolePayrollSetting(
-            id: unitList[i].id.toString(),role: match,roleId: unitList[i].roleId,roleName: unitList[i].roleName,
+            id: unitList[i].id.toString(),role: match,
+              roleId: unitList[i].type=="1"?unitList[i].roleId:"",
+              roleName: unitList[i].type=="1"?unitList[i].roleName:"",
+              dName: unitList[i].type=="2"?unitList[i].roleName:"",
+              dep: match2,
+              dId: unitList[i].type=="2"?unitList[i].roleId:"",
+
               salary: TextEditingController(text: unitList[i].salary),
               perDay: TextEditingController(text: unitList[i].perDay),
               basic: TextEditingController(text: unitList[i].basicDa),

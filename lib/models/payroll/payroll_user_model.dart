@@ -5,6 +5,7 @@ class PayrollUserModel {
   String name = "";
   String? code = "";
   String? rank = "";
+  String? department = "";
 
   String? salary = "";
   String? basicCalc = "";
@@ -37,7 +38,7 @@ class PayrollUserModel {
     required this.name,
     this.code,
     this.rank,
-
+    this.department,
     this.salary,
     this.basicCalc,
     this.daCalc,
@@ -73,7 +74,7 @@ class PayrollUserModel {
     name: json["name"],
     code: json["code"],
     rank: json["rank"],
-
+    department: json["department"],
     salary: json["salary"],
     basicCalc: json["basicCalc"],
     daCalc: json["daCalc"],

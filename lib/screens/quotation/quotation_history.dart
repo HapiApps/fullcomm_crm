@@ -111,7 +111,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
             "-${DateTime.now().year.toString()}";
   }
   late FocusNode _focusNode;
-  List<String> statusList = ["Create Invoice", "Upload PO", "Quotation Draft"];
+  List<String> statusList = ["Create Invoice", "Upload PO", "Confirm Order"];
   @override
   void dispose() {
     _focusNode.dispose();
@@ -1364,14 +1364,14 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                           //         ],
                                                                           //       );
                                                                           //     });
-                                                                        } else if (data.status =="Order Confirmed" &&
-                                                                            data.dropValue =="Create Invoice") {
+                                                                        }
+                                                                        else if (data.status =="Order Confirmed" &&data.dropValue =="Create Invoice") {
                                                                           utils.snackBar(
                                                                               context: context,
                                                                               msg: "Already order confirmed",
                                                                               color: Colors.red);
-                                                                        } else if (data.status !="PO Received" &&
-                                                                            data.dropValue =="Upload PO") {
+                                                                        }
+                                                                        else if (data.status !="PO Received" &&data.dropValue =="Upload PO") {
                                                                           controllers.emailToCtr.clear();
                                                                           controllers.emailSubjectCtr.text =DateFormat('dd-MM-yyyy').format(DateTime.now());
                                                                           controllers.emailMessageCtr.clear();
@@ -1813,19 +1813,74 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                                       )),
                                                                                 );
                                                                               });
-                                                                        } else
-                                                                        if (data
-                                                                            .status ==
-                                                                            "PO Sent" &&
-                                                                            data
-                                                                                .dropValue ==
-                                                                                "Upload PO") {
-                                                                          utils
-                                                                              .snackBar(
-                                                                              context: context,
-                                                                              msg: "Already PO Sent",
-                                                                              color: Colors
-                                                                                  .red);
+                                                                        }
+                                                                        else if (data.status =="PO Sent" &&data.dropValue =="Upload PO") {
+                                                                          utils.snackBar(context: context,msg: "Already PO Sent",color: Colors.red);
+                                                                        }
+                                                                        else if (data.status !="Order Confirmed" &&data.dropValue =="Confirm Order") {
+                                                                          showDialog(
+                                                                            context: context,
+                                                                            builder: (BuildContext context) {
+                                                                              return AlertDialog(
+                                                                                content: CustomText(
+                                                                                  text: "Are you sure confirm this order?",
+                                                                                  size: 16,
+                                                                                  isBold: true,
+                                                                                  isCopy: true,
+                                                                                  colors: colorsConst.textColor,
+                                                                                ),
+                                                                                actions: [
+                                                                                  Row(
+                                                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                                                    children: [
+                                                                                      Container(
+                                                                                        decoration: BoxDecoration(
+                                                                                            border: Border.all(color: colorsConst.primary),
+                                                                                            color: Colors.white),
+                                                                                        width: 80,
+                                                                                        height: 25,
+                                                                                        child: ElevatedButton(
+                                                                                            style: ElevatedButton.styleFrom(
+                                                                                              shape: const RoundedRectangleBorder(
+                                                                                                borderRadius: BorderRadius.zero,
+                                                                                              ),
+                                                                                              backgroundColor: Colors.white,
+                                                                                            ),
+                                                                                            onPressed: () {
+                                                                                              Navigator.pop(context);
+                                                                                            },
+                                                                                            child: CustomText(
+                                                                                              text: "NO",
+                                                                                              colors: colorsConst.primary,
+                                                                                              size: 14,
+                                                                                              isCopy: false,
+                                                                                            )),
+                                                                                      ),
+                                                                                      10.width,
+                                                                                      CustomLoadingButton(
+                                                                                        callback: (){
+                                                                                          apiService.confirmOrderAPI(context,data.id.toString(),data.cusId.toString(),
+                                                                                            data.totalAmt.toString(),data.name.toString(),data.number.toString());
+                                                                                        },
+                                                                                        height: 35,
+                                                                                        isLoading: true,
+                                                                                        backgroundColor: colorsConst.primary,
+                                                                                        radius: 2,
+                                                                                        width: 80,
+                                                                                        controller: controllers.productCtr,
+                                                                                        isImage: false,
+                                                                                        text: "YES",
+                                                                                        textColor: Colors.white,
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                ],
+                                                                              );
+                                                                            },
+                                                                          );
+                                                                        }
+                                                                        else if (data.status =="Order Confirmed" &&data.dropValue =="Confirm Order") {
+                                                                          utils.snackBar(context: context,msg: "Already Order Confirmed",color: Colors.red);
                                                                         }
                                                                       });
                                                                     },

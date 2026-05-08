@@ -22,10 +22,16 @@ class CustomerFullDetails {
   final Address? address;
   final List<Person> customerPersons;
   final List<AdditionalInfo> additionalInfo;
-  final List<CallRecord> callRecords;
-  final List<MailRecord> mailRecords;
-  final List<Meeting> meetings;
-  final List<Reminder> reminders;
+  final List callRecords;
+  final List mailRecords;
+  final List meetings;
+  final List reminders;
+  final List orders;
+  final List quotations;
+  // final List<CallRecord> callRecords;
+  // final List<MailRecord> mailRecords;
+  // final List<Meeting> meetings;
+  // final List<Reminder> reminders;
 
   CustomerFullDetails({
     required this.customer,
@@ -36,6 +42,8 @@ class CustomerFullDetails {
     required this.mailRecords,
     required this.meetings,
     required this.reminders,
+    required this.orders,
+    required this.quotations,
   });
 
   factory CustomerFullDetails.fromJson(Map<String, dynamic> json) {
@@ -53,17 +61,17 @@ class CustomerFullDetails {
       additionalInfo:
       listParser(json['additional_info'], AdditionalInfo.fromJson),
 
-      callRecords:
-      listParser(json['call_records'], CallRecord.fromJson),
+      // callRecords:listParser(json['call_records'], CallRecord.fromJson),
+      // mailRecords:listParser(json['mail_records'], MailRecord.fromJson),
+      // meetings:listParser(json['meetings'], Meeting.fromJson),
+      // reminders:listParser(json['reminders'], Reminder.fromJson),
 
-      mailRecords:
-      listParser(json['mail_records'], MailRecord.fromJson),
-
-      meetings:
-      listParser(json['meetings'], Meeting.fromJson),
-
-      reminders:
-      listParser(json['reminders'], Reminder.fromJson),
+      callRecords:json['call_records'],
+      mailRecords:json['mail_records'],
+      meetings:json['meetings'],
+      reminders:json['reminders'],
+      orders:json['orders'],
+      quotations:json['quotations'],
     );
   }
 
@@ -72,10 +80,16 @@ class CustomerFullDetails {
     'address': address?.toJson(),
     'customer_persons': customerPersons.map((e) => e.toJson()).toList(),
     'additional_info': additionalInfo.map((e) => e.toJson()).toList(),
-    'call_records': callRecords.map((e) => e.toJson()).toList(),
-    'mail_records': mailRecords.map((e) => e.toJson()).toList(),
-    'meetings': meetings.map((e) => e.toJson()).toList(),
-    'reminders': reminders.map((e) => e.toJson()).toList(),
+    // 'call_records': callRecords.map((e) => e.toJson()).toList(),
+    // 'mail_records': mailRecords.map((e) => e.toJson()).toList(),
+    // 'meetings': meetings.map((e) => e.toJson()).toList(),
+    // 'reminders': reminders.map((e) => e.toJson()).toList(),
+    'call_records': callRecords,
+    'mail_records': mailRecords,
+    'meetings': meetings,
+    'reminders': reminders,
+    'quotations': quotations,
+    'orders': orders,
   };
 }
 

@@ -205,10 +205,24 @@ void checkType(){
                             final persons = data.customerPersons;
                             final primaryPerson = persons.isNotEmpty ? persons[0] : null;
                             final additional = data.additionalInfo;
-                            final calls = data.callRecords;
-                            final mails = data.mailRecords;
-                            final meetings = data.meetings;
-                            final reminders = data.reminders;
+                            final List<dynamic> recordList = [];
+                            recordList.addAll(data.callRecords ?? []);
+                            recordList.addAll(data.mailRecords ?? []);
+                            recordList.addAll(data.meetings ?? []);
+                            recordList.addAll(data.reminders ?? []);
+                            recordList.addAll(data.quotations ?? []);
+                            recordList.addAll(data.orders ?? []);
+                            recordList.sort((a, b) {
+                              DateTime aDate =DateTime.tryParse(a["created_ts"].toString()) ?? DateTime(2000);
+                              DateTime bDate =DateTime.tryParse(b["created_ts"].toString()) ?? DateTime(2000);
+                              return bDate.compareTo(aDate);
+                            });
+                            // debugPrint("recordList");
+                            // debugPrint(recordList.toString());
+                            // final calls = data.callRecords;
+                            // final mails = data.mailRecords;
+                            // final meetings = data.meetings;
+                            // final reminders = data.reminders;
                             final displayName = primaryPerson?.name ?? cust?.companyName ?? widget.name ?? "";
                             final displayMobile = primaryPerson?.phone ?? widget.mobileNumber ?? "";
                             final displayEmail = primaryPerson?.email ?? widget.email ?? "";
@@ -678,16 +692,16 @@ void checkType(){
                                                             Column(
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
-                                                                CustomText(text: "FULL NAME",isCopy: true,),5.height,
+                                                                CustomText(text: "FULL NAME",isCopy: true,size: 12,),5.height,
                                                                 CustomText(text: widget.name.toString(),isCopy: true,isBold: true,),
                                                                 10.height,
-                                                                CustomText(text: _formatHeading(controllers.getUserHeading("email") ??"Email id").toUpperCase(),isCopy: true,),5.height,
+                                                                CustomText(text: _formatHeading(controllers.getUserHeading("email") ??"Email id").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: displayEmail,isCopy: true,isBold: true,),
                                                                 10.height,
                                                                 CustomText(text: _formatHeading(
                                                                   controllers.getUserHeading(
                                                                       "owner") ??
-                                                                      "Account Manager").toUpperCase(),isCopy: true,),5.height,
+                                                                      "Account Manager").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 Row(
                                                                   children: [
                                                                     CircleAvatar(
@@ -705,14 +719,14 @@ void checkType(){
                                                                 CustomText(text: _formatHeading(
                                                                     controllers.getUserHeading(
                                                                         "mobile_name") ??
-                                                                        "Mobile No").toUpperCase(),isCopy: true,),5.height,
+                                                                        "Mobile No").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: (displayMobile)
                                                                     .toString()
                                                                     .split("||")
                                                                     .where((e) => e.isNotEmpty)
                                                                     .join(", "),isCopy: true,isBold: true,),
                                                                 10.height,
-                                                                CustomText(text: "WHATSAPP",isCopy: true,),5.height,
+                                                                CustomText(text: "WHATSAPP",isCopy: true,size: 12),5.height,
                                                                 CustomText(text: widget.whatsAppNo,isCopy: true,isBold: true,),
                                                                 10.height,
                                                                 Row(
@@ -721,7 +735,7 @@ void checkType(){
                                                                     Column(
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: [
-                                                                        CustomText(text: "VISIT TYPE",isCopy: true,),
+                                                                        CustomText(text: "VISIT TYPE",isCopy: true,size: 12),
                                                                         5.height,
                                                                         Container(
                                                                             decoration: customDecoration.baseBackgroundDecoration(
@@ -736,7 +750,7 @@ void checkType(){
                                                                     Column(
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: [
-                                                                        CustomText(text: "QUOTATION REQUIRED",isCopy: true,),
+                                                                        CustomText(text: "QUOTATION REQUIRED",isCopy: true,size: 12),
                                                                         5.height,
                                                                         Container(
                                                                             decoration: customDecoration.baseBackgroundDecoration(
@@ -992,40 +1006,59 @@ void checkType(){
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
                                                                 CustomText(text: _formatHeading(controllers.getUserHeading
-                                                                  ("company_name") ?? "Company Name").toUpperCase(),isCopy: true,),5.height,
+                                                                  ("company_name") ?? "Company Name").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.companyName ?? "",isCopy: true,isBold: true,),
                                                                 10.height,
-                                                                CustomText(text: "COMPANY NUMBER",isCopy: true,),5.height,
+                                                                CustomText(text: "COMPANY NUMBER",isCopy: true,size: 12),5.height,
                                                                 CustomText(text: (cust?.companyNumber ?? "")
                                                                     .toString()
                                                                     .split("||")
                                                                     .where((e) => e.isNotEmpty)
                                                                     .join(", "),isCopy: true,isBold: true,),
                                                                 10.height,
-                                                                CustomText(text: "Industry".toUpperCase(),isCopy: true,),5.height,
+                                                                CustomText(text: "Industry".toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.industry ?? "",isCopy: true,isBold: true,),
-                                                              10.height,
-                                                                CustomText(text: "ADDRESS",isCopy: true,),5.height,
-                                                                CustomText(text: "${addr?.doorNo},${addr?.area},${addr?.city}",isCopy: true,isBold: true,),
-                                                                CustomText(text: "${addr?.state},${addr?.country},${addr?.pincode}",isCopy: true,isBold: true,),
+                                                                10.height,
+                                                                CustomText(text: "ADDRESS", isCopy: true,size: 12),
+                                                                5.height,
+
+                                                                CustomText(
+                                                                  text: [
+                                                                    addr?.doorNo,
+                                                                    addr?.area,
+                                                                    addr?.city,
+                                                                  ].where((e) => e != null && e.toString().trim().isNotEmpty).join(", "),
+                                                                  isCopy: true,
+                                                                  isBold: true,
+                                                                ),
+
+                                                                CustomText(
+                                                                  text: [
+                                                                    addr?.state,
+                                                                    addr?.country,
+                                                                    addr?.pincode,
+                                                                  ].where((e) => e != null && e.toString().trim().isNotEmpty).join(", "),
+                                                                  isCopy: true,
+                                                                  isBold: true,
+                                                                ),
                                                               ],
                                                             ),
                                                             Column(
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
-                                                                CustomText(text: "Linkedin".toUpperCase(),isCopy: true,),5.height,
+                                                                CustomText(text: "Linkedin".toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.linkedin ?? "",isCopy: true,isBold: true,),
                                                                 10.height,
-                                                                CustomText(text: "Website".toUpperCase(),isCopy: true,),5.height,
+                                                                CustomText(text: "Website".toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.companyWebsite ?? "",isCopy: true,isBold: true,),
                                                                 10.height,
-                                                                CustomText(text: "Email".toUpperCase(),isCopy: true,),5.height,
+                                                                CustomText(text: "Email".toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.companyEmail ?? "",isCopy: true,isBold: true,),
                                                                 10.height,
-                                                                CustomText(text: "Product/Services".toUpperCase(),isCopy: true,),5.height,
+                                                                CustomText(text: "Product/Services".toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.product ?? "",isCopy: true,isBold: true,),
                                                                 10.height,
-                                                                CustomText(text: "X",isCopy: true,),5.height,
+                                                                CustomText(text: "X",isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.x ?? "",isCopy: true,isBold: true,),
                                                                 10.height,
                                                               ],
@@ -1064,18 +1097,18 @@ void checkType(){
                                                                 CustomText(text: _formatHeading(controllers
                                                                     .getUserHeading(
                                                                     "product_discussion") ??
-                                                                    "Product Discussed").toUpperCase(),isCopy: true,),5.height,
+                                                                    "Product Discussed").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.product ?? "",isCopy: true,isBold: true,),
                                                                 10.height,
                                                                 CustomText(text: _formatHeading(controllers
                                                                     .getUserHeading("status") ??
-                                                                    "Status").toUpperCase(),isCopy: true,),5.height,
+                                                                    "Status").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: widget.pageName,isCopy: true,isBold: true,),
                                                                 10.height,
                                                                 CustomText(text: _formatHeading(controllers
                                                                     .getUserHeading(
                                                                     "expected_billing_value") ??
-                                                                    "Expected Monthly Billing Value").toUpperCase(),isCopy: true,),5.height,
+                                                                    "Expected Monthly Billing Value").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.expectedBillingValue ?? "",isCopy: true,isBold: true,),
                                                                 ],
                                                             ),
@@ -1085,18 +1118,18 @@ void checkType(){
                                                                 CustomText(text: _formatHeading(controllers
                                                                     .getUserHeading(
                                                                     "num_of_headcount") ??
-                                                                    "Total Number Of Head Count").toUpperCase(),isCopy: true,),5.height,
+                                                                    "Total Number Of Head Count").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.numOfHeadcount ?? "",isCopy: true,isBold: true,),
                                                                 10.height,
                                                                 CustomText(text: _formatHeading(controllers
                                                                     .getUserHeading(
                                                                     "details_of_service_required") ??
-                                                                    "Details of Service Required").toUpperCase(),isCopy: true,),5.height,
+                                                                    "Details of Service Required").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.detailsOfServiceRequired ?? "",isCopy: true,isBold: true,),
                                                                 10.height,
                                                                 CustomText(text: _formatHeading(controllers
                                                                     .getUserHeading("rating") ??
-                                                                    "Prospect Grading").toUpperCase(),isCopy: true,),5.height,
+                                                                    "Prospect Grading").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                 CustomText(text: cust?.rating ?? "",isCopy: true,isBold: true,),
                                                               ],
                                                             ),
@@ -1122,7 +1155,7 @@ void checkType(){
                                                         ...additional.map((info) => Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            CustomText(text: info.fieldName ?? "".toUpperCase(),isCopy: true,),5.height,
+                                                            CustomText(text: info.fieldName ?? "".toUpperCase(),isCopy: true,size: 12),5.height,
                                                             CustomText(text: info.fieldValue ?? "",isCopy: true,isBold: true,),
                                                           ],
                                                         )),
@@ -1154,7 +1187,7 @@ void checkType(){
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             CustomText(text: "Total Activities",isCopy: true,colors: Colors.white,),10.width,
-                                                            CustomText(text: "${calls.length+meetings.length+reminders.length}",isCopy: true,isBold: true,size: 17,colors: Colors.white),
+                                                            CustomText(text: "${recordList.length}",isCopy: true,isBold: true,size: 17,colors: Colors.white),
                                                           ],
                                                         ),
                                                       ),
@@ -1164,7 +1197,7 @@ void checkType(){
                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
                                                         Container(
-                                                          width: screenWidth/10,
+                                                          width: screenWidth/15,
                                                           decoration: customDecoration.baseBackgroundDecoration(
                                                               color: Colors.white,radius: 5,borderColor: Colors.grey
                                                           ),
@@ -1173,14 +1206,14 @@ void checkType(){
                                                             child: Row(
                                                               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
-                                                                Image.asset("assets/images/cus_detail/call2.png",width: 20,height: 20,),20.width,
+                                                                Image.asset("assets/images/cus_detail/call2.png",width: 20,height: 20,),10.width,
                                                                 CustomText(text: "Call Log",isCopy: true,isBold: true,)
                                                               ],
                                                             ),
                                                           ),
                                                         ),
                                                         Container(
-                                                          width: screenWidth/10,
+                                                          width: screenWidth/15,
                                                           decoration: customDecoration.baseBackgroundDecoration(
                                                               color: Colors.white,radius: 5,borderColor: Colors.grey
                                                           ),
@@ -1189,8 +1222,24 @@ void checkType(){
                                                             child: Row(
                                                               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
-                                                                Image.asset("assets/images/cus_detail/cal3.png",width: 20,height: 20),20.width,
+                                                                Image.asset("assets/images/cus_detail/cal3.png",width: 20,height: 20),10.width,
                                                                 CustomText(text: "Meeting",isCopy: true,isBold: true,)
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: screenWidth/15,
+                                                          decoration: customDecoration.baseBackgroundDecoration(
+                                                              color: Colors.white,radius: 5,borderColor: Colors.grey
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(10),
+                                                            child: Row(
+                                                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Image.asset("assets/images/cus_detail/rem3.png",width: 20,height: 20),10.width,
+                                                                CustomText(text: "Reminder",isCopy: true,isBold: true,)
                                                               ],
                                                             ),
                                                           ),
@@ -1202,7 +1251,7 @@ void checkType(){
                                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                       children: [
                                                         Container(
-                                                          width: screenWidth/10,
+                                                          width: screenWidth/15,
                                                           decoration: customDecoration.baseBackgroundDecoration(
                                                               color: Colors.white,radius: 5,borderColor: Colors.grey
                                                           ),
@@ -1211,14 +1260,14 @@ void checkType(){
                                                             child: Row(
                                                               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
-                                                                Image.asset("assets/images/cus_detail/rem3.png",width: 20,height: 20),20.width,
-                                                                CustomText(text: "Reminder",isCopy: true,isBold: true,)
+                                                                Image.asset("assets/images/cus_detail/mail2.png",width: 20,height: 20),10.width,
+                                                                CustomText(text: "Mail",isCopy: true,isBold: true,)
                                                               ],
                                                             ),
                                                           ),
                                                         ),
                                                         Container(
-                                                          width: screenWidth/10,
+                                                          width: screenWidth/15,
                                                           decoration: customDecoration.baseBackgroundDecoration(
                                                               color: Colors.white,radius: 5,borderColor: Colors.grey
                                                           ),
@@ -1227,38 +1276,196 @@ void checkType(){
                                                             child: Row(
                                                               // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                               children: [
-                                                                Image.asset("assets/images/cus_detail/mail2.png",width: 20,height: 20),20.width,
-                                                                CustomText(text: "Mail",isCopy: true,isBold: true,)
+                                                                Image.asset("assets/images/order.png",width: 20,height: 20),10.width,
+                                                                CustomText(text: "Quotations",isCopy: true,isBold: true,)
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: screenWidth/15,
+                                                          decoration: customDecoration.baseBackgroundDecoration(
+                                                              color: Colors.white,radius: 5,borderColor: Colors.grey
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(10),
+                                                            child: Row(
+                                                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                Image.asset("assets/images/cart_1.png",width: 20,height: 20),10.width,
+                                                                CustomText(text: "Orders",isCopy: true,isBold: true,)
                                                               ],
                                                             ),
                                                           ),
                                                         ),
                                                       ],
                                                     ),10.height,
-                                                    if (calls.isNotEmpty) ...[
-                                                      SizedBox(
-                                                          width: screenWidth / 4.5,
-                                                          child: _buildCallRecords(calls)),
-                                                      20.height,
-                                                    ],
-                                                    if (mails.isNotEmpty) ...[
-                                                      SizedBox(
-                                                          width: screenWidth / 4.5,
-                                                          child: _buildMailRecords(mails)),
-                                                      20.height,
-                                                    ],
-                                                    if (meetings.isNotEmpty) ...[
-                                                      SizedBox(
-                                                          width: screenWidth / 4.5,
-                                                          child: _buildMeetingRecords(meetings)),
-                                                      20.height,
-                                                    ],
-                                                    if (reminders.isNotEmpty) ...[
-                                                      SizedBox(
-                                                          width: screenWidth / 4.5,
-                                                          child: _buildReminderRecords(reminders)),
-                                                      20.height,
-                                                    ]
+                                                    if(recordList.isNotEmpty)
+                                                    SizedBox(
+                                                      width: screenWidth / 4.5,
+                                                      child: ListView.builder(
+                                                          shrinkWrap: true,
+                                                          itemCount: recordList.length,
+                                                          itemBuilder: (context,i){
+                                                            var data=recordList[i];
+                                                            return Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Container(
+                                                                      width: 40,height: 40,
+                                                                      decoration: customDecoration.baseBackgroundDecoration(
+                                                                          color: Color(
+                                                                              data["call_type"].toString()!=""&&data["call_type"].toString()!="null"?0xFFDCFCE7:
+                                                                              data["to_data"].toString()!=""&&data["to_data"].toString()!="null"?0xFFFCE7F3:
+                                                                              data["start_dt"].toString()!=""&&data["start_dt"].toString()!="null"?0xFFFEF3CC:
+                                                                              data["q_no"].toString()!=""&&data["q_no"].toString()!="null"?0xFFDED3FD:
+                                                                              data["o_date"].toString()!=""&&data["o_date"].toString()!="null"?0xFFDADADA:
+                                                                              0xFFDBEAFE
+                                                                          ),radius: 40
+                                                                      ),
+                                                                      child: Padding(
+                                                                        padding: const EdgeInsets.all(10),
+                                                                        child: Image.asset(
+                                                                            data["call_type"].toString()!=""&&data["call_type"].toString()!="null"?"assets/images/cus_detail/call.png":
+                                                                            data["to_data"].toString()!=""&&data["to_data"].toString()!="null"?"assets/images/cus_detail/mail.png":
+                                                                            data["start_dt"].toString()!=""&&data["start_dt"].toString()!="null"?"assets/images/cus_detail/rem2.png":
+                                                                            data["q_no"].toString()!=""&&data["q_no"].toString()!="null"?"assets/images/order1.png":
+                                                                            data["o_date"].toString()!=""&&data["o_date"].toString()!="null"?"assets/images/cart_1.png":
+                                                                            "assets/images/cus_detail/cal2.png"
+                                                                        ),
+                                                                      ),
+                                                                    ),10.width,
+                                                                    // Text(data["call_type"].toString()),
+                                                                    data["call_type"].toString()!=""&&data["call_type"].toString()!="null"?//Call
+                                                                    Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        CustomText(text:"${data["call_type"] ?? ''} - ${data["call_status"] ?? ''}",isCopy: false,isBold: true,),
+                                                                        5.height,
+                                                                        Row(
+                                                                          children: [
+                                                                            CustomText(text:data["created_by"] ?? "",colors: Colors.grey,isCopy: false,),5.width,
+                                                                            CircleAvatar(radius: 2,backgroundColor: Colors.grey,),5.width,
+                                                                            CustomText(text:controllers.formatDateTime(data["created_ts"].toString()),colors: Colors.grey,isCopy: false,),
+                                                                          ],
+                                                                        ),
+                                                                      ],
+                                                                    )
+                                                                    :data["to_data"].toString()!=""&&data["to_data"].toString()!="null"?//Mail
+                                                                    Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          CustomText(text:data["subject"]?? '',isCopy: false,isBold: true,),
+                                                                          // CustomText(text:c.message ?? '',isCopy: false,isBold: true,),
+                                                                          5.height,
+                                                                          Row(
+                                                                            children: [
+                                                                              CustomText(text:data["created_by"]?? "", colors: Colors.grey,isCopy: false,),5.width,
+                                                                              CircleAvatar(radius: 2,backgroundColor: Colors.grey,),5.width,
+                                                                              CustomText(text:controllers.formatDateTime(data["created_ts"].toString()),colors: Colors.grey,isCopy: false,),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                    :data["start_dt"].toString()!=""&&data["start_dt"].toString()!="null"?//Rem
+                                                                    Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          CustomText(text:"${data["type"].toString()=="1"?"Follow-up":"Appointment"} - ${data["title"]?? ''}",isCopy: false,isBold: true,),
+                                                                          5.height,
+                                                                          CustomText(text:"${data["employee_names"]?? ''} - ${data["start_dt"]?? ''}${data["end_dt"]?? ''}",isCopy: false),
+                                                                          5.height,
+                                                                          Row(
+                                                                            children: [
+                                                                              CustomText(text:data["created_by"]?? "",colors: Colors.grey,isCopy: false,),5.width,
+                                                                              CircleAvatar(radius: 2,backgroundColor: Colors.grey,),5.width,
+                                                                              CustomText(text:controllers.formatDateTime(data["created_ts"].toString()),colors: Colors.grey,isCopy: false,),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                    :data["dates"].toString()!=""&&data["dates"].toString()!="null"?//App
+                                                                    Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          CustomText(text:"${data["title"]?? ''} - ${data["status"]?? ''}",isCopy: false,isBold: true,),
+                                                                          5.height,
+                                                                          Row(
+                                                                            children: [
+                                                                              CustomText(text:data["created_by"]?? "",colors: Colors.grey,isCopy: false,),5.width,
+                                                                              CircleAvatar(radius: 2,backgroundColor: Colors.grey,),5.width,
+                                                                              CustomText(text:utils.formatDateTime(data["dates"]?? "",data["time"]?? ""),colors: Colors.grey,isCopy: false,),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                    :data["q_no"].toString()!=""&&data["q_no"].toString()!="null"?//App
+                                                                    Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          CustomText(text:"${data["q_no"]?? ''} - ${data["status"]?? ''}",isCopy: false,isBold: true,),
+                                                                          5.height,
+                                                                          Row(
+                                                                            children: [
+                                                                              CustomText(text:"Amount ${productCtr.formatAmount(data["total_amt"].toString())}",colors: Colors.grey,isCopy: false,),5.width,
+                                                                              CircleAvatar(radius: 2,backgroundColor: Colors.grey,),5.width,
+                                                                              CustomText(text:controllers.formatDateTime(data["sent_date"]??""),colors: Colors.grey,isCopy: false,),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                    :data["o_date"].toString()!=""&&data["o_date"].toString()!="null"?//App
+                                                                    Column(
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: [
+                                                                          CustomText(text:"Amount ${productCtr.formatAmount(data["o_total"])} - ${data["status"].toString()?? ''}",isCopy: false,isBold: true,),
+                                                                          5.height,
+                                                                          Row(
+                                                                            children: [
+                                                                             CustomText(text:DateFormat("dd-MM-yyyy").format(DateTime.parse(data["o_date"])),colors: Colors.grey,isCopy: false,),
+                                                                            ],
+                                                                          ),
+                                                                        ],
+                                                                      ):0.width,
+                                                                  ],
+                                                                ),
+                                                                i!=recordList.length-1?
+                                                                Padding(
+                                                                  padding: const EdgeInsets.fromLTRB(20, 5, 0, 5),
+                                                                  child: Container(
+                                                                    color: Colors.grey.shade500,width: 1,height: 25,
+                                                                  ),
+                                                                ):20.height
+                                                              ],
+                                                            );
+                                                          }),
+                                                    ),
+                                                    // if (calls.isNotEmpty) ...[
+                                                    //   SizedBox(
+                                                    //       width: screenWidth / 4.5,
+                                                    //       child: _buildCallRecords(calls)),
+                                                    //   20.height,
+                                                    // ],
+                                                    // if (mails.isNotEmpty) ...[
+                                                    //   SizedBox(
+                                                    //       width: screenWidth / 4.5,
+                                                    //       child: _buildMailRecords(mails)),
+                                                    //   20.height,
+                                                    // ],
+                                                    // if (meetings.isNotEmpty) ...[
+                                                    //   SizedBox(
+                                                    //       width: screenWidth / 4.5,
+                                                    //       child: _buildMeetingRecords(meetings)),
+                                                    //   20.height,
+                                                    // ],
+                                                    // if (reminders.isNotEmpty) ...[
+                                                    //   SizedBox(
+                                                    //       width: screenWidth / 4.5,
+                                                    //       child: _buildReminderRecords(reminders)),
+                                                    //   20.height,
+                                                    // ]
                                                   ],
                                                 ),
                                               ),

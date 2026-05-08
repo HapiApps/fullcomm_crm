@@ -41,7 +41,7 @@ class _EmployeeSearchBoxState extends State<EmployeeSearchBox> {
   @override
   Widget build(BuildContext context) {
     var mobileSize= MediaQuery.of(context).size.width*0.95;
-    var webSize= MediaQuery.of(context).size.width*0.8;
+    var webSize= MediaQuery.of(context).size.width*0.5;
     return SizedBox(
       width: kIsWeb?webSize:mobileSize,
       child: Column(

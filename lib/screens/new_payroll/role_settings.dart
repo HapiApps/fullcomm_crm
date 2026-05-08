@@ -11,6 +11,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/constant/key_constant.dart';
+import '../../components/action_button.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
@@ -51,6 +52,8 @@ class _RoleSettingState extends State<RoleSetting> {
   final FocusNode f17 = FocusNode();
   final FocusNode f18 = FocusNode();
   final FocusNode f19 = FocusNode();
+  bool isRole=true;
+  bool isDep=false;
   late FocusNode _focusNode;
   final ScrollController _controller = ScrollController();
   final ScrollController _horizontalController = ScrollController();
@@ -59,7 +62,7 @@ class _RoleSettingState extends State<RoleSetting> {
     80,   // 0 Checkbox
     100,  // 1 Actions
     130,  // 2 type
-    120,  // 2 role
+    150,  // 2 role
     90,  // 2 sal
     80,  // 2 ba
     70,  // 3 da
@@ -121,6 +124,9 @@ class _RoleSettingState extends State<RoleSetting> {
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       if(employeeData.roleList.isEmpty){
         employeeData.fetchRoleList();
+      }
+      if(employeeData.depList.isEmpty){
+        employeeData.fetchDepList();
       }
     });
   }
@@ -230,11 +236,85 @@ class _RoleSettingState extends State<RoleSetting> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    if(pyrlCtr.selectedSettingIds.isNotEmpty)
+                    ActionButton(
+                      width: 100,
+                      image: "assets/images/action_delete.png",
+                      name: "Delete",
+                      toolTip: "Click here to delete the customer details",
+                      callback: (){
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              content: CustomText(
+                                text: "Are you sure delete this Call records?",
+                                size: 16,
+                                isBold: true,
+                                isCopy: true,
+                                colors: colorsConst.textColor,
+                              ),
+                              actions: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          border: Border.all(color: colorsConst.primary),
+                                          color: Colors.white),
+                                      width: 80,
+                                      height: 25,
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            shape: const RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.zero,
+                                            ),
+                                            backgroundColor: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                          child: CustomText(
+                                            text: "Cancel",
+                                            colors: colorsConst.primary,
+                                            size: 14,
+                                            isCopy: false,
+                                          )),
+                                    ),
+                                    10.width,
+                                    CustomLoadingButton(
+                                      callback: (){
+                                        for(var i=0;i<pyrlCtr.selectedSettingIds.length;i++){
+                                          for(var j=0;j<pyrlCtr.settingList.length;j++){
+                                            if(pyrlCtr.selectedSettingIds[i]==pyrlCtr.settingList[j].id){
+                                              pyrlCtr.settingList[j].active="0";
+                                            }
+                                          }
+                                        }
+                                        services.deleteSetting(context);
+                                      },
+                                      height: 35,
+                                      isLoading: true,
+                                      backgroundColor: colorsConst.primary,
+                                      radius: 2,
+                                      width: 80,
+                                      controller: controllers.productCtr,
+                                      isImage: false,
+                                      text: "Delete",
+                                      textColor: Colors.white,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                    ),20.width,
                     CustomLoadingButton(
                         callback: (){
-                          pyrlCtr.isAdd.value=!pyrlCtr.isAdd.value;
+                          pyrlCtr.isAdd.value=true;
                           pyrlCtr.addSetting();
-                          pyrlCtr.editIndex.value=pyrlCtr.settingList.length;
                         }, isLoading: false, text: pyrlCtr.isAdd.value==false?"Add Role":"View",isImage: false,height: 40,
                         backgroundColor: colorsConst.primary, radius: 5, width: 100),
                   ],
@@ -349,7 +429,7 @@ class _RoleSettingState extends State<RoleSetting> {
                                             children: [
                                               CustomText(
                                                 textAlign: TextAlign.left,
-                                                text: "Role Name",
+                                                text: "Setting Name",
                                                 size: 15,
                                                 isBold: true,
                                                 isCopy: true,
@@ -1006,6 +1086,7 @@ class _RoleSettingState extends State<RoleSetting> {
                                             bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
                                           ),
                                           children:[
+                                            if(pyrlCtr.settingList[index].active=="1")
                                             TableRow(
                                                 decoration: BoxDecoration(
                                                   color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
@@ -1079,8 +1160,16 @@ class _RoleSettingState extends State<RoleSetting> {
                                                                         ),
                                                                         10.width,
                                                                         CustomLoadingButton(
-                                                                          callback: ()async{
+                                                                          callback: (){
                                                                             pyrlCtr.selectedSettingIds.add(data.id.toString());
+                                                                            for(var i=0;i<pyrlCtr.selectedSettingIds.length;i++){
+                                                                              for(var j=0;j<pyrlCtr.settingList.length;j++){
+                                                                                if(pyrlCtr.selectedSettingIds[i]==pyrlCtr.settingList[j].id){
+                                                                                  pyrlCtr.settingList[j].active="0";
+                                                                                }
+                                                                              }
+                                                                            }
+                                                                            services.deleteSetting(context);
                                                                           },
                                                                           height: 35,
                                                                           isLoading: true,
@@ -1109,18 +1198,29 @@ class _RoleSettingState extends State<RoleSetting> {
                                                   ),
                                                   Padding(
                                                     padding: const EdgeInsets.all(10.0),
-                                                    child: CustomText(
-                                                      textAlign: TextAlign.left,
-                                                      text: pyrlCtr.settingList[index].monthlyWages==true?"Monthly Wages":"Daily Wages",
-                                                      size: 14,
-                                                      isCopy: true,
-                                                      colors:colorsConst.textColor,
+                                                    child: Column(
+                                                      children: [
+                                                        CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: pyrlCtr.settingList[index].monthlyWages==true?"Monthly Wages":"Daily Wages",
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors:colorsConst.textColor,
+                                                        ),
+                                                        CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: pyrlCtr.settingList[index].roleName.toString()==""?"Department":"Role",
+                                                          size: 14,isBold: true,
+                                                          isCopy: true,
+                                                          colors:colorsConst.primary,
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.left,
-                                                      text: pyrlCtr.settingList[index].roleName.toString(),
+                                                      text: pyrlCtr.settingList[index].roleName.toString()==""?pyrlCtr.settingList[index].dName.toString():pyrlCtr.settingList[index].roleName.toString(),
                                                       size: 14,
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
@@ -1129,7 +1229,7 @@ class _RoleSettingState extends State<RoleSetting> {
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
-                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].salary.text),
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].salary.text.isEmpty?pyrlCtr.settingList[index].perDay.text:pyrlCtr.settingList[index].salary.text.isEmpty),
                                                       size: 14,
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
@@ -1395,14 +1495,12 @@ class _RoleSettingState extends State<RoleSetting> {
                                       debugPrint("data.role");
                                       debugPrint(data.role.toString());
                                       debugPrint(data.salary.text.trim());
-                                      if (data.roleName == "" || (data.salary.text.trim().isEmpty&& data.perDay.text.trim().isEmpty)) {
+                                      if (data.roleName == "" && data.dName == "" || (data.salary.text.trim().isEmpty&& data.perDay.text.trim().isEmpty)) {
                                         hasInvalid = true;
                                         break;
                                       }
 
                                     }
-
-
                                     if (hasInvalid) {
                                       utils.snackBar(context: context, msg: "Please fill Role and Salary", color: Colors.red);
                                       pyrlCtr.submit.reset();
@@ -1474,7 +1572,7 @@ class _RoleSettingState extends State<RoleSetting> {
                                 return Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Row(
                                           children: [
@@ -1492,7 +1590,7 @@ class _RoleSettingState extends State<RoleSetting> {
                                                   }),
                                             ),
                                           ],
-                                        ),
+                                        ),20.width,
                                         if(data.monthlyWages==true)
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1556,16 +1654,45 @@ class _RoleSettingState extends State<RoleSetting> {
                                               ),
                                           ],
                                         ),
-                                        // Row(
-                                        //     mainAxisAlignment: MainAxisAlignment.end,
-                                        //     children: [
-                                        //       InkWell(
-                                        //           onTap:(){
-                                        //             pyrlCtr.settingList.removeAt(index);
-                                        //           },
-                                        //           child: const Icon(Icons.delete_outline_outlined,color: Colors.red,))
-                                        //     ],
-                                        //   ),
+                                        20.width,
+                                        Row(
+                                          children: [
+                                            const CustomText(text:"Role",colors:Colors.grey,isCopy: false),
+                                            SizedBox(
+                                              width: 20,
+                                              child: Checkbox(
+                                                  activeColor:colorsConst.primary,
+                                                  value: isRole,
+                                                  onChanged: (value){
+                                                    setState((){
+                                                      isRole=value!;
+                                                      if(isRole==true){
+                                                        isDep=false;
+                                                      }
+                                                    });
+                                                  }),
+                                            ),
+                                          ],
+                                        ),20.width,
+                                        Row(
+                                          children: [
+                                            const CustomText(text:"Department",colors:Colors.grey,isCopy: false),
+                                            SizedBox(
+                                              width: 20,
+                                              child: Checkbox(
+                                                  activeColor:colorsConst.primary,
+                                                  value: isDep,
+                                                  onChanged: (value){
+                                                    setState((){
+                                                      isDep=value!;
+                                                      if(isDep==true){
+                                                        isRole=false;
+                                                      }
+                                                    });
+                                                  }),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),5.height,
                                     Row(
@@ -1774,92 +1901,208 @@ class _RoleSettingState extends State<RoleSetting> {
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_)=>calculatePFandESI(),
                                         ),
-                                        Container(
-                                          width: screenWidth / 5,
-                                          decoration: customDecoration.baseBackgroundDecoration(
-                                            radius: 10,
-                                            color: Colors.white,
-                                          ),
-                                          child: DropdownButtonFormField<Map<String, dynamic>>(
-                                            key: ValueKey(data.roleId), // 👈 forces dropdown to rebuild when reset
-                                            decoration: InputDecoration(
-                                              label: Row(
+                                        SizedBox(
+                                          width: screenWidth/5,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              if(isRole==true)
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  CustomText(
-                                                      text: "Role",
-                                                      colors: Colors.grey,
-                                                      size: 14,isCopy: false
+                                                  Row(
+                                                    children: [
+                                                      CustomText(
+                                                          text: "Role",
+                                                          size: 14,isCopy: false
+                                                      ),
+                                                      CustomText(
+                                                          text: "*",
+                                                          colors: Colors.red,
+                                                          size: 15,isCopy: false
+                                                      ),
+                                                    ],
                                                   ),
-                                                  CustomText(
-                                                      text: "*",
-                                                      colors: Colors.red,
-                                                      size: 15,isCopy: false
+                                                  Container(
+                                                    width: screenWidth/5,
+                                                    height: 40,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                        radius: 5,
+                                                        color: Colors.white,borderColor: Colors.grey
+                                                    ),
+                                                    child: DropdownButtonFormField<Map<String, dynamic>>(
+                                                      key: ValueKey(data.roleId), // 👈 forces dropdown to rebuild when reset
+                                                      decoration: InputDecoration(
+                                                        border: OutlineInputBorder(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                        ),
+                                                        enabledBorder: OutlineInputBorder(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          borderSide: const BorderSide(
+                                                            color: Colors.white,
+                                                            width: 1,
+                                                          ),
+                                                        ),
+                                                        focusedBorder: OutlineInputBorder(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          borderSide: const BorderSide(
+                                                            color: Colors.white,
+                                                            width: 2,
+                                                          ),
+                                                        ),
+                                                        contentPadding:
+                                                        const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                                                      ),
+                                                      isExpanded: true,
+                                                      value: data.role,
+                                                      hint: CustomText(
+                                                        text: data.roleName==""?"Role":data.roleName.toString(),
+                                                        colors: Colors.grey, isCopy: false,
+                                                      ),
+                                                      items: employeeProvider.roleList
+                                                          .map<DropdownMenuItem<Map<String, dynamic>>>((item) {
+                                                        return DropdownMenuItem<Map<String, dynamic>>(
+                                                          value: item,
+                                                          child: CustomText(
+                                                            text: item["role_name"],
+                                                            colors: Colors.black,isCopy: false,
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                      onChanged: (value) {
+                                                        if (value == null) return;
+
+                                                        final selectedRole = value;
+                                                        final selectedRoleId = selectedRole["u_id"].toString();
+
+                                                        bool roleExists = pyrlCtr.settingList.any((item) =>
+                                                        item != data &&
+                                                            item.roleId.toString() == selectedRoleId);
+
+                                                        if (roleExists) {
+                                                          utils.snackBar(context: context, msg: "This role is already added in another payroll setting.", color: Colors.red);
+                                                          setState(() {
+                                                            data.role = null;
+                                                            data.roleId = "";
+                                                            data.roleName = "";
+                                                          });
+
+                                                          return;
+                                                        }
+
+                                                        setState(() {
+                                                          data.role = selectedRole;
+                                                          data.roleId = selectedRoleId;
+                                                          data.roleName = selectedRole["role_name"].toString();
+
+                                                          data.dep = null;
+                                                          data.dId = "";
+                                                          data.dName = "";
+                                                        });
+                                                      },
+                                                    ),
                                                   ),
                                                 ],
                                               ),
-                                              border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(10),
+                                              if(isDep==true)
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      CustomText(
+                                                          text: "Department",
+                                                          size: 14,isCopy: false
+                                                      ),
+                                                      CustomText(
+                                                          text: "*",
+                                                          colors: Colors.red,
+                                                          size: 15,isCopy: false
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Container(
+                                                    width: screenWidth/5,
+                                                    height: 40,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                      radius: 5,
+                                                      color: Colors.white,borderColor: Colors.grey
+                                                    ),
+                                                    child: DropdownButtonFormField<Map<String, dynamic>>(
+                                                      key: ValueKey(data.roleId), // 👈 forces dropdown to rebuild when reset
+                                                      decoration: InputDecoration(
+                                                        border: OutlineInputBorder(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                        ),
+                                                        enabledBorder: OutlineInputBorder(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          borderSide: const BorderSide(
+                                                            color: Colors.white,
+                                                            width: 1,
+                                                          ),
+                                                        ),
+                                                        focusedBorder: OutlineInputBorder(
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          borderSide: const BorderSide(
+                                                            color: Colors.white,
+                                                            width: 2,
+                                                          ),
+                                                        ),
+                                                        contentPadding:
+                                                        const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                                                      ),
+                                                      isExpanded: true,
+                                                      value: data.dep,
+                                                      hint: CustomText(
+                                                        text: data.dName==""?"Department":data.dName.toString(),
+                                                        colors: Colors.grey, isCopy: false,
+                                                      ),
+                                                      items: employeeProvider.depList
+                                                          .map<DropdownMenuItem<Map<String, dynamic>>>((item) {
+                                                        return DropdownMenuItem<Map<String, dynamic>>(
+                                                          value: item,
+                                                          child: CustomText(
+                                                            text: item["department"],
+                                                            colors: Colors.black,isCopy: false,
+                                                          ),
+                                                        );
+                                                      }).toList(),
+                                                      onChanged: (value) {
+                                                        if (value == null) return;
+
+                                                        final selectedRole = value;
+                                                        final selectedRoleId = selectedRole["id"].toString();
+
+                                                        bool roleExists = pyrlCtr.settingList.any((item) =>
+                                                        item != data &&
+                                                            item.dId.toString() == selectedRoleId);
+
+                                                        if (roleExists) {
+                                                          utils.snackBar(context: context, msg: "This department is already added in another payroll setting.", color: Colors.red);
+                                                          setState(() {
+                                                            data.dep = null;
+                                                            data.dId = "";
+                                                            data.dName = "";
+                                                          });
+
+                                                          return;
+                                                        }
+
+                                                        setState(() {
+                                                          data.dep = selectedRole;
+                                                          data.dId = selectedRoleId;
+                                                          data.dName = selectedRole["department"].toString();
+
+                                                          data.role = null;
+                                                          data.roleId = "";
+                                                          data.roleName = "";
+                                                        });
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(10),
-                                                borderSide: const BorderSide(
-                                                  color: Colors.white,
-                                                  width: 1,
-                                                ),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(10),
-                                                borderSide: const BorderSide(
-                                                  color: Colors.white,
-                                                  width: 2,
-                                                ),
-                                              ),
-                                              contentPadding:
-                                              const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                                            ),
-                                            isExpanded: true,
-                                            value: data.role,
-                                            hint: CustomText(
-                                              text: data.roleName==""?"Role":data.roleName.toString(),
-                                              colors: Colors.grey, isCopy: false,
-                                            ),
-                                            items: employeeProvider.roleList
-                                                .map<DropdownMenuItem<Map<String, dynamic>>>((item) {
-                                              return DropdownMenuItem<Map<String, dynamic>>(
-                                                value: item,
-                                                child: CustomText(
-                                                  text: item["role_name"],
-                                                  colors: Colors.black,isCopy: false,
-                                                ),
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              if (value == null) return;
-
-                                              final selectedRole = value;
-                                              final selectedRoleId = selectedRole["u_id"].toString();
-
-                                              bool roleExists = pyrlCtr.settingList.any((item) =>
-                                              item != data &&
-                                                  item.roleId.toString() == selectedRoleId);
-
-                                              if (roleExists) {
-                                                utils.snackBar(context: context, msg: "This role is already added in another payroll setting.", color: Colors.red);
-                                                setState(() {
-                                                  data.role = null;
-                                                  data.roleId = "";
-                                                  data.roleName = "";
-                                                });
-
-                                                return;
-                                              }
-
-                                              setState(() {
-                                                data.role = selectedRole;
-                                                data.roleId = selectedRoleId;
-                                                data.roleName = selectedRole["role_name"].toString();
-                                              });
-                                            },
+                                            ],
                                           ),
                                         ),
                                       ],

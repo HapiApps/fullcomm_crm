@@ -63,7 +63,8 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
   // List<String>? adCL;
   // List<String>? bonusCL;
   // List<String>? oPCL;
-
+  bool isRole=true;
+  bool isDep=false;
   double earned =0.0;
   double earnedBasic  =0.0;
   double earnedDa  =0.0;
@@ -149,24 +150,6 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                   ),
                   Divider(color: Colors.grey.shade500,thickness: 0.5,),
                   10.height,
-                  TextButton(
-                      onPressed: (){
-                        showMonthPicker2(
-                          context: context,
-                          month: pyrlCtr.month,
-                          function: (){
-                            getPyrlAtt();
-                          }
-                        );
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(Icons.calendar_month,color: Colors.blueGrey),10.width,
-                          CustomText(text: pyrlCtr.month.value,colors: colorsConst.primary,size:15, isCopy: true,),
-                        ],
-                      )),
-                  10.height,
                   pyrlCtr.getData.value==false?const CircularProgressIndicator():
                   Expanded(
                     child: SingleChildScrollView(
@@ -174,51 +157,179 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                         child: Column(
                           children: [
                             10.height,
-                            EmployeeSearchBox(
-                              allEmployees: employeeProvider.filteredStaff,
-                              onEmployeeSelected: (selectedEmployee) {
-                                setState(() {
-                                  // Save selected employee details
-                                  controllers.storage.write("p_emp_id", selectedEmployee.id);
-                                  controllers.storage.write("p_emp_name", selectedEmployee.sName);
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                EmployeeSearchBox(
+                                  allEmployees: employeeProvider.filteredStaff,
+                                  onEmployeeSelected: (selectedEmployee) {
+                                    setState(() {
+                                      // Save selected employee details
+                                      controllers.storage.write("p_emp_id", selectedEmployee.id);
+                                      controllers.storage.write("p_emp_name", selectedEmployee.sName);
 
-                                  // Check if employee already exists in the list
-                                  bool alreadyExists = pyrlCtr.users.any(
-                                        (user) => user.empId == selectedEmployee.id.toString(),
-                                  );
+                                      // Check if employee already exists in the list
+                                      bool alreadyExists = pyrlCtr.users.any(
+                                            (user) => user.empId == selectedEmployee.id.toString(),
+                                      );
 
-                                  if (!alreadyExists) {
-                                    // Add to payroll users only if not already in the list
-                                    pyrlCtr.users.add(
-                                      PayrollUserModel(
-                                        empId: selectedEmployee.id.toString(),
-                                        name: selectedEmployee.sName.toString(),
-                                        rank: selectedEmployee.roleTitle.toString(),
-                                        duty: TextEditingController(),
-                                        ot: TextEditingController(),
-                                        advance: TextEditingController(),
-                                        penalty: TextEditingController(),
-                                        uniform: TextEditingController(),
-                                        total: TextEditingController(),
-                                        food: TextEditingController(),
-                                        bonus2: TextEditingController(),
-                                        basic: "",
-                                        newE: "1",
-                                        da: "",
-                                        hra: "",
-                                        esi: "",
-                                        pf: "",
-                                        deduction: TextEditingController(),
-                                        netAmount: "",
-                                        active: "1",
-                                      ),
-                                    );
-                                  } else {
-                                    // Optional: Show message or toast
-                                    utils.snackBar(context: Get.context!, msg: "${selectedEmployee.sName} already added ",color: Colors.red);
-                                  }
-                                });
-                              },
+                                      if (!alreadyExists) {
+                                        // Add to payroll users only if not already in the list
+                                        pyrlCtr.users.add(
+                                          PayrollUserModel(
+                                            empId: selectedEmployee.id.toString(),
+                                            name: selectedEmployee.sName.toString(),
+                                            rank: selectedEmployee.roleTitle.toString(),
+                                            department: selectedEmployee.department.toString(),
+                                            duty: TextEditingController(),
+                                            ot: TextEditingController(),
+                                            advance: TextEditingController(),
+                                            penalty: TextEditingController(),
+                                            uniform: TextEditingController(),
+                                            total: TextEditingController(),
+                                            food: TextEditingController(),
+                                            bonus2: TextEditingController(),
+                                            basic: "",
+                                            newE: "1",
+                                            da: "",
+                                            hra: "",
+                                            esi: "",
+                                            pf: "",
+                                            deduction: TextEditingController(),
+                                            netAmount: "",
+                                            active: "1",
+                                          ),
+                                        );
+                                      } else {
+                                        // Optional: Show message or toast
+                                        utils.snackBar(context: Get.context!, msg: "${selectedEmployee.sName} already added ",color: Colors.red);
+                                      }
+                                    });
+                                  },
+                                ),
+                                Row(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const CustomText(text:"Role",colors:Colors.grey,isCopy: false),10.width,
+                                        SizedBox(
+                                          width: 20,
+                                          child: Checkbox(
+                                              activeColor:colorsConst.primary,
+                                              value: isRole,
+                                              onChanged: (value){
+                                                setState((){
+                                                  isRole=value!;
+                                                  if(isRole==true){
+                                                    isDep=false;
+                                                  }
+                                                });
+                                              }),
+                                        ),
+                                      ],
+                                    ),
+                                    20.width,
+                                    Row(
+                                      children: [
+                                        const CustomText(text:"Department",colors:Colors.grey,isCopy: false),10.width,
+                                        SizedBox(
+                                          width: 20,
+                                          child: Checkbox(
+                                              activeColor:colorsConst.primary,
+                                              value: isDep,
+                                              onChanged: (value){
+                                                setState((){
+                                                  isDep=value!;
+                                                  if(isDep==true){
+                                                    isRole=false;
+                                                  }
+                                                });
+                                              }),
+                                        ),
+                                      ],
+                                    ),
+                                    20.width,
+                                    SizedBox(
+                                        height: 35,
+                                        child: Obx(()=>ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:colorsConst.primary,
+                                              shadowColor: Colors.transparent,
+                                            ),
+                                            onPressed: (){
+                                              showMonthPicker2(
+                                                  context: context,
+                                                  month: pyrlCtr.month,
+                                                  function: (){
+                                                    getPyrlAtt();
+                                                  }
+                                              );
+                                            },
+                                            child: CustomText(
+                                                text:pyrlCtr.month.value,isCopy: false,colors: Colors.white
+                                            )
+                                        ),)
+                                    ),
+                                    Row(
+                                      children: [
+                                        20.width,
+                                        CustomLoadingButton(
+                                            controller: pyrlCtr.submit,text: "Save",
+                                            callback: (){
+                                              checkValue(context);
+                                            },
+                                            isLoading: true, backgroundColor: colorsConst.primary,
+                                            radius: 10, width: 100),20.width,
+                                        CustomLoadingButton(text: "Excel",isImage: false,
+                                            callback: (){
+                                              bool hasEmptyDuty = false;
+                                              for (var i = 0; i < pyrlCtr.users.length; i++) {
+                                                if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
+                                                    pyrlCtr.users[i].duty.text == "0") {
+                                                  utils.snackBar(
+                                                    context: context,
+                                                    msg: "Fill duty days for ${pyrlCtr.users[i].name}",
+                                                    color: Colors.red,
+                                                  );
+                                                  pyrlCtr.submit.reset();
+                                                  hasEmptyDuty = true;
+                                                  break; // exit the loop after first invalid
+                                                }
+                                              }
+                                              if (!hasEmptyDuty) {
+                                                generateExcel(pyrlCtr.users);
+                                              }
+                                            },
+                                            isLoading: false, backgroundColor: colorsConst.primary,
+                                            radius: 5, width:  100),20.width,
+                                        CustomLoadingButton(text: "PDF",
+                                            callback: (){
+                                              bool hasEmptyDuty = false;
+                                              for (var i = 0; i < pyrlCtr.users.length; i++) {
+                                                if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
+                                                    pyrlCtr.users[i].duty.text == "0") {
+                                                  utils.snackBar(
+                                                    context: context,
+                                                    msg: "Fill duty days for ${pyrlCtr.users[i].name}",
+                                                    color: Colors.red,
+                                                  );
+                                                  pyrlCtr.submit.reset();
+                                                  hasEmptyDuty = true;
+                                                  break; // exit the loop after first invalid
+                                                }
+                                              }
+                                              if (!hasEmptyDuty) {
+                                                exportPayrollToPdf(pyrlCtr.users);
+                                              }
+                                            },isImage: false,
+                                            isLoading: false, backgroundColor: colorsConst.primary,
+                                            radius: 5, width: 100),20.width,
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ],
                             ),
                             10.height,
                             if(pyrlCtr.users.isNotEmpty)
@@ -230,15 +341,15 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                               ),
                               columnWidths: {
                                 0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.03),
-                                1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.06),
-                                2: FixedColumnWidth(MediaQuery.of(context).size.width * 0.2),
+                                1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.1),
+                                2: FixedColumnWidth(MediaQuery.of(context).size.width * 0.25),
                                 3: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
                                 4: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
                                 5: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
                                 6: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
                                 7: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
                                 8: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                9: FixedColumnWidth(MediaQuery.of(context).size.width * 0.06),
+                                9: FixedColumnWidth(MediaQuery.of(context).size.width * 0.07),
                                 10: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
                                 11: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
                                 12: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
@@ -426,87 +537,28 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                                 }),
                                 // Totals row
                                 TableRow(
-                                  decoration: BoxDecoration(color: Colors.grey.shade300),
+                                  decoration: BoxDecoration(color: colorsConst.primary),
                                   children: [
                                     textBox(""),
                                     textBox(""),
                                     textBox("Total", width: 150),
-                                    valueBox(totalDuty.value.toString()),
-                                    valueBox(totalOT.value.toString()),
-                                    valueBox(totalAdvance.value.toStringAsFixed(2)),
-                                    valueBox(totalUniform.value.toStringAsFixed(2)),
-                                    valueBox(totalPenalty.value.toStringAsFixed(2)),
-                                    valueBox(totalBonus2.value.toStringAsFixed(2)),
-                                    valueBox(totalFood.value.toStringAsFixed(2)),
-                                    valueBox(totalEarned.value.toStringAsFixed(2)),
-                                    valueBox(totalDed.value.toStringAsFixed(2)),
+                                    textBox(totalDuty.value.toString()),
+                                    textBox(totalOT.value.toString()),
+                                    textBox(totalAdvance.value.toStringAsFixed(2)),
+                                    textBox(totalUniform.value.toStringAsFixed(2)),
+                                    textBox(totalPenalty.value.toStringAsFixed(2)),
+                                    textBox(totalBonus2.value.toStringAsFixed(2)),
+                                    textBox(totalFood.value.toStringAsFixed(2)),
+                                    textBox(totalEarned.value.toStringAsFixed(2)),
+                                    textBox(totalDed.value.toStringAsFixed(2)),
                                     textBox(""),
                                   ],
                                 ),
                               ],
                             )),
                             20.height,
-                            pyrlCtr.users.isNotEmpty?
-                            SizedBox(
-                              width: webSize,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  CustomLoadingButton(
-                                      controller: pyrlCtr.submit,text: "Save",
-                                      callback: (){
-                                          checkValue(context);
-                                      },
-                                      isLoading: true, backgroundColor: colorsConst.primary,
-                                      radius: 10, width: webSize/4),
-                                  CustomLoadingButton(text: "Excel",isImage: false,
-                                      callback: (){
-                                          bool hasEmptyDuty = false;
-                                          for (var i = 0; i < pyrlCtr.users.length; i++) {
-                                            if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
-                                                pyrlCtr.users[i].duty.text == "0") {
-                                              utils.snackBar(
-                                                context: context,
-                                                msg: "Fill duty days for ${pyrlCtr.users[i].name}",
-                                                color: Colors.red,
-                                              );
-                                              pyrlCtr.submit.reset();
-                                              hasEmptyDuty = true;
-                                              break; // exit the loop after first invalid
-                                            }
-                                          }
-                                          if (!hasEmptyDuty) {
-                                            generateExcel(pyrlCtr.users);
-                                          }
-                                      },
-                                      isLoading: false, backgroundColor: colorsConst.primary,
-                                      radius: 5, width:  webSize/4),
-                                  CustomLoadingButton(text: "PDF",
-                                      callback: (){
-                                          bool hasEmptyDuty = false;
-                                          for (var i = 0; i < pyrlCtr.users.length; i++) {
-                                            if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
-                                                pyrlCtr.users[i].duty.text == "0") {
-                                              utils.snackBar(
-                                                context: context,
-                                                msg: "Fill duty days for ${pyrlCtr.users[i].name}",
-                                                color: Colors.red,
-                                              );
-                                              pyrlCtr.submit.reset();
-                                              hasEmptyDuty = true;
-                                              break; // exit the loop after first invalid
-                                            }
-                                          }
-                                          if (!hasEmptyDuty) {
-                                            exportPayrollToPdf(pyrlCtr.users);
-                                          }
-                                      },isImage: false,
-                                      isLoading: false, backgroundColor: colorsConst.primary,
-                                      radius: 5, width: webSize/4),
-                                ],
-                              ),
-                            )
-                            :const CustomText(text: "\n\n\n\n\nSelect Employee",colors: Colors.grey,size:15,isBold: true, isCopy: true,),
+                            if(pyrlCtr.users.isEmpty)
+                            const CustomText(text: "\n\n\n\n\nSelect Employee",colors: Colors.grey,size:15,isBold: true, isCopy: true,),
                             50.height
                           ],
                         ),
@@ -770,10 +822,11 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
       int workingDay = 0;
       bool monthlyWage = true;
       bool roleFound = false;
+      bool depFound = false;
 
       // -------- ROLE SETTINGS --------
       for (var i = 0; i < pyrlCtr.settingList.length; i++) {
-        if (pyrlCtr.settingList[i].roleName == pyrlCtr.users[index].rank) {
+        if (isRole==true&&pyrlCtr.settingList[i].roleName == pyrlCtr.users[index].rank) {
           print("Matched list: ${pyrlCtr.settingList[i]}");
           print("Matched list: ${pyrlCtr.settingList[i].perDay}");
 
@@ -809,11 +862,53 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
           roleFound = true;
           break;
         }
+        else if (isDep==true&&pyrlCtr.settingList[i].dName == pyrlCtr.users[index].department) {
+          print("Matched list: ${pyrlCtr.settingList[i]}");
+          print("Matched list: ${pyrlCtr.settingList[i].perDay}");
+
+          monthlyWage = pyrlCtr.settingList[i].monthlyWages;
+
+          salary = safeDouble(pyrlCtr.settingList[i].salary.text);
+          perSalary = safeDouble(pyrlCtr.settingList[i].perDay.text);
+
+          basicCalc = safeDouble(pyrlCtr.settingList[i].basic.text);
+          daCalc = safeDouble(pyrlCtr.settingList[i].da.text);
+          hraCalc = safeDouble(pyrlCtr.settingList[i].hra.text);
+
+          adCalc = safeDouble(pyrlCtr.settingList[i].adminCharges.text);
+          bonusCalc = safeDouble(pyrlCtr.settingList[i].bonus.text);
+          oPCalc = safeDouble(pyrlCtr.settingList[i].optionSalary.text);
+
+          print("Salary: $salary");
+          print("Per Salary: $perSalary");
+          print("Monthly Wage: $monthlyWage");
+
+          if (pyrlCtr.settingList[i].weekOff==true&&pyrlCtr.settingList[i].saturday==true&&pyrlCtr.settingList[i].sunday==true) {
+            workingDay = pyrlCtr.lastDate;
+          } else if (pyrlCtr.settingList[i].weekOff==true&&pyrlCtr.settingList[i].saturday==true&&pyrlCtr.settingList[i].sunday==false) {
+            workingDay = pyrlCtr.lastDate - countSaturdaysAndSundays("1");
+          } else if (pyrlCtr.settingList[i].weekOff==true&&pyrlCtr.settingList[i].saturday==false&&pyrlCtr.settingList[i].sunday==true) {
+            workingDay = pyrlCtr.lastDate - countSaturdaysAndSundays("2");
+          } else {
+            workingDay = pyrlCtr.lastDate - countSaturdaysAndSundays("3");
+          }
+
+          print("Working Days: $workingDay");
+
+          depFound = true;
+          break;
+        }
       }
 
-      if (!roleFound) {
+      if (isRole==true&&!roleFound) {
         print("❌ Role not found");
         utils.snackBar(context: context, msg: "“This role has no payroll setting", color: Colors.red);
+        pyrlCtr.users.removeAt(index);
+        return;
+      }
+      if (isDep==true&&!depFound) {
+        print("❌ Department not found");
+        utils.snackBar(context: context, msg: "“This department has no payroll setting", color: Colors.red);
         pyrlCtr.users.removeAt(index);
         return;
       }
