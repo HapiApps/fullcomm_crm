@@ -12,6 +12,170 @@ final pyrlCtr = Get.put(PyrlCtr());
 
 class PyrlCtr extends GetxController {
 
+  void filterAndSort({
+    required String searchText,
+    required String sortField,
+    required String sortOrder
+  }) {
+    final filtered = unitPayrollList2.where((activity) {
+      final matchesSearch = searchText.isEmpty ||
+          activity.name.toLowerCase().contains(searchText.toLowerCase());
+      return matchesSearch;
+
+    }).toList();
+    /// Sorting
+    if (sortField == 'rank') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.roleName.toLowerCase().compareTo(b.roleName.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'name') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'father') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.fn.toLowerCase().compareTo(b.fn.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'no') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.phoneNo).compareTo(int.parse(b.phoneNo));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'uan') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.pfNo).compareTo(int.parse(b.pfNo));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'dob') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.dob).compareTo(int.parse(b.dob));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'doj') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.doj).compareTo(int.parse(b.doj));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'esino') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.esiNo).compareTo(int.parse(b.esiNo));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'salwages') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.esiWagesAmt).compareTo(int.parse(b.esiWagesAmt));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'pfwages') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.pfWagesAmt).compareTo(int.parse(b.pfWagesAmt));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'duty') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.duty).compareTo(int.parse(b.duty));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'ot') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.ot).compareTo(int.parse(b.ot));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'basic') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.basic).compareTo(int.parse(b.basic));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'hra') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.hra).compareTo(int.parse(b.hra));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'earn') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.total).compareTo(int.parse(b.total));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'advance') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.advance).compareTo(int.parse(b.advance));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'uniform') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.uniform).compareTo(int.parse(b.uniform));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'penalty') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.penalty).compareTo(int.parse(b.penalty));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'bonus') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.bonus2).compareTo(int.parse(b.bonus2));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'fc') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.food).compareTo(int.parse(b.food));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'esi') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.esi).compareTo(int.parse(b.esi));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'pf') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.pf).compareTo(int.parse(b.pf));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'ded') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.deduction).compareTo(int.parse(b.deduction));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'net') {
+      filtered.sort((a, b) {
+        final comparison =
+        int.parse(a.netAmount).compareTo(int.parse(b.netAmount));
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    unitPayrollList.assignAll(filtered);
+  }
   RxList<RolePayrollSetting> settingList=<RolePayrollSetting>[].obs;
   void addSetting(){
     settingList.add(RolePayrollSetting(
@@ -216,6 +380,7 @@ var startDate="".obs,endDate="".obs,month=DateFormat("MMMM yyyy").format(DateTim
 RxList<units> unitList=<units>[].obs;
 dynamic unitName,empName;
 RxList<UnitPayroll> unitPayrollList=<UnitPayroll>[].obs;
+RxList<UnitPayroll> unitPayrollList2=<UnitPayroll>[].obs;
 TextEditingController duty=TextEditingController();
 TextEditingController advance=TextEditingController();
 TextEditingController penalty=TextEditingController();

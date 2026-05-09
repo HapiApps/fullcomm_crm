@@ -326,6 +326,7 @@ class NewPayrollApiServices{
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
       final List dataValue= json.decode(request.body);
+      pyrlCtr.unitPayrollList2.clear();
       pyrlCtr.unitPayrollList.clear();
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -337,10 +338,12 @@ class NewPayrollApiServices{
       }
       if (request.statusCode == 200){
         pyrlCtr.getData.value=true;
+        pyrlCtr.unitPayrollList2.value=dataValue.map((json) => UnitPayroll.fromJson(json)).toList();
         pyrlCtr.unitPayrollList.value=dataValue.map((json) => UnitPayroll.fromJson(json)).toList();
         return dataValue.map((json) => UnitPayroll.fromJson(json)).toList();
       } else {
         pyrlCtr.getData.value=true;
+        pyrlCtr.unitPayrollList2.clear();
         pyrlCtr.unitPayrollList.clear();
         throw Exception('Failed to load album');
       }
@@ -348,6 +351,7 @@ class NewPayrollApiServices{
       debugPrint(e.toString());
       pyrlCtr.getData.value=true;
       pyrlCtr.unitPayrollList.clear();
+      pyrlCtr.unitPayrollList2.clear();
       throw Exception('Failed to load album');
     }
   }

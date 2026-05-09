@@ -28,6 +28,7 @@ class CustomerFullDetails {
   final List reminders;
   final List orders;
   final List quotations;
+  final String? totalOrderAmount;
   // final List<CallRecord> callRecords;
   // final List<MailRecord> mailRecords;
   // final List<Meeting> meetings;
@@ -44,6 +45,7 @@ class CustomerFullDetails {
     required this.reminders,
     required this.orders,
     required this.quotations,
+    this.totalOrderAmount,
   });
 
   factory CustomerFullDetails.fromJson(Map<String, dynamic> json) {
@@ -72,6 +74,7 @@ class CustomerFullDetails {
       reminders:json['reminders'],
       orders:json['orders'],
       quotations:json['quotations'],
+      totalOrderAmount: s(json['total_order_amount']),
     );
   }
 
@@ -90,6 +93,7 @@ class CustomerFullDetails {
     'reminders': reminders,
     'quotations': quotations,
     'orders': orders,
+    'total_order_amount': totalOrderAmount,
   };
 }
 

@@ -22,13 +22,14 @@ class ActivityLineData {
 }
 
 class ActivityOverTimeChart extends StatefulWidget {
+  final double width;
   final List<String> xLabels;
   final List<ActivityLineData> lines;
 
   const ActivityOverTimeChart({
     super.key,
     required this.xLabels,
-    required this.lines,
+    required this.lines, required this.width,
   });
 
   @override
@@ -91,7 +92,7 @@ class _ActivityOverTimeChartState
     double screenWidth = MediaQuery.of(context).size.width;
     return Container(
       // height: 360, width: screenWidth/1.8,
-      height: 400, width: screenWidth/1.3,
+      height: 400, width: widget.width,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -363,13 +364,14 @@ class _TooltipCard extends StatelessWidget {
 
 
 class CustomerActivityCard extends StatelessWidget {
-  const CustomerActivityCard({super.key});
+  final double width;
+  const CustomerActivityCard({super.key, required this.width});
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Obx(()=>Container(
-      width: screenWidth /5,
+      width: width,
       height: 300,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(

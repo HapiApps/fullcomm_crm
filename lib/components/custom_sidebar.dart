@@ -1,10 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
+import '../common/constant/dashboard_assets.dart';
 import '../common/constant/default_constant.dart';
 import '../common/widgets/log_in.dart';
 import '../controller/controller.dart';
@@ -17,6 +19,7 @@ import '../screens/employee/role_management.dart';
 import '../screens/new_payroll/attendance.dart';
 import '../screens/new_payroll/esi_wages.dart';
 import '../screens/new_payroll/pay_slip.dart';
+import '../screens/new_payroll/pf_wages.dart';
 import '../screens/new_payroll/pf_wages.dart';
 import '../screens/new_payroll/role_settings.dart';
 import '../screens/new_payroll/salary_slip.dart';
@@ -42,7 +45,8 @@ class SideBar extends StatelessWidget {
     RxBool isLeadHovered = false.obs;
     RxBool isPayrollHovered = false.obs;
     return
-      Obx(() => controllers.isLeftOpen.value?
+      Obx(() =>
+      controllers.isLeftOpen.value?
       Container(
       width: 150,
       // width: 170,
@@ -60,30 +64,20 @@ class SideBar extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            // const SizedBox(height: 5),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.end,
-            //   children: [
-            //     Tooltip(
-            //       message: "Click to close the side panel.",
-            //       child: InkWell(
-            //         focusColor: Colors.transparent,
-            //         onTap: () {
-            //           controllers.isLeftOpen.value = !controllers.isLeftOpen.value;
-            //         },
-            //         child: CircleAvatar(
-            //           backgroundColor: colorsConst.secondary,
-            //           child: const Icon(Icons.chevron_left, color: Colors.black),
-            //         ),
-            //       ),
-            //     ),
-            //   ],
-            // ),
-            // CustomText(text:  controllers.storage.read("f_name") ?? "",
-            //   size: 20,
-            //   isBold: true,
-            //   isCopy: true,
-            // ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Tooltip(
+                  message: "Click to close the side panel.",
+                  child: InkWell(
+                    child:Image.asset(DashboardAssets.menu,width:60,height:60),
+                    onTap: () {
+                      controllers.isLeftOpen.value = !controllers.isLeftOpen.value;
+                    },
+                  ),
+                ),
+              ],
+            ),
             Image.asset(logo),
             SidebarItem(
               context: context,
@@ -97,26 +91,6 @@ class SideBar extends StatelessWidget {
               label: constValue.dashboard,
               page: const DashboardPage(),
             ),
-            // ListView.builder(
-            //   shrinkWrap: true,
-            //   itemCount: controllers.leadCategoryList.length,
-            //     itemBuilder: (context,index){
-            //       return SidebarItem(
-            //         context: context,
-            //         controllers: controllers,
-            //         colorsConst: colorsConst,
-            //         index: int.parse(controllers.leadCategoryList[index].leadStatus),
-            //         icon: Icons.remove_red_eye_outlined,
-            //         label: controllers.leadCategoryList[index].value,
-            //         selectedImage: controllers.leadCategoryList[index].icon1,
-            //         unSelectedImage: controllers.leadCategoryList[index].icon2,
-            //         isNetWrk: true,
-            //         onPreTap: () {},
-            //         page:  NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
-            //           name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
-            //           list2: controllers.leadCategoryList[index].list2, listIndex: index,),
-            //       );
-            //     }),
             if(controllers.leadCategoryList.isNotEmpty)
             Obx(() {
               bool isExpanded = controllers.isLeadsExpanded.value;
@@ -354,15 +328,9 @@ class SideBar extends StatelessWidget {
                         ),
                         child: Row(
                           children: [
-                            Icon(
-                              Icons.settings,
-                              size: 20,
-                              color: isSelected
-                                  ? colorsConst.primary
-                                  : isPayrollHovered.value
-                                  ? colorsConst.primary.withOpacity(0.7)
-                                  : Colors.black,
-                            ),
+                            isSelected||isPayrollHovered.value?
+                            Image.asset("assets/images/payroll2.png",width: 20,height: 20,):
+                            Image.asset("assets/images/payroll.png",width: 20,height: 20),
                             const SizedBox(width: 12),
                             Expanded(
                               child: IgnorePointer(
@@ -622,7 +590,31 @@ class SideBar extends StatelessWidget {
         ),
       ),
     )
-        : 0.height);
+        : Container(
+        width: 55,
+        // width: 170,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              blurRadius: 2,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: FloatingActionButton(onPressed: (){
+              controllers.isLeftOpen.value = !controllers.isLeftOpen.value;
+            },
+              backgroundColor: Colors.white,
+            child: Icon(Icons.arrow_forward_ios_sharp,color: colorsConst.primary,size: 15,),),
+          ),
+        ),
+      ));
   }
 }
 

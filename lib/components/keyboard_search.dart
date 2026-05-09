@@ -1,9 +1,12 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/billing_utils/sized_box.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
+import 'package:fullcomm_crm/models/employee_details.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../common/constant/app_colors.dart';
 import 'Customtext.dart';
 
 
@@ -203,8 +206,6 @@ class _KeyboardDropdownFieldState<T extends Object>
     );
   }
 }
-
-
 
 class KeyboardDropdownField2<T extends Object> extends StatefulWidget {
   final List<T> items;
@@ -738,6 +739,113 @@ class _SelectKeyboardDropdownFieldState<T extends Object>
           ),
         );
       },
+    );
+  }
+}
+
+class EmpDropdown extends StatefulWidget {
+  final List<Staff> custList;
+  final ValueChanged<Staff?> onChanged;
+
+  const EmpDropdown({
+    super.key,
+    required this.custList,
+    required this.onChanged,
+  });
+
+  @override
+  State<EmpDropdown> createState() => _EmpDropdownState();
+}
+
+class _EmpDropdownState extends State<EmpDropdown> {
+  final FocusNode _searchFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  String _formatCustomer(Staff customer) {
+    return '${customer.sName}'
+        '${customer.roleTitle.toString().isEmpty ? "" : "-"} '
+        '${customer.sMobile}';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    return Container(
+      width: MediaQuery.of(context).size.width*0.5,
+      height: 47,
+      decoration: customDecoration.baseBackgroundDecoration(
+        color: Colors.white,
+        radius: 5,
+        borderColor: Colors.grey.shade300,
+      ),
+      child: DropdownSearch<Staff>(
+        items: widget.custList,
+
+        /// Text format
+        itemAsString: (customer) => _formatCustomer(customer),
+
+        onChanged: widget.onChanged,
+
+        /// Dropdown UI
+        dropdownDecoratorProps: DropDownDecoratorProps(
+          dropdownSearchDecoration: InputDecoration(
+            hintText: "Search Customer Name",
+            hintStyle: GoogleFonts.lato(
+              color: Colors.black,
+              fontSize: 15,
+            ),
+            contentPadding: const EdgeInsets.all(10),
+            border: InputBorder.none,
+          ),
+        ),
+
+        /// 🔥 Popup with autofocus fix
+        popupProps: PopupProps.menu(
+          showSearchBox: true,
+          fit: FlexFit.loose,
+
+          /// ✅ AUTO FOCUS FIX
+          searchFieldProps: TextFieldProps(
+            focusNode: _searchFocusNode,
+            autofocus: true,
+            decoration: const InputDecoration(
+              hintText: "Type to search...",
+            ),
+
+            /// 🔥 Force focus (important for some devices)
+            onTap: () {
+              Future.delayed(const Duration(milliseconds: 100), () {
+                if (mounted) {
+                  FocusScope.of(context).requestFocus(_searchFocusNode);
+                }
+              });
+            },
+          ),
+
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.9,
+          ),
+
+          itemBuilder:
+              (context, Staff customer, bool isSelected) {
+            return Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: CustomText(
+                textAlign: TextAlign.start,
+                colors: AppColors.black,
+                text: _formatCustomer(customer),
+                isCopy: false,
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

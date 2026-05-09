@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
@@ -19,12 +20,15 @@ import '../../common/constant/api.dart' as assets;
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/jwt_storage.dart';
 import '../../components/Customtext.dart';
+import '../../components/action_button.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_textfield.dart';
 import '../../components/emp_drop.dart';
+import '../../components/keyboard_search.dart';
 import '../../components/month_calender.dart';
 import '../../controller/new_payroll_controller.dart';
+import '../../models/employee_details.dart';
 import '../../models/payroll/monthly_unit_payroll.dart';
 import '../../models/payroll/payroll_user_model.dart';
 import '../../models/payroll/unit_model.dart';
@@ -32,7 +36,7 @@ import '../../provider/employee_provider.dart';
 import '../../services/new_payroll_api_services.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column,Row;
+import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Border;
 import 'package:universal_html/html.dart' show AnchorElement;
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
@@ -89,9 +93,14 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
   var totalEarned = 0.0.obs;   // Gross Earned before deductions
   var unitId;
   var services=NewPayrollApiServices.instance;
+  late FocusNode _focusNode;
+  final ScrollController _controller = ScrollController();
+  final ScrollController _horizontalController = ScrollController();
   @override
   void initState() {
+    _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       employeeData.staffRoleDetailsData(context: context);
       services.getRoleSettings(context);
@@ -111,6 +120,49 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
       getPyrlAtt();
     });
     super.initState();
+  }
+  void _handleKeyEvent(KeyEvent event) {
+    if (event is KeyDownEvent) {
+      const double horizontalScrollAmount = 60.0;
+      const double verticalScrollAmount = 50.0; // Adjust for row height
+
+      // --- HORIZONTAL SCROLLING ---
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        _horizontalController.animateTo(
+          (_horizontalController.offset + horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        _horizontalController.animateTo(
+          (_horizontalController.offset - horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      }
+
+      // --- VERTICAL SCROLLING (Add this part) ---
+      else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+        _controller.animateTo(
+          (_controller.offset + verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+        _controller.animateTo(
+          (_controller.offset - verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      }
+    }
+  }
+  @override
+  void dispose() {
+    _controller.dispose();
+    _horizontalController.dispose();
+    _focusNode.dispose();
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
@@ -161,53 +213,50 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                EmployeeSearchBox(
-                                  allEmployees: employeeProvider.filteredStaff,
-                                  onEmployeeSelected: (selectedEmployee) {
-                                    setState(() {
-                                      // Save selected employee details
-                                      controllers.storage.write("p_emp_id", selectedEmployee.id);
-                                      controllers.storage.write("p_emp_name", selectedEmployee.sName);
+                                EmpDropdown(
+                                  custList: employeeProvider.filteredStaff,
+                                  onChanged: (Staff? selectedEmployee) {
+                                    // Save selected employee details
+                                    controllers.storage.write("p_emp_id", selectedEmployee?.id);
+                                    controllers.storage.write("p_emp_name", selectedEmployee?.sName);
 
-                                      // Check if employee already exists in the list
-                                      bool alreadyExists = pyrlCtr.users.any(
-                                            (user) => user.empId == selectedEmployee.id.toString(),
+                                    // Check if employee already exists in the list
+                                    bool alreadyExists = pyrlCtr.users.any(
+                                          (user) => user.empId == selectedEmployee?.id.toString(),
+                                    );
+
+                                    if (!alreadyExists) {
+                                      // Add to payroll users only if not already in the list
+                                      pyrlCtr.users.add(
+                                        PayrollUserModel(
+                                          empId: selectedEmployee!.id.toString(),
+                                          name: selectedEmployee.sName.toString(),
+                                          rank: selectedEmployee.roleTitle.toString(),
+                                          department: selectedEmployee.department.toString(),
+                                          duty: TextEditingController(),
+                                          ot: TextEditingController(),
+                                          advance: TextEditingController(),
+                                          penalty: TextEditingController(),
+                                          uniform: TextEditingController(),
+                                          total: TextEditingController(),
+                                          food: TextEditingController(),
+                                          bonus2: TextEditingController(),
+                                          basic: "",
+                                          newE: "1",
+                                          da: "",
+                                          hra: "",
+                                          esi: "",
+                                          pf: "",
+                                          deduction: TextEditingController(),
+                                          netAmount: "",
+                                          active: "1",
+                                        ),
                                       );
-
-                                      if (!alreadyExists) {
-                                        // Add to payroll users only if not already in the list
-                                        pyrlCtr.users.add(
-                                          PayrollUserModel(
-                                            empId: selectedEmployee.id.toString(),
-                                            name: selectedEmployee.sName.toString(),
-                                            rank: selectedEmployee.roleTitle.toString(),
-                                            department: selectedEmployee.department.toString(),
-                                            duty: TextEditingController(),
-                                            ot: TextEditingController(),
-                                            advance: TextEditingController(),
-                                            penalty: TextEditingController(),
-                                            uniform: TextEditingController(),
-                                            total: TextEditingController(),
-                                            food: TextEditingController(),
-                                            bonus2: TextEditingController(),
-                                            basic: "",
-                                            newE: "1",
-                                            da: "",
-                                            hra: "",
-                                            esi: "",
-                                            pf: "",
-                                            deduction: TextEditingController(),
-                                            netAmount: "",
-                                            active: "1",
-                                          ),
-                                        );
-                                      } else {
-                                        // Optional: Show message or toast
-                                        utils.snackBar(context: Get.context!, msg: "${selectedEmployee.sName} already added ",color: Colors.red);
-                                      }
-                                    });
-                                  },
-                                ),
+                                    } else {
+                                      // Optional: Show message or toast
+                                      utils.snackBar(context: Get.context!, msg: "${selectedEmployee?.sName} already added ",color: Colors.red);
+                                    }
+                                  },),
                                 Row(
                                   children: [
                                     Row(
@@ -254,7 +303,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                                         height: 35,
                                         child: Obx(()=>ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                              backgroundColor:colorsConst.primary,
+                                              backgroundColor:colorsConst.secondary,
                                               shadowColor: Colors.transparent,
                                             ),
                                             onPressed: (){
@@ -266,8 +315,16 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                                                   }
                                               );
                                             },
-                                            child: CustomText(
-                                                text:pyrlCtr.month.value,isCopy: false,colors: Colors.white
+                                            child: Row(
+                                              children: [
+                                                CustomText(
+                                                    text:pyrlCtr.month.value,isCopy: false,colors: Colors.black,
+                                                ),
+                                                5.width,
+                                                const Icon(Icons.calendar_today,
+                                                    color: Colors.black, size: 17),
+                                                10.width,
+                                              ],
                                             )
                                         ),)
                                     ),
@@ -275,56 +332,73 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                                       children: [
                                         20.width,
                                         CustomLoadingButton(
+                                            height: 45,
                                             controller: pyrlCtr.submit,text: "Save",
                                             callback: (){
                                               checkValue(context);
                                             },
                                             isLoading: true, backgroundColor: colorsConst.primary,
-                                            radius: 10, width: 100),20.width,
-                                        CustomLoadingButton(text: "Excel",isImage: false,
-                                            callback: (){
-                                              bool hasEmptyDuty = false;
-                                              for (var i = 0; i < pyrlCtr.users.length; i++) {
-                                                if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
-                                                    pyrlCtr.users[i].duty.text == "0") {
-                                                  utils.snackBar(
-                                                    context: context,
-                                                    msg: "Fill duty days for ${pyrlCtr.users[i].name}",
-                                                    color: Colors.red,
-                                                  );
-                                                  pyrlCtr.submit.reset();
-                                                  hasEmptyDuty = true;
-                                                  break; // exit the loop after first invalid
-                                                }
+                                            radius: 10, width: 100),
+                                        20.width,
+                                        CustomLoadingButton(
+                                          callback: (){
+                                            bool hasEmptyDuty = false;
+                                            for (var i = 0; i < pyrlCtr.users.length; i++) {
+                                              if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
+                                                  pyrlCtr.users[i].duty.text == "0") {
+                                                utils.snackBar(
+                                                  context: context,
+                                                  msg: "Fill duty days for ${pyrlCtr.users[i].name}",
+                                                  color: Colors.red,
+                                                );
+                                                pyrlCtr.submit.reset();
+                                                hasEmptyDuty = true;
+                                                break; // exit the loop after first invalid
                                               }
-                                              if (!hasEmptyDuty) {
-                                                generateExcel(pyrlCtr.users);
+                                            }
+                                            if (!hasEmptyDuty) {
+                                              generateExcel(pyrlCtr.users);
+                                            }
+                                          },
+                                          isLoading: false,
+                                          height: 35,
+                                          backgroundColor: Colors.white,
+                                          radius: 2,
+                                          width: 100,
+                                          isImage: false,
+                                          text: "Excel",
+                                          textColor: colorsConst.primary,
+                                        ),
+                                        20.width,
+                                        CustomLoadingButton(
+                                          callback: (){
+                                            bool hasEmptyDuty = false;
+                                            for (var i = 0; i < pyrlCtr.users.length; i++) {
+                                              if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
+                                                  pyrlCtr.users[i].duty.text == "0") {
+                                                utils.snackBar(
+                                                  context: context,
+                                                  msg: "Fill duty days for ${pyrlCtr.users[i].name}",
+                                                  color: Colors.red,
+                                                );
+                                                pyrlCtr.submit.reset();
+                                                hasEmptyDuty = true;
+                                                break; // exit the loop after first invalid
                                               }
-                                            },
-                                            isLoading: false, backgroundColor: colorsConst.primary,
-                                            radius: 5, width:  100),20.width,
-                                        CustomLoadingButton(text: "PDF",
-                                            callback: (){
-                                              bool hasEmptyDuty = false;
-                                              for (var i = 0; i < pyrlCtr.users.length; i++) {
-                                                if (pyrlCtr.users[i].duty.text.trim().isEmpty ||
-                                                    pyrlCtr.users[i].duty.text == "0") {
-                                                  utils.snackBar(
-                                                    context: context,
-                                                    msg: "Fill duty days for ${pyrlCtr.users[i].name}",
-                                                    color: Colors.red,
-                                                  );
-                                                  pyrlCtr.submit.reset();
-                                                  hasEmptyDuty = true;
-                                                  break; // exit the loop after first invalid
-                                                }
-                                              }
-                                              if (!hasEmptyDuty) {
-                                                exportPayrollToPdf(pyrlCtr.users);
-                                              }
-                                            },isImage: false,
-                                            isLoading: false, backgroundColor: colorsConst.primary,
-                                            radius: 5, width: 100),20.width,
+                                            }
+                                            if (!hasEmptyDuty) {
+                                              exportPayrollToPdf(pyrlCtr.users);
+                                            }
+                                          },
+                                          isLoading: false,
+                                          height: 35,
+                                          backgroundColor: Colors.white,
+                                          radius: 2,
+                                          width: 100,
+                                          isImage: false,
+                                          text: "PDF",
+                                          textColor: colorsConst.primary,
+                                        ),
                                       ],
                                     )
                                   ],
@@ -333,229 +407,242 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                             ),
                             10.height,
                             if(pyrlCtr.users.isNotEmpty)
-                            Obx(() => Table(
-                              defaultColumnWidth: const IntrinsicColumnWidth(),
-                              border: TableBorder(
-                                horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                              ),
-                              columnWidths: {
-                                0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.03),
-                                1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.1),
-                                2: FixedColumnWidth(MediaQuery.of(context).size.width * 0.25),
-                                3: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                4: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                5: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                6: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                7: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                8: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                9: FixedColumnWidth(MediaQuery.of(context).size.width * 0.07),
-                                10: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                11: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                12: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                              },
-                              children: [
-                                // Header row
-                                TableRow(
-                                  decoration: BoxDecoration(
-                                      color: colorsConst.primary,
-                                      borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(5),
-                                          topRight: Radius.circular(5))),
-                                  children: [
-                                    textBox("S.No"),
-                                    textBox("Rank"),
-                                    textBox("Name"),
-                                    textBox("Duty"),
-                                    textBox("OT"),
-                                    textBox("Advance"),
-                                    textBox("Uniform"),
-                                    textBox("Penalty"),
-                                    textBox("Bonus"),
-                                    textBox("Food Charges"),
-                                    textBox("Total"),
-                                    textBox("Deduction"),
-                                    textBox("Delete"),
-                                  ],
-                                ),
-
-                                // Data rows
-                                ...List.generate(pyrlCtr.users.length, (index) {
-                                  final user = pyrlCtr.users[index];
-                                  if (user.active == "2") {
-                                    return TableRow(
-                                        decoration: BoxDecoration(
-                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                              KeyboardListener(
+                                focusNode: _focusNode,
+                                autofocus: true,
+                                onKeyEvent: _handleKeyEvent,
+                                child: Scrollbar(
+                                  controller: _horizontalController,
+                                  thumbVisibility: true,
+                                  child: NotificationListener<ScrollNotification>(
+                                    onNotification: (scrollNotification) {
+                                      _focusNode.requestFocus();
+                                      return false;
+                                    },
+                                  child: SingleChildScrollView(
+                                    controller: _horizontalController,
+                                    scrollDirection: Axis.horizontal,
+                                    child: Obx(() => Table(
+                                      defaultColumnWidth: const IntrinsicColumnWidth(),
+                                      border: TableBorder(
+                                        horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                        verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                      ),
+                                      columnWidths: {
+                                        0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.03),
+                                        12: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                        1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.1),
+                                        2: FixedColumnWidth(MediaQuery.of(context).size.width * 0.25),
+                                        3: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                        4: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                        5: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                        6: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                        7: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                        8: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                        9: FixedColumnWidth(MediaQuery.of(context).size.width * 0.07),
+                                        10: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                        11: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                      },
+                                      children: [
+                                        // Header row
+                                        TableRow(
+                                          decoration: BoxDecoration(
+                                              color: colorsConst.primary,
+                                              borderRadius: const BorderRadius.only(
+                                                  topLeft: Radius.circular(5),
+                                                  topRight: Radius.circular(5))),
+                                          children: [
+                                            textBox("S.No"),
+                                            textBox("Action"),
+                                            textBox("Rank"),
+                                            textBox("Name"),
+                                            textBox("Duty"),
+                                            textBox("OT"),
+                                            textBox("Advance"),
+                                            textBox("Uniform"),
+                                            textBox("Penalty"),
+                                            textBox("Bonus"),
+                                            textBox("Food Charges"),
+                                            textBox("Total"),
+                                            textBox("Deduction"),
+                                          ],
                                         ),
-                                        children: [
-                                    0.height,
-                                    0.height,
-                                    0.height,
-                                    0.height,
-                                    0.height,
-                                    0.height,
-                                    0.height,
-                                    0.height,
-                                    0.height,
-                                    0.height,
-                                    0.height,
-                                    0.height,
-                                    0.height,
-                                  ]);
-                                  }
-                                  return TableRow(
-                                    decoration: BoxDecoration(
-                                      color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                    ),
-                                    children: [
-                                      valueBox((index + 1).toString()),
-                                      valueBox(pyrlCtr.users[index].rank.toString()),
-                                      valueBox(pyrlCtr.users[index].name.toString()),
-                                      UnderLineTextField(
-                                        width: 70,
-                                        controller: user.duty,
-                                        keyboardType: TextInputType.number,
-                                        onChanged: (_) => calculatePayroll(index),
-                                        isRequired: true,
-                                      ),
-                                      UnderLineTextField(
-                                        width: 70,
-                                        controller: user.ot,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
-                                        ],
-                                        keyboardType: TextInputType.number,
-                                        onChanged: (_) => user.ot.text.isNotEmpty?calculatePayroll(index):null,
-                                      ),
-                                      UnderLineTextField(
-                                        width: 70,
-                                        controller: user.advance,
-                                        keyboardType: TextInputType.number,
-                                        onChanged: (_) => calculatePayroll(index),
-                                      ),
-                                      UnderLineTextField(
-                                        width: 70,
-                                        controller: user.uniform,
-                                        keyboardType: TextInputType.number,
-                                        onChanged: (_) => calculatePayroll(index),
-                                      ),
-                                      UnderLineTextField(
-                                        width: 70,
-                                        controller: user.penalty,
-                                        keyboardType: TextInputType.number,
-                                        onChanged: (_) => calculatePayroll(index),
-                                      ),
-                                      UnderLineTextField(
-                                        width: 70,
-                                        controller: user.bonus2,
-                                        keyboardType: TextInputType.number,
-                                        onChanged: (_) => calculatePayroll(index),
-                                      ),
-                                      UnderLineTextField(
-                                        width: 70,
-                                        controller: user.food,
-                                        keyboardType: TextInputType.number,
-                                        onChanged: (_) => calculatePayroll(index),
-                                      ),
-                                      valueBox(user.total.text),
-                                      valueBox(user.deduction.text),
-                                      IconButton(
-                                        onPressed: () {
-                                          controllers.loginPassword.clear();
-                                          showDialog(
-                                            context: context,
-                                            barrierDismissible: false,
-                                            builder: (dialogCtx) {
-                                              return Center(
-                                                child: ConstrainedBox(
-                                                  constraints: BoxConstraints(
-                                                    maxWidth: MediaQuery.of(context).size.width * 0.80, // FULL dialog width
-                                                  ),
-                                                  child: AlertDialog(
-                                                    title: const Center(child: CustomText(text: "Verify Password", isCopy: true,)),
-                                                    content: Column(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        CustomTextField(
-                                                          width: double.infinity,
-                                                          controller: controllers.loginPassword,
-                                                          keyboardType: TextInputType.visiblePassword,
-                                                          textInputAction: TextInputAction.done,
-                                                          textCapitalization: TextCapitalization.none,
-                                                          text: "Password",
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    actionsAlignment: MainAxisAlignment.spaceBetween,
-                                                    actions: [
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(dialogCtx).pop();
-                                                        },
-                                                        child: const Text("CANCEL"),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          final pass = controllers.loginPassword.text.trim();
-                                                          if (pass.isEmpty) {
-                                                            utils.snackBar(
-                                                              context: context,
-                                                              msg: "Please fill password",
-                                                              color: Colors.red,
-                                                            );
-                                                            return;
-                                                          }
 
-                                                          final saved = controllers.storage.read("password")?.toString() ?? "";
-                                                          if (pass == saved) {
-                                                            Navigator.of(dialogCtx).pop();
-                                                            setState(() {
-                                                              user.active = "2";
-                                                              calculatePayroll(index);
-                                                            });
-                                                          } else {
-                                                            utils.snackBar(
-                                                              context: context,
-                                                              msg: "Incorrect password",
-                                                              color: Colors.red,
-                                                            );
-                                                          }
-                                                        },
-                                                        child: const Text("VERIFY"),
-                                                      ),
-                                                    ],
-                                                  ),
+                                        // Data rows
+                                        ...List.generate(pyrlCtr.users.length, (index) {
+                                          final user = pyrlCtr.users[index];
+                                          if (user.active == "2") {
+                                            return TableRow(
+                                                decoration: BoxDecoration(
+                                                  color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                                 ),
-                                              );
-                                            },
+                                                children: [
+                                            0.height,
+                                            0.height,
+                                            0.height,
+                                            0.height,
+                                            0.height,
+                                            0.height,
+                                            0.height,
+                                            0.height,
+                                            0.height,
+                                            0.height,
+                                            0.height,
+                                            0.height,
+                                            0.height,
+                                          ]);
+                                          }
+                                          return TableRow(
+                                            decoration: BoxDecoration(
+                                              color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                            ),
+                                            children: [
+                                              valueBox((index + 1).toString()),
+                                              IconButton(
+                                                  onPressed: (){
+                                                    showDialog(
+                                                        context: context,
+                                                        barrierDismissible: false,
+                                                        builder: (context) {
+                                                          return AlertDialog(
+                                                            content: CustomText(
+                                                              text: "Are you sure delete this user?",
+                                                              size: 16,
+                                                              isCopy: false,
+                                                              isBold: true,
+                                                              colors: colorsConst.textColor,
+                                                            ),
+                                                            actions: [
+                                                              Row(
+                                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                                children: [
+                                                                  Container(
+                                                                    decoration: BoxDecoration(
+                                                                        border: Border.all(color: colorsConst.primary),
+                                                                        color: Colors.white),
+                                                                    width: 80,
+                                                                    height: 25,
+                                                                    child: ElevatedButton(
+                                                                        style: ElevatedButton.styleFrom(
+                                                                          shape: const RoundedRectangleBorder(
+                                                                            borderRadius: BorderRadius.zero,
+                                                                          ),
+                                                                          backgroundColor: Colors.white,
+                                                                        ),
+                                                                        onPressed: () {
+                                                                          Navigator.pop(context);
+                                                                        },
+                                                                        child: CustomText(
+                                                                          text: "Cancel",
+                                                                          isCopy: false,
+                                                                          colors: colorsConst.primary,
+                                                                          size: 14,
+                                                                        )),
+                                                                  ),
+                                                                  10.width,
+                                                                  CustomLoadingButton(
+                                                                    callback: (){
+                                                                      setState(() {
+                                                                        user.active = "2";
+                                                                        calculatePayroll(index);
+                                                                        Navigator.pop(context);
+                                                                      });
+                                                                    },
+                                                                    height: 35,
+                                                                    isLoading: false,
+                                                                    backgroundColor: colorsConst.primary,
+                                                                    radius: 2,
+                                                                    width: 80,
+                                                                    isImage: false,
+                                                                    text: "Delete",
+                                                                    textColor: Colors.white,
+                                                                  ),
+                                                                  5.width
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          );
+                                                        });
+                                                  },
+                                                  icon: SvgPicture.asset("assets/images/a_delete.svg",width: 20,height: 20,)),
+                                              valueBox(pyrlCtr.users[index].rank.toString()),
+                                              valueBox(pyrlCtr.users[index].name.toString()),
+                                              UnderLineTextField(
+                                                width: 70,
+                                                controller: user.duty,
+                                                keyboardType: TextInputType.number,
+                                                onChanged: (_) => calculatePayroll(index),
+                                                isRequired: true,
+                                              ),
+                                              UnderLineTextField(
+                                                width: 70,
+                                                controller: user.ot,
+                                                inputFormatters: [
+                                                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+                                                ],
+                                                keyboardType: TextInputType.number,
+                                                onChanged: (_) => user.ot.text.isNotEmpty?calculatePayroll(index):null,
+                                              ),
+                                              UnderLineTextField(
+                                                width: 70,
+                                                controller: user.advance,
+                                                keyboardType: TextInputType.number,
+                                                onChanged: (_) => calculatePayroll(index),
+                                              ),
+                                              UnderLineTextField(
+                                                width: 70,
+                                                controller: user.uniform,
+                                                keyboardType: TextInputType.number,
+                                                onChanged: (_) => calculatePayroll(index),
+                                              ),
+                                              UnderLineTextField(
+                                                width: 70,
+                                                controller: user.penalty,
+                                                keyboardType: TextInputType.number,
+                                                onChanged: (_) => calculatePayroll(index),
+                                              ),
+                                              UnderLineTextField(
+                                                width: 70,
+                                                controller: user.bonus2,
+                                                keyboardType: TextInputType.number,
+                                                onChanged: (_) => calculatePayroll(index),
+                                              ),
+                                              UnderLineTextField(
+                                                width: 70,
+                                                controller: user.food,
+                                                keyboardType: TextInputType.number,
+                                                onChanged: (_) => calculatePayroll(index),
+                                              ),
+                                              valueBox(user.total.text),
+                                              valueBox(user.deduction.text)
+                                            ],
                                           );
-                                        },
-                                        icon: const Icon(Icons.delete_outline_outlined, color: Colors.red),
-                                      )
-                                    ],
-                                  );
-                                }),
-                                // Totals row
-                                TableRow(
-                                  decoration: BoxDecoration(color: colorsConst.primary),
-                                  children: [
-                                    textBox(""),
-                                    textBox(""),
-                                    textBox("Total", width: 150),
-                                    textBox(totalDuty.value.toString()),
-                                    textBox(totalOT.value.toString()),
-                                    textBox(totalAdvance.value.toStringAsFixed(2)),
-                                    textBox(totalUniform.value.toStringAsFixed(2)),
-                                    textBox(totalPenalty.value.toStringAsFixed(2)),
-                                    textBox(totalBonus2.value.toStringAsFixed(2)),
-                                    textBox(totalFood.value.toStringAsFixed(2)),
-                                    textBox(totalEarned.value.toStringAsFixed(2)),
-                                    textBox(totalDed.value.toStringAsFixed(2)),
-                                    textBox(""),
-                                  ],
+                                        }),
+                                        // Totals row
+                                        TableRow(
+                                          decoration: BoxDecoration(color: colorsConst.primary),
+                                          children: [
+                                            textBox(""),
+                                            textBox(""),
+                                            textBox("Total", width: 150),
+                                            textBox(totalDuty.value.toString()),
+                                            textBox(totalOT.value.toString()),
+                                            textBox(totalAdvance.value.toStringAsFixed(2)),
+                                            textBox(totalUniform.value.toStringAsFixed(2)),
+                                            textBox(totalPenalty.value.toStringAsFixed(2)),
+                                            textBox(totalBonus2.value.toStringAsFixed(2)),
+                                            textBox(totalFood.value.toStringAsFixed(2)),
+                                            textBox(totalEarned.value.toStringAsFixed(2)),
+                                            textBox(totalDed.value.toStringAsFixed(2)),
+                                            textBox(""),
+                                          ],
+                                        ),
+                                      ],
+                                    )),
+                                  ),
+                                                              ),
                                 ),
-                              ],
-                            )),
+                              ),
                             20.height,
                             if(pyrlCtr.users.isEmpty)
                             const CustomText(text: "\n\n\n\n\nSelect Employee",colors: Colors.grey,size:15,isBold: true, isCopy: true,),

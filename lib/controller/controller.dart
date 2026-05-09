@@ -130,7 +130,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   var selectedChartMonth = DateTime.now().month.obs;
   var selectedChartYear = DateTime.now().year.obs;
   String countryDial = "+91";
-  var isEyeOpen = false.obs,isLeftOpen=true.obs,isRightOpen=true.obs;
+  var isEyeOpen = false.obs,isLeftOpen=true.obs,isRightOpen=false.obs;
   RxInt selectedIndex = 100.obs,oldIndex=100.obs,selectedSettingsIndex = 0.obs;
   var isSettingsExpanded = false.obs;
   var isPayrollExpanded = false.obs;

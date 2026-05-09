@@ -896,7 +896,7 @@ void checkType(){
                                                                 5.height,
 
                                                                 CustomText(
-                                                                  text: "\$42,500.00",
+                                                                  text: productCtr.formatAmount(data.totalOrderAmount.toString()),
                                                                   isCopy: true,
                                                                   isBold: true,
                                                                   colors: Colors.white,
@@ -1320,8 +1320,8 @@ void checkType(){
                                                                               data["call_type"].toString()!=""&&data["call_type"].toString()!="null"?0xFFDCFCE7:
                                                                               data["to_data"].toString()!=""&&data["to_data"].toString()!="null"?0xFFFCE7F3:
                                                                               data["start_dt"].toString()!=""&&data["start_dt"].toString()!="null"?0xFFFEF3CC:
-                                                                              data["q_no"].toString()!=""&&data["q_no"].toString()!="null"?0xFFDED3FD:
-                                                                              data["o_date"].toString()!=""&&data["o_date"].toString()!="null"?0xFFDADADA:
+                                                                              data["q_no"].toString()!=""&&data["q_no"].toString()!="null"?0xFFFFEEDD:
+                                                                              data["o_date"].toString()!=""&&data["o_date"].toString()!="null"?0xFFE9DFFF:
                                                                               0xFFDBEAFE
                                                                           ),radius: 40
                                                                       ),
@@ -1331,8 +1331,8 @@ void checkType(){
                                                                             data["call_type"].toString()!=""&&data["call_type"].toString()!="null"?"assets/images/cus_detail/call.png":
                                                                             data["to_data"].toString()!=""&&data["to_data"].toString()!="null"?"assets/images/cus_detail/mail.png":
                                                                             data["start_dt"].toString()!=""&&data["start_dt"].toString()!="null"?"assets/images/cus_detail/rem2.png":
-                                                                            data["q_no"].toString()!=""&&data["q_no"].toString()!="null"?"assets/images/order1.png":
-                                                                            data["o_date"].toString()!=""&&data["o_date"].toString()!="null"?"assets/images/cart_1.png":
+                                                                            data["q_no"].toString()!=""&&data["q_no"].toString()!="null"?"assets/images/quo.png":
+                                                                            data["o_date"].toString()!=""&&data["o_date"].toString()!="null"?"assets/images/cus_detail/order.png":
                                                                             "assets/images/cus_detail/cal2.png"
                                                                         ),
                                                                       ),
