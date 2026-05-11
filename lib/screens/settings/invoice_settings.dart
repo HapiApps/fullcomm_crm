@@ -92,11 +92,11 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                 children: [
                   Row(
                     children: [
-                      IconButton(
-                          onPressed: (){
-                            Get.back();
-                          },
-                          icon: Icon(Icons.arrow_back)),
+                      // IconButton(
+                      //     onPressed: (){
+                      //       Get.back();
+                      //     },
+                      //     icon: Icon(Icons.arrow_back)),
                       CustomText(
                         text: "Invoice Settings",
                         colors: colorsConst.textColor,
@@ -115,8 +115,10 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                   ),
                   5.height,
                   Divider(
-                      color: Colors.grey
-                  ),20.height,
+                    thickness: 1.5,
+                    color: colorsConst.secondary,
+                  ),
+                  20.height,
                   Center(
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width*0.7,

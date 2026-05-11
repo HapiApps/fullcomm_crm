@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/colors_constant.dart';
 import '../controller/controller.dart';
 import '../controller/table_controller.dart';
+import '../models/user_heading_obj.dart';
 import '../services/api_services.dart';
 
 class DynamicTableHeader extends StatefulWidget {
@@ -205,30 +206,25 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
               ),
               const SizedBox(width: 3),
               GestureDetector(
-                // onTap: () {
-                //   if (lower == "added date" ||
-                //       lower == "prospect enrollment date" ||
-                //       lower == "date") {
-                //     widget.onSortDate();
-                //   } else {
-                //     final selected = controllers.fields.firstWhere(
-                //           (f) => f.userHeading == h,
-                //       orElse: () => CustomerField(
-                //           userHeading: h,
-                //           systemField: h.toLowerCase(),
-                //           id: '',
-                //           isRequired: ''),
-                //     );
-                //
-                //     controllers.sortField.value = selected.systemField;
-                //
-                //     controllers.sortOrderN.value =
-                //     controllers.sortOrderN.value == 'asc'
-                //         ? 'desc'
-                //         : 'asc';
-                //   }
-                // },
-                onTap: widget.onSortDate,
+                onTap: () {
+                    final selected = controllers.fields.firstWhere(
+                          (f) => f.userHeading == h,
+                      orElse: () => CustomerField(
+                          userHeading: h,
+                          systemField: h.toLowerCase(),
+                          id: '',
+                          isRequired: ''),
+                    );
+
+                    controllers.sortField.value = selected.systemField;
+
+                    controllers.sortOrderN.value =
+                    controllers.sortOrderN.value == 'asc'
+                        ? 'desc'
+                        : 'asc';
+                    widget.onSortName();
+                },
+                // onTap: widget.onSortDate,
                 child: Obx(() => Image.asset(
                   controllers.sortField.value.isEmpty
                       ? "assets/images/arrow.png"

@@ -113,7 +113,7 @@ class _MailCommentsState extends State<MailComments> {
       child: SelectionArea(
         child: Scaffold(
           body: Container(
-            width:MediaQuery.of(context).size.width - 150,
+            width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
             height: MediaQuery.of(context).size.height,
             alignment: Alignment.center,
             padding: EdgeInsets.fromLTRB(16, 5, 16, 16),

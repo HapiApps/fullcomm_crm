@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 String s(dynamic v) {
   if (v == null || v == 'null') return '';
   return v.toString();
@@ -296,20 +298,33 @@ class Person {
 /// Additional info
 class AdditionalInfo {
   final String? fieldName;
-  final String? fieldValue;
+  String? fieldValue;
+  TextEditingController? controller;
+  FocusNode? focusNode;
 
-  AdditionalInfo({this.fieldName, this.fieldValue});
+  AdditionalInfo({
+    this.fieldName,
+    this.fieldValue,
+    this.controller,
+    this.focusNode,
+  }) {
+    // controller இல்லனா create ஆகும்
+    controller ??= TextEditingController(text: fieldValue ?? "");
+  }
 
-  factory AdditionalInfo.fromJson(Map<String, dynamic> json) =>
-      AdditionalInfo(
-        fieldName: s(json['field_name']),
-        fieldValue: s(json['field_value']),
-      );
-
+  factory AdditionalInfo.fromJson(Map<String, dynamic> json) {
+    return AdditionalInfo(
+      fieldName: s(json['field_name']),
+      fieldValue: s(json['field_value']),
+      controller: TextEditingController(
+        text: s(json['field_value']),
+      ),
+    );
+  }
 
   Map<String, dynamic> toJson() => {
     'field_name': fieldName,
-    'field_value': fieldValue,
+    'field_value': controller?.text ?? fieldValue ?? "",
   };
 }
 

@@ -8,6 +8,7 @@ import '../models/all_customers_obj.dart';
 import '../models/new_lead_obj.dart';
 import '../screens/DashboardPage.dart';
 import '../screens/leads/new_lead_page.dart';
+import '../screens/quotation/send_quotation.dart';
 import 'action_button.dart';
 import 'custom_search_textfield.dart';
 import 'custom_text.dart';
@@ -108,80 +109,105 @@ class FilterSection extends StatelessWidget {
                   ),
                 ),
                 10.width,
-                SizedBox(
+                // SizedBox(
+                //   width: 350,
+                //   child: KeyboardDropdownField<AllCustomersObj>(
+                //     items: controllers.customers,
+                //     borderRadius: 5,
+                //     borderColor: Colors.grey.shade300,
+                //     hintText: "",
+                //     labelText: "Search Mobile Number",
+                //     labelBuilder: (customer) =>
+                //     // '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                //     '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+                //     itemBuilder: (customer) {
+                //       return Container(
+                //         width: 400,
+                //         alignment: Alignment.topLeft,
+                //         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                //         child: CustomText(
+                //           text:
+                //           // '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
+                //           '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
+                //           colors: Colors.black,
+                //           size: 14,
+                //           isCopy: false,
+                //           textAlign: TextAlign.start,
+                //         ),
+                //       );
+                //     },
+                //     textEditingController: controllers.cusController,
+                //     onSelected: (value) {
+                //       controllers.selectCustomer(value);
+                //       controllers.search.text = value.name.toString();
+                //
+                //     // print("value.leadStatus ${value.leadStatus}");
+                //     // print("leadIndex $leadIndex");
+                //
+                //     // same page select pannina navigation thevai illa
+                //     if (value.leadStatus == leadIndex) {
+                //     // print("one");
+                //     onSearchChanged!(value);
+                //     return;
+                //     }
+                //
+                //     // print("two");
+                //
+                //     for (var i = 0; i < controllers.leadCategoryList.length; i++) {
+                //
+                //       var item = controllers.leadCategoryList[i];
+                //
+                //       if (item.leadStatus == value.leadStatus) {
+                //
+                //       controllers.selectedIndex.value =
+                //       int.tryParse(value.leadStatus.toString()) ?? 0;
+                //
+                //       Get.off(
+                //             () => NewLeadPage(
+                //           index: item.leadStatus,
+                //           name: item.value,
+                //           list: item.list,
+                //           list2: item.list2,
+                //           listIndex: i,
+                //         ),
+                //         preventDuplicates: false,
+                //       );
+                //       break;
+                //       }
+                //     }
+                //     },
+                //     onClear: () {
+                //       if (onSearchChanged != null) onSearchChanged!("");
+                //       controllers.clearSelectedCustomer();
+                //     },
+                //   ),
+                //
+                // ),
+                CustomerDropdown(
                   width: 350,
-                  child: KeyboardDropdownField<AllCustomersObj>(
-                    items: controllers.customers,
-                    borderRadius: 5,
-                    borderColor: Colors.grey.shade300,
-                    hintText: "",
-                    labelText: "Search Mobile Number",
-                    labelBuilder: (customer) =>
-                    // '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
-                    '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
-                    itemBuilder: (customer) {
-                      return Container(
-                        width: 400,
-                        alignment: Alignment.topLeft,
-                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                        child: CustomText(
-                          text:
-                          // '${customer.firstname}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.firstname.toString().isEmpty ? "" : "-"} ${customer.mobileNumber}',
-                          '${customer.name}${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} ${customer.name.toString().isEmpty ? "" : "-"} ${customer.phoneNo} - ${customer.category}',
-                          colors: Colors.black,
-                          size: 14,
-                          isCopy: false,
-                          textAlign: TextAlign.start,
-                        ),
-                      );
-                    },
-                    textEditingController: controllers.cusController,
-                    onSelected: (value) {
-                      controllers.selectCustomer(value);
-                      controllers.search.text = value.name.toString();
-
-                    // print("value.leadStatus ${value.leadStatus}");
-                    // print("leadIndex $leadIndex");
-
-                    // same page select pannina navigation thevai illa
-                    if (value.leadStatus == leadIndex) {
-                    // print("one");
-                    onSearchChanged!(value);
-                    return;
-                    }
-
-                    // print("two");
-
+                  custList: controllers.customers,
+                  onChanged: (AllCustomersObj? value) {
+                    controllers.selectCustomer(value!);
+                    controllers.search.text = value.name.toString();
                     for (var i = 0; i < controllers.leadCategoryList.length; i++) {
-
                       var item = controllers.leadCategoryList[i];
-
                       if (item.leadStatus == value.leadStatus) {
-
-                      controllers.selectedIndex.value =
-                      int.tryParse(value.leadStatus.toString()) ?? 0;
-
-                      Get.off(
-                            () => NewLeadPage(
-                          index: item.leadStatus,
-                          name: item.value,
-                          list: item.list,
-                          list2: item.list2,
-                          listIndex: i,
-                        ),
-                        preventDuplicates: false,
-                      );
-                      break;
+                        controllers.selectedIndex.value =int.tryParse(value.leadStatus.toString()) ?? 0;
+                        Get.off(
+                              () => NewLeadPage(
+                            index: item.leadStatus,
+                            name: item.value,
+                            list: item.list,
+                            list2: item.list2,
+                            listIndex: i,
+                          ),
+                          preventDuplicates: false,
+                        );
+                        break;
                       }
                     }
-                    },
-                    onClear: () {
-                      if (onSearchChanged != null) onSearchChanged!("");
-                      controllers.clearSelectedCustomer();
-                    },
-                  ),
 
-                ),
+                  },),
               ],
             ),
 

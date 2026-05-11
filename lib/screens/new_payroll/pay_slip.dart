@@ -174,999 +174,1002 @@ class _PaySlipState extends State<PaySlip> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               SideBar(),
-              Container(
+              Obx(()=>Container(
                 width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
                 height: MediaQuery.of(context).size.height,
                 alignment: Alignment.center,
                 padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
-                child: Obx(() =>
-                    Column(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    20.height,
+                    Row(
                       children: [
-                        30.height,
-                        Row(
-                          children: [
-                            IconButton(onPressed: (){
-                              Get.back();
-                            }, icon: Icon(Icons.arrow_back)),
-                            CustomText(
-                              text: "Pay Slip",
-                              colors: colorsConst.textColor,
-                              size: 20,
-                              isBold: true,
-                              isCopy: true,
-                            ),
-                          ],
+                        // IconButton(onPressed: (){
+                        //   Get.back();
+                        // }, icon: Icon(Icons.arrow_back)),
+                        CustomText(
+                          text: "Pay Slip",
+                          colors: colorsConst.textColor,
+                          size: 20,
+                          isBold: true,
+                          isCopy: true,
                         ),
-                        Divider(color: Colors.grey.shade500,thickness: 0.5,),
-                        10.height,
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            EmpDropdown(
-                              custList: employeeProvider.filteredStaff,
-                              onChanged: (Staff? selectedEmployee) {
-                                setState(() {
-                                  // Save selected employee details
-                                  controllers.storage.write("p_emp_id", selectedEmployee!.id);
-                                  controllers.storage.write("p_emp_name", selectedEmployee.sName);
-                                  empId=selectedEmployee.id.toString();
-                                  newPyrlServ.getPaySlip(empId);
-                                });
-                              },),
-                            CustomLoadingButton(
-                                callback: (){
-                                  generatePayrollPdf(pyrlCtr.unitPayrollList);
-                                }, isLoading: false, text: "PDF",isImage: false,height: 35,
-                                backgroundColor: colorsConst.primary, radius: 5, width: 100),
-                          ],
-                        ),
-                        10.height,
-                        pyrlCtr.getData.value == false ?
-                        const Padding(
-                          padding: EdgeInsets.all(25.0),
-                          child: CircularProgressIndicator(),
-                        ):
-                        empId=="" ?
-                        const CustomText(text: "\n\n\n\n\n\nSelect Employee Name", isCopy: true,isBold: true,) :
-                        pyrlCtr.unitPayrollList.isEmpty ?
-                        const CustomText(text: "\n\n\n\n\n\nNo Data Found", isCopy: true,) :
-                        Expanded(
-                          child: KeyboardListener(
-                            focusNode: _focusNode,
-                            autofocus: true,
-                            onKeyEvent: _handleKeyEvent,
-                            child: Scrollbar(
+                      ],
+                    ),10.height,
+                    Divider(
+                      thickness: 1.5,
+                      color: colorsConst.secondary,
+                    ),
+                    10.height,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        EmpDropdown(
+                          custList: employeeProvider.filteredStaff,
+                          onChanged: (Staff? selectedEmployee) {
+                            setState(() {
+                              // Save selected employee details
+                              controllers.storage.write("p_emp_id", selectedEmployee!.id);
+                              controllers.storage.write("p_emp_name", selectedEmployee.sName);
+                              empId=selectedEmployee.id.toString();
+                              newPyrlServ.getPaySlip(empId);
+                            });
+                          },),
+                        CustomLoadingButton(
+                            callback: (){
+                              generatePayrollPdf(pyrlCtr.unitPayrollList);
+                            }, isLoading: false, text: "PDF",isImage: false,height: 35,
+                            backgroundColor: colorsConst.primary, radius: 5, width: 100),
+                      ],
+                    ),
+                    10.height,
+                    pyrlCtr.getData.value == false ?
+                    const Padding(
+                      padding: EdgeInsets.all(25.0),
+                      child: CircularProgressIndicator(),
+                    ):
+                    empId=="" ?
+                    Center(child: const CustomText(text: "\n\n\n\n\n\nSelect Employee Name", isCopy: true,isBold: true,)) :
+                    pyrlCtr.unitPayrollList.isEmpty ?
+                    Center(child: const CustomText(text: "\n\n\n\n\n\nNo Data Found", isCopy: true,textAlign: TextAlign.center,)) :
+                    Expanded(
+                      child: KeyboardListener(
+                        focusNode: _focusNode,
+                        autofocus: true,
+                        onKeyEvent: _handleKeyEvent,
+                        child: Scrollbar(
+                          controller: _horizontalController,
+                          thumbVisibility: true,
+                          child: NotificationListener<ScrollNotification>(
+                            onNotification: (scrollNotification) {
+                              _focusNode.requestFocus();
+                              return false;
+                            },
+                            child: SingleChildScrollView(
                               controller: _horizontalController,
-                              thumbVisibility: true,
-                              child: NotificationListener<ScrollNotification>(
-                                onNotification: (scrollNotification) {
-                                  _focusNode.requestFocus();
-                                  return false;
-                                },
-                                child: SingleChildScrollView(
-                                  controller: _horizontalController,
-                                  scrollDirection: Axis.horizontal,
-                                  child: SizedBox(
-                                    width: totalTableWidth,
-                                    child: Column(
+                              scrollDirection: Axis.horizontal,
+                              child: SizedBox(
+                                width: totalTableWidth,
+                                child: Column(
+                                  children: [
+                                    // HEADER
+                                    Table(
+                                      columnWidths: tableWidthMap,
+                                      border: TableBorder(
+                                        horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                        verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                      ),
                                       children: [
-                                        // HEADER
-                                        Table(
-                                          columnWidths: tableWidthMap,
-                                          border: TableBorder(
-                                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                            verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                          ),
-                                          children: [
-                                            TableRow(
-                                                decoration: BoxDecoration(
-                                                    color: colorsConst.primary,
-                                                    borderRadius: const BorderRadius.only(
-                                                        topLeft: Radius.circular(5),
-                                                        topRight: Radius.circular(5))),
+                                        TableRow(
+                                            decoration: BoxDecoration(
+                                                color: colorsConst.primary,
+                                                borderRadius: const BorderRadius.only(
+                                                    topLeft: Radius.circular(5),
+                                                    topRight: Radius.circular(5))),
+                                            children: [
+                                              headerCell(1, Row(
                                                 children: [
-                                                  headerCell(1, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.left,
-                                                        text: "S.No",//1
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: false,
-                                                        colors: Colors.white,
-                                                      ),
-                                                      3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='id' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='id';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(
-                                                    2,  Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.left,
-                                                        text: "Rank",
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: true,
-                                                        colors: Colors.white,
-                                                      ),
-                                                      3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='rank' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='rank';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(
-                                                    3,  Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.left,
-                                                        text: "Name",
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: true,
-                                                        colors: Colors.white,
-                                                      ),
-                                                      3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='name' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='name';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(4, Row(
-                                                    children: [
-                                                      CustomText(//2
-                                                        textAlign: TextAlign.left,
-                                                        text: "Duty",
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: true,
-                                                        colors: Colors.white,
-                                                      ),
-                                                      3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='duty' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='duty';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(5, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.left,
-                                                        text: "OT",
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: true,
-                                                        colors: Colors.white,
-                                                      ),
-                                                      3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='ot' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='ot';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(6, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.left,
-                                                        text: "Basic",
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: true,
-                                                        colors: Colors.white,
-                                                      ),
-                                                      3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='basic' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='basic';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(7, Row(
-                                                    children: [
-                                                      CustomText(//4
-                                                        textAlign: TextAlign.left,
-                                                        text: "DA",
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: true,
-                                                        colors: Colors.white,
-                                                      ),
-                                                      3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='da' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='da';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(8, Row(
-                                                    children: [
-                                                      CustomText(//4
-                                                        textAlign: TextAlign.left,
-                                                        text: "HRA",
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: true,
-                                                        colors: Colors.white,
-                                                      ),
-                                                      3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='hra' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='hra';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(9, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.left,
-                                                        text: "Earning",
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: true,
-                                                        colors: Colors.white,
-                                                      ),
-                                                      3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='earn' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='earn';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(10, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.center,
-                                                        text: "Advance",
-                                                        isCopy: true,
-                                                        size: 15,
-                                                        isBold: true,
-                                                        colors: Colors.white,
-                                                      ),3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='advance' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='advance';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(11, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.center,
-                                                        text: "Uniform",
-                                                        isCopy: true,
-                                                        size: 15,
-                                                        isBold: true,
-                                                        colors: Colors.white,
-                                                      ),3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='uniform' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='uniform';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(11, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.center,
-                                                        text: "Penalty",
-                                                        isCopy: true,
-                                                        size: 15,
-                                                        isBold: true,
-                                                        colors: Colors.white,
-                                                      ),3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='penalty' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='addedBy';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(12, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.center,
-                                                        text: "Bonus",
-                                                        isCopy: true,
-                                                        size: 15,
-                                                        isBold: true,
-                                                        colors: Colors.white,
-                                                      ),3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='bonus' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='bonus';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(13, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.center,
-                                                        text: "Food Charges",
-                                                        isCopy: true,
-                                                        size: 15,
-                                                        isBold: true,
-                                                        colors: Colors.white,
-                                                      ),3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='fc' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='fc';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(14, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.center,
-                                                        text: "ESI",
-                                                        isCopy: true,
-                                                        size: 15,
-                                                        isBold: true,
-                                                        colors: Colors.white,
-                                                      ),3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='esi' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='esi';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(15, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.center,
-                                                        text: "PF",
-                                                        isCopy: true,
-                                                        size: 15,
-                                                        isBold: true,
-                                                        colors: Colors.white,
-                                                      ),3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='pf' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='pf';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(16, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.center,
-                                                        text: "Deduction",
-                                                        isCopy: true,
-                                                        size: 15,
-                                                        isBold: true,
-                                                        colors: Colors.white,
-                                                      ),3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='ded' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='ded';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                  headerCell(16, Row(
-                                                    children: [
-                                                      CustomText(
-                                                        textAlign: TextAlign.center,
-                                                        text: "Net Amount",
-                                                        isCopy: true,
-                                                        size: 15,
-                                                        isBold: true,
-                                                        colors: Colors.white,
-                                                      ),3.width,
-                                                      GestureDetector(
-                                                        onTap: (){
-                                                          if(controllers.sortFieldCallActivity.value=='net' && controllers.sortOrderCallActivity.value=='asc'){
-                                                            controllers.sortOrderCallActivity.value='desc';
-                                                          }else{
-                                                            controllers.sortOrderCallActivity.value='asc';
-                                                          }
-                                                          controllers.sortFieldCallActivity.value='net';
-                                                          pyrlCtr.filterAndSort(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                          );
-                                                        },
-                                                        child: Obx(() => Image.asset(
-                                                          controllers.sortFieldCallActivity.value.isEmpty
-                                                              ? "assets/images/arrow.png"
-                                                              : controllers.sortOrderCallActivity.value == 'asc'
-                                                              ? "assets/images/arrow_up.png"
-                                                              : "assets/images/arrow_down.png",
-                                                          width: 15,
-                                                          height: 15,
-                                                        ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),),
-                                                ]),
-                                          ],
-                                        ),
-                                        // BODY LIST
-                                        Expanded(
-                                          child: Obx(() {
-                                            if (pyrlCtr.unitPayrollList.isEmpty) {
-                                              return const Center(child: Text("No data found"));
-                                            }
-                                            return ListView.builder(
-                                              controller: _controller,
-                                              shrinkWrap: true,
-                                              physics: const ScrollPhysics(),
-                                              itemCount: pyrlCtr.unitPayrollList.length,
-                                              itemBuilder: (context, index) {
-                                                var data = pyrlCtr.unitPayrollList[index];
-                                                return Table(
-                                                  columnWidths: {
-                                                    for (int i = 0; i < colWidths.length; i++)
-                                                      i: FixedColumnWidth(colWidths[i]),
-                                                  },
-                                                  border: TableBorder(
-                                                    horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                                    verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                                    bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                  CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: "S.No",//1
+                                                    size: 15,
+                                                    isBold: true,
+                                                    isCopy: false,
+                                                    colors: Colors.white,
                                                   ),
-                                                  children:[
-                                                    TableRow(
-                                                        decoration: BoxDecoration(
-                                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                                        ),
-                                                        children:[
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:(index+1).toString(),
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.roleName,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),
-                                                          Tooltip(
-                                                            message: data.name,
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(10.0),
-                                                              child: CustomText(
-                                                                textAlign: TextAlign.left,
-                                                                text: data.name,
-                                                                size: 14,
-                                                                isCopy: true,
-                                                                colors:colorsConst.textColor,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.duty,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.ot,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.basic,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.da,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.hra,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),
-                                                          Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.total,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.advance,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.uniform,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.penalty,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.bonus2,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.food,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.esi,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.pf,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.deduction,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),Padding(
-                                                            padding: const EdgeInsets.all(10.0),
-                                                            child: CustomText(
-                                                              textAlign: TextAlign.left,
-                                                              text:data.netAmount,
-                                                              size: 14,
-                                                              isCopy: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                          ),
-                                                        ]
+                                                  3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='id' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='id';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
                                                     ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          }),
-                                        ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(
+                                                2,  Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: "Rank",
+                                                    size: 15,
+                                                    isBold: true,
+                                                    isCopy: true,
+                                                    colors: Colors.white,
+                                                  ),
+                                                  3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='rank' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='rank';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(
+                                                3,  Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: "Name",
+                                                    size: 15,
+                                                    isBold: true,
+                                                    isCopy: true,
+                                                    colors: Colors.white,
+                                                  ),
+                                                  3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='name' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='name';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(4, Row(
+                                                children: [
+                                                  CustomText(//2
+                                                    textAlign: TextAlign.left,
+                                                    text: "Duty",
+                                                    size: 15,
+                                                    isBold: true,
+                                                    isCopy: true,
+                                                    colors: Colors.white,
+                                                  ),
+                                                  3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='duty' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='duty';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(5, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: "OT",
+                                                    size: 15,
+                                                    isBold: true,
+                                                    isCopy: true,
+                                                    colors: Colors.white,
+                                                  ),
+                                                  3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='ot' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='ot';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(6, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: "Basic",
+                                                    size: 15,
+                                                    isBold: true,
+                                                    isCopy: true,
+                                                    colors: Colors.white,
+                                                  ),
+                                                  3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='basic' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='basic';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(7, Row(
+                                                children: [
+                                                  CustomText(//4
+                                                    textAlign: TextAlign.left,
+                                                    text: "DA",
+                                                    size: 15,
+                                                    isBold: true,
+                                                    isCopy: true,
+                                                    colors: Colors.white,
+                                                  ),
+                                                  3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='da' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='da';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(8, Row(
+                                                children: [
+                                                  CustomText(//4
+                                                    textAlign: TextAlign.left,
+                                                    text: "HRA",
+                                                    size: 15,
+                                                    isBold: true,
+                                                    isCopy: true,
+                                                    colors: Colors.white,
+                                                  ),
+                                                  3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='hra' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='hra';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(9, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.left,
+                                                    text: "Earning",
+                                                    size: 15,
+                                                    isBold: true,
+                                                    isCopy: true,
+                                                    colors: Colors.white,
+                                                  ),
+                                                  3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='earn' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='earn';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(10, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.center,
+                                                    text: "Advance",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='advance' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='advance';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(11, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.center,
+                                                    text: "Uniform",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='uniform' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='uniform';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(11, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.center,
+                                                    text: "Penalty",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='penalty' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='addedBy';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(12, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.center,
+                                                    text: "Bonus",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='bonus' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='bonus';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(13, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.center,
+                                                    text: "Food Charges",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='fc' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='fc';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(14, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.center,
+                                                    text: "ESI",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='esi' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='esi';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(15, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.center,
+                                                    text: "PF",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='pf' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='pf';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(16, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.center,
+                                                    text: "Deduction",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='ded' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='ded';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(16, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.center,
+                                                    text: "Net Amount",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='net' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='net';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                            ]),
                                       ],
                                     ),
-                                  ),
+                                    // BODY LIST
+                                    Expanded(
+                                      child: Obx(() {
+                                        if (pyrlCtr.unitPayrollList.isEmpty) {
+                                          return const Center(child: Text("No data found"));
+                                        }
+                                        return ListView.builder(
+                                          controller: _controller,
+                                          shrinkWrap: true,
+                                          physics: const ScrollPhysics(),
+                                          itemCount: pyrlCtr.unitPayrollList.length,
+                                          itemBuilder: (context, index) {
+                                            var data = pyrlCtr.unitPayrollList[index];
+                                            return Table(
+                                              columnWidths: {
+                                                for (int i = 0; i < colWidths.length; i++)
+                                                  i: FixedColumnWidth(colWidths[i]),
+                                              },
+                                              border: TableBorder(
+                                                horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                              ),
+                                              children:[
+                                                TableRow(
+                                                    decoration: BoxDecoration(
+                                                      color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                                    ),
+                                                    children:[
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:(index+1).toString(),
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.roleName,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),
+                                                      Tooltip(
+                                                        message: data.name,
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(10.0),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: data.name,
+                                                            size: 14,
+                                                            isCopy: true,
+                                                            colors:colorsConst.textColor,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.duty,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.ot,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.basic,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.da,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.hra,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.total,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.advance,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.uniform,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.penalty,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.bonus2,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.food,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.esi,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.pf,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.deduction,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:data.netAmount,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),
+                                                    ]
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ],
-                    )),
-              ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
             ],
           )
       ),

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/controller/product_controller.dart';
 import 'package:fullcomm_crm/screens/quotation/quotation_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -11,6 +13,7 @@ import 'package:fullcomm_crm/screens/reminder/reminder_page.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
+import '../common/constant/app_colors.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/constant/dashboard_assets.dart';
 import '../common/styles/decoration.dart';
@@ -837,24 +840,27 @@ void checkDate(){
                                   decoration: _topBarDecoration(),
                                   child: Center(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         /// ---------- LEFT ----------
-                                        Row(
-                                          children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                CustomText(
-                                                    text:"ARUU's EasyCRM",size:18,isBold: true,isCopy: false,colors:Colors.white
-                                                ),5.height,
-                                                // CustomText(text:"${controllers.isLeftOpen.value==true} ${controllers.isRightOpen.value==true}",isBold:true,isCopy:false,colors:Colors.white,size:14),
-                                                CustomText(text:"Hi, ${controllers.storage.read("f_name") ?? ""}",isBold:true,isCopy:false,colors:Colors.white,size:14),
-                                              ],
-                                            ),
-                                          ],
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                          child: Row(
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  CustomText(
+                                                      text:"ARUU's EasyCRM",size:18,isBold: true,isCopy: false,colors:Colors.white
+                                                  ),5.height,
+                                                  // CustomText(text:"${controllers.isLeftOpen.value==true} ${controllers.isRightOpen.value==true}",isBold:true,isCopy:false,colors:Colors.white,size:14),
+                                                  CustomText(text:"Hi, ${controllers.storage.read("f_name") ?? ""}",isBold:true,isCopy:false,colors:Colors.white,size:14),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                         SizedBox(
                                           width: screenWidth/4,
@@ -864,6 +870,7 @@ void checkDate(){
                                             leadBuilder: (item) => item.category,
                                             subLabelBuilder: (item) => item.phoneNo, // 🔥 optional
                                             itemBuilder: (item) => SizedBox(), // not used now
+                                            textEditingController:controllers.search,
                                             onSelected: (item) {
                                               debugPrint("item.name");
                                               debugPrint(item.name);
@@ -1136,6 +1143,9 @@ void checkDate(){
                                             ),
                                           ],
                                         ),
+                                        SizedBox(
+                                          width: width/70,
+                                        )
                                       ],
                                     ),
                                   ),
@@ -3670,8 +3680,6 @@ BoxDecoration _whiteCard() => BoxDecoration(
     BoxShadow(color: Color(0x14000000), blurRadius: 10, offset: Offset(0, 4)),
   ],
 );
-
-
 
 class CDropdownField<T extends Object> extends StatefulWidget {
   final List<T> items;

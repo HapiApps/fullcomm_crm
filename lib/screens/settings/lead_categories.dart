@@ -75,148 +75,44 @@ class _LeadCategoriesState extends State<LeadCategories> {
             alignment: Alignment.center,
             padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
             child: SizedBox(
-              width:MediaQuery.of(context).size.width*0.7,
+              // width:MediaQuery.of(context).size.width*0.7,
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  10.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(
-                            children: [
-                              IconButton(onPressed: (){
-                                if(isEdit.value==true||editIndex.value!=100){
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (context) {
-                                      return Dialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16),
-                                        ),
-                                        child: SizedBox(
-                                          width: 300,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(20),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                CustomText(
-                                                  text: "Confirm",
-                                                  size: 18,
-                                                  isBold: true, isCopy: false,
-                                                ),
-                                                10.height,
-                                                CustomText(
-                                                  text: "Are you sure you want to save changes?",
-                                                  size: 14,
-                                                  colors: Colors.black54,
-                                                  isCopy: false,
-                                                ),
-                                                20.height,
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                  children: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        if(editIndex.value!=100){
-                                                          editIndex.value=100;
-                                                        }else{
-                                                          isEdit.value=false;
-                                                          controllers.allLeadCategoryList.assignAll(controllers.allLead);
-                                                        }
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: CustomText(
-                                                        text: "Cancel",
-                                                        size: 14,
-                                                        isBold: true,
-                                                        colors: Colors.grey,
-                                                        isCopy: false,
-                                                      ),
-                                                    ),
-                                                    10.width,
-                                                    ElevatedButton(
-                                                      style: ElevatedButton.styleFrom(
-                                                        backgroundColor: Colors.blue,
-                                                        shape: RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.circular(8),
-                                                        ),
-                                                      ),
-                                                      onPressed: () async {
-                                                        Navigator.pop(context);
-                                                        if(editIndex.value!=100){
-                                                          if (controllers.emailMessageCtr.text.trim().isEmpty) {
-                                                            utils.snackBar(
-                                                              context: context,
-                                                              msg: "Please enter lead category",
-                                                              color: Colors.red,
-                                                            );
-                                                            return;
-                                                          }else{
-                                                            addCategories(context,"update",controllers.allLeadCategoryList[editIndex.value].id,editIndex.value);
-                                                          }
-                                                        }else{
-                                                          await apiService.updateCategories(context);
-                                                        }
-                                                      },
-                                                      child: CustomText(
-                                                        text: "Save",
-                                                        size: 14,
-                                                        isBold: true,
-                                                        colors: Colors.white,
-                                                        isCopy: false,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                }else{
-                                  Get.back();
-                                }
-                              }, icon: Icon(Icons.arrow_back_ios_new,size: 15,)),10.width,
-                              CustomText(
-                                text: "Lead Categories",
-                                colors: colorsConst.textColor,
-                                size: 20,
-                                isCopy: true,
-                                isBold: true,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              IconButton(onPressed: null, icon: Icon(Icons.arrow_back_ios_new,size: 0,)),10.width,
-                              CustomText(
-                                text: "Add, edit and reorder categories used in the dashboard.",
-                                colors: Colors.grey,
-                                size: 15,
-                                isCopy: true,
-                              ),
-                            ],
+                          CustomText(
+                            text: "Lead Categories",
+                            colors: colorsConst.textColor,
+                            size: 20,
+                            isBold: true,
+                            isCopy: true,
                           ),
                           10.height,
+                          CustomText(
+                            text: "Add, edit and reorder categories used in the dashboard.",
+                            colors: colorsConst.textColor,
+                            size: 14,
+                            isCopy: true,
+                          ),
                         ],
                       ),
                     ],
                   ),
+                  10.height,
                   Divider(
                     thickness: 1.5,
                     color: colorsConst.secondary,
                   ),
                   10.height,
                   Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
                   Container(
                     height: 60,
                     width: MediaQuery.of(context).size.width*0.12,
@@ -345,12 +241,12 @@ class _LeadCategoriesState extends State<LeadCategories> {
                       ),
                     ),
                   ),
-                ],
-              ),
+                                  ],
+                                ),
                   10.height,
                   Container(
                     height: 60,
-                    width:MediaQuery.of(context).size.width*0.8,
+                    // width:MediaQuery.of(context).size.width*0.8,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(
@@ -459,7 +355,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                   ),
                   Container(
                     height: 40,
-                    width:MediaQuery.of(context).size.width*0.8,
+                    // width:MediaQuery.of(context).size.width*0.8,
                     color: colorsConst.primary,
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -516,7 +412,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height*0.5,
-                    width:MediaQuery.of(context).size.width*0.8,
+                    // width:MediaQuery.of(context).size.width*0.8,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(

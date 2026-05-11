@@ -1743,6 +1743,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           CustomerDropdown(
+                                            width: screenWidth / 2.6,
                                             custList: controllers.customers,
                                             onChanged: (AllCustomersObj? customer) {
                                               setState(() {

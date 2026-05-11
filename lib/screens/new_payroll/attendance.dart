@@ -176,21 +176,21 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SideBar(),
-            Container(
+            Obx(()=>Container(
               width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
               padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
-              child: Obx(()=>Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  30.height,
+                  20.height,
                   Row(
                     children: [
-                      IconButton(onPressed: (){
-                        Get.back();
-                      }, icon: Icon(Icons.arrow_back)),
+                      // IconButton(onPressed: (){
+                      //   Get.back();
+                      // }, icon: Icon(Icons.arrow_back)),
                       CustomText(
                         text: "Payroll Attendance",
                         colors: colorsConst.textColor,
@@ -199,14 +199,18 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                         isCopy: true,
                       ),
                     ],
+                  ),10.height,
+                  Divider(
+                    thickness: 1.5,
+                    color: colorsConst.secondary,
                   ),
-                  Divider(color: Colors.grey.shade500,thickness: 0.5,),
                   10.height,
                   pyrlCtr.getData.value==false?const CircularProgressIndicator():
                   Expanded(
                     child: SingleChildScrollView(
                       child: Center(
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             10.height,
                             Row(
@@ -318,7 +322,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                                             child: Row(
                                               children: [
                                                 CustomText(
-                                                    text:pyrlCtr.month.value,isCopy: false,colors: Colors.black,
+                                                  text:pyrlCtr.month.value,isCopy: false,colors: Colors.black,
                                                 ),
                                                 5.width,
                                                 const Icon(Icons.calendar_today,
@@ -419,233 +423,233 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                                       _focusNode.requestFocus();
                                       return false;
                                     },
-                                  child: SingleChildScrollView(
-                                    controller: _horizontalController,
-                                    scrollDirection: Axis.horizontal,
-                                    child: Obx(() => Table(
-                                      defaultColumnWidth: const IntrinsicColumnWidth(),
-                                      border: TableBorder(
-                                        horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                        verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                      ),
-                                      columnWidths: {
-                                        0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.03),
-                                        12: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                        1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.1),
-                                        2: FixedColumnWidth(MediaQuery.of(context).size.width * 0.25),
-                                        3: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                        4: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                        5: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                        6: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                        7: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                        8: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                        9: FixedColumnWidth(MediaQuery.of(context).size.width * 0.07),
-                                        10: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                        11: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
-                                      },
-                                      children: [
-                                        // Header row
-                                        TableRow(
-                                          decoration: BoxDecoration(
-                                              color: colorsConst.primary,
-                                              borderRadius: const BorderRadius.only(
-                                                  topLeft: Radius.circular(5),
-                                                  topRight: Radius.circular(5))),
-                                          children: [
-                                            textBox("S.No"),
-                                            textBox("Action"),
-                                            textBox("Rank"),
-                                            textBox("Name"),
-                                            textBox("Duty"),
-                                            textBox("OT"),
-                                            textBox("Advance"),
-                                            textBox("Uniform"),
-                                            textBox("Penalty"),
-                                            textBox("Bonus"),
-                                            textBox("Food Charges"),
-                                            textBox("Total"),
-                                            textBox("Deduction"),
-                                          ],
+                                    child: SingleChildScrollView(
+                                      controller: _horizontalController,
+                                      scrollDirection: Axis.horizontal,
+                                      child: Obx(() => Table(
+                                        defaultColumnWidth: const IntrinsicColumnWidth(),
+                                        border: TableBorder(
+                                          horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                          verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                                         ),
-
-                                        // Data rows
-                                        ...List.generate(pyrlCtr.users.length, (index) {
-                                          final user = pyrlCtr.users[index];
-                                          if (user.active == "2") {
-                                            return TableRow(
-                                                decoration: BoxDecoration(
-                                                  color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                                ),
-                                                children: [
-                                            0.height,
-                                            0.height,
-                                            0.height,
-                                            0.height,
-                                            0.height,
-                                            0.height,
-                                            0.height,
-                                            0.height,
-                                            0.height,
-                                            0.height,
-                                            0.height,
-                                            0.height,
-                                            0.height,
-                                          ]);
-                                          }
-                                          return TableRow(
+                                        columnWidths: {
+                                          0: FixedColumnWidth(MediaQuery.of(context).size.width * 0.03),
+                                          12: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                          1: FixedColumnWidth(MediaQuery.of(context).size.width * 0.1),
+                                          2: FixedColumnWidth(MediaQuery.of(context).size.width * 0.25),
+                                          3: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                          4: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                          5: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                          6: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                          7: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                          8: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                          9: FixedColumnWidth(MediaQuery.of(context).size.width * 0.07),
+                                          10: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                          11: FixedColumnWidth(MediaQuery.of(context).size.width * 0.05),
+                                        },
+                                        children: [
+                                          // Header row
+                                          TableRow(
                                             decoration: BoxDecoration(
-                                              color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                            ),
+                                                color: colorsConst.primary,
+                                                borderRadius: const BorderRadius.only(
+                                                    topLeft: Radius.circular(5),
+                                                    topRight: Radius.circular(5))),
                                             children: [
-                                              valueBox((index + 1).toString()),
-                                              IconButton(
-                                                  onPressed: (){
-                                                    showDialog(
-                                                        context: context,
-                                                        barrierDismissible: false,
-                                                        builder: (context) {
-                                                          return AlertDialog(
-                                                            content: CustomText(
-                                                              text: "Are you sure delete this user?",
-                                                              size: 16,
-                                                              isCopy: false,
-                                                              isBold: true,
-                                                              colors: colorsConst.textColor,
-                                                            ),
-                                                            actions: [
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                                children: [
-                                                                  Container(
-                                                                    decoration: BoxDecoration(
-                                                                        border: Border.all(color: colorsConst.primary),
-                                                                        color: Colors.white),
-                                                                    width: 80,
-                                                                    height: 25,
-                                                                    child: ElevatedButton(
-                                                                        style: ElevatedButton.styleFrom(
-                                                                          shape: const RoundedRectangleBorder(
-                                                                            borderRadius: BorderRadius.zero,
-                                                                          ),
-                                                                          backgroundColor: Colors.white,
-                                                                        ),
-                                                                        onPressed: () {
-                                                                          Navigator.pop(context);
-                                                                        },
-                                                                        child: CustomText(
-                                                                          text: "Cancel",
-                                                                          isCopy: false,
-                                                                          colors: colorsConst.primary,
-                                                                          size: 14,
-                                                                        )),
-                                                                  ),
-                                                                  10.width,
-                                                                  CustomLoadingButton(
-                                                                    callback: (){
-                                                                      setState(() {
-                                                                        user.active = "2";
-                                                                        calculatePayroll(index);
-                                                                        Navigator.pop(context);
-                                                                      });
-                                                                    },
-                                                                    height: 35,
-                                                                    isLoading: false,
-                                                                    backgroundColor: colorsConst.primary,
-                                                                    radius: 2,
-                                                                    width: 80,
-                                                                    isImage: false,
-                                                                    text: "Delete",
-                                                                    textColor: Colors.white,
-                                                                  ),
-                                                                  5.width
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          );
-                                                        });
-                                                  },
-                                                  icon: SvgPicture.asset("assets/images/a_delete.svg",width: 20,height: 20,)),
-                                              valueBox(pyrlCtr.users[index].rank.toString()),
-                                              valueBox(pyrlCtr.users[index].name.toString()),
-                                              UnderLineTextField(
-                                                width: 70,
-                                                controller: user.duty,
-                                                keyboardType: TextInputType.number,
-                                                onChanged: (_) => calculatePayroll(index),
-                                                isRequired: true,
-                                              ),
-                                              UnderLineTextField(
-                                                width: 70,
-                                                controller: user.ot,
-                                                inputFormatters: [
-                                                  FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
-                                                ],
-                                                keyboardType: TextInputType.number,
-                                                onChanged: (_) => user.ot.text.isNotEmpty?calculatePayroll(index):null,
-                                              ),
-                                              UnderLineTextField(
-                                                width: 70,
-                                                controller: user.advance,
-                                                keyboardType: TextInputType.number,
-                                                onChanged: (_) => calculatePayroll(index),
-                                              ),
-                                              UnderLineTextField(
-                                                width: 70,
-                                                controller: user.uniform,
-                                                keyboardType: TextInputType.number,
-                                                onChanged: (_) => calculatePayroll(index),
-                                              ),
-                                              UnderLineTextField(
-                                                width: 70,
-                                                controller: user.penalty,
-                                                keyboardType: TextInputType.number,
-                                                onChanged: (_) => calculatePayroll(index),
-                                              ),
-                                              UnderLineTextField(
-                                                width: 70,
-                                                controller: user.bonus2,
-                                                keyboardType: TextInputType.number,
-                                                onChanged: (_) => calculatePayroll(index),
-                                              ),
-                                              UnderLineTextField(
-                                                width: 70,
-                                                controller: user.food,
-                                                keyboardType: TextInputType.number,
-                                                onChanged: (_) => calculatePayroll(index),
-                                              ),
-                                              valueBox(user.total.text),
-                                              valueBox(user.deduction.text)
+                                              textBox("S.No"),
+                                              textBox("Action"),
+                                              textBox("Rank"),
+                                              textBox("Name"),
+                                              textBox("Duty"),
+                                              textBox("OT"),
+                                              textBox("Advance"),
+                                              textBox("Uniform"),
+                                              textBox("Penalty"),
+                                              textBox("Bonus"),
+                                              textBox("Food Charges"),
+                                              textBox("Total"),
+                                              textBox("Deduction"),
                                             ],
-                                          );
-                                        }),
-                                        // Totals row
-                                        TableRow(
-                                          decoration: BoxDecoration(color: colorsConst.primary),
-                                          children: [
-                                            textBox(""),
-                                            textBox(""),
-                                            textBox("Total", width: 150),
-                                            textBox(totalDuty.value.toString()),
-                                            textBox(totalOT.value.toString()),
-                                            textBox(totalAdvance.value.toStringAsFixed(2)),
-                                            textBox(totalUniform.value.toStringAsFixed(2)),
-                                            textBox(totalPenalty.value.toStringAsFixed(2)),
-                                            textBox(totalBonus2.value.toStringAsFixed(2)),
-                                            textBox(totalFood.value.toStringAsFixed(2)),
-                                            textBox(totalEarned.value.toStringAsFixed(2)),
-                                            textBox(totalDed.value.toStringAsFixed(2)),
-                                            textBox(""),
-                                          ],
-                                        ),
-                                      ],
-                                    )),
-                                  ),
+                                          ),
+
+                                          // Data rows
+                                          ...List.generate(pyrlCtr.users.length, (index) {
+                                            final user = pyrlCtr.users[index];
+                                            if (user.active == "2") {
+                                              return TableRow(
+                                                  decoration: BoxDecoration(
+                                                    color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                                  ),
+                                                  children: [
+                                                    0.height,
+                                                    0.height,
+                                                    0.height,
+                                                    0.height,
+                                                    0.height,
+                                                    0.height,
+                                                    0.height,
+                                                    0.height,
+                                                    0.height,
+                                                    0.height,
+                                                    0.height,
+                                                    0.height,
+                                                    0.height,
+                                                  ]);
+                                            }
+                                            return TableRow(
+                                              decoration: BoxDecoration(
+                                                color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                              ),
+                                              children: [
+                                                valueBox((index + 1).toString()),
+                                                IconButton(
+                                                    onPressed: (){
+                                                      showDialog(
+                                                          context: context,
+                                                          barrierDismissible: false,
+                                                          builder: (context) {
+                                                            return AlertDialog(
+                                                              content: CustomText(
+                                                                text: "Are you sure delete this user?",
+                                                                size: 16,
+                                                                isCopy: false,
+                                                                isBold: true,
+                                                                colors: colorsConst.textColor,
                                                               ),
+                                                              actions: [
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                                  children: [
+                                                                    Container(
+                                                                      decoration: BoxDecoration(
+                                                                          border: Border.all(color: colorsConst.primary),
+                                                                          color: Colors.white),
+                                                                      width: 80,
+                                                                      height: 25,
+                                                                      child: ElevatedButton(
+                                                                          style: ElevatedButton.styleFrom(
+                                                                            shape: const RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.zero,
+                                                                            ),
+                                                                            backgroundColor: Colors.white,
+                                                                          ),
+                                                                          onPressed: () {
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          child: CustomText(
+                                                                            text: "Cancel",
+                                                                            isCopy: false,
+                                                                            colors: colorsConst.primary,
+                                                                            size: 14,
+                                                                          )),
+                                                                    ),
+                                                                    10.width,
+                                                                    CustomLoadingButton(
+                                                                      callback: (){
+                                                                        setState(() {
+                                                                          user.active = "2";
+                                                                          calculatePayroll(index);
+                                                                          Navigator.pop(context);
+                                                                        });
+                                                                      },
+                                                                      height: 35,
+                                                                      isLoading: false,
+                                                                      backgroundColor: colorsConst.primary,
+                                                                      radius: 2,
+                                                                      width: 80,
+                                                                      isImage: false,
+                                                                      text: "Delete",
+                                                                      textColor: Colors.white,
+                                                                    ),
+                                                                    5.width
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            );
+                                                          });
+                                                    },
+                                                    icon: SvgPicture.asset("assets/images/a_delete.svg",width: 20,height: 20,)),
+                                                valueBox(pyrlCtr.users[index].rank.toString()),
+                                                valueBox(pyrlCtr.users[index].name.toString()),
+                                                UnderLineTextField(
+                                                  width: 70,
+                                                  controller: user.duty,
+                                                  keyboardType: TextInputType.number,
+                                                  onChanged: (_) => calculatePayroll(index),
+                                                  isRequired: true,
+                                                ),
+                                                UnderLineTextField(
+                                                  width: 70,
+                                                  controller: user.ot,
+                                                  inputFormatters: [
+                                                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+                                                  ],
+                                                  keyboardType: TextInputType.number,
+                                                  onChanged: (_) => user.ot.text.isNotEmpty?calculatePayroll(index):null,
+                                                ),
+                                                UnderLineTextField(
+                                                  width: 70,
+                                                  controller: user.advance,
+                                                  keyboardType: TextInputType.number,
+                                                  onChanged: (_) => calculatePayroll(index),
+                                                ),
+                                                UnderLineTextField(
+                                                  width: 70,
+                                                  controller: user.uniform,
+                                                  keyboardType: TextInputType.number,
+                                                  onChanged: (_) => calculatePayroll(index),
+                                                ),
+                                                UnderLineTextField(
+                                                  width: 70,
+                                                  controller: user.penalty,
+                                                  keyboardType: TextInputType.number,
+                                                  onChanged: (_) => calculatePayroll(index),
+                                                ),
+                                                UnderLineTextField(
+                                                  width: 70,
+                                                  controller: user.bonus2,
+                                                  keyboardType: TextInputType.number,
+                                                  onChanged: (_) => calculatePayroll(index),
+                                                ),
+                                                UnderLineTextField(
+                                                  width: 70,
+                                                  controller: user.food,
+                                                  keyboardType: TextInputType.number,
+                                                  onChanged: (_) => calculatePayroll(index),
+                                                ),
+                                                valueBox(user.total.text),
+                                                valueBox(user.deduction.text)
+                                              ],
+                                            );
+                                          }),
+                                          // Totals row
+                                          TableRow(
+                                            decoration: BoxDecoration(color: colorsConst.primary),
+                                            children: [
+                                              textBox(""),
+                                              textBox(""),
+                                              textBox("Total", width: 150),
+                                              textBox(totalDuty.value.toString()),
+                                              textBox(totalOT.value.toString()),
+                                              textBox(totalAdvance.value.toStringAsFixed(2)),
+                                              textBox(totalUniform.value.toStringAsFixed(2)),
+                                              textBox(totalPenalty.value.toStringAsFixed(2)),
+                                              textBox(totalBonus2.value.toStringAsFixed(2)),
+                                              textBox(totalFood.value.toStringAsFixed(2)),
+                                              textBox(totalEarned.value.toStringAsFixed(2)),
+                                              textBox(totalDed.value.toStringAsFixed(2)),
+                                              textBox(""),
+                                            ],
+                                          ),
+                                        ],
+                                      )),
+                                    ),
+                                  ),
                                 ),
                               ),
                             20.height,
                             if(pyrlCtr.users.isEmpty)
-                            const CustomText(text: "\n\n\n\n\nSelect Employee",colors: Colors.grey,size:15,isBold: true, isCopy: true,),
+                              const CustomText(text: "\n\n\n\n\nSelect Employee",colors: Colors.grey,size:15,isBold: true, isCopy: true,),
                             50.height
                           ],
                         ),
@@ -653,8 +657,8 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                     ),
                   ),
                 ],
-              )),
-            ),
+              ),
+            )),
           ],
         )
       ),

@@ -140,15 +140,12 @@ class _ProductPageState extends State<ProductPage> {
         body: Row(
           children: [
             SideBar(),
-            Container(
-              width: controllers.isLeftOpen.value
-                  ? MediaQuery.of(context).size.width - 150
-                  : MediaQuery.of(context).size.width - 60,
-              height: MediaQuery.of(context).size.height,
+            Obx(()=>Container(
+              width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
               padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // --- TITLE & ADD BUTTON ---
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -161,22 +158,22 @@ class _ProductPageState extends State<ProductPage> {
                         ],
                       ),
                       CustomLoadingButton(
-                      callback: (){
-                        showDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (_) => const AddProductDialog(),
-                        );
-                      },
-                      isLoading: false,
-                      height: 35,
-                      backgroundColor: colorsConst.primary,
-                      radius: 2,
-                      width: MediaQuery.of(context).size.width*0.07,
-                      isImage: false,
-                      text: "Add Product",
-                      textColor: Colors.white,
-                    ),
+                        callback: (){
+                          showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (_) => const AddProductDialog(),
+                          );
+                        },
+                        isLoading: false,
+                        height: 35,
+                        backgroundColor: colorsConst.primary,
+                        radius: 2,
+                        width: MediaQuery.of(context).size.width*0.07,
+                        isImage: false,
+                        text: "Add Product",
+                        textColor: Colors.white,
+                      ),
                     ],
                   ),
                   10.height,
@@ -220,15 +217,15 @@ class _ProductPageState extends State<ProductPage> {
                             context,
                             productCtr.selectedCallSortBy,
                             productCtr.selectedCallMonth,
-                              () {
-                                productCtr.filterAndSortProducts(
-                                  searchText: controllers.searchText.value.toLowerCase(),
-                                  sortField: controllers.sortFieldCallActivity.value,
-                                  sortOrder: controllers.sortOrderCallActivity.value,
-                                  selectedMonth: productCtr.selectedCallMonth.value,
-                                  selectedRange: productCtr.selectedCallRange.value,
-                                  selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                );
+                                () {
+                              productCtr.filterAndSortProducts(
+                                searchText: controllers.searchText.value.toLowerCase(),
+                                sortField: controllers.sortFieldCallActivity.value,
+                                sortOrder: controllers.sortOrderCallActivity.value,
+                                selectedMonth: productCtr.selectedCallMonth.value,
+                                selectedRange: productCtr.selectedCallRange.value,
+                                selectedDateFilter: productCtr.selectedCallSortBy.value,
+                              );
                             },
                           );
                         },
@@ -274,518 +271,518 @@ class _ProductPageState extends State<ProductPage> {
                                   // HEADER
                                   Table(
                                     columnWidths: tableWidthMap,
-                                      border: TableBorder(
+                                    border: TableBorder(
                                       horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                                       verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                                     ),
                                     children: [
                                       TableRow(
                                         decoration: BoxDecoration(
-                                        color: colorsConst.primary,
-                                        borderRadius: const BorderRadius.only(
-                                            topLeft: Radius.circular(5),
-                                            topRight: Radius.circular(5))),
+                                            color: colorsConst.primary,
+                                            borderRadius: const BorderRadius.only(
+                                                topLeft: Radius.circular(5),
+                                                topRight: Radius.circular(5))),
                                         children: [
                                           headerCell(0,  CustomText(
-                                        textAlign: TextAlign.left,
-                                        text: "S.No",
-                                        size: 15,
-                                        isBold: true,
-                                        isCopy: true,
-                                        colors: Colors.white,
-                                      ),),//s.no
-                                      headerCell(1, Row(
-                                        children: [
-                                          CustomText(//4
                                             textAlign: TextAlign.left,
-                                            text: "SKU ID",
+                                            text: "S.No",
                                             size: 15,
                                             isBold: true,
                                             isCopy: true,
                                             colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='sku' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='sku';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//SKU
-                                      headerCell(2, Row(
-                                        children: [
-                                          CustomText(//4
-                                            textAlign: TextAlign.left,
-                                            text: "HSN Code",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='hsn' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='hsn';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//HSN
-                                      headerCell(3, Row(
-                                        children: [
-                                          CustomText(//4
-                                            textAlign: TextAlign.left,
-                                            text: "BarCode",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='barcode' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='barcode';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//HSN
-                                      headerCell(4, Row(
-                                        children: [
-                                          CustomText(//2
-                                            textAlign: TextAlign.left,
-                                            text: "Product Name",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='name' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='name';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//product name
-                                      headerCell(5, Row(
-                                        children: [
-                                          CustomText(//4
-                                            textAlign: TextAlign.left,
-                                            text: "Variation",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='hsn' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='hsn';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//Variation
-                                      headerCell(6, Row(
-                                        children: [
-                                          CustomText(
-                                            textAlign: TextAlign.left,
-                                            text: "MRP",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='mrp' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='mrp';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//MRP
-                                      headerCell(7, Row(
-                                        children: [
-                                          CustomText(
-                                            textAlign: TextAlign.left,
-                                            text: "Price",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='price' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='price';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//Price
-                                      headerCell(8, Row(
-                                        children: [
-                                          CustomText(//2
-                                            textAlign: TextAlign.left,
-                                            text: "Brand",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='brand' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='brand';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//brand
-                                      headerCell(9, Row(
-                                        children: [
-                                          CustomText(//4
-                                            textAlign: TextAlign.left,
-                                            text: "Category",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='cat' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='cat';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//Cat
-                                      headerCell(10, Row(
-                                        children: [
-                                          CustomText(//4
-                                            textAlign: TextAlign.left,
-                                            text: "Sub Category",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='subcat' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='subcat';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//Sub Cat
-                                      headerCell(11, Row(
-                                        children: [
-                                          CustomText(//4
-                                            textAlign: TextAlign.left,
-                                            text: "GST",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='gst' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='gst';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//GST
-                                      headerCell(12, Row(
-                                        children: [
-                                          CustomText(//4
-                                            textAlign: TextAlign.left,
-                                            text: "Added Date",
-                                            size: 15,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: Colors.white,
-                                          ),
-                                          3.width,
-                                          GestureDetector(
-                                            onTap: (){
-                                              if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
-                                                controllers.sortOrderCallActivity.value='desc';
-                                              }else{
-                                                controllers.sortOrderCallActivity.value='asc';
-                                              }
-                                              controllers.sortFieldCallActivity.value='date';
-                                              productCtr.filterAndSortProducts(
-                                                searchText: controllers.searchText.value.toLowerCase(),
-                                                sortField: controllers.sortFieldCallActivity.value,
-                                                sortOrder: controllers.sortOrderCallActivity.value,
-                                                selectedMonth: productCtr.selectedCallMonth.value,
-                                                selectedRange: productCtr.selectedCallRange.value,
-                                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                              );
-                                            },
-                                            child: Obx(() => Image.asset(
-                                              controllers.sortFieldCallActivity.value.isEmpty
-                                                  ? "assets/images/arrow.png"
-                                                  : controllers.sortOrderCallActivity.value == 'asc'
-                                                  ? "assets/images/arrow_up.png"
-                                                  : "assets/images/arrow_down.png",
-                                              width: 15,
-                                              height: 15,
-                                            ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),),//Added Date
+                                          ),),//s.no
+                                          headerCell(1, Row(
+                                            children: [
+                                              CustomText(//4
+                                                textAlign: TextAlign.left,
+                                                text: "SKU ID",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='sku' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='sku';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//SKU
+                                          headerCell(2, Row(
+                                            children: [
+                                              CustomText(//4
+                                                textAlign: TextAlign.left,
+                                                text: "HSN Code",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='hsn' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='hsn';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//HSN
+                                          headerCell(3, Row(
+                                            children: [
+                                              CustomText(//4
+                                                textAlign: TextAlign.left,
+                                                text: "BarCode",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='barcode' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='barcode';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//HSN
+                                          headerCell(4, Row(
+                                            children: [
+                                              CustomText(//2
+                                                textAlign: TextAlign.left,
+                                                text: "Product Name",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='name' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='name';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//product name
+                                          headerCell(5, Row(
+                                            children: [
+                                              CustomText(//4
+                                                textAlign: TextAlign.left,
+                                                text: "Variation",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='hsn' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='hsn';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//Variation
+                                          headerCell(6, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: "MRP",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='mrp' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='mrp';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//MRP
+                                          headerCell(7, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: "Price",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='price' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='price';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//Price
+                                          headerCell(8, Row(
+                                            children: [
+                                              CustomText(//2
+                                                textAlign: TextAlign.left,
+                                                text: "Brand",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='brand' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='brand';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//brand
+                                          headerCell(9, Row(
+                                            children: [
+                                              CustomText(//4
+                                                textAlign: TextAlign.left,
+                                                text: "Category",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='cat' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='cat';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//Cat
+                                          headerCell(10, Row(
+                                            children: [
+                                              CustomText(//4
+                                                textAlign: TextAlign.left,
+                                                text: "Sub Category",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='subcat' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='subcat';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//Sub Cat
+                                          headerCell(11, Row(
+                                            children: [
+                                              CustomText(//4
+                                                textAlign: TextAlign.left,
+                                                text: "GST",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='gst' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='gst';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//GST
+                                          headerCell(12, Row(
+                                            children: [
+                                              CustomText(//4
+                                                textAlign: TextAlign.left,
+                                                text: "Added Date",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='date';
+                                                  productCtr.filterAndSortProducts(
+                                                    searchText: controllers.searchText.value.toLowerCase(),
+                                                    sortField: controllers.sortFieldCallActivity.value,
+                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedRange: productCtr.selectedCallRange.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//Added Date
                                         ],
                                       ),
                                     ],
@@ -801,11 +798,11 @@ class _ProductPageState extends State<ProductPage> {
                                           var p = productCtr.paginatedPrdItems[index];
                                           return Table(
                                             columnWidths: tableWidthMap,
-                                              border: TableBorder(
-                                                horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                                verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                                bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                              ),
+                                            border: TableBorder(
+                                              horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                              verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                              bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                            ),
                                             children: [
                                               TableRow(
                                                 decoration: BoxDecoration(
@@ -858,7 +855,7 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                 ],
               ),
-            ),
+            )),
           ],
         ),
       ),

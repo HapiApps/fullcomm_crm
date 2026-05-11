@@ -354,6 +354,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                         child: InkWell(
                             onTap: () {
                               Get.to(UpdateLead(
+                                additional: [],
                                 pageName: widget.pageName,
                                 index: widget.listIndex,
                                 list: widget.list,list2: widget.list2,
@@ -1044,6 +1045,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                               );
                             }else if(value=="edit"){
                               Get.to(UpdateLead(
+                                additional: [],
                                 pageName: widget.pageName,
                                 index: widget.listIndex,
                                 list: widget.list,list2: widget.list2,

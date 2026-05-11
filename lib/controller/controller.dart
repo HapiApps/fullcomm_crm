@@ -774,7 +774,119 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
     return filteredLeads.sublist(start, end);
   }
+  void sortLeads(List list1,List list2) {
+    if (sortField.isNotEmpty) {
+      list2.sort((a, b) {
+        dynamic getFieldValue(NewLeadObj lead, String field) {
+          switch (field) {
+            default:
+              final value = lead.asMap()[field];
+              return value.toString().toLowerCase();
+          }
+        }
 
+        final valA = getFieldValue(a, sortField.value);
+        final valB = getFieldValue(b, sortField.value);
+
+        if (valA is DateTime && valB is DateTime) {
+          return sortOrder.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        } else {
+          return sortOrderN.value == 'asc'
+              ? valA.compareTo(valB)
+              : valB.compareTo(valA);
+        }
+      });
+    }
+    return list1.assignAll(list2);
+  }
+
+  // void sortLeads(RxList list1, List<NewLeadObj> list2) {
+  //   if (sortField.isNotEmpty) {
+  //     list2.sort((a, b) {
+  //
+  //       dynamic getFieldValue(NewLeadObj lead, String field) {
+  //         final value = lead.asMap()[field];
+  //
+  //         print("FIELD : $field");
+  //         print("RAW VALUE : $value");
+  //         print("TYPE : ${value.runtimeType}");
+  //
+  //         // null handle
+  //         if (value == null) {
+  //           print("RETURN TYPE : String (empty)");
+  //           return '';
+  //         }
+  //
+  //         // DateTime handle
+  //         if (value is DateTime) {
+  //           print("RETURN TYPE : DateTime");
+  //           return value;
+  //         }
+  //
+  //         // int/double handle
+  //         if (value is int || value is double) {
+  //           print("RETURN TYPE : Number");
+  //           return value;
+  //         }
+  //
+  //         // numeric string handle
+  //         if (num.tryParse(value.toString()) != null) {
+  //           print("RETURN TYPE : Parsed Number");
+  //           return num.parse(value.toString());
+  //         }
+  //
+  //         // date string handle
+  //         try {
+  //           final date = DateTime.parse(value.toString());
+  //           print("RETURN TYPE : Parsed DateTime");
+  //           return date;
+  //         } catch (_) {}
+  //
+  //         // default string
+  //         print("RETURN TYPE : String");
+  //         return value.toString().toLowerCase();
+  //       }
+  //
+  //       final valA = getFieldValue(a, sortField.value);
+  //       final valB = getFieldValue(b, sortField.value);
+  //
+  //       print("COMPARE A : $valA (${valA.runtimeType})");
+  //       print("COMPARE B : $valB (${valB.runtimeType})");
+  //
+  //       int comparison = 0;
+  //
+  //       // Date sorting
+  //       if (valA is DateTime && valB is DateTime) {
+  //         comparison = valA.compareTo(valB);
+  //         print("SORT TYPE : DateTime");
+  //       }
+  //
+  //       // Number sorting
+  //       else if (valA is num && valB is num) {
+  //         comparison = valA.compareTo(valB);
+  //         print("SORT TYPE : Number");
+  //       }
+  //
+  //       // String sorting
+  //       else {
+  //         comparison = valA.toString().compareTo(valB.toString());
+  //         print("SORT TYPE : String");
+  //       }
+  //
+  //       print("COMPARISON RESULT : $comparison");
+  //
+  //       return sortOrder.value == 'asc'
+  //           ? comparison
+  //           : -comparison;
+  //     });
+  //   }
+  //
+  //   list1.assignAll(list2);
+  //
+  //   print("FINAL SORTED LIST : ${list1.length}");
+  // }
   var sortField = ''.obs;
   var sortOrder = 'asc'.obs;
   var sortOrderN = 'asc'.obs;
@@ -2679,6 +2791,7 @@ debugPrint("sortField ${sortField}");
     selectedCustomerMobile.value = c.phoneNo;
     selectedCustomerEmail.value = c.email;
     selectedCompanyName.value = c.companyName;
+    cusController.text = "${c.name}${c.companyName.toString().isEmpty ? "" : ", ${c.companyName}"} ${c.name.toString().isEmpty ? "" : "-"} ${c.phoneNo} - ${c.category}";
   }
   void selectNCustomer(String id, String name, String email, String mobile) {
     selectedCustomerId.value = id;

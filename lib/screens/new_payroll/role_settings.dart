@@ -212,13 +212,14 @@ class _RoleSettingState extends State<RoleSetting> {
             child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                20.height,
                 Row(
                   children: [
-                    IconButton(
-                        onPressed: (){
-                          Get.back();
-                        },
-                        icon: Icon(Icons.arrow_back)),
+                    // IconButton(
+                    //     onPressed: (){
+                    //       Get.back();
+                    //     },
+                    //     icon: Icon(Icons.arrow_back)),
                     CustomText(
                       text: "Payroll Settings",
                       colors: colorsConst.textColor,
@@ -230,8 +231,10 @@ class _RoleSettingState extends State<RoleSetting> {
                 ),
                 10.height,
                 Divider(
-                    color: Colors.grey
-                ),20.height,
+                  thickness: 1.5,
+                  color: colorsConst.secondary,
+                ),
+                20.height,
                 if(pyrlCtr.isAdd.value==false)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,

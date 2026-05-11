@@ -17,6 +17,7 @@ import '../../components/custom_text.dart';
 import '../../components/customer_name_header.dart';
 import '../../controller/controller.dart';
 import '../../controller/table_controller.dart';
+import '../../models/all_customers_obj.dart';
 import '../../models/new_lead_obj.dart';
 import '../../services/api_services.dart';
 
@@ -1019,22 +1020,22 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                         width: tableWidth,
                                         child: DynamicTableHeader(
                                           onSortName: () {
-                                            controllers.sortField.value = 'name';
-                                            controllers.sortOrderN.value =
-                                            controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
+                                            // controllers.sortField.value = 'name';
+                                            // controllers.sortOrderN.value =controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
+                                            controllers.sortLeads(widget.list,widget.list2);
                                           },
                                           onSortDate: () {
                                             setState(() {
-                                              controllers.sortField.value = 'date';
-                                              controllers.sortOrder.value =
-                                              controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
-                                              if(controllers.sortOrder.value=="asc"){
-                                                widget.list.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                                widget.list2.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                              }else{
-                                                widget.list.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                                widget.list2.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                              }
+                                              // controllers.sortField.value = 'date';
+                                              // controllers.sortOrder.value =controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
+                                              controllers.sortLeads(widget.list,widget.list2);
+                                              // if(controllers.sortOrder.value=="asc"){
+                                              //   widget.list.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
+                                              //   widget.list2.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
+                                              // }else{
+                                              //   widget.list.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
+                                              //   widget.list2.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
+                                              // }
                                             });
                                           },
                                         ),

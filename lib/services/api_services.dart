@@ -247,6 +247,7 @@ class ApiService {
         required String leadId,
         required String type,
         required String addressId,
+        required List<AdditionalInfo> addList,
         required RxList<NewLeadObj> list,
         required RxList<NewLeadObj> list2}) async {
     try {
@@ -301,7 +302,8 @@ class ApiService {
             .join("||"),
         "whatsapp_number": controllers.leadWhatsCrt[0].text,
         "email": controllers.leadEmailCrt[0].text,
-        "action": "update_customer"
+        "action": "update_customer",
+        "additional_list": addList
       };
 
       final request = await http.post(
@@ -313,11 +315,13 @@ class ApiService {
         },
       );
       Map<String, dynamic> response = json.decode(request.body);
+      print(data);
+      print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
           return apiService.updateLeadAPI(context,index:index,name:name,leadId:leadId,
-              type:type,addressId:addressId,list:list,list2:list2);
+              type:type,addressId:addressId,addList: addList,list:list,list2:list2);
         } else {
           controllers.setLogOut();
         }
@@ -497,6 +501,7 @@ class ApiService {
         controllers.leadCtr.reset();
       }
     } catch (e) {
+      log(e.toString());
       errorDialog(Get.context!, e.toString());
       controllers.leadCtr.reset();
     }

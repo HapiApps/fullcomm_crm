@@ -481,6 +481,7 @@ class _SendQuotationState extends State<SendQuotation> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomerDropdown(
+                    width: MediaQuery.of(context).size.width/ 2.6,
                     custList: controllers.customers,
                     onChanged: (AllCustomersObj? customer) {
                       setState(() {
@@ -925,13 +926,14 @@ class _SendQuotationState extends State<SendQuotation> {
 }
 
 class CustomerDropdown extends StatefulWidget {
+  final double width;
   final List<AllCustomersObj> custList;
   final ValueChanged<AllCustomersObj?> onChanged;
 
   const CustomerDropdown({
     super.key,
     required this.custList,
-    required this.onChanged,
+    required this.onChanged, required this.width,
   });
 
   @override
@@ -959,12 +961,12 @@ class _CustomerDropdownState extends State<CustomerDropdown> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      width: screenWidth / 2.6,
-      height: 47,
+      width: widget.width,
+      height: 40,
       decoration: customDecoration.baseBackgroundDecoration(
         color: Colors.white,
         radius: 5,
-        borderColor: Colors.grey.shade300,
+        // borderColor: Colors.grey.shade300,
       ),
       child: DropdownSearch<AllCustomersObj>(
         items: widget.custList,
@@ -977,13 +979,25 @@ class _CustomerDropdownState extends State<CustomerDropdown> {
         /// Dropdown UI
         dropdownDecoratorProps: DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
-            hintText: "Search Customer Name",
+            hintText: controllers.cusController.text.isEmpty?"Search Mobile Number":controllers.cusController.text,
             hintStyle: GoogleFonts.lato(
-              color: Colors.black,
+              color: Colors.grey,
               fontSize: 15,
             ),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: BorderSide(
+                width: 0,
+                color: Colors.grey.shade300,
+              ),
+            ),
+            suffixIcon: InkWell(
+              onTap: (){
+                controllers.cusController.clear();
+                controllers.clearSelectedCustomer();
+              },
+                child: Icon(Icons.clear)),
             contentPadding: const EdgeInsets.all(10),
-            border: InputBorder.none,
           ),
         ),
 

@@ -170,21 +170,10 @@ class _QuotationHistoryState extends State<QuotationHistory> {
             child: Scaffold(
               body: Obx(() =>
                   Container(
-                    width: controllers.isLeftOpen.value
-                        ? MediaQuery
-                        .of(context)
-                        .size
-                        .width - 150
-                        : MediaQuery
-                        .of(context)
-                        .size
-                        .width - 60,
-                    height: MediaQuery
-                        .of(context)
-                        .size
-                        .height,
+                    width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
                     padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
