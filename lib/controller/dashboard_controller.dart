@@ -19,11 +19,11 @@ final dashController = Get.put(DashboardController());
 
 class DashboardController extends GetxController {
   var totalMails       = "0".obs;
-  var totalReminders   = "0".obs;
-  var totalEmployees   = "0".obs;
-  var totalMeetings    = "0".obs;
-  var pendingMeetings  = "0".obs;
-  var completedMeetings = "0".obs;
+  // var totalReminders   = "0".obs;
+  // var totalEmployees   = "0".obs;
+  // var totalMeetings    = "0".obs;
+  // var pendingMeetings  = "0".obs;
+  // var completedMeetings = "0".obs;
   var totalCalls       = "0".obs;
   var totalWarm        = "0".obs;
   var totalCold        = "0".obs;
@@ -32,10 +32,11 @@ class DashboardController extends GetxController {
   var totalCold2        = "0".obs;
   var totalHot2         = "0".obs;
   var totalSuspects    = "0".obs;
-  var totalProspects   = "0".obs;
-  var totalQualified   = "0".obs;
-  var totalUnQualified = "0".obs;
-  var totalCustomers   = "0".obs;
+  var portfolioHeat    = [].obs;
+  // var totalProspects   = "0".obs;
+  // var totalQualified   = "0".obs;
+  // var totalUnQualified = "0".obs;
+  // var totalCustomers   = "0".obs;
   var totalQuotations   = "0".obs;
   var totalOrders   = "0".obs;
   var totalAmt   = "0".obs;
@@ -176,10 +177,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
                           "${tempRange!.end.year}-${tempRange!.end.month.toString().padLeft(2, '0')}-${tempRange!.end.day.toString().padLeft(2, '0')}";
 
                           /// ✅ API calls
-                          getDashboardReport();
-                          getLeadReport();
-                          getStatusWiseReport();
-                          getCustomerStatus();
+                          getWholeReport();
 
                           getCustomerReport(
                             dashController.date1.value,
@@ -274,10 +272,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
 
     selectedRange.value = DateTimeRange(start: normalizedStart, end: normalizedEnd);
 
-    getDashboardReport();
-    getLeadReport();
-    getStatusWiseReport();
-    getCustomerStatus();
+    getWholeReport();
 
     if (selectedSortBy.value != "Today" && selectedSortBy.value != "Yesterday") {
       getCustomerReport(_fmt(normalizedStart), _fmt(normalizedEnd));
@@ -330,84 +325,311 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
     }
   }
 
-  Future getRatingReport() async {
-    try {
-      Map data = {
-        "search_type": "rating_report",
-        "cos_id": controllers.storage.read("cos_id"),
-        "action": "get_data",
-      };
-      final request = await http.post(Uri.parse(scriptApi),
-          headers: {
-            'X-API-TOKEN': "${TokenStorage().readToken()}",
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(data),
-          encoding: Encoding.getByName("utf-8"));
-      totalCold.value = "0";
-      totalHot.value = "0";
-      totalWarm.value = "0";
-      totalCold2.value = "0";
-      totalHot2.value = "0";
-      totalWarm2.value = "0";
-      if (request.statusCode == 401) {
-        final refreshed = await controllers.refreshToken();
-        if (refreshed) {
-          return getRatingReport();
-        } else {
-          controllers.setLogOut();
-        }
-      }
-      if (request.statusCode == 200) {
-        List response = json.decode(request.body);
-        totalCold.value = response[0]["lead_cold"].toString()=="null"?"0":response[0]["lead_cold"];
-        totalHot.value = response[0]["lead_hot"].toString()=="null"?"0":response[0]["lead_hot"];
-        totalWarm.value = response[0]["lead_warm"].toString()=="null"?"0":response[0]["lead_warm"];
-
-        totalCold2.value = response[0]["customer_cold"].toString()=="null"?"0":response[0]["customer_cold"];
-        totalHot2.value = response[0]["customer_hot"].toString()=="null"?"0":response[0]["customer_hot"];
-        totalWarm2.value = response[0]["customer_warm"].toString()=="null"?"0":response[0]["customer_warm"];
-      } else {
-        totalCold.value = "0";
-        totalHot.value = "0";
-        totalWarm.value = "0";
-        totalCold2.value = "0";
-        totalHot2.value = "0";
-        totalWarm2.value = "0";
-        throw Exception('Failed to load album');
-      }
-    } catch (e) {
-      totalCold.value = "0";
-      totalHot.value = "0";
-      totalWarm.value = "0";
-      totalCold2.value = "0";
-      totalHot2.value = "0";
-      totalWarm2.value = "0";
-      throw Exception('Failed to load album');
-    }
-  }
+  // Future getRatingReport() async {
+  //   try {
+  //     Map data = {
+  //       "search_type": "rating_report",
+  //       "cos_id": controllers.storage.read("cos_id"),
+  //       "action": "get_data",
+  //     };
+  //     final request = await http.post(Uri.parse(scriptApi),
+  //         headers: {
+  //           'X-API-TOKEN': "${TokenStorage().readToken()}",
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: jsonEncode(data),
+  //         encoding: Encoding.getByName("utf-8"));
+  //     totalCold.value = "0";
+  //     totalHot.value = "0";
+  //     totalWarm.value = "0";
+  //     totalCold2.value = "0";
+  //     totalHot2.value = "0";
+  //     totalWarm2.value = "0";
+  //     if (request.statusCode == 401) {
+  //       final refreshed = await controllers.refreshToken();
+  //       if (refreshed) {
+  //         return getRatingReport();
+  //       } else {
+  //         controllers.setLogOut();
+  //       }
+  //     }
+  //     if (request.statusCode == 200) {
+  //       List response = json.decode(request.body);
+  //       totalCold.value = response[0]["lead_cold"].toString()=="null"?"0":response[0]["lead_cold"];
+  //       totalHot.value = response[0]["lead_hot"].toString()=="null"?"0":response[0]["lead_hot"];
+  //       totalWarm.value = response[0]["lead_warm"].toString()=="null"?"0":response[0]["lead_warm"];
+  //
+  //       totalCold2.value = response[0]["customer_cold"].toString()=="null"?"0":response[0]["customer_cold"];
+  //       totalHot2.value = response[0]["customer_hot"].toString()=="null"?"0":response[0]["customer_hot"];
+  //       totalWarm2.value = response[0]["customer_warm"].toString()=="null"?"0":response[0]["customer_warm"];
+  //     } else {
+  //       totalCold.value = "0";
+  //       totalHot.value = "0";
+  //       totalWarm.value = "0";
+  //       totalCold2.value = "0";
+  //       totalHot2.value = "0";
+  //       totalWarm2.value = "0";
+  //       throw Exception('Failed to load album');
+  //     }
+  //   } catch (e) {
+  //     totalCold.value = "0";
+  //     totalHot.value = "0";
+  //     totalWarm.value = "0";
+  //     totalCold2.value = "0";
+  //     totalHot2.value = "0";
+  //     totalWarm2.value = "0";
+  //     throw Exception('Failed to load album');
+  //   }
+  // }
   RxString timestamp = "".obs;
   RxInt refreshTime = 0.obs;
 
-  Future getDashboardReport() async {
-    // final range = dashController.selectedRange.value;
-    // var today = DateTime.now();
-    // var tomorrow = DateTime.now().add(Duration(days: 1));
-    // final adjustedEnd = range?.end.add(const Duration(days: 1));
+  // Future getDashboardReport() async {
+  //   // final range = dashController.selectedRange.value;
+  //   // var today = DateTime.now();
+  //   // var tomorrow = DateTime.now().add(Duration(days: 1));
+  //   // final adjustedEnd = range?.end.add(const Duration(days: 1));
+  //   try {
+  //     Map data = {
+  //       "search_type": "dashboard_report",
+  //       "cos_id": controllers.storage.read("cos_id"),
+  //       "role": controllers.storage.read("role"),
+  //       "id": controllers.storage.read("id"),
+  //       "action": "get_data",
+  //       // "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+  //       // "enDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+  //       "stDate": dashController.date1.value,
+  //       "enDate": dashController.date2.value,
+  //     };
+  //
+  //     debugPrint("Dashboard report 1:    ${data.toString()}");
+  //     final request = await http.post(
+  //       Uri.parse(scriptApi),
+  //       headers: {
+  //         'X-API-TOKEN': "${TokenStorage().readToken()}",
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: jsonEncode(data),
+  //       encoding: Encoding.getByName("utf-8"),
+  //     );
+  //     debugPrint("Dashboard report: ${request.body}");
+  //     if (request.statusCode == 401) {
+  //       final refreshed = await controllers.refreshToken();
+  //       if (refreshed) {
+  //         return getDashboardReport();
+  //       } else {
+  //         controllers.setLogOut();
+  //       }
+  //     }
+  //     if (request.statusCode == 200) {
+  //       var responseList = jsonDecode(request.body) as List;
+  //       if (responseList.isNotEmpty) {
+  //         var response = responseList[0] as Map<String, dynamic>;
+  //
+  //         dashController.totalMails.value        = response["total_mails"]?.toString() ?? "0";
+  //         // dashController.totalReminders.value    = response["total_reminders"]?.toString() ?? "0";
+  //         // dashController.totalMeetings.value     = response["total_meetings"]?.toString() ?? "0";
+  //         // dashController.pendingMeetings.value   = response["pending_meetings"]?.toString() ?? "0";
+  //         // dashController.completedMeetings.value = response["completed_meetings"]?.toString() ?? "0";
+  //         dashController.totalCalls.value        = response["total_calls"]?.toString() ?? "0";
+  //         // dashController.totalEmployees.value    = response["total_employees"]?.toString() ?? "0";
+  //         // dashController.totalSuspects.value     = response["total_suspects"]?.toString() ?? "0";
+  //         dashController.totalSuspects.value     = response["new_customers"]?.toString() ?? "0";
+  //         // dashController.totalProspects.value    = response["total_prospects"]?.toString() ?? "0";
+  //         // dashController.totalQualified.value    = response["total_qualified"]?.toString() ?? "0";
+  //         // dashController.totalUnQualified.value  = response["total_disqualified"]?.toString() ?? "0";
+  //         // dashController.totalCustomers.value    = response["total_customers"]?.toString() ?? "0";
+  //         dashController.totalQuotations.value    = response["total_quotations"]?.toString() ?? "0";
+  //         dashController.totalOrders.value    = response["total_orders"]?.toString() ?? "0";
+  //         dashController.totalAmt.value    = response["total_amount"]?.toString() ?? "0";
+  //       } else {
+  //         // handle empty response gracefully
+  //         debugPrint("Dashboard API returned empty data");
+  //         dashController.totalQuotations.value        = "0";
+  //         dashController.totalOrders.value        = "0";
+  //         dashController.totalAmt.value        = "0";
+  //         dashController.totalMails.value        = "0";
+  //         dashController.totalCalls.value        = "0";
+  //         dashController.totalSuspects.value     = "0";
+  //       }
+  //       timestamp.value="${DateTime.now()}";
+  //     } else {
+  //       dashController.totalMails.value        = "0";
+  //       dashController.totalCalls.value        = "0";
+  //       dashController.totalSuspects.value     = "0";
+  //       dashController.totalQuotations.value        = "0";
+  //       dashController.totalOrders.value        = "0";
+  //       dashController.totalAmt.value        = "0";
+  //       timestamp.value="${DateTime.now()}";
+  //       throw Exception('Failed to load dashboard report');
+  //     }
+  //   } catch (e) {
+  //     dashController.totalQuotations.value        = "0";
+  //     dashController.totalOrders.value        = "0";
+  //     dashController.totalAmt.value        = "0";
+  //     dashController.totalMails.value        = "0";
+  //     dashController.totalCalls.value        = "0";
+  //     dashController.totalHot.value          = "0";
+  //     dashController.totalWarm.value         = "0";
+  //     dashController.totalCold.value         = "0";
+  //     dashController.totalSuspects.value     = "0";
+  //     timestamp.value="${DateTime.now()}";
+  //     throw Exception('Failed to load dashboard report $e');
+  //   }
+  // }
+  ///
+  // Future getWholeReport() async {
+  //   try {
+  //     Map data = {
+  //       "cos_id": controllers.storage.read("cos_id"),
+  //       "role": controllers.storage.read("role"),
+  //       "id": controllers.storage.read("id"),
+  //       "action": "get_dashboard_report",
+  //       "stDate": dashController.date1.value,
+  //       "enDate": dashController.date2.value,
+  //     };
+  //
+  //     debugPrint("get_dashboard_report:    ${data.toString()}");
+  //     final request = await http.post(
+  //       Uri.parse(scriptApi),
+  //       headers: {
+  //         'X-API-TOKEN': "${TokenStorage().readToken()}",
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: jsonEncode(data),
+  //       encoding: Encoding.getByName("utf-8"),
+  //     );
+  //     debugPrint("get_dashboard_report: ${request.body}");
+  //     if (request.statusCode == 401) {
+  //       final refreshed = await controllers.refreshToken();
+  //       if (refreshed) {
+  //         return getWholeReport();
+  //       } else {
+  //         controllers.setLogOut();
+  //       }
+  //     }
+  //     if (request.statusCode == 200) {
+  //       final response = jsonDecode(request.body);
+  //       /// DASHBOARD REPORT
+  //       Map<String, dynamic> dashboardReport =Map<String, dynamic>.from(response['data']['dashboard_report']);
+  //       dashController.totalMails.value        = dashboardReport["total_mails"].toString();
+  //       dashController.totalCalls.value        = dashboardReport["total_calls"].toString();
+  //       dashController.totalSuspects.value     = dashboardReport['new_customers'].toString();
+  //       dashController.totalQuotations.value    = dashboardReport["total_quotations"].toString();
+  //       dashController.totalOrders.value    = dashboardReport["total_orders"].toString();
+  //       dashController.totalAmt.value    = dashboardReport["total_amount"].toString();
+  //
+  //       /// RANGE REPORT
+  //       List<dynamic> rangeReport =
+  //       List<dynamic>.from(response['data']['range_report']);
+  //
+  //       controllers.rangeStatusList.value =
+  //       List<Map<String, dynamic>>.from(rangeReport);
+  //
+  //       controllers.xLabels.value =controllers.rangeStatusList.value.map((e) => e["report_date"].toString()).toList();
+  //       controllers.xLabels.value =controllers.rangeStatusList.value.map((e) => e["report_date"].toString()).toList();
+  //
+  //       controllers.calls.value =controllers.rangeStatusList.value.map((e) => double.parse(e["total_calls"].toString())).toList();
+  //       controllers.mails.value =controllers.rangeStatusList.value.map((e) => double.parse(e["total_mails"].toString())).toList();
+  //       controllers.updates.value =controllers.rangeStatusList.value.map((e) => double.parse(e["total_customers"].toString())).toList();
+  //
+  //       debugPrint("controllers.xLabels ${controllers.xLabels}");
+  //       debugPrint("controllers.xLabels ${controllers.calls}");
+  //       debugPrint("controllers.xLabels ${controllers.mails}");
+  //       debugPrint("controllers.xLabels ${controllers.updates}");
+  //
+  //       /// RATING REPORT
+  //       Map<String, dynamic> ratingReport = Map<String, dynamic>.from(response['data']['rating_report']);
+  //       debugPrint("ratingReport ${ratingReport}");
+  //       totalCold.value ="${ratingReport["lead_cold"] ?? 0}";
+  //       totalHot.value ="${ratingReport["lead_hot"] ?? 0}";
+  //       totalWarm.value ="${ratingReport["lead_warm"] ?? 0}";
+  //       totalCold2.value ="${ratingReport["customer_cold"] ?? 0}";
+  //       totalHot2.value ="${ratingReport["customer_hot"] ?? 0}";
+  //       totalWarm2.value ="${ratingReport["customer_warm"] ?? 0}";
+  //       debugPrint("totalHot.value ${totalHot.value}");
+  //
+  //       /// LEAD COUNT REPORT
+  //       List<dynamic> leadCountReport =List<dynamic>.from(response['data']['lead_count_report']);
+  //       color = generateColors(leadCountReport.length);
+  //       leadReport.value=leadCountReport;
+  //
+  //       /// VISIT STATUS REPORT
+  //       List<dynamic> callStatusReport =List<dynamic>.from(response['data']['visit_status_report']);
+  //       visitStatusReport.value=callStatusReport;
+  //       for (var item in response) {
+  //         total += int.parse(item["total_count"].toString());
+  //       }
+  //
+  //
+  //       timestamp.value="${DateTime.now()}";
+  //     } else {
+  //       dashController.totalMails.value        = "0";
+  //       dashController.totalCalls.value        = "0";
+  //       dashController.totalSuspects.value     = "0";
+  //       dashController.totalQuotations.value        = "0";
+  //       dashController.totalOrders.value        = "0";
+  //       dashController.totalAmt.value        = "0";
+  //       dashController.totalCold.value        = "0";
+  //       dashController.totalHot.value        = "0";
+  //       dashController.totalWarm.value        = "0";
+  //       dashController.totalCold2.value        = "0";
+  //       dashController.totalHot2.value        = "0";
+  //       dashController.totalWarm2.value        = "0";
+  //       dashController.total        = 0;
+  //       dashController.color.clear();
+  //       dashController.leadReport.clear();
+  //       dashController.visitStatusReport.clear();
+  //       controllers.rangeStatusList.clear();
+  //       controllers.calls.clear();
+  //       controllers.mails.clear();
+  //       controllers.updates.clear();
+  //       timestamp.value="${DateTime.now()}";
+  //       throw Exception('Failed to load dashboard report');
+  //     }
+  //   } catch (e) {
+  //     dashController.totalMails.value        = "0";
+  //     dashController.totalCalls.value        = "0";
+  //     dashController.totalSuspects.value     = "0";
+  //     dashController.totalQuotations.value        = "0";
+  //     dashController.totalOrders.value        = "0";
+  //     dashController.totalAmt.value        = "0";
+  //     dashController.totalCold.value        = "0";
+  //     dashController.totalHot.value        = "0";
+  //     dashController.totalWarm.value        = "0";
+  //     dashController.totalCold2.value        = "0";
+  //     dashController.totalHot2.value        = "0";
+  //     dashController.totalWarm2.value        = "0";
+  //     dashController.total        = 0;
+  //     dashController.color.clear();
+  //     dashController.leadReport.clear();
+  //     dashController.visitStatusReport.clear();
+  //     controllers.rangeStatusList.clear();
+  //     controllers.calls.clear();
+  //     controllers.mails.clear();
+  //     controllers.updates.clear();
+  //     timestamp.value="${DateTime.now()}";
+  //     throw Exception('Failed to load dashboard report $e');
+  //   }
+  // }
+  Future getWholeReport() async {
     try {
+
       Map data = {
-        "search_type": "dashboard_report",
         "cos_id": controllers.storage.read("cos_id"),
         "role": controllers.storage.read("role"),
         "id": controllers.storage.read("id"),
-        "action": "get_data",
-        // "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-        // "enDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+        "action": "get_dashboard_report",
         "stDate": dashController.date1.value,
         "enDate": dashController.date2.value,
+        "lead_status": controllers.leadCategoryList.last.leadStatus,
       };
 
-      debugPrint("Dashboard report 1:    ${data.toString()}");
+      debugPrint("================================================");
+      debugPrint("REQUEST DATA");
+      debugPrint("================================================");
+      debugPrint(data.toString());
+
       final request = await http.post(
         Uri.parse(scriptApi),
         headers: {
@@ -417,113 +639,234 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      debugPrint("Dashboard report: ${request.body}");
+
+      debugPrint("================================================");
+      debugPrint("STATUS CODE");
+      debugPrint("================================================");
+      debugPrint(request.statusCode.toString());
+
+      debugPrint("================================================");
+      debugPrint("RAW RESPONSE");
+      debugPrint("================================================");
+      debugPrint(request.body);
+
       if (request.statusCode == 401) {
+
         final refreshed = await controllers.refreshToken();
+
         if (refreshed) {
-          return getDashboardReport();
+          return getWholeReport();
         } else {
           controllers.setLogOut();
         }
       }
+
       if (request.statusCode == 200) {
-        // var response = jsonDecode(request.body) as List;
-        // dashController.totalMails.value       = response[0]["total_mails"] ?? "0";
-        // dashController.totalReminders.value   = response[0]["total_reminders"] ?? "0";
-        // dashController.totalMeetings.value    = response[0]["total_meetings"] ?? "0";
-        // dashController.pendingMeetings.value  = response[0]["pending_meetings"] ?? "0";
-        // dashController.completedMeetings.value = response[0]["completed_meetings"] ?? "0";
-        // dashController.totalCalls.value       = response[0]["total_calls"] ?? "0";
-        // dashController.totalEmployees.value   = response[0]["total_employees"] ?? "0";
-        // dashController.totalHot.value         = response[0]["hot_total"]?.toString() ?? "0";
-        // dashController.totalWarm.value        = response[0]["warm_total"]?.toString() ?? "0";
-        // dashController.totalCold.value        = response[0]["cold_total"]?.toString() ?? "0";
-        // dashController.totalSuspects.value    = response[0]["total_suspects"]?.toString() ?? "0";
-        // dashController.totalProspects.value   = response[0]["total_prospects"]?.toString() ?? "0";
-        // dashController.totalQualified.value   = response[0]["total_qualified"]?.toString() ?? "0";
-        // dashController.totalUnQualified.value = response[0]["total_disqualified"]?.toString() ?? "0";
-        // dashController.totalCustomers.value   = response[0]["total_customers"]?.toString() ?? "0";
 
-        var responseList = jsonDecode(request.body) as List;
-        if (responseList.isNotEmpty) {
-          var response = responseList[0] as Map<String, dynamic>;
+        final response = jsonDecode(request.body);
 
-          dashController.totalMails.value        = response["total_mails"]?.toString() ?? "0";
-          dashController.totalReminders.value    = response["total_reminders"]?.toString() ?? "0";
-          dashController.totalMeetings.value     = response["total_meetings"]?.toString() ?? "0";
-          dashController.pendingMeetings.value   = response["pending_meetings"]?.toString() ?? "0";
-          dashController.completedMeetings.value = response["completed_meetings"]?.toString() ?? "0";
-          dashController.totalCalls.value        = response["total_calls"]?.toString() ?? "0";
-          dashController.totalEmployees.value    = response["total_employees"]?.toString() ?? "0";
-          // dashController.totalSuspects.value     = response["total_suspects"]?.toString() ?? "0";
-          dashController.totalSuspects.value     = response["new_customers"]?.toString() ?? "0";
-          dashController.totalProspects.value    = response["total_prospects"]?.toString() ?? "0";
-          dashController.totalQualified.value    = response["total_qualified"]?.toString() ?? "0";
-          dashController.totalUnQualified.value  = response["total_disqualified"]?.toString() ?? "0";
-          dashController.totalCustomers.value    = response["total_customers"]?.toString() ?? "0";
-          dashController.totalQuotations.value    = response["total_quotations"]?.toString() ?? "0";
-          dashController.totalOrders.value    = response["total_orders"]?.toString() ?? "0";
-          dashController.totalAmt.value    = response["total_amount"]?.toString() ?? "0";
-        } else {
-          // handle empty response gracefully
-          debugPrint("Dashboard API returned empty data");
-          dashController.totalQuotations.value        = "0";
-          dashController.totalOrders.value        = "0";
-          dashController.totalAmt.value        = "0";
-          dashController.totalMails.value        = "0";
-          dashController.totalReminders.value    = "0";
-          dashController.totalMeetings.value     = "0";
-          dashController.pendingMeetings.value   = "0";
-          dashController.completedMeetings.value = "0";
-          dashController.totalCalls.value        = "0";
-          dashController.totalEmployees.value    = "0";
-          dashController.totalSuspects.value     = "0";
-          dashController.totalProspects.value    = "0";
-          dashController.totalQualified.value    = "0";
-          dashController.totalUnQualified.value  = "0";
-          dashController.totalCustomers.value    = "0";
+        debugPrint("================================================");
+        debugPrint("FULL RESPONSE");
+        debugPrint("================================================");
+        debugPrint(response.toString());
+
+        /// =====================================================
+        /// DASHBOARD REPORT
+        /// =====================================================
+
+        Map<String, dynamic> dashboardReport =
+        Map<String, dynamic>.from(
+            response['data']['dashboard_report']);
+
+        debugPrint("================================================");
+        debugPrint("DASHBOARD REPORT");
+        debugPrint("================================================");
+        debugPrint(dashboardReport.toString());
+
+        dashController.totalMails.value =
+            dashboardReport["total_mails"].toString();
+
+        dashController.totalCalls.value =
+            dashboardReport["total_calls"].toString();
+
+        dashController.totalSuspects.value =
+            dashboardReport['new_customers'].toString();
+
+        dashController.totalQuotations.value =
+            dashboardReport["total_quotations"].toString();
+
+        dashController.totalOrders.value =
+            dashboardReport["total_orders"].toString();
+
+        dashController.totalAmt.value =
+            dashboardReport["total_amount"].toString();
+
+        // debugPrint("totalMails => ${dashController.totalMails.value}");
+        // debugPrint("totalCalls => ${dashController.totalCalls.value}");
+        // debugPrint("totalSuspects => ${dashController.totalSuspects.value}");
+        // debugPrint("totalQuotations => ${dashController.totalQuotations.value}");
+        // debugPrint("totalOrders => ${dashController.totalOrders.value}");
+        // debugPrint("totalAmt => ${dashController.totalAmt.value}");
+
+        /// =====================================================
+        /// Activity Customer REPORT
+        /// =====================================================
+
+        List<dynamic> activityReport = List<dynamic>.from(response['data']['activity_customer_report']);
+        customerStatusReport.value=activityReport;
+        debugPrint("Activity Customer REPORT ${customerStatusReport.value}");
+        // =====================================================
+        /// RANGE REPORT
+        /// =====================================================
+
+        List<dynamic> rangeReport =
+        List<dynamic>.from(response['data']['range_report']);
+
+        debugPrint("================================================");
+        debugPrint("RANGE REPORT");
+        debugPrint("================================================");
+        // debugPrint(rangeReport.toString());
+
+        controllers.rangeStatusList.value =
+        List<Map<String, dynamic>>.from(rangeReport);
+
+        controllers.xLabels.value =
+            controllers.rangeStatusList.value
+                .map((e) => e["report_date"].toString())
+                .toList();
+
+        controllers.calls.value =
+            controllers.rangeStatusList.value
+                .map((e) => double.parse(
+                e["total_calls"].toString()))
+                .toList();
+
+        controllers.mails.value =
+            controllers.rangeStatusList.value
+                .map((e) => double.parse(
+                e["total_mails"].toString()))
+                .toList();
+
+        controllers.updates.value =
+            controllers.rangeStatusList.value
+                .map((e) => double.parse(
+                e["total_customers"].toString()))
+                .toList();
+
+        // debugPrint("xLabels => ${controllers.xLabels}");
+        // debugPrint("calls => ${controllers.calls}");
+        // debugPrint("mails => ${controllers.mails}");
+        // debugPrint("updates => ${controllers.updates}");
+
+        /// =====================================================
+        /// RATING REPORT
+        /// =====================================================
+
+        Map<String, dynamic> ratingReport =
+        Map<String, dynamic>.from(
+            response['data']['rating_report']);
+
+        debugPrint("================================================");
+        debugPrint("RATING REPORT");
+        debugPrint("================================================");
+        debugPrint(ratingReport.toString());
+
+        totalCold.value =
+        "${ratingReport["lead_cold"] ?? 0}";
+
+        totalHot.value =
+        "${ratingReport["lead_hot"] ?? 0}";
+
+        totalWarm.value =
+        "${ratingReport["lead_warm"] ?? 0}";
+
+        totalCold2.value =
+        "${ratingReport["customer_cold"] ?? 0}";
+
+        totalHot2.value =
+        "${ratingReport["customer_hot"] ?? 0}";
+
+        totalWarm2.value =
+        "${ratingReport["customer_warm"] ?? 0}";
+
+        // debugPrint("lead_cold => ${totalCold.value}");
+        // debugPrint("lead_hot => ${totalHot.value}");
+        // debugPrint("lead_warm => ${totalWarm.value}");
+        //
+        // debugPrint("customer_cold => ${totalCold2.value}");
+        // debugPrint("customer_hot => ${totalHot2.value}");
+        // debugPrint("customer_warm => ${totalWarm2.value}");
+
+        /// =====================================================
+        /// LEAD COUNT REPORT
+        /// =====================================================
+
+        List<dynamic> leadCountReport =
+        List<dynamic>.from(
+            response['data']['lead_count_report']);
+
+        debugPrint("================================================");
+        debugPrint("LEAD COUNT REPORT");
+        debugPrint("================================================");
+        // debugPrint(leadCountReport.toString());
+
+        color = generateColors(leadCountReport.length);
+
+        leadReport.value = leadCountReport;
+
+        // debugPrint("leadReport => ${leadReport.value}");
+        // debugPrint("color => $color");
+
+        /// =====================================================
+        /// VISIT STATUS REPORT
+        /// =====================================================
+
+        List<dynamic> callStatusReport =
+        List<dynamic>.from(
+            response['data']['visit_status_report']);
+
+        debugPrint("================================================");
+        debugPrint("VISIT STATUS REPORT");
+        debugPrint("================================================");
+        // debugPrint(callStatusReport.toString());
+
+        visitStatusReport.value = callStatusReport;
+
+        total = 0;
+
+        for (var item in callStatusReport) {
+
+          total += int.parse(
+              item["total_count"].toString());
+
+          debugPrint(
+              "Loop Count => ${item["total_count"]}");
         }
-        timestamp.value="${DateTime.now()}";
+
+        debugPrint("FINAL TOTAL => $total");
+
+        timestamp.value = "${DateTime.now()}";
+
+        debugPrint("timestamp => ${timestamp.value}");
+
       } else {
-        dashController.totalMails.value        = "0";
-        dashController.totalReminders.value    = "0";
-        dashController.totalMeetings.value     = "0";
-        dashController.pendingMeetings.value   = "0";
-        dashController.completedMeetings.value = "0";
-        dashController.totalCalls.value        = "0";
-        dashController.totalEmployees.value    = "0";
-        dashController.totalSuspects.value     = "0";
-        dashController.totalProspects.value    = "0";
-        dashController.totalQualified.value    = "0";
-        dashController.totalUnQualified.value  = "0";
-        dashController.totalCustomers.value    = "0";
-        dashController.totalQuotations.value        = "0";
-        dashController.totalOrders.value        = "0";
-        dashController.totalAmt.value        = "0";
-        timestamp.value="${DateTime.now()}";
+
+        debugPrint("================================================");
+        debugPrint("API FAILED");
+        debugPrint("================================================");
+
         throw Exception('Failed to load dashboard report');
       }
+
     } catch (e) {
-      dashController.totalQuotations.value        = "0";
-      dashController.totalOrders.value        = "0";
-      dashController.totalAmt.value        = "0";
-      dashController.totalMails.value        = "0";
-      dashController.totalReminders.value    = "0";
-      dashController.totalMeetings.value     = "0";
-      dashController.pendingMeetings.value   = "0";
-      dashController.completedMeetings.value = "0";
-      dashController.totalCalls.value        = "0";
-      dashController.totalEmployees.value    = "0";
-      dashController.totalHot.value          = "0";
-      dashController.totalWarm.value         = "0";
-      dashController.totalCold.value         = "0";
-      dashController.totalSuspects.value     = "0";
-      dashController.totalProspects.value    = "0";
-      dashController.totalQualified.value    = "0";
-      dashController.totalUnQualified.value  = "0";
-      dashController.totalCustomers.value    = "0";
-      timestamp.value="${DateTime.now()}";
-      throw Exception('Failed to load dashboard report $e');
+
+      debugPrint("================================================");
+      debugPrint("CATCH ERROR");
+      debugPrint("================================================");
+      debugPrint(e.toString());
+
+      throw Exception(
+          'Failed to load dashboard report $e');
     }
   }
   RxList leadReport=[].obs;
@@ -539,182 +882,182 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
     });
   }
   List<Color> color=[];
-  Future getLeadReport() async {
-    // final range = dashController.selectedRange.value;
-    // var today = DateTime.now();
-    // var tomorrow = DateTime.now().add(Duration(days: 1));
-    // final adjustedEnd = range?.end.add(const Duration(days: 1));
-    leadReport.clear();
-    try {
-      Map data = {
-        "search_type": "lead_count_report",
-        "cos_id": controllers.storage.read("cos_id"),
-        "role": controllers.storage.read("role"),
-        "id": controllers.storage.read("id"),
-        "action": "get_data",
-        "stDate": dashController.date1.value,
-        "enDate": dashController.date2.value,
-        // "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-        // "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
-      };
-
-      // log("Dashboard request dataaa: ${billing_data.toString()}");
-      final request = await http.post(
-        Uri.parse(scriptApi),
-        headers: {
-          'X-API-TOKEN': "${TokenStorage().readToken()}",
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(data),
-        encoding: Encoding.getByName("utf-8"),
-      );
-      // debugPrint(billing_data);
-      // debugPrint("Dashboard report:2 ${request.body}");
-      if (request.statusCode == 401) {
-        final refreshed = await controllers.refreshToken();
-        if (refreshed) {
-          return getLeadReport();
-        } else {
-          controllers.setLogOut();
-        }
-      }
-      if (request.statusCode == 200) {
-
-        var responseList = jsonDecode(request.body) as List;
-        if (responseList.isNotEmpty) {
-          color = generateColors(responseList.length);
-          leadReport.value=responseList;
-        }
-        else {
-          leadReport.clear();
-        }
-      } else {
-        leadReport.clear();
-        throw Exception('Failed to load dashboard report 2');
-      }
-    } catch (e) {
-      leadReport.clear();
-      throw Exception('Failed to load dashboard report 2');
-    }
-  }
+  // Future getLeadReport() async {
+  //   // final range = dashController.selectedRange.value;
+  //   // var today = DateTime.now();
+  //   // var tomorrow = DateTime.now().add(Duration(days: 1));
+  //   // final adjustedEnd = range?.end.add(const Duration(days: 1));
+  //   leadReport.clear();
+  //   try {
+  //     Map data = {
+  //       "search_type": "lead_count_report",
+  //       "cos_id": controllers.storage.read("cos_id"),
+  //       "role": controllers.storage.read("role"),
+  //       "id": controllers.storage.read("id"),
+  //       "action": "get_data",
+  //       "stDate": dashController.date1.value,
+  //       "enDate": dashController.date2.value,
+  //       // "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+  //       // "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
+  //     };
+  //
+  //     // log("Dashboard request dataaa: ${billing_data.toString()}");
+  //     final request = await http.post(
+  //       Uri.parse(scriptApi),
+  //       headers: {
+  //         'X-API-TOKEN': "${TokenStorage().readToken()}",
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: jsonEncode(data),
+  //       encoding: Encoding.getByName("utf-8"),
+  //     );
+  //     // debugPrint(billing_data);
+  //     // debugPrint("Dashboard report:2 ${request.body}");
+  //     if (request.statusCode == 401) {
+  //       final refreshed = await controllers.refreshToken();
+  //       if (refreshed) {
+  //         return getLeadReport();
+  //       } else {
+  //         controllers.setLogOut();
+  //       }
+  //     }
+  //     if (request.statusCode == 200) {
+  //
+  //       var responseList = jsonDecode(request.body) as List;
+  //       if (responseList.isNotEmpty) {
+  //         color = generateColors(responseList.length);
+  //         leadReport.value=responseList;
+  //       }
+  //       else {
+  //         leadReport.clear();
+  //       }
+  //     } else {
+  //       leadReport.clear();
+  //       throw Exception('Failed to load dashboard report 2');
+  //     }
+  //   } catch (e) {
+  //     leadReport.clear();
+  //     throw Exception('Failed to load dashboard report 2');
+  //   }
+  // }
   RxList visitStatusReport=[].obs;
   double total = 0;
   RxList customerStatusReport=[].obs;
-  Future<void> getCustomerStatus() async {
-    try {
-
-      customerStatusReport.clear();
-      Map data = {
-        "action": "get_data",
-        "search_type": "customer_range_report",
-        "lead_status": controllers.leadCategoryList.last.leadStatus,
-        "id": controllers.storage.read("id"),
-        "role": controllers.storage.read("role"),
-        "cos_id": controllers.storage.read("cos_id"),
-        "stDate": dashController.date1.value,
-        "enDate": dashController.date2.value,
-      };
-      final request = await http.post(Uri.parse(scriptApi),
-          headers: {
-            'X-API-TOKEN': "${TokenStorage().readToken()}",
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(data),
-          encoding: Encoding.getByName("utf-8"));
-
-      debugPrint("customer_range_report: ${request.statusCode}");
-      debugPrint("RAW RESPONSE: ${data}");
-      debugPrint("RAW RESPONSE: ${request.body}");
-      if (request.statusCode == 401) {
-        final refreshed = await controllers.refreshToken();
-        if (refreshed) {
-          return getCustomerStatus();
-        } else {
-          controllers.setLogOut();
-        }
-      }
-      if (request.statusCode != 200) {
-        // debugPrint("SERVER ERROR");
-        return;
-      }
-
-      final decoded = jsonDecode(request.body);
-
-      // ✅ Safety check
-      if (request.statusCode==200) {
-        var decoded = json.decode(request.body);
-
-        if (decoded is List) {
-          customerStatusReport.value =List<Map<String, dynamic>>.from(decoded);
-        } else {
-          debugPrint("Unexpected format");
-        }
-      } else {
-        debugPrint("API Error: ${decoded["message"]}");
-      }
-
-    } catch (e) {
-      debugPrint("FLUTTER ERROR => $e");
-    }
-  }
-
-  Future getStatusWiseReport() async {
-    // final range = dashController.selectedRange.value;
-    // var today = DateTime.now();
-    // var tomorrow = DateTime.now().add(Duration(days: 1));
-    // final adjustedEnd = range?.end.add(const Duration(days: 1));
-    // try {
-      visitStatusReport.clear();
-      total=0;
-      Map data = {
-        "search_type": "visit_status_report",
-        "cos_id": controllers.storage.read("cos_id"),
-        "role": controllers.storage.read("role"),
-        "id": controllers.storage.read("id"),
-        "action": "get_data",
-        "stDate": dashController.date1.value,
-        "enDate": dashController.date2.value,
-        // "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-        // "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
-      };
-
-      // log("Dashboard request billing_data: visit_status_report ${billing_data.toString()}");
-      final request = await http.post(
-        Uri.parse(scriptApi),
-        headers: {
-          'X-API-TOKEN': "${TokenStorage().readToken()}",
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(data),
-        encoding: Encoding.getByName("utf-8"),
-      );
-      // debugPrint("STATUS CODE visit_status_report: ${request.statusCode}");
-      // debugPrint("RAW RESPONSE: ${request.body}");
-      if (request.statusCode == 401) {
-        final refreshed = await controllers.refreshToken();
-        if (refreshed) {
-          return getStatusWiseReport();
-        } else {
-          controllers.setLogOut();
-        }
-      }
-      if (request.statusCode == 200) {
-        var response = jsonDecode(request.body) as List;
-        visitStatusReport.value=response;
-        for (var item in response) {
-          total += int.parse(item["total_count"].toString());
-        }
-        // debugPrint("total ${total}");
-        // debugPrint("visitStatusReport.value ${visitStatusReport.value}");
-      } else {
-        visitStatusReport.clear();
-        throw Exception('Failed to load dashboard report');
-      }
-    // } catch (e) {
-    //   visitStatusReport.clear();
-    //   throw Exception('Failed to load dashboard report $e');
-    // }
-  }
+  // Future<void> getCustomerStatus() async {
+  //   try {
+  //
+  //     customerStatusReport.clear();
+  //     Map data = {
+  //       "action": "get_data",
+  //       "search_type": "customer_range_report",
+  //       "lead_status": controllers.leadCategoryList.last.leadStatus,
+  //       "id": controllers.storage.read("id"),
+  //       "role": controllers.storage.read("role"),
+  //       "cos_id": controllers.storage.read("cos_id"),
+  //       "stDate": dashController.date1.value,
+  //       "enDate": dashController.date2.value,
+  //     };
+  //     final request = await http.post(Uri.parse(scriptApi),
+  //         headers: {
+  //           'X-API-TOKEN': "${TokenStorage().readToken()}",
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: jsonEncode(data),
+  //         encoding: Encoding.getByName("utf-8"));
+  //
+  //     debugPrint("customer_range_report: ${request.statusCode}");
+  //     debugPrint("RAW RESPONSE: ${data}");
+  //     debugPrint("RAW RESPONSE: ${request.body}");
+  //     if (request.statusCode == 401) {
+  //       final refreshed = await controllers.refreshToken();
+  //       if (refreshed) {
+  //         return getCustomerStatus();
+  //       } else {
+  //         controllers.setLogOut();
+  //       }
+  //     }
+  //     if (request.statusCode != 200) {
+  //       // debugPrint("SERVER ERROR");
+  //       return;
+  //     }
+  //
+  //     final decoded = jsonDecode(request.body);
+  //
+  //     // ✅ Safety check
+  //     if (request.statusCode==200) {
+  //       var decoded = json.decode(request.body);
+  //
+  //       if (decoded is List) {
+  //         customerStatusReport.value =List<Map<String, dynamic>>.from(decoded);
+  //       } else {
+  //         debugPrint("Unexpected format");
+  //       }
+  //     } else {
+  //       debugPrint("API Error: ${decoded["message"]}");
+  //     }
+  //
+  //   } catch (e) {
+  //     debugPrint("FLUTTER ERROR => $e");
+  //   }
+  // }
+///
+  // Future getStatusWiseReport() async {
+  //   // final range = dashController.selectedRange.value;
+  //   // var today = DateTime.now();
+  //   // var tomorrow = DateTime.now().add(Duration(days: 1));
+  //   // final adjustedEnd = range?.end.add(const Duration(days: 1));
+  //   // try {
+  //     visitStatusReport.clear();
+  //     total=0;
+  //     Map data = {
+  //       "search_type": "visit_status_report",
+  //       "cos_id": controllers.storage.read("cos_id"),
+  //       "role": controllers.storage.read("role"),
+  //       "id": controllers.storage.read("id"),
+  //       "action": "get_data",
+  //       "stDate": dashController.date1.value,
+  //       "enDate": dashController.date2.value,
+  //       // "stDate": range==null?"${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}":"${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+  //       // "enDate": range==null?"${tomorrow.year}-${tomorrow.month.toString().padLeft(2, "0")}-${tomorrow.day.toString().padLeft(2, "0")}":"${adjustedEnd!.year}-${adjustedEnd.month.toString().padLeft(2, "0")}-${adjustedEnd.day.toString().padLeft(2, "0")}"
+  //     };
+  //
+  //     // log("Dashboard request billing_data: visit_status_report ${billing_data.toString()}");
+  //     final request = await http.post(
+  //       Uri.parse(scriptApi),
+  //       headers: {
+  //         'X-API-TOKEN': "${TokenStorage().readToken()}",
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: jsonEncode(data),
+  //       encoding: Encoding.getByName("utf-8"),
+  //     );
+  //     // debugPrint("STATUS CODE visit_status_report: ${request.statusCode}");
+  //     // debugPrint("RAW RESPONSE: ${request.body}");
+  //     if (request.statusCode == 401) {
+  //       final refreshed = await controllers.refreshToken();
+  //       if (refreshed) {
+  //         return getStatusWiseReport();
+  //       } else {
+  //         controllers.setLogOut();
+  //       }
+  //     }
+  //     if (request.statusCode == 200) {
+  //       var response = jsonDecode(request.body) as List;
+  //       visitStatusReport.value=response;
+  //       for (var item in response) {
+  //         total += int.parse(item["total_count"].toString());
+  //       }
+  //       // debugPrint("total ${total}");
+  //       // debugPrint("visitStatusReport.value ${visitStatusReport.value}");
+  //     } else {
+  //       visitStatusReport.clear();
+  //       throw Exception('Failed to load dashboard report');
+  //     }
+  //   // } catch (e) {
+  //   //   visitStatusReport.clear();
+  //   //   throw Exception('Failed to load dashboard report $e');
+  //   // }
+  // }
   var startDate = "".obs,endDate="".obs,month="".obs;
   var increase=false.obs;
   var monthCount=0.obs;

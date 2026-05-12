@@ -624,7 +624,7 @@ class _CallCommentsState extends State<CallComments> {
                                             ],
                                           ),),
                                           headerCell(
-                                            2,  Row(
+                                            3,  Row(
                                             children: [
                                               CustomText(
                                                 textAlign: TextAlign.left,
@@ -667,7 +667,7 @@ class _CallCommentsState extends State<CallComments> {
                                               ),
                                             ],
                                           ),),
-                                          headerCell(3, Row(
+                                          headerCell(4, Row(
                                             children: [
                                               CustomText(//2
                                                 textAlign: TextAlign.left,
@@ -710,7 +710,7 @@ class _CallCommentsState extends State<CallComments> {
                                               ),
                                             ],
                                           ),),
-                                          headerCell(4, Row(
+                                          headerCell(5, Row(
                                             children: [
                                               CustomText(
                                                 textAlign: TextAlign.left,
@@ -753,7 +753,7 @@ class _CallCommentsState extends State<CallComments> {
                                               ),
                                             ],
                                           ),),
-                                          headerCell(5, Row(
+                                          headerCell(6, Row(
                                             children: [
                                               CustomText(
                                                 textAlign: TextAlign.left,
@@ -796,7 +796,7 @@ class _CallCommentsState extends State<CallComments> {
                                               ),
                                             ],
                                           ),),
-                                          headerCell(6, Row(
+                                          headerCell(7, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -839,7 +839,7 @@ class _CallCommentsState extends State<CallComments> {
                                               ),
                                             ],
                                           ),),
-                                          headerCell(7, Row(
+                                          headerCell(8, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -882,7 +882,7 @@ class _CallCommentsState extends State<CallComments> {
                                               ),
                                             ],
                                           ),),
-                                          headerCell(8, Row(
+                                          headerCell(9, Row(
                                             children: [
                                               CustomText(
                                                 textAlign: TextAlign.left,
@@ -925,7 +925,7 @@ class _CallCommentsState extends State<CallComments> {
                                               ),
                                             ],
                                           ),),
-                                          headerCell(9, Row(
+                                          headerCell(10, Row(
                                             children: [
                                               CustomText(
                                                 textAlign: TextAlign.center,

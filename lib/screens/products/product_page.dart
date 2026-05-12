@@ -109,11 +109,33 @@ class _ProductPageState extends State<ProductPage> {
     }
   }
   Widget headerCell(int index, Widget child) {
-    return Container(
-      width: colWidths[index],
-      padding: const EdgeInsets.all(10),
-      alignment: index == 0 ? Alignment.center : Alignment.centerLeft,
-      child: child,
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          alignment: index==0?Alignment.center:Alignment.centerLeft,
+          child: child,
+        ),
+        Positioned(
+          right: 0,
+          top: 0,
+          bottom: 0,
+          width: 10,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onHorizontalDragUpdate: (details) {
+              setState(() {
+                colWidths[index] += details.delta.dx;
+                if (colWidths[index] < 60) colWidths[index] = 60;
+              });
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.resizeColumn,
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

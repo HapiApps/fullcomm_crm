@@ -2281,7 +2281,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         } catch (_) {}
       }
 
-      debugPrint("❌ Date parse error: $dateStr");
+      // debugPrint("❌ Date parse error: $dateStr");
       return DateTime(1900);
     }
 
@@ -2768,7 +2768,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           try {
             return DateFormat("dd-MM-yyyy").parse(date);
           } catch (e) {
-            debugPrint("❌ Date parse error: $date");
+            // debugPrint("❌ Date parse error: $date");
             return DateTime(2000);
           }
         }
@@ -2818,7 +2818,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
             // ✅ another fallback (dot format)
             return DateFormat("dd-MM-yyyy hh.mm a").parse(input);
           } catch (e) {
-            debugPrint("❌ Date parse error: $input");
+            // debugPrint("❌ Date parse error: $input");
             return DateTime(2000);
           }
         }
@@ -3016,7 +3016,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
             // ✅ another fallback (dot format)
             return DateFormat("dd-MM-yyyy hh.mm a").parse(input);
           } catch (e) {
-            debugPrint("❌ Date parse error: $input");
+            // debugPrint("❌ Date parse error: $input");
             return DateTime(2000);
           }
         }
@@ -4457,7 +4457,7 @@ void unSelectAllAppointments() {
                 // Format: 26-10-2025 09:50 PM
                 parsedDate = DateFormat('dd-MM-yyyy hh:mm a').parse(dateStr);
               } catch (e) {
-                debugPrint("Date parse failed => $dateStr");
+                // debugPrint("Date parse failed => $dateStr");
                 continue;
               }
             }

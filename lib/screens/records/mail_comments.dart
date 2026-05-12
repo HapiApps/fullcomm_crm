@@ -374,7 +374,7 @@ class _MailCommentsState extends State<MailComments> {
                                 ),
                               ],
                             ),),
-                            headerCell(0, Row(
+                            headerCell(1, Row(
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
@@ -408,7 +408,7 @@ class _MailCommentsState extends State<MailComments> {
                                 ),
                               ],
                             ),),
-                            headerCell(0, Row(
+                            headerCell(2, Row(
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
@@ -442,7 +442,7 @@ class _MailCommentsState extends State<MailComments> {
                                 ),
                               ],
                             ),),
-                            headerCell(1, Row(
+                            headerCell(3, Row(
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
@@ -476,7 +476,7 @@ class _MailCommentsState extends State<MailComments> {
                                 ),
                               ],
                             ),),
-                            headerCell(2, Row(
+                            headerCell(4, Row(
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
@@ -510,7 +510,7 @@ class _MailCommentsState extends State<MailComments> {
                                 ),
                               ],
                             ),),
-                            headerCell(3,  CustomText(
+                            headerCell(5,  CustomText(
                               textAlign: TextAlign.left,
                               text: "Attachment",
                               size: 15,
@@ -518,7 +518,7 @@ class _MailCommentsState extends State<MailComments> {
                               isCopy: true,
                               colors: Colors.white,
                             ),),
-                            headerCell(4, Row(
+                            headerCell(6, Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Padding(

@@ -3099,82 +3099,75 @@ debugPrint("sortField ${sortField}");
 
   RxList<Map<String, dynamic>> rangeStatusList =
       <Map<String, dynamic>>[].obs;
-  List<double> updates=[];
-  List<double> mails=[];
-  List<double> calls=[];
-  List<String> xLabels=[];
-  Future<void> getRangeStatus() async {
-    try {
-
-      rangeStatusList.clear();
-      Map data = {
-        "action": "get_data",
-        "search_type": "range_report",
-        "id": controllers.storage.read("id"),
-        "role": controllers.storage.read("role"),
-        "date": controllers.storage.read("role"),
-        "cos_id": controllers.storage.read("cos_id"),
-      };
-      final request = await http.post(Uri.parse(scriptApi),
-          headers: {
-            'X-API-TOKEN': "${TokenStorage().readToken()}",
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(data),
-          encoding: Encoding.getByName("utf-8"));
-
-      debugPrint("STATUS CODE range_report: ${request.statusCode}");
-      debugPrint("RAW RESPONSE: ${data}");
-      debugPrint("RAW RESPONSE: ${request.body}");
-      if (request.statusCode == 401) {
-        final refreshed = await controllers.refreshToken();
-        if (refreshed) {
-          return getRangeStatus();
-        } else {
-          controllers.setLogOut();
-        }
-      }
-      if (request.statusCode != 200) {
-        // debugPrint("SERVER ERROR");
-        return;
-      }
-
-      final decoded = jsonDecode(request.body);
-
-      // ✅ Safety check
-      if (request.statusCode==200) {
-        var decoded = json.decode(request.body);
-
-        if (decoded is List) {
-          rangeStatusList.value =
-          List<Map<String, dynamic>>.from(decoded);
-          xLabels =
-          rangeStatusList.value .map((e) => e["report_date"].toString()).toList();
-          calls = rangeStatusList.value
-              .map((e) => double.parse(e["total_calls"].toString()))
-              .toList();
-
-          mails = rangeStatusList.value
-              .map((e) => double.parse(e["total_mails"].toString()))
-              .toList();
-
-           updates = rangeStatusList.value
-              .map((e) => double.parse(e["total_customers"].toString()))
-              .toList();
-        } else {
-          debugPrint("Unexpected format");
-        }
-
-        debugPrint("rangeStatusList Items: ${rangeStatusList.length}");
-
-      } else {
-        debugPrint("API Error: ${decoded["message"]}");
-      }
-
-    } catch (e) {
-      debugPrint("FLUTTER ERROR => $e");
-    }
-  }
+  RxList<double> updates=<double>[].obs;
+  RxList<double> mails=<double>[].obs;
+  RxList<double> calls=<double>[].obs;
+  RxList<String> xLabels=<String>[].obs;
+  // Future<void> getRangeStatus() async {
+  //   try {
+  //
+  //     rangeStatusList.clear();
+  //     Map data = {
+  //       "action": "get_data",
+  //       "search_type": "range_report",
+  //       "id": controllers.storage.read("id"),
+  //       "role": controllers.storage.read("role"),
+  //       "date": controllers.storage.read("role"),
+  //       "cos_id": controllers.storage.read("cos_id"),
+  //     };
+  //     final request = await http.post(Uri.parse(scriptApi),
+  //         headers: {
+  //           'X-API-TOKEN': "${TokenStorage().readToken()}",
+  //           'Content-Type': 'application/json',
+  //         },
+  //         body: jsonEncode(data),
+  //         encoding: Encoding.getByName("utf-8"));
+  //
+  //     debugPrint("STATUS CODE range_report: ${request.statusCode}");
+  //     debugPrint("RAW RESPONSE: ${data}");
+  //     debugPrint("RAW RESPONSE: ${request.body}");
+  //     if (request.statusCode == 401) {
+  //       final refreshed = await controllers.refreshToken();
+  //       if (refreshed) {
+  //         return getRangeStatus();
+  //       } else {
+  //         controllers.setLogOut();
+  //       }
+  //     }
+  //     if (request.statusCode != 200) {
+  //       // debugPrint("SERVER ERROR");
+  //       return;
+  //     }
+  //
+  //     final decoded = jsonDecode(request.body);
+  //
+  //     // ✅ Safety check
+  //     if (request.statusCode==200) {
+  //       var decoded = json.decode(request.body);
+  //
+  //       if (decoded is List) {
+  //         // rangeStatusList.value = List<Map<String, dynamic>>.from(decoded);
+  //         // xLabels = rangeStatusList.value .map((e) => e["report_date"].toString()).toList();
+  //         // calls = rangeStatusList.value .map((e) => double.parse(e["total_calls"].toString())).toList();
+  //         //
+  //         // mails = rangeStatusList.value.map((e) => double.parse(e["total_mails"].toString())).toList();
+  //         //
+  //         //  updates = rangeStatusList.value
+  //         //     .map((e) => double.parse(e["total_customers"].toString())).toList();
+  //       } else {
+  //         debugPrint("Unexpected format");
+  //       }
+  //
+  //       debugPrint("rangeStatusList Items: ${rangeStatusList.length}");
+  //
+  //     } else {
+  //       debugPrint("API Error: ${decoded["message"]}");
+  //     }
+  //
+  //   } catch (e) {
+  //     debugPrint("FLUTTER ERROR => $e");
+  //   }
+  // }
 
   RxList<Map<String, dynamic>> industriesList =
       <Map<String, dynamic>>[].obs;
@@ -4193,7 +4186,7 @@ var otp = "".obs,sentOtp = "".obs;
         }
         controllers.selectedIndex.value=int.parse(data!.leadStatus.toString());
         controllers.selectedQualifiedSortBy.value="All";
-        dashController.getDashboardReport();
+        dashController.getWholeReport();
         controllers.leadCategoryList.refresh();
         controllers.btnController.reset();
         Get.to(NewLeadPage(index: data.leadStatus ,

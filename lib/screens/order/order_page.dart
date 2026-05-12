@@ -26,6 +26,720 @@ class OrderPage extends StatefulWidget {
   State<OrderPage> createState() => _OrderPageState();
 }
 
+// class _OrderPageState extends State<OrderPage> {
+//   @override
+//   void initState() {
+//     super.initState();
+//     _focusNode = FocusNode();
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       _focusNode.requestFocus();
+//     });
+//     Future.delayed(Duration.zero,(){
+//       productCtr.filterAndSortOrders(
+//         searchText: controllers.searchText.value.toLowerCase(),
+//         sortField: controllers.sortFieldCallActivity.value,
+//         sortOrder: controllers.sortOrderCallActivity.value,
+//         selectedMonth: productCtr.selectedCallMonth.value,
+//         selectedRange: productCtr.selectedCallRange.value,
+//         selectedDateFilter: productCtr.selectedCallSortBy.value,
+//       );
+//     });
+//   }
+//   List<double> colWidths = [
+//     150,//o no
+//     200,//status
+//     350,//com
+//     350,//cus
+//     150,//amt
+//     200,//o date
+//     200,//invo
+//   ];
+//   Widget headerCell(int index, Widget child) {
+//     return Stack(
+//       children: [
+//         Container(
+//           padding: const EdgeInsets.all(10),
+//           alignment: index==0?Alignment.center:Alignment.centerLeft,
+//           child: child,
+//         ),
+//         Positioned(
+//           right: 0,
+//           top: 0,
+//           bottom: 0,
+//           width: 10,
+//           child: GestureDetector(
+//             behavior: HitTestBehavior.translucent,
+//             onHorizontalDragUpdate: (details) {
+//               setState(() {
+//                 colWidths[index] += details.delta.dx;
+//                 if (colWidths[index] < 60) colWidths[index] = 60;
+//               });
+//             },
+//             child: MouseRegion(
+//               cursor: SystemMouseCursors.resizeColumn,
+//               child: Container(color: Colors.transparent),
+//             ),
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+//   bool dateCheck() {
+//     return controllers.stDate.value !=
+//         "${DateTime.now().day.toString().padLeft(2, "0")}"
+//             "-${DateTime.now().month.toString().padLeft(2, "0")}"
+//             "-${DateTime.now().year.toString()}";
+//   }
+//   late FocusNode _focusNode;
+//   final ScrollController _controller = ScrollController();
+//   final ScrollController _horizontalController = ScrollController();
+//
+//   @override
+//   void dispose() {
+//     _focusNode.dispose();
+//     _controller.dispose();
+//     _horizontalController.dispose();
+//     super.dispose();
+//   }
+//   void _handleKeyEvent(KeyEvent event) {
+//     if (event is KeyDownEvent) {
+//       const double horizontalScrollAmount = 60.0;
+//       const double verticalScrollAmount = 50.0; // Adjust for row height
+//
+//       // --- HORIZONTAL SCROLLING ---
+//       if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+//         _horizontalController.animateTo(
+//           (_horizontalController.offset + horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+//           duration: const Duration(milliseconds: 100),
+//           curve: Curves.linear,
+//         );
+//       } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+//         _horizontalController.animateTo(
+//           (_horizontalController.offset - horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+//           duration: const Duration(milliseconds: 100),
+//           curve: Curves.linear,
+//         );
+//       }
+//
+//       // --- VERTICAL SCROLLING (Add this part) ---
+//       else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+//         _controller.animateTo(
+//           (_controller.offset + verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+//           duration: const Duration(milliseconds: 100),
+//           curve: Curves.linear,
+//         );
+//       } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+//         _controller.animateTo(
+//           (_controller.offset - verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+//           duration: const Duration(milliseconds: 100),
+//           curve: Curves.linear,
+//         );
+//       }
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final Map<int, TableColumnWidth> tableWidthMap = {
+//       for (int i = 0; i < colWidths.length; i++) i: FixedColumnWidth(colWidths[i])
+//     };
+//
+//     double totalTableWidth = colWidths.reduce((a, b) => a + b);
+//     return SelectionArea(
+//       child: Scaffold(
+//         body: Row(
+//           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//           children: [
+//             SideBar(),
+//             Obx(()=>Container(
+//               width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+//               height: MediaQuery.of(context).size.height,
+//               alignment: Alignment.center,
+//               padding: EdgeInsets.fromLTRB(20, 5, 20, 16),
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Column(
+//                         crossAxisAlignment: CrossAxisAlignment.start,
+//                         mainAxisAlignment: MainAxisAlignment.center,
+//                         children: [
+//                           CustomText(
+//                             text: "Orders",
+//                             colors: colorsConst.textColor,
+//                             size: 20,
+//                             isBold: true,
+//                             isCopy: true,
+//                           ),
+//                           10.height,
+//                           CustomText(
+//                             text: "View all of your Orders Details",
+//                             colors: colorsConst.textColor,
+//                             size: 14,
+//                             isCopy: true,
+//                           ),
+//                         ],
+//                       ),
+//                     ],
+//                   ),
+//                   10.height,
+//                   Divider(
+//                     thickness: 1.5,
+//                     color: colorsConst.secondary,
+//                   ),
+//                   10.height,
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       CustomSearchTextField(
+//                         controller: controllers.search,
+//                         hintText: "Search Product Name",
+//                         onChanged: (value) {
+//                           controllers.searchText.value = value.toString().trim();
+//                           setState(() {
+//                             final suggestions=productCtr.ordersList2.where(
+//                                     (user){
+//                                   final customerName = user.customerName.toString().toLowerCase();
+//                                   final customerNo = user.totalAmt.toString().toLowerCase();
+//                                   final input = value.toString().toLowerCase().trim();
+//                                   return customerName.contains(input) || customerNo.contains(input);
+//                                 }).toList();
+//                             productCtr.ordersList.value=suggestions;
+//                           });
+//                         },
+//                       ),
+//                       DateFilterBar(
+//                         selectedSortBy: productCtr.selectedCallSortBy,
+//                         selectedRange: productCtr.selectedCallRange,
+//                         selectedMonth: productCtr.selectedCallMonth,
+//                         focusNode: _focusNode,
+//                         onDaysSelected: () {
+//                           productCtr.filterAndSortOrders(
+//                             searchText: controllers.searchText.value.toLowerCase(),
+//                             sortField: controllers.sortFieldCallActivity.value,
+//                             sortOrder: controllers.sortOrderCallActivity.value,
+//                             selectedMonth: productCtr.selectedCallMonth.value,
+//                             selectedRange: productCtr.selectedCallRange.value,
+//                             selectedDateFilter: productCtr.selectedCallSortBy.value,
+//                           );
+//                         },
+//                         onSelectMonth: () {
+//                           remController.selectMonth(
+//                             context,
+//                             productCtr.selectedCallSortBy,
+//                             productCtr.selectedCallMonth,
+//                                 () {
+//                               productCtr.filterAndSortOrders(
+//                                 searchText: controllers.searchText.value.toLowerCase(),
+//                                 sortField: controllers.sortFieldCallActivity.value,
+//                                 sortOrder: controllers.sortOrderCallActivity.value,
+//                                 selectedMonth: productCtr.selectedCallMonth.value,
+//                                 selectedRange: productCtr.selectedCallRange.value,
+//                                 selectedDateFilter: productCtr.selectedCallSortBy.value,
+//                               );
+//                             },
+//                           );
+//                         },
+//                         onSelectDateRange: (ctx) {
+//                           remController.showDatePickerDialog(ctx, (pickedRange) {
+//                             productCtr.selectedCallRange.value = pickedRange;
+//                             productCtr.filterAndSortOrders(
+//                               searchText: controllers.searchText.value.toLowerCase(),
+//                               sortField: controllers.sortFieldCallActivity.value,
+//                               sortOrder: controllers.sortOrderCallActivity.value,
+//                               selectedMonth: productCtr.selectedCallMonth.value,
+//                               selectedRange: productCtr.selectedCallRange.value,
+//                               selectedDateFilter: productCtr.selectedCallSortBy.value,
+//                             );
+//                           });
+//                         },
+//                       )
+//                     ],
+//                   ),
+//                   10.height,
+//
+//                   Expanded(
+//                     child: KeyboardListener(
+//                       focusNode: _focusNode,
+//                       autofocus: true,
+//                       onKeyEvent: _handleKeyEvent,
+//                       child: Scrollbar(
+//                         controller: _horizontalController,
+//                         thumbVisibility: true,
+//                         child: NotificationListener<ScrollNotification>(
+//                           onNotification: (scrollNotification) {
+//                             _focusNode.requestFocus();
+//                             return false;
+//                           },
+//                           child: SingleChildScrollView(
+//                             controller: _horizontalController,
+//                             scrollDirection: Axis.horizontal,
+//                             child: SizedBox(
+//                               width: totalTableWidth,
+//                               child: Column(
+//                                 children: [
+//                                   // HEADER
+//                                   Table(
+//                                     columnWidths: tableWidthMap,
+//                                     border: TableBorder(
+//                                       horizontalInside: BorderSide(
+//                                           width: 0.5,
+//                                           color: Colors.grey.shade400),
+//                                       verticalInside: BorderSide(width: 0.5,
+//                                           color: Colors.grey.shade400),
+//                                     ),
+//                                     children: [
+//                                       TableRow(
+//                                           decoration: BoxDecoration(
+//                                               color: colorsConst.primary,
+//                                               borderRadius: const BorderRadius.only(
+//                                                   topLeft: Radius.circular(5),
+//                                                   topRight: Radius.circular(5))),
+//                                           children: [
+//                                             headerCell(0, Row(
+//                                               children: [
+//                                                 CustomText(//2
+//                                                   textAlign: TextAlign.left,
+//                                                   text: "Order No",
+//                                                   size: 15,
+//                                                   isBold: true,
+//                                                   isCopy: true,
+//                                                   colors: Colors.white,
+//                                                 ),
+//                                                 3.width,
+//                                                 GestureDetector(
+//                                                   onTap: (){
+//                                                     if(controllers.sortFieldCallActivity.value=='number' && controllers.sortOrderCallActivity.value=='asc'){
+//                                                       controllers.sortOrderCallActivity.value='desc';
+//                                                     }else{
+//                                                       controllers.sortOrderCallActivity.value='asc';
+//                                                     }
+//                                                     controllers.sortFieldCallActivity.value='number';
+//                                                     productCtr.filterAndSortOrders(
+//                                                       searchText: controllers.searchText.value.toLowerCase(),
+//                                                       sortField: controllers.sortFieldCallActivity.value,
+//                                                       sortOrder: controllers.sortOrderCallActivity.value,
+//                                                       selectedMonth: productCtr.selectedCallMonth.value,
+//                                                       selectedRange: productCtr.selectedCallRange.value,
+//                                                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+//                                                     );
+//                                                   },
+//                                                   child: Obx(() => Image.asset(
+//                                                     controllers.sortFieldCallActivity.value.isEmpty
+//                                                         ? "assets/images/arrow.png"
+//                                                         : controllers.sortOrderCallActivity.value == 'asc'
+//                                                         ? "assets/images/arrow_up.png"
+//                                                         : "assets/images/arrow_down.png",
+//                                                     width: 15,
+//                                                     height: 15,
+//                                                   ),
+//                                                   ),
+//                                                 ),
+//                                               ],
+//                                             ),),
+//                                             headerCell(1, Row(
+//                                               children: [
+//                                                 CustomText(
+//                                                   textAlign: TextAlign.left,
+//                                                   text: "Status",
+//                                                   size: 15,
+//                                                   isBold: true,
+//                                                   isCopy: true,
+//                                                   colors: Colors.white,
+//                                                 ),
+//                                                 3.width,
+//                                                 GestureDetector(
+//                                                   onTap: (){
+//                                                     if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
+//                                                       controllers.sortOrderCallActivity.value='desc';
+//                                                     }else{
+//                                                       controllers.sortOrderCallActivity.value='asc';
+//                                                     }
+//                                                     controllers.sortFieldCallActivity.value='status';
+//                                                     productCtr.filterAndSortOrders(
+//                                                       searchText: controllers.searchText.value.toLowerCase(),
+//                                                       sortField: controllers.sortFieldCallActivity.value,
+//                                                       sortOrder: controllers.sortOrderCallActivity.value,
+//                                                       selectedMonth: productCtr.selectedCallMonth.value,
+//                                                       selectedRange: productCtr.selectedCallRange.value,
+//                                                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+//                                                     );
+//                                                   },
+//                                                   child: Obx(() => Image.asset(
+//                                                     controllers.sortFieldCallActivity.value.isEmpty
+//                                                         ? "assets/images/arrow.png"
+//                                                         : controllers.sortOrderCallActivity.value == 'asc'
+//                                                         ? "assets/images/arrow_up.png"
+//                                                         : "assets/images/arrow_down.png",
+//                                                     width: 15,
+//                                                     height: 15,
+//                                                   ),
+//                                                   ),
+//                                                 ),
+//                                               ],
+//                                             ),),
+//                                             headerCell(2, Row(
+//                                               children: [
+//                                                 CustomText(//2
+//                                                   textAlign: TextAlign.left,
+//                                                   text: "Company Name",
+//                                                   size: 15,
+//                                                   isBold: true,
+//                                                   isCopy: true,
+//                                                   colors: Colors.white,
+//                                                 ),
+//                                                 3.width,
+//                                                 GestureDetector(
+//                                                   onTap: (){
+//                                                     if(controllers.sortFieldCallActivity.value=='company' && controllers.sortOrderCallActivity.value=='asc'){
+//                                                       controllers.sortOrderCallActivity.value='desc';
+//                                                     }else{
+//                                                       controllers.sortOrderCallActivity.value='asc';
+//                                                     }
+//                                                     controllers.sortFieldCallActivity.value='company';
+//                                                     productCtr.filterAndSortOrders(
+//                                                       searchText: controllers.searchText.value.toLowerCase(),
+//                                                       sortField: controllers.sortFieldCallActivity.value,
+//                                                       sortOrder: controllers.sortOrderCallActivity.value,
+//                                                       selectedMonth: productCtr.selectedCallMonth.value,
+//                                                       selectedRange: productCtr.selectedCallRange.value,
+//                                                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+//                                                     );
+//                                                   },
+//                                                   child: Obx(() => Image.asset(
+//                                                     controllers.sortFieldCallActivity.value.isEmpty
+//                                                         ? "assets/images/arrow.png"
+//                                                         : controllers.sortOrderCallActivity.value == 'asc'
+//                                                         ? "assets/images/arrow_up.png"
+//                                                         : "assets/images/arrow_down.png",
+//                                                     width: 15,
+//                                                     height: 15,
+//                                                   ),
+//                                                   ),
+//                                                 ),
+//                                               ],
+//                                             ),),
+//                                             headerCell(3, Row(
+//                                               children: [
+//                                                 CustomText(//2
+//                                                   textAlign: TextAlign.left,
+//                                                   text: "Customer Name",
+//                                                   size: 15,
+//                                                   isBold: true,
+//                                                   isCopy: true,
+//                                                   colors: Colors.white,
+//                                                 ),
+//                                                 3.width,
+//                                                 GestureDetector(
+//                                                   onTap: (){
+//                                                     if(controllers.sortFieldCallActivity.value=='name' && controllers.sortOrderCallActivity.value=='asc'){
+//                                                       controllers.sortOrderCallActivity.value='desc';
+//                                                     }else{
+//                                                       controllers.sortOrderCallActivity.value='asc';
+//                                                     }
+//                                                     controllers.sortFieldCallActivity.value='name';
+//                                                     productCtr.filterAndSortOrders(
+//                                                       searchText: controllers.searchText.value.toLowerCase(),
+//                                                       sortField: controllers.sortFieldCallActivity.value,
+//                                                       sortOrder: controllers.sortOrderCallActivity.value,
+//                                                       selectedMonth: productCtr.selectedCallMonth.value,
+//                                                       selectedRange: productCtr.selectedCallRange.value,
+//                                                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+//                                                     );
+//                                                   },
+//                                                   child: Obx(() => Image.asset(
+//                                                     controllers.sortFieldCallActivity.value.isEmpty
+//                                                         ? "assets/images/arrow.png"
+//                                                         : controllers.sortOrderCallActivity.value == 'asc'
+//                                                         ? "assets/images/arrow_up.png"
+//                                                         : "assets/images/arrow_down.png",
+//                                                     width: 15,
+//                                                     height: 15,
+//                                                   ),
+//                                                   ),
+//                                                 ),
+//                                               ],
+//                                             ),),
+//                                             headerCell(4, Row(
+//                                               children: [
+//                                                 CustomText(
+//                                                   textAlign: TextAlign.left,
+//                                                   text: "Total Amount",
+//                                                   size: 15,
+//                                                   isBold: true,
+//                                                   isCopy: true,
+//                                                   colors: Colors.white,
+//                                                 ),
+//                                                 3.width,
+//                                                 GestureDetector(
+//                                                   onTap: (){
+//                                                     if(controllers.sortFieldCallActivity.value=='amt' && controllers.sortOrderCallActivity.value=='asc'){
+//                                                       controllers.sortOrderCallActivity.value='desc';
+//                                                     }else{
+//                                                       controllers.sortOrderCallActivity.value='asc';
+//                                                     }
+//                                                     controllers.sortFieldCallActivity.value='amt';
+//                                                     productCtr.filterAndSortOrders(
+//                                                       searchText: controllers.searchText.value.toLowerCase(),
+//                                                       sortField: controllers.sortFieldCallActivity.value,
+//                                                       sortOrder: controllers.sortOrderCallActivity.value,
+//                                                       selectedMonth: productCtr.selectedCallMonth.value,
+//                                                       selectedRange: productCtr.selectedCallRange.value,
+//                                                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+//                                                     );
+//                                                   },
+//                                                   child: Obx(() => Image.asset(
+//                                                     controllers.sortFieldCallActivity.value.isEmpty
+//                                                         ? "assets/images/arrow.png"
+//                                                         : controllers.sortOrderCallActivity.value == 'asc'
+//                                                         ? "assets/images/arrow_up.png"
+//                                                         : "assets/images/arrow_down.png",
+//                                                     width: 15,
+//                                                     height: 15,
+//                                                   ),
+//                                                   ),
+//                                                 ),
+//                                               ],
+//                                             ),),
+//                                             headerCell(5, Row(
+//                                               children: [
+//                                                 CustomText(
+//                                                   textAlign: TextAlign.left,
+//                                                   text: "Order Date",
+//                                                   size: 15,
+//                                                   isBold: true,
+//                                                   isCopy: true,
+//                                                   colors: Colors.white,
+//                                                 ),
+//                                                 3.width,
+//                                                 GestureDetector(
+//                                                   onTap: (){
+//                                                     if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
+//                                                       controllers.sortOrderCallActivity.value='desc';
+//                                                     }else{
+//                                                       controllers.sortOrderCallActivity.value='asc';
+//                                                     }
+//                                                     controllers.sortFieldCallActivity.value='date';
+//                                                     productCtr.filterAndSortOrders(
+//                                                       searchText: controllers.searchText.value.toLowerCase(),
+//                                                       sortField: controllers.sortFieldCallActivity.value,
+//                                                       sortOrder: controllers.sortOrderCallActivity.value,
+//                                                       selectedMonth: productCtr.selectedCallMonth.value,
+//                                                       selectedRange: productCtr.selectedCallRange.value,
+//                                                       selectedDateFilter: productCtr.selectedCallSortBy.value,
+//                                                     );
+//                                                   },
+//                                                   child: Obx(() => Image.asset(
+//                                                     controllers.sortFieldCallActivity.value.isEmpty
+//                                                         ? "assets/images/arrow.png"
+//                                                         : controllers.sortOrderCallActivity.value == 'asc'
+//                                                         ? "assets/images/arrow_up.png"
+//                                                         : "assets/images/arrow_down.png",
+//                                                     width: 15,
+//                                                     height: 15,
+//                                                   ),
+//                                                   ),
+//                                                 ),
+//                                               ],
+//                                             ),),
+//                                             headerCell(6, CustomText(//4
+//                                               textAlign: TextAlign.left,
+//                                               text: "Order Details",
+//                                               size: 15,
+//                                               isBold: true,
+//                                               isCopy: true,
+//                                               colors: Colors.white,
+//                                             ),),
+//                                           ]),
+//                                     ],
+//                                   ),
+//                                   // BODY LIST
+//                                   Expanded(
+//                                     child: Obx(() {
+//                                       if (productCtr.paginatedOrdersItems.isEmpty) {
+//                                         return const Center(
+//                                             child: Text("No Data Found"));
+//                                       }
+//                                       return ListView.builder(
+//                                         controller: _controller,
+//                                         itemCount: productCtr.paginatedOrdersItems
+//                                             .length,
+//                                         itemBuilder: (context, index) {
+//                                           var data = productCtr.paginatedOrdersItems[index];
+//                                           return Table(
+//                                             columnWidths: tableWidthMap,
+//                                             border: TableBorder(
+//                                               horizontalInside: BorderSide(
+//                                                   width: 0.5,
+//                                                   color: Colors.grey
+//                                                       .shade400),
+//                                               verticalInside: BorderSide(
+//                                                   width: 0.5,
+//                                                   color: Colors.grey
+//                                                       .shade400),
+//                                               bottom: BorderSide(width: 0.5,
+//                                                   color: Colors.grey
+//                                                       .shade400),
+//                                             ),
+//                                             children: [
+//                                               TableRow(
+//                                                   decoration: BoxDecoration(
+//                                                     color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+//                                                   ),
+//                                                   children:[
+//                                                     Tooltip(
+//                                                       message: data.orderId.toString()=="null"?"":data.orderId.toString(),
+//                                                       child: Padding(
+//                                                         padding: const EdgeInsets.all(10.0),
+//                                                         child: CustomText(
+//                                                           textAlign: TextAlign.left,
+//                                                           text:data.orderId.toString()=="null"?"":data.orderId.toString(),
+//                                                           size: 14,
+//                                                           isCopy: true,
+//                                                           colors: colorsConst.textColor,
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//                                                     Padding(
+//                                                       padding: const EdgeInsets.all(10.0),
+//                                                       child: CustomText(
+//                                                         textAlign: TextAlign.left,
+//                                                         text: data.status.toString(),
+//                                                         size: 14,
+//                                                         isCopy: true,
+//                                                         colors:data.status.toString()=="Completed"?Colors.green:colorsConst.textColor,
+//                                                       ),
+//                                                     ),
+//                                                     Tooltip(
+//                                                       message: data.companyName.toString()=="null"?"":data.companyName.toString(),
+//                                                       child: Padding(
+//                                                         padding: const EdgeInsets.all(10.0),
+//                                                         child: CustomText(
+//                                                           textAlign: TextAlign.left,
+//                                                           text: data.companyName.toString(),
+//                                                           size: 14,
+//                                                           isCopy: true,
+//                                                           colors:colorsConst.textColor,
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//                                                     Tooltip(
+//                                                       message: data.customerName.toString()=="null"?"":data.customerName.toString(),
+//                                                       child: Padding(
+//                                                         padding: const EdgeInsets.all(10.0),
+//                                                         child: CustomText(
+//                                                           textAlign: TextAlign.left,
+//                                                           text: data.customerName.toString(),
+//                                                           size: 14,
+//                                                           isCopy: true,
+//                                                           colors:colorsConst.textColor,
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//                                                     Tooltip(
+//                                                       message: productCtr.formatAmount(data.totalAmt.toString()),
+//                                                       child: Padding(
+//                                                         padding: const EdgeInsets.all(10.0),
+//                                                         child: CustomText(
+//                                                           textAlign: TextAlign.left,
+//                                                           text: productCtr.formatAmount(data.totalAmt.toString()),
+//                                                           size: 14,
+//                                                           isCopy: true,
+//                                                           colors:colorsConst.textColor,
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//                                                     Tooltip(
+//                                                       message: productCtr.formatDateTime(data.createdTs.toString()),
+//                                                       child: Padding(
+//                                                         padding: const EdgeInsets.all(10.0),
+//                                                         child: CustomText(
+//                                                           textAlign: TextAlign.left,
+//                                                           text: productCtr.fixedDateTime(data.createdTs.toString()),
+//                                                           size: 14,
+//                                                           isCopy: true,
+//                                                           colors:colorsConst.textColor,
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//                                                     InkWell(
+//                                                       onTap:(){
+//                                                         showDialog(
+//                                                           context: context,
+//                                                           builder: (_) => OrderInvoiceDialog(order: data),
+//                                                         );
+//                                                       },
+//                                                       child: SizedBox(
+//                                                         // decoration: customDecoration.baseBackgroundDecoration(
+//                                                         //   color: colorsConst.primary,radius: 10
+//                                                         // ),
+//                                                         height: 50,
+//                                                         width:50,
+//                                                         child: Padding(
+//                                                           padding: const EdgeInsets.all(8.0),
+//                                                           child: Row(
+//                                                             mainAxisAlignment: MainAxisAlignment.center,
+//                                                             children: [
+//                                                               Icon(Icons.print,color: colorsConst.primary),5.width,
+//                                                               CustomText(text: "View Order", isCopy: false,colors: colorsConst.primary),
+//                                                             ],
+//                                                           ),
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//                                                   ]
+//                                               ),
+//                                             ],
+//                                           );
+//                                         },
+//                                       );
+//                                     }),
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                   20.height,
+//                   Row(
+//                     mainAxisAlignment: MainAxisAlignment.end,
+//                     children: [
+//                       PaginationWidget(
+//                         currentPage: productCtr.currentOrdersPage,
+//                         totalPages:(productCtr.paginatedOrdersItems.length / productCtr.itemsOrdersPerPage).ceil(),
+//                         onPageChanged: (page) {
+//                           setState(() {
+//                             productCtr.currentOrdersPage = page;
+//                           });
+//                         },
+//                       ),
+//                     ],
+//                   ),
+//                   20.height,
+//                 ],
+//               ),
+//             )),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   Widget valueCell(String text) {
+//     return Container(
+//       height: 45,
+//       alignment: Alignment.center,
+//       child: CustomText(
+//         text:text,isCopy: false,
+//       ),
+//     );
+//   }
+// }
 class _OrderPageState extends State<OrderPage> {
   @override
   void initState() {
@@ -45,12 +759,50 @@ class _OrderPageState extends State<OrderPage> {
       );
     });
   }
+  List<Map<String, dynamic>> columns = [
+    {
+      "key": "order_no",
+      "title": "Order No",
+      "width": 150.0,
+    },
+    {
+      "key": "status",
+      "title": "Status",
+      "width": 200.0,
+    },
+    {
+      "key": "company",
+      "title": "Company Name",
+      "width": 350.0,
+    },
+    {
+      "key": "customer",
+      "title": "Customer Name",
+      "width": 350.0,
+    },
+    {
+      "key": "amount",
+      "title": "Total Amount",
+      "width": 150.0,
+    },
+    {
+      "key": "date",
+      "title": "Order Date",
+      "width": 200.0,
+    },
+    {
+      "key": "details",
+      "title": "Order Details",
+      "width": 200.0,
+    },
+  ];
   Widget headerCell(int index, Widget child) {
     return Stack(
       children: [
         Container(
           padding: const EdgeInsets.all(10),
-          alignment: index==0?Alignment.center:Alignment.centerLeft,
+          alignment:
+          index == 0 ? Alignment.center : Alignment.centerLeft,
           child: child,
         ),
         Positioned(
@@ -62,8 +814,11 @@ class _OrderPageState extends State<OrderPage> {
             behavior: HitTestBehavior.translucent,
             onHorizontalDragUpdate: (details) {
               setState(() {
-                // colWidths[index] += details.delta.dx;
-                // if (colWidths[index] < 60) colWidths[index] = 60;
+                columns[index]["width"] += details.delta.dx;
+
+                if (columns[index]["width"] < 60) {
+                  columns[index]["width"] = 60.0;
+                }
               });
             },
             child: MouseRegion(
@@ -83,9 +838,63 @@ class _OrderPageState extends State<OrderPage> {
   }
   late FocusNode _focusNode;
   final ScrollController _controller = ScrollController();
+  final ScrollController _horizontalController = ScrollController();
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _controller.dispose();
+    _horizontalController.dispose();
+    super.dispose();
+  }
+  void _handleKeyEvent(KeyEvent event) {
+    if (event is KeyDownEvent) {
+      const double horizontalScrollAmount = 60.0;
+      const double verticalScrollAmount = 50.0; // Adjust for row height
+
+      // --- HORIZONTAL SCROLLING ---
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        _horizontalController.animateTo(
+          (_horizontalController.offset + horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        _horizontalController.animateTo(
+          (_horizontalController.offset - horizontalScrollAmount).clamp(0.0, _horizontalController.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      }
+
+      // --- VERTICAL SCROLLING (Add this part) ---
+      else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+        _controller.animateTo(
+          (_controller.offset + verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+        _controller.animateTo(
+          (_controller.offset - verticalScrollAmount).clamp(0.0, _controller.position.maxScrollExtent),
+          duration: const Duration(milliseconds: 100),
+          curve: Curves.linear,
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final Map<int, TableColumnWidth> tableWidthMap = {
+      for (int i = 0; i < columns.length; i++)
+        i: FixedColumnWidth(columns[i]["width"])
+    };
+
+    double totalTableWidth = columns.fold(
+      0.0,
+          (sum, item) => sum + item["width"],
+    );
     return SelectionArea(
       child: Scaffold(
         body: Row(
@@ -200,459 +1009,610 @@ class _OrderPageState extends State<OrderPage> {
                     ],
                   ),
                   10.height,
-                  SizedBox(
-                    width: controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
-                    child: Table(
-                      columnWidths: const {
-                        0: FixedColumnWidth(150),//o no
-                        1: FlexColumnWidth(2),//com
-                        2: FlexColumnWidth(2),//cus
-                        3: FlexColumnWidth(1),//amt
-                        4: FlexColumnWidth(1),//o date
-                        5: FlexColumnWidth(1),//invo
-                        6: FlexColumnWidth(1),//status
-                      },
-                      border: TableBorder(
-                        horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                        verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                      ),
-                      children: [
-                        TableRow(
-                            decoration: BoxDecoration(
-                                color: colorsConst.primary,
-                                borderRadius: const BorderRadius.only(
-                                    topLeft: Radius.circular(5),
-                                    topRight: Radius.circular(5))),
-                            children: [
-                              headerCell(2, Row(
-                                children: [
-                                  CustomText(//2
-                                    textAlign: TextAlign.left,
-                                    text: "Order No",
-                                    size: 15,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: Colors.white,
-                                  ),
-                                  3.width,
-                                  GestureDetector(
-                                    onTap: (){
-                                      if(controllers.sortFieldCallActivity.value=='number' && controllers.sortOrderCallActivity.value=='asc'){
-                                        controllers.sortOrderCallActivity.value='desc';
-                                      }else{
-                                        controllers.sortOrderCallActivity.value='asc';
-                                      }
-                                      controllers.sortFieldCallActivity.value='number';
-                                      productCtr.filterAndSortOrders(
-                                        searchText: controllers.searchText.value.toLowerCase(),
-                                        sortField: controllers.sortFieldCallActivity.value,
-                                        sortOrder: controllers.sortOrderCallActivity.value,
-                                        selectedMonth: productCtr.selectedCallMonth.value,
-                                        selectedRange: productCtr.selectedCallRange.value,
-                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                      );
-                                    },
-                                    child: Obx(() => Image.asset(
-                                      controllers.sortFieldCallActivity.value.isEmpty
-                                          ? "assets/images/arrow.png"
-                                          : controllers.sortOrderCallActivity.value == 'asc'
-                                          ? "assets/images/arrow_up.png"
-                                          : "assets/images/arrow_down.png",
-                                      width: 15,
-                                      height: 15,
-                                    ),
-                                    ),
-                                  ),
-                                ],
-                              ),),
-                              headerCell(3, Row(
-                                children: [
-                                  CustomText(//2
-                                    textAlign: TextAlign.left,
-                                    text: "Company Name",
-                                    size: 15,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: Colors.white,
-                                  ),
-                                  3.width,
-                                  GestureDetector(
-                                    onTap: (){
-                                      if(controllers.sortFieldCallActivity.value=='company' && controllers.sortOrderCallActivity.value=='asc'){
-                                        controllers.sortOrderCallActivity.value='desc';
-                                      }else{
-                                        controllers.sortOrderCallActivity.value='asc';
-                                      }
-                                      controllers.sortFieldCallActivity.value='company';
-                                      productCtr.filterAndSortOrders(
-                                        searchText: controllers.searchText.value.toLowerCase(),
-                                        sortField: controllers.sortFieldCallActivity.value,
-                                        sortOrder: controllers.sortOrderCallActivity.value,
-                                        selectedMonth: productCtr.selectedCallMonth.value,
-                                        selectedRange: productCtr.selectedCallRange.value,
-                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                      );
-                                    },
-                                    child: Obx(() => Image.asset(
-                                      controllers.sortFieldCallActivity.value.isEmpty
-                                          ? "assets/images/arrow.png"
-                                          : controllers.sortOrderCallActivity.value == 'asc'
-                                          ? "assets/images/arrow_up.png"
-                                          : "assets/images/arrow_down.png",
-                                      width: 15,
-                                      height: 15,
-                                    ),
-                                    ),
-                                  ),
-                                ],
-                              ),),
-                              headerCell(3, Row(
-                                children: [
-                                  CustomText(//2
-                                    textAlign: TextAlign.left,
-                                    text: "Customer Name",
-                                    size: 15,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: Colors.white,
-                                  ),
-                                  3.width,
-                                  GestureDetector(
-                                    onTap: (){
-                                      if(controllers.sortFieldCallActivity.value=='name' && controllers.sortOrderCallActivity.value=='asc'){
-                                        controllers.sortOrderCallActivity.value='desc';
-                                      }else{
-                                        controllers.sortOrderCallActivity.value='asc';
-                                      }
-                                      controllers.sortFieldCallActivity.value='name';
-                                      productCtr.filterAndSortOrders(
-                                        searchText: controllers.searchText.value.toLowerCase(),
-                                        sortField: controllers.sortFieldCallActivity.value,
-                                        sortOrder: controllers.sortOrderCallActivity.value,
-                                        selectedMonth: productCtr.selectedCallMonth.value,
-                                        selectedRange: productCtr.selectedCallRange.value,
-                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                      );
-                                    },
-                                    child: Obx(() => Image.asset(
-                                      controllers.sortFieldCallActivity.value.isEmpty
-                                          ? "assets/images/arrow.png"
-                                          : controllers.sortOrderCallActivity.value == 'asc'
-                                          ? "assets/images/arrow_up.png"
-                                          : "assets/images/arrow_down.png",
-                                      width: 15,
-                                      height: 15,
-                                    ),
-                                    ),
-                                  ),
-                                ],
-                              ),),
-                              headerCell(4, Row(
-                                children: [
-                                  CustomText(
-                                    textAlign: TextAlign.left,
-                                    text: "Total Amount",
-                                    size: 15,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: Colors.white,
-                                  ),
-                                  3.width,
-                                  GestureDetector(
-                                    onTap: (){
-                                      if(controllers.sortFieldCallActivity.value=='amt' && controllers.sortOrderCallActivity.value=='asc'){
-                                        controllers.sortOrderCallActivity.value='desc';
-                                      }else{
-                                        controllers.sortOrderCallActivity.value='asc';
-                                      }
-                                      controllers.sortFieldCallActivity.value='amt';
-                                      productCtr.filterAndSortOrders(
-                                        searchText: controllers.searchText.value.toLowerCase(),
-                                        sortField: controllers.sortFieldCallActivity.value,
-                                        sortOrder: controllers.sortOrderCallActivity.value,
-                                        selectedMonth: productCtr.selectedCallMonth.value,
-                                        selectedRange: productCtr.selectedCallRange.value,
-                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                      );
-                                    },
-                                    child: Obx(() => Image.asset(
-                                      controllers.sortFieldCallActivity.value.isEmpty
-                                          ? "assets/images/arrow.png"
-                                          : controllers.sortOrderCallActivity.value == 'asc'
-                                          ? "assets/images/arrow_up.png"
-                                          : "assets/images/arrow_down.png",
-                                      width: 15,
-                                      height: 15,
-                                    ),
-                                    ),
-                                  ),
-                                ],
-                              ),),
-                              headerCell(5, Row(
-                                children: [
-                                  CustomText(
-                                    textAlign: TextAlign.left,
-                                    text: "Order Date",
-                                    size: 15,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: Colors.white,
-                                  ),
-                                  3.width,
-                                  GestureDetector(
-                                    onTap: (){
-                                      if(controllers.sortFieldCallActivity.value=='date' && controllers.sortOrderCallActivity.value=='asc'){
-                                        controllers.sortOrderCallActivity.value='desc';
-                                      }else{
-                                        controllers.sortOrderCallActivity.value='asc';
-                                      }
-                                      controllers.sortFieldCallActivity.value='date';
-                                      productCtr.filterAndSortOrders(
-                                        searchText: controllers.searchText.value.toLowerCase(),
-                                        sortField: controllers.sortFieldCallActivity.value,
-                                        sortOrder: controllers.sortOrderCallActivity.value,
-                                        selectedMonth: productCtr.selectedCallMonth.value,
-                                        selectedRange: productCtr.selectedCallRange.value,
-                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                      );
-                                    },
-                                    child: Obx(() => Image.asset(
-                                      controllers.sortFieldCallActivity.value.isEmpty
-                                          ? "assets/images/arrow.png"
-                                          : controllers.sortOrderCallActivity.value == 'asc'
-                                          ? "assets/images/arrow_up.png"
-                                          : "assets/images/arrow_down.png",
-                                      width: 15,
-                                      height: 15,
-                                    ),
-                                    ),
-                                  ),
-                                ],
-                              ),),
-                              headerCell(6, CustomText(//4
-                                textAlign: TextAlign.left,
-                                text: "Order Details",
-                                size: 15,
-                                isBold: true,
-                                isCopy: true,
-                                colors: Colors.white,
-                              ),),
-                              headerCell(5, Row(
-                                children: [
-                                  CustomText(
-                                    textAlign: TextAlign.left,
-                                    text: "Status",
-                                    size: 15,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: Colors.white,
-                                  ),
-                                  3.width,
-                                  GestureDetector(
-                                    onTap: (){
-                                      if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
-                                        controllers.sortOrderCallActivity.value='desc';
-                                      }else{
-                                        controllers.sortOrderCallActivity.value='asc';
-                                      }
-                                      controllers.sortFieldCallActivity.value='status';
-                                      productCtr.filterAndSortOrders(
-                                        searchText: controllers.searchText.value.toLowerCase(),
-                                        sortField: controllers.sortFieldCallActivity.value,
-                                        sortOrder: controllers.sortOrderCallActivity.value,
-                                        selectedMonth: productCtr.selectedCallMonth.value,
-                                        selectedRange: productCtr.selectedCallRange.value,
-                                        selectedDateFilter: productCtr.selectedCallSortBy.value,
-                                      );
-                                    },
-                                    child: Obx(() => Image.asset(
-                                      controllers.sortFieldCallActivity.value.isEmpty
-                                          ? "assets/images/arrow.png"
-                                          : controllers.sortOrderCallActivity.value == 'asc'
-                                          ? "assets/images/arrow_up.png"
-                                          : "assets/images/arrow_down.png",
-                                      width: 15,
-                                      height: 15,
-                                    ),
-                                    ),
-                                  ),
-                                ],
-                              ),),
-                            ]),
-                      ],
-                    ),
-                  ),
-                  /// 🟢 TABLE BODY
+
                   Expanded(
-                      child: Obx((){
-                        return productCtr.paginatedOrdersItems.isEmpty? Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height/2,
-                            alignment: Alignment.center,
-                            child: SvgPicture.asset("assets/images/noDataFound.svg"))
-                            :RawKeyboardListener(
-                          focusNode: _focusNode,
-                          autofocus: true,
-                          onKey: (event) {
-                            if (event is RawKeyDownEvent) {
-                              if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                                _controller.animateTo(
-                                  _controller.offset + 100,
-                                  duration: const Duration(milliseconds: 200),
-                                  curve: Curves.easeInOut,
-                                );
-                              } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                                _controller.animateTo(
-                                  _controller.offset - 100,
-                                  duration: const Duration(milliseconds: 200),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            }
+                    child: KeyboardListener(
+                      focusNode: _focusNode,
+                      autofocus: true,
+                      onKeyEvent: _handleKeyEvent,
+                      child: Scrollbar(
+                        controller: _horizontalController,
+                        thumbVisibility: true,
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: (scrollNotification) {
+                            _focusNode.requestFocus();
+                            return false;
                           },
-                          child: NotificationListener<ScrollNotification>(
-                            onNotification: (scrollNotification) {
-                              _focusNode.requestFocus();
-                              return false;
-                            },
-                            child: ListView.builder(
-                              controller: _controller,
-                              shrinkWrap: true,
-                              physics: const ScrollPhysics(),
-                              itemCount: productCtr.paginatedOrdersItems.length,
-                              itemBuilder: (context, index) {
-                                final data = productCtr.paginatedOrdersItems[index];
-                                return Table(
-                                  columnWidths: const {
-                                    0: FixedColumnWidth(150),//o no
-                                    1: FlexColumnWidth(2),//com
-                                    2: FlexColumnWidth(2),//cus
-                                    3: FlexColumnWidth(1),//amt
-                                    4: FlexColumnWidth(1),//o date
-                                    5: FlexColumnWidth(1),//invo
-                                    6: FlexColumnWidth(1),//status
-                                  },
-                                  border: TableBorder(
-                                    horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                    verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                    bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                  ),
-                                  children:[
-                                    TableRow(
+                          child: SingleChildScrollView(
+                            controller: _horizontalController,
+                            scrollDirection: Axis.horizontal,
+                            child: SizedBox(
+                              width: totalTableWidth,
+                              child: Column(
+                                children: [
+                                  // HEADER
+                                  Table(
+                                    columnWidths: tableWidthMap,
+                                    border: TableBorder(
+                                      horizontalInside: BorderSide(
+                                          width: 0.5,
+                                          color: Colors.grey.shade400),
+                                      verticalInside: BorderSide(width: 0.5,
+                                          color: Colors.grey.shade400),
+                                    ),
+                                    children: [
+                                      TableRow(
                                         decoration: BoxDecoration(
-                                          color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                          color: colorsConst.primary,
+                                          borderRadius: const BorderRadius.only(
+                                            topLeft: Radius.circular(5),
+                                            topRight: Radius.circular(5),
+                                          ),
                                         ),
-                                        children:[
-                                          Tooltip(
-                                            message: data.orderId.toString()=="null"?"":data.orderId.toString(),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(10.0),
-                                              child: CustomText(
-                                                textAlign: TextAlign.left,
-                                                text:data.orderId.toString()=="null"?"":data.orderId.toString(),
-                                                size: 14,
-                                                isCopy: true,
-                                                colors: colorsConst.textColor,
-                                              ),
-                                            ),
-                                          ),
-                                          Tooltip(
-                                            message: data.companyName.toString()=="null"?"":data.companyName.toString(),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(10.0),
-                                              child: CustomText(
-                                                textAlign: TextAlign.left,
-                                                text: data.companyName.toString(),
-                                                size: 14,
-                                                isCopy: true,
-                                                colors:colorsConst.textColor,
-                                              ),
-                                            ),
-                                          ),
-                                          Tooltip(
-                                            message: data.customerName.toString()=="null"?"":data.customerName.toString(),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(10.0),
-                                              child: CustomText(
-                                                textAlign: TextAlign.left,
-                                                text: data.customerName.toString(),
-                                                size: 14,
-                                                isCopy: true,
-                                                colors:colorsConst.textColor,
-                                              ),
-                                            ),
-                                          ),
-                                          Tooltip(
-                                            message: productCtr.formatAmount(data.totalAmt.toString()),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(10.0),
-                                              child: CustomText(
-                                                textAlign: TextAlign.left,
-                                                text: productCtr.formatAmount(data.totalAmt.toString()),
-                                                size: 14,
-                                                isCopy: true,
-                                                colors:colorsConst.textColor,
-                                              ),
-                                            ),
-                                          ),
-                                          Tooltip(
-                                            message: productCtr.formatDateTime(data.createdTs.toString()),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(10.0),
-                                              child: CustomText(
-                                                textAlign: TextAlign.left,
-                                                text: productCtr.fixedDateTime(data.createdTs.toString()),
-                                                size: 14,
-                                                isCopy: true,
-                                                colors:colorsConst.textColor,
-                                              ),
-                                            ),
-                                          ),
-                                          InkWell(
-                                            onTap:(){
-                                              showDialog(
-                                                context: context,
-                                                builder: (_) => OrderInvoiceDialog(order: data),
+                                        children: List.generate(columns.length, (index) {
+
+                                          final column = columns[index];
+
+                                          // return DragTarget<int>(
+                                          //   onAccept: (fromIndex) {
+                                          //
+                                          //     if (fromIndex == index) return;
+                                          //
+                                          //     setState(() {
+                                          //
+                                          //       final movedColumn = columns[fromIndex];
+                                          //
+                                          //       columns.removeAt(fromIndex);
+                                          //
+                                          //       int newIndex = index;
+                                          //
+                                          //       if (fromIndex < index) {
+                                          //         newIndex = index - 1;
+                                          //       }
+                                          //
+                                          //       columns.insert(newIndex, movedColumn);
+                                          //     });
+                                          //   },
+                                          //   builder: (context, candidateData, rejectedData) {
+                                          //     return LongPressDraggable<int>(
+                                          //       data: index,
+                                          //
+                                          //       feedback: Material(
+                                          //         child: Container(
+                                          //           padding: const EdgeInsets.all(10),
+                                          //           color: colorsConst.primary,
+                                          //           child: Text(
+                                          //             column["title"],
+                                          //             style: const TextStyle(
+                                          //               color: Colors.white,
+                                          //               fontWeight: FontWeight.bold,
+                                          //             ),
+                                          //           ),
+                                          //         ),
+                                          //       ),
+                                          //
+                                          //       child: headerCell(
+                                          //         index,
+                                          //         Row(
+                                          //           children: [
+                                          //
+                                          //             Expanded(
+                                          //               child: CustomText(
+                                          //                 textAlign: TextAlign.left,
+                                          //                 text: column["title"],
+                                          //                 size: 15,
+                                          //                 isBold: true,
+                                          //                 isCopy: true,
+                                          //                 colors: Colors.white,
+                                          //               ),
+                                          //             ),
+                                          //
+                                          //             GestureDetector(
+                                          //               onTap: () {
+                                          //
+                                          //                 String sortKey = "";
+                                          //
+                                          //                 switch (column["key"]) {
+                                          //                   case "order_no":
+                                          //                     sortKey = "number";
+                                          //                     break;
+                                          //
+                                          //                   case "status":
+                                          //                     sortKey = "status";
+                                          //                     break;
+                                          //
+                                          //                   case "company":
+                                          //                     sortKey = "company";
+                                          //                     break;
+                                          //
+                                          //                   case "customer":
+                                          //                     sortKey = "name";
+                                          //                     break;
+                                          //
+                                          //                   case "amount":
+                                          //                     sortKey = "amt";
+                                          //                     break;
+                                          //
+                                          //                   case "date":
+                                          //                     sortKey = "date";
+                                          //                     break;
+                                          //                 }
+                                          //
+                                          //                 if (sortKey.isNotEmpty) {
+                                          //
+                                          //                   if (controllers.sortFieldCallActivity.value ==
+                                          //                       sortKey &&
+                                          //                       controllers.sortOrderCallActivity.value ==
+                                          //                           'asc') {
+                                          //                     controllers.sortOrderCallActivity.value =
+                                          //                     'desc';
+                                          //                   } else {
+                                          //                     controllers.sortOrderCallActivity.value =
+                                          //                     'asc';
+                                          //                   }
+                                          //
+                                          //                   controllers.sortFieldCallActivity.value =
+                                          //                       sortKey;
+                                          //
+                                          //                   productCtr.filterAndSortOrders(
+                                          //                     searchText: controllers.searchText.value
+                                          //                         .toLowerCase(),
+                                          //                     sortField: controllers
+                                          //                         .sortFieldCallActivity.value,
+                                          //                     sortOrder: controllers
+                                          //                         .sortOrderCallActivity.value,
+                                          //                     selectedMonth:
+                                          //                     productCtr.selectedCallMonth.value,
+                                          //                     selectedRange:
+                                          //                     productCtr.selectedCallRange.value,
+                                          //                     selectedDateFilter:
+                                          //                     productCtr.selectedCallSortBy.value,
+                                          //                   );
+                                          //                 }
+                                          //               },
+                                          //               child: Obx(
+                                          //                     () => Image.asset(
+                                          //                   controllers
+                                          //                       .sortFieldCallActivity.value.isEmpty
+                                          //                       ? "assets/images/arrow.png"
+                                          //                       : controllers.sortOrderCallActivity
+                                          //                       .value ==
+                                          //                       'asc'
+                                          //                       ? "assets/images/arrow_up.png"
+                                          //                       : "assets/images/arrow_down.png",
+                                          //                   width: 15,
+                                          //                   height: 15,
+                                          //                 ),
+                                          //               ),
+                                          //             ),
+                                          //           ],
+                                          //         ),
+                                          //       ),
+                                          //     );
+                                          //   },
+                                          // );
+                                          return DragTarget<int>(
+
+                                            onWillAccept: (fromIndex) => fromIndex != index,
+
+                                            onAccept: (fromIndex) {
+
+                                              if (fromIndex == index) return;
+
+                                              setState(() {
+
+                                                final item = columns.removeAt(fromIndex);
+
+                                                columns.insert(index, item);
+
+                                              });
+                                            },
+
+                                            builder: (context, candidateData, rejectedData) {
+
+                                              return LongPressDraggable<int>(
+
+                                                data: index,
+
+                                                feedback: Material(
+                                                  child: Container(
+                                                    width: columns[index]["width"],
+                                                    padding: const EdgeInsets.all(10),
+                                                    color: colorsConst.primary,
+                                                    child: Text(
+                                                      columns[index]["title"],
+                                                      style: const TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                childWhenDragging: Opacity(
+                                                  opacity: 0.3,
+                                                  child: headerCell(
+                                                    index,
+                                                    Row(
+                                                      children: [
+
+                                                        Expanded(
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: column["title"],
+                                                            size: 15,
+                                                            isBold: true,
+                                                            isCopy: true,
+                                                            colors: Colors.white,
+                                                          ),
+                                                        ),
+
+                                                        GestureDetector(
+                                                          onTap: () {
+
+                                                            String sortKey = "";
+
+                                                            switch (column["key"]) {
+                                                              case "order_no":
+                                                                sortKey = "number";
+                                                                break;
+
+                                                              case "status":
+                                                                sortKey = "status";
+                                                                break;
+
+                                                              case "company":
+                                                                sortKey = "company";
+                                                                break;
+
+                                                              case "customer":
+                                                                sortKey = "name";
+                                                                break;
+
+                                                              case "amount":
+                                                                sortKey = "amt";
+                                                                break;
+
+                                                              case "date":
+                                                                sortKey = "date";
+                                                                break;
+                                                            }
+
+                                                            if (sortKey.isNotEmpty) {
+
+                                                              if (controllers.sortFieldCallActivity.value ==
+                                                                  sortKey &&
+                                                                  controllers.sortOrderCallActivity.value ==
+                                                                      'asc') {
+                                                                controllers.sortOrderCallActivity.value =
+                                                                'desc';
+                                                              } else {
+                                                                controllers.sortOrderCallActivity.value =
+                                                                'asc';
+                                                              }
+
+                                                              controllers.sortFieldCallActivity.value =
+                                                                  sortKey;
+
+                                                              productCtr.filterAndSortOrders(
+                                                                searchText: controllers.searchText.value
+                                                                    .toLowerCase(),
+                                                                sortField: controllers
+                                                                    .sortFieldCallActivity.value,
+                                                                sortOrder: controllers
+                                                                    .sortOrderCallActivity.value,
+                                                                selectedMonth:
+                                                                productCtr.selectedCallMonth.value,
+                                                                selectedRange:
+                                                                productCtr.selectedCallRange.value,
+                                                                selectedDateFilter:
+                                                                productCtr.selectedCallSortBy.value,
+                                                              );
+                                                            }
+                                                          },
+                                                          child: Obx(
+                                                                () => Image.asset(
+                                                              controllers
+                                                                  .sortFieldCallActivity.value.isEmpty
+                                                                  ? "assets/images/arrow.png"
+                                                                  : controllers.sortOrderCallActivity
+                                                                  .value ==
+                                                                  'asc'
+                                                                  ? "assets/images/arrow_up.png"
+                                                                  : "assets/images/arrow_down.png",
+                                                              width: 15,
+                                                              height: 15,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+
+                                                child: headerCell(
+                                                  index,
+                                                  Row(
+                                                    children: [
+
+                                                      Expanded(
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: column["title"],
+                                                          size: 15,
+                                                          isBold: true,
+                                                          isCopy: true,
+                                                          colors: Colors.white,
+                                                        ),
+                                                      ),
+
+                                                      GestureDetector(
+                                                        onTap: () {
+
+                                                          String sortKey = "";
+
+                                                          switch (column["key"]) {
+                                                            case "order_no":
+                                                              sortKey = "number";
+                                                              break;
+
+                                                            case "status":
+                                                              sortKey = "status";
+                                                              break;
+
+                                                            case "company":
+                                                              sortKey = "company";
+                                                              break;
+
+                                                            case "customer":
+                                                              sortKey = "name";
+                                                              break;
+
+                                                            case "amount":
+                                                              sortKey = "amt";
+                                                              break;
+
+                                                            case "date":
+                                                              sortKey = "date";
+                                                              break;
+                                                          }
+
+                                                          if (sortKey.isNotEmpty) {
+
+                                                            if (controllers.sortFieldCallActivity.value ==
+                                                                sortKey &&
+                                                                controllers.sortOrderCallActivity.value ==
+                                                                    'asc') {
+                                                              controllers.sortOrderCallActivity.value =
+                                                              'desc';
+                                                            } else {
+                                                              controllers.sortOrderCallActivity.value =
+                                                              'asc';
+                                                            }
+
+                                                            controllers.sortFieldCallActivity.value =
+                                                                sortKey;
+
+                                                            productCtr.filterAndSortOrders(
+                                                              searchText: controllers.searchText.value
+                                                                  .toLowerCase(),
+                                                              sortField: controllers
+                                                                  .sortFieldCallActivity.value,
+                                                              sortOrder: controllers
+                                                                  .sortOrderCallActivity.value,
+                                                              selectedMonth:
+                                                              productCtr.selectedCallMonth.value,
+                                                              selectedRange:
+                                                              productCtr.selectedCallRange.value,
+                                                              selectedDateFilter:
+                                                              productCtr.selectedCallSortBy.value,
+                                                            );
+                                                          }
+                                                        },
+                                                        child: Obx(
+                                                              () => Image.asset(
+                                                            controllers
+                                                                .sortFieldCallActivity.value.isEmpty
+                                                                ? "assets/images/arrow.png"
+                                                                : controllers.sortOrderCallActivity
+                                                                .value ==
+                                                                'asc'
+                                                                ? "assets/images/arrow_up.png"
+                                                                : "assets/images/arrow_down.png",
+                                                            width: 15,
+                                                            height: 15,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
                                               );
                                             },
-                                            child: SizedBox(
-                                              // decoration: customDecoration.baseBackgroundDecoration(
-                                              //   color: colorsConst.primary,radius: 10
-                                              // ),
-                                              height: 50,
-                                              width:50,
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(Icons.print,color: colorsConst.primary),5.width,
-                                                    CustomText(text: "View Order", isCopy: false,colors: colorsConst.primary),
-                                                  ],
+                                          );
+                                        }),
+                                      ),
+                                    ],
+                                  ),
+                                  // BODY LIST
+                                  Expanded(
+                                    child: Obx(() {
+                                      if (productCtr.paginatedOrdersItems.isEmpty) {
+                                        return const Center(
+                                            child: Text("No Data Found"));
+                                      }
+                                      return ListView.builder(
+                                        controller: _controller,
+                                        itemCount: productCtr.paginatedOrdersItems
+                                            .length,
+                                        itemBuilder: (context, index) {
+                                          var data = productCtr.paginatedOrdersItems[index];
+                                          return Table(
+                                            columnWidths: tableWidthMap,
+                                            border: TableBorder(
+                                              horizontalInside: BorderSide(
+                                                  width: 0.5,
+                                                  color: Colors.grey
+                                                      .shade400),
+                                              verticalInside: BorderSide(
+                                                  width: 0.5,
+                                                  color: Colors.grey
+                                                      .shade400),
+                                              bottom: BorderSide(width: 0.5,
+                                                  color: Colors.grey
+                                                      .shade400),
+                                            ),
+                                            children: [
+                                              TableRow(
+                                                decoration: BoxDecoration(
+                                                  color: index % 2 == 0
+                                                      ? Colors.white
+                                                      : colorsConst.backgroundColor,
                                                 ),
-                                              ),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: data.status.toString(),
-                                              size: 14,
-                                              isCopy: true,
-                                              colors:data.status.toString()=="Completed"?Colors.green:colorsConst.textColor,
-                                            ),
-                                          ),
-                                        ]
-                                    ),
 
-                                  ],
-                                );
-                              },
+                                                children: List.generate(columns.length, (colIndex) {
+
+                                                  final key = columns[colIndex]["key"];
+
+                                                  switch (key) {
+
+                                                    case "order_no":
+                                                      return Tooltip(
+                                                        message: data.orderId.toString() == "null"
+                                                            ? ""
+                                                            : data.orderId.toString(),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(10.0),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: data.orderId.toString() == "null"
+                                                                ? ""
+                                                                : data.orderId.toString(),
+                                                            size: 14,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
+                                                        ),
+                                                      );
+
+                                                    case "status":
+                                                      return Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: data.status.toString(),
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: data.status.toString() == "Completed"
+                                                              ? Colors.green
+                                                              : colorsConst.textColor,
+                                                        ),
+                                                      );
+
+                                                    case "company":
+                                                      return Tooltip(
+                                                        message: data.companyName.toString(),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(10.0),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: data.companyName.toString(),
+                                                            size: 14,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
+                                                        ),
+                                                      );
+
+                                                    case "customer":
+                                                      return Tooltip(
+                                                        message: data.customerName.toString(),
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(10.0),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: data.customerName.toString(),
+                                                            size: 14,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
+                                                        ),
+                                                      );
+
+                                                    case "amount":
+                                                      return Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: productCtr.formatAmount(
+                                                            data.totalAmt.toString(),
+                                                          ),
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      );
+
+                                                    case "date":
+                                                      return Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: productCtr.fixedDateTime(
+                                                            data.createdTs.toString(),
+                                                          ),
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      );
+
+                                                    case "details":
+                                                      return InkWell(
+                                                        onTap: () {
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (_) => OrderInvoiceDialog(order: data),
+                                                          );
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(10.0),
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              Icon(
+                                                                Icons.print,
+                                                                color: colorsConst.primary,
+                                                              ),
+                                                              5.width,
+                                                              CustomText(
+                                                                text: "View Order",
+                                                                isCopy: false,
+                                                                colors: colorsConst.primary,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+
+                                                    default:
+                                                      return const SizedBox();
+                                                  }
+                                                }),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        );
-                      })
+                        ),
+                      ),
+                    ),
                   ),
                   20.height,
                   Row(

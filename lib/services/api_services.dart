@@ -1470,7 +1470,7 @@ class ApiService {
         debugPrint("After remove list length: ${list.length}");
         debugPrint("After remove list2 length: ${list2.length}");
         debugPrint("After remove allLeadList length: ${controllers.allLeadList.length}");
-        dashController.getDashboardReport();
+        dashController.getWholeReport();
         controllers.idList.clear();
         Navigator.pop(context);
         controllers.productCtr.reset();
@@ -2161,7 +2161,7 @@ class ApiService {
         controllers.selectedIndex.value=int.parse(data.leadStatus.toString());
         controllers.selectedQualifiedSortBy.value="All";
         controllers.selectRadio(list,list2);
-        dashController.getDashboardReport();
+        dashController.getWholeReport();
         controllers.leadCategoryList.refresh();
         data.list.sort((a, b) {
           DateTime dateA = DateTime.parse(a.updatedTs.toString());
@@ -5433,7 +5433,7 @@ debugPrint(response.body);
         }
         // debugPrint("----------> ${controllers.leadCategoryList}");
         controllers.isCrmData.value=true;
-        dashController.getCustomerStatus();
+        dashController.getWholeReport();
       } else {
         controllers.allLeadList.clear();
         throw Exception('Failed to load leads: Status code ${response.body}');

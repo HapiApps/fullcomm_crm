@@ -138,7 +138,7 @@ class _ReminderPageState extends State<ReminderPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           SideBar(),
-         Obx(()=> Container(
+          Obx(()=> Container(
            width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
            height: MediaQuery.of(context).size.height,
            alignment: Alignment.center,

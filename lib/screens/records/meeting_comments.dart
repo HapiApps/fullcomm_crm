@@ -1274,7 +1274,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 ),
                               ],
                             ),),
-                            headerCell(3, Row(
+                            headerCell(4, Row(
                               children: [
                                 CustomText(//2
                                   textAlign: TextAlign.left,
@@ -1313,7 +1313,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 ),
                               ],
                             ),),
-                            headerCell(4, Row(
+                            headerCell(5, Row(
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
@@ -1352,7 +1352,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 ),
                               ],
                             ),),
-                            headerCell(5,  Row(
+                            headerCell(6,  Row(
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
@@ -1391,7 +1391,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 ),
                               ],
                             ),),
-                            headerCell(5,  Row(
+                            headerCell(7,  Row(
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
@@ -1430,7 +1430,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 ),
                               ],
                             ),),
-                            headerCell(6, Row(
+                            headerCell(8, Row(
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.left,
@@ -1469,7 +1469,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                 ),
                               ],
                             ),),
-                            headerCell(7, Row(
+                            headerCell(9, Row(
                               children: [
                                 CustomText(
                                   textAlign: TextAlign.center,

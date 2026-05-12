@@ -721,22 +721,22 @@ class SidebarItem extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      isNetWrk==true?
-                      CachedNetworkImage(
-                      imageUrl: "$getImage?path=${isSelected?selectedImage:isHovered.value?selectedImage:unSelectedImage}",fit:BoxFit.cover ,
-                          imageBuilder: (context, imageProvider) =>
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  image: DecorationImage(
-                                    image: imageProvider,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-                          errorWidget: (context,url,error)=>Icon(Icons.leaderboard_outlined,color: isSelected?colorsConst.primary:Colors.black,),
-                          placeholder: (context,url)=>Icon(Icons.leaderboard_outlined,color: isSelected?colorsConst.primary:Colors.black,)
-                      ):
+                      // isNetWrk==true?
+                      // CachedNetworkImage(
+                      // imageUrl: "$getImage?path=${isSelected?selectedImage:isHovered.value?selectedImage:unSelectedImage}",fit:BoxFit.cover ,
+                      //     imageBuilder: (context, imageProvider) =>
+                      //         Container(
+                      //           decoration: BoxDecoration(
+                      //             borderRadius: BorderRadius.circular(10),
+                      //             image: DecorationImage(
+                      //               image: imageProvider,
+                      //               fit: BoxFit.cover,
+                      //             ),
+                      //           ),
+                      //         ),
+                      //     errorWidget: (context,url,error)=>Icon(Icons.leaderboard_outlined,color: isSelected?colorsConst.primary:Colors.black,),
+                      //     placeholder: (context,url)=>Icon(Icons.leaderboard_outlined,color: isSelected?colorsConst.primary:Colors.black,)
+                      // ):
                       Image.asset(isSelected?selectedImage:isHovered.value?selectedImage:unSelectedImage,
                         width: 18,height: 18,
                       ),

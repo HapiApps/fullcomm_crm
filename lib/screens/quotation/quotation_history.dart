@@ -91,8 +91,8 @@ class _QuotationHistoryState extends State<QuotationHistory> {
             behavior: HitTestBehavior.translucent,
             onHorizontalDragUpdate: (details) {
               setState(() {
-                // colWidths[index] += details.delta.dx;
-                // if (colWidths[index] < 60) colWidths[index] = 60;
+                colWidths[index] += details.delta.dx;
+                if (colWidths[index] < 60) colWidths[index] = 60;
               });
             },
             child: MouseRegion(
@@ -363,7 +363,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                         topRight: Radius.circular(
                                                             5))),
                                                 children: [
-                                                  headerCell(2, CustomText(
+                                                  headerCell(0, CustomText(
                                                     textAlign: TextAlign.left,
                                                     text: "S.No",
                                                     size: 15,
@@ -371,7 +371,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                     isCopy: true,
                                                     colors: Colors.white,
                                                   ),),
-                                                  headerCell(2, CustomText(
+                                                  headerCell(1, CustomText(
                                                     textAlign: TextAlign.left,
                                                     text: "Action",
                                                     size: 15,
@@ -451,7 +451,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
 
                                                     ],
                                                   ),),
-                                                  headerCell(7, Row(
+                                                  headerCell(3, Row(
                                                     children: [
                                                       CustomText( //4
                                                         textAlign: TextAlign.left,
@@ -523,7 +523,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                       ),
                                                     ],
                                                   ),),
-                                                  headerCell(3, Row(
+                                                  headerCell(4, Row(
                                                     children: [
                                                       CustomText( //2
                                                         textAlign: TextAlign.left,
@@ -594,7 +594,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                       ),
                                                     ],
                                                   ),),
-                                                  headerCell(3, Row(
+                                                  headerCell(5, Row(
                                                     children: [
                                                       CustomText( //2
                                                         textAlign: TextAlign.left,
@@ -666,7 +666,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                       ),
                                                     ],
                                                   ),),
-                                                  headerCell(4, Row(
+                                                  headerCell(6, Row(
                                                     children: [
                                                       CustomText(
                                                         textAlign: TextAlign.left,
@@ -738,7 +738,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                       ),
                                                     ],
                                                   ),),
-                                                  headerCell(2, Row(
+                                                  headerCell(7, Row(
                                                     children: [
                                                       CustomText(
                                                         textAlign: TextAlign.left,
@@ -810,7 +810,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                       ),
                                                     ],
                                                   ),),
-                                                  headerCell(2, Row(
+                                                  headerCell(8, Row(
                                                     children: [
                                                       CustomText(
                                                         textAlign: TextAlign.left,
@@ -881,7 +881,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                       ),
                                                     ],
                                                   ),),
-                                                  headerCell(5, Row(
+                                                  headerCell(9, Row(
                                                     children: [
                                                       CustomText(
                                                         textAlign: TextAlign.left,
@@ -952,78 +952,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                       ),
                                                     ],
                                                   ),),
-                                                  // headerCell(6, Row(
-                                                  //   children: [
-                                                  //     CustomText( //4
-                                                  //       textAlign: TextAlign.left,
-                                                  //       text: "Date",
-                                                  //       size: 15,
-                                                  //       isBold: true,
-                                                  //       isCopy: true,
-                                                  //       colors: Colors.white,
-                                                  //     ),
-                                                  //     3.width,
-                                                  //     GestureDetector(
-                                                  //       onTap: () {
-                                                  //         if (controllers
-                                                  //             .sortFieldCallActivity
-                                                  //             .value == 'date' &&
-                                                  //             controllers
-                                                  //                 .sortOrderCallActivity
-                                                  //                 .value ==
-                                                  //                 'asc') {
-                                                  //           controllers
-                                                  //               .sortOrderCallActivity
-                                                  //               .value = 'desc';
-                                                  //         } else {
-                                                  //           controllers
-                                                  //               .sortOrderCallActivity
-                                                  //               .value = 'asc';
-                                                  //         }
-                                                  //         controllers
-                                                  //             .sortFieldCallActivity
-                                                  //             .value = 'date';
-                                                  //         productCtr
-                                                  //             .filterAndSortQuotations(
-                                                  //           searchText: controllers
-                                                  //               .searchText.value
-                                                  //               .toLowerCase(),
-                                                  //           sortField: controllers
-                                                  //               .sortFieldCallActivity
-                                                  //               .value,
-                                                  //           sortOrder: controllers
-                                                  //               .sortOrderCallActivity
-                                                  //               .value,
-                                                  //           selectedMonth: productCtr
-                                                  //               .selectedCallMonth
-                                                  //               .value,
-                                                  //           selectedRange: productCtr
-                                                  //               .selectedCallRange
-                                                  //               .value,
-                                                  //           selectedDateFilter: productCtr
-                                                  //               .selectedCallSortBy
-                                                  //               .value,
-                                                  //         );
-                                                  //       },
-                                                  //       child: Obx(() =>
-                                                  //           Image.asset(
-                                                  //             controllers
-                                                  //                 .sortFieldCallActivity
-                                                  //                 .value.isEmpty
-                                                  //                 ? "assets/images/arrow.png"
-                                                  //                 : controllers
-                                                  //                 .sortOrderCallActivity
-                                                  //                 .value == 'asc'
-                                                  //                 ? "assets/images/arrow_up.png"
-                                                  //                 : "assets/images/arrow_down.png",
-                                                  //             width: 15,
-                                                  //             height: 15,
-                                                  //           ),
-                                                  //       ),
-                                                  //     ),
-                                                  //   ],
-                                                  // ),),
-                                                  headerCell(6, Row(
+                                                  headerCell(10, Row(
                                                     children: [
                                                       CustomText( //4
                                                         textAlign: TextAlign.left,
@@ -1095,7 +1024,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                       ),
                                                     ],
                                                   ),),
-                                                  headerCell(8, CustomText(
+                                                  headerCell(11, CustomText(
                                                     textAlign: TextAlign.left,
                                                     text: "Quotation",
                                                     size: 15,

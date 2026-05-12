@@ -29,6 +29,7 @@ import '../components/pie_stat_card.dart';
 import '../components/search_custom_dropdown.dart';
 import '../components/wave_stat_card.dart';
 import '../controller/controller.dart';
+import '../controller/new_payroll_controller.dart';
 import '../controller/reminder_controller.dart';
 import '../models/all_customers_obj.dart';
 import '../provider/employee_provider.dart';
@@ -95,7 +96,6 @@ class _DashboardPageState extends State<DashboardPage>
     // Timer.periodic(const Duration(seconds: 30), (timer) {
     //   dashController.refreshTime.value++;
     // });
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
       var selectedMeetRange = Rxn<DateTimeRange>(
         DateTimeRange(
@@ -125,9 +125,6 @@ class _DashboardPageState extends State<DashboardPage>
         apiService.getAllLeadCategories();
       }
       apiService.getAllEmployees();
-      if(dashController.customerStatusReport.isEmpty){
-        dashController.getCustomerStatus();
-      }
       if(Provider.of<BillingProvider>(context, listen: false).productsList.isEmpty){
         Provider.of<BillingProvider>(context, listen: false).getProducts();
       }
@@ -139,29 +136,28 @@ class _DashboardPageState extends State<DashboardPage>
       if(controllers.hCallStatusList.isEmpty){
         controllers.getCallStatus();
       }
-      controllers.getRangeStatus();
-      controllers.getIndustries();
-      // productCtr.getProducts();
-      productCtr.getOrderDetails();
-      productCtr.getQuotationDetails();
-      productCtr.getTermsAndConditions();
-      services.getRoleSettings(context);
+      if(controllers.industriesList.isEmpty){
+        controllers.getIndustries();
+      }
+      if(productCtr.ordersList.isEmpty){
+        productCtr.getOrderDetails();
+      }
+      if(productCtr.quotationsList.isEmpty){
+        productCtr.getQuotationDetails();
+      }
+      if(productCtr.termsAndConditionsList.isEmpty){
+        productCtr.getTermsAndConditions();
+      }
+      if(pyrlCtr.settingList.isEmpty){
+        services.getRoleSettings(context);
+      }
       apiService.currentVersion();
       controllers.selectedIndex.value = 100;
-      // final prefs = await SharedPreferences.getInstance();
-      // controllers.isAdmin.value = prefs.getBool("isAdmin") ?? false;
       DateTime now = DateTime.now();
-      // dashController.selectedSortBy.value = "Today";
-      // dashController.selectedSortBy.value = controllers.storage.read("selectedSortBy") ?? "Today";
       checkDate();
       remController.selectedMeetSortBy.value=dashController.selectedSortBy.value;
       remController.selectedCallSortBy.value=dashController.selectedSortBy.value;
       remController.selectedReminderSortBy.value=dashController.selectedSortBy.value;
-      // controllers.selectedProspectSortBy.value = "Today";
-      // controllers.selectedQualifiedSortBy.value = "Today";
-      // controllers.selectedCustomerSortBy.value = "Today";
-      // remController.selectedMeetSortBy.value = "Today";
-      // remController.selectedReminderSortBy.value = "Today";
       remController.dashboardMeetings(
         searchText: controllers.searchText.value.toLowerCase(),
         callType: controllers.selectMeetingType.value,
@@ -191,10 +187,12 @@ class _DashboardPageState extends State<DashboardPage>
       dashController.getCustomerReport(
           "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
           today);
-      dashController.getDashboardReport();
-      dashController.getLeadReport();
-      dashController.getStatusWiseReport();
-      dashController.getRatingReport();
+      // controllers.getRangeStatus();
+      // dashController.getDashboardReport();
+      // dashController.getLeadReport();
+      // dashController.getStatusWiseReport();
+      // dashController.getRatingReport();
+      dashController.getWholeReport();
     });
 
     _leadItemController = AnimationController(
@@ -965,10 +963,7 @@ void checkDate(){
                                                                   "${range.end.year}-${range.end.month.toString().padLeft(2, '0')}-${range.end.day.toString().padLeft(2, '0')}";
 
                                                                   /// 👉 API calls here only after selection
-                                                                  dashController.getDashboardReport();
-                                                                  dashController.getLeadReport();
-                                                                  dashController.getStatusWiseReport();
-                                                                  dashController.getCustomerStatus();
+                                                                  dashController.getWholeReport();
 
                                                                   dashController.getCustomerReport(
                                                                     dashController.date1.value,
@@ -979,10 +974,7 @@ void checkDate(){
 
                                                               return;
                                                           }
-                                                          dashController.getDashboardReport();
-                                                          dashController.getLeadReport();
-                                                          dashController.getStatusWiseReport();
-                                                          dashController.getCustomerStatus();
+                                                          dashController.getWholeReport();
                                                           final range = dashController.selectedRange.value;
                                                           var today = DateTime.now();
                                                           if (dashController.selectedSortBy.value != "Today" &&
@@ -3180,28 +3172,33 @@ void checkDate(){
                                 20.height,
                                 Row(
                                   children: [
-                                    ActivityOverTimeChart(
-                                      width: width/1.05,
-                                      // maxY: 330,
-                                      xLabels: controllers.xLabels,
+                                    Obx(() => ActivityOverTimeChart(
+                                      width: width,
+
+                                      xLabels: controllers.xLabels.toList(),
+
                                       lines: [
+
                                         ActivityLineData(
                                           label: "Calls",
-                                          color: Color(0xff3B82F6),
-                                          values: controllers.calls,
+                                          values: controllers.calls.toList(),
+                                          color: const Color(0xFF0F8D4B),
                                         ),
+
                                         ActivityLineData(
                                           label: "Mails",
-                                          color: Color(0xff10B981),
-                                          values: controllers.mails,
+                                          values: controllers.mails.toList(),
+                                          color: const Color(0xFFEB3342),
                                         ),
+
                                         ActivityLineData(
                                           label: "Updates",
-                                          color: Color(0xffEF4444),
-                                          values: controllers.updates,
+                                          values: controllers.updates.toList(),
+                                          color: const Color(0xFF1596E0),
                                         ),
+
                                       ],
-                                    ),
+                                    )),
                                     SizedBox(
                                       width: width/70,
                                     )
