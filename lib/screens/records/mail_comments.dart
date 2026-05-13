@@ -721,8 +721,8 @@ class _MailCommentsState extends State<MailComments> {
                                               );
                                             } else if(file.endsWith(".svg")){
                                               return SvgPicture.network(
-                                                imageList.first,
-                                                height: 50,
+                                                "$getImage?path=${imageList.first}",
+                                                height: 50,width: 50,
                                                 fit: BoxFit.cover,
                                                 placeholderBuilder: (context) =>
                                                 const CircularProgressIndicator(),

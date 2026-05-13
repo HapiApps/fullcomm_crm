@@ -907,6 +907,7 @@ void checkDate(){
                                     ),
                                     WaveStatCard(
                                       callback: () {
+                                        controllers.selectedQualifiedSortBy.value = dashController.selectedSortBy.value;
                                         controllers.isLeadsExpanded.value=true;
                                         setState(() {
                                           controllers.selectedIndex.value =int.parse(controllers.leadCategoryList[0].leadStatus);

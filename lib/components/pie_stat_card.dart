@@ -181,6 +181,7 @@ class _LeadPieCardState extends State<LeadPieCard> {
                         padding: const EdgeInsets.fromLTRB(0, 7, 0, 0),
                         child: InkWell(
                           onTap: (){
+                            controllers.selectedQualifiedSortBy.value = dashController.selectedSortBy.value;
                             controllers.selectedIndex.value=int.parse(controllers.leadCategoryList[index].leadStatus);
                             controllers.selectedIndex.value = 500;
                             controllers.isLeadsExpanded.value=true;

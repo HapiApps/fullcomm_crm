@@ -534,13 +534,13 @@ void showMailImageDialog(
                               );
                             } else if(file.endsWith(".svg")){
                               return SvgPicture.network(
-                                m,
-                                height: 50,
+                                "$getImage?path=$m",
+                                height: 50,width: 50,
                                 fit: BoxFit.cover,
                                 placeholderBuilder: (context) =>
                                 const CircularProgressIndicator(),
                               );
-                            } else {
+                            }else {
                               // else if (file.endsWith(".jpg"
                               //   }) ||
                               //   file.endsWith(".jpeg") ||
@@ -4178,11 +4178,26 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           break;
 
         case 'Last 30 Days':
+
           final last30 = now.subtract(const Duration(days: 30));
+
           filteredList = filteredList.where((mail) {
+
+            print("RAW DATE => ${mail.sentDate}");
+
             final date = _parseMailDate(mail.sentDate, dateFormatter);
-            return date.isAfter(last30);
+
+            print("PARSED DATE => $date");
+            print("LAST30 => $last30");
+
+            final result = date.isAfter(last30);
+
+            print("MATCH => $result");
+
+            return result;
+
           }).toList();
+
           break;
 
         case 'Custom Month':
@@ -4275,16 +4290,16 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     filteredList.sort((a, b) => b.sentDate.compareTo(a.sentDate));
     mailFilteredList.assignAll(filteredList);
 
- // debugdebugPrint("remController.selectedMailSortBy.value ${remController.selectedMailSortBy.value}");
- // debugdebugPrint("controllers.mailActivity ${controllers.mailActivity}");
- // debugdebugPrint("mailFilteredList ${mailFilteredList.length}");
+ debugPrint("remController.selectedMailSortBy.value ${remController.selectedMailSortBy.value}");
+ debugPrint("controllers.mailActivity ${controllers.mailActivity}");
+ debugPrint("mailFilteredList ${mailFilteredList.length}");
   }
 
-  DateTime _parseMailDate(String? date, DateFormat formatter) {
+  DateTime _parseMailDate(String? date, DateFormat dateFormatter) {
     try {
-      return formatter.parse(date ?? '');
+      return DateFormat("yyyy-MM-dd HH:mm:ss").parse(date ?? '');
     } catch (e) {
-      // log("Date parse failed for: $date -> $e");
+      debugPrint("Date parse failed for: $date -> $e");
       return DateTime(2000);
     }
   }
