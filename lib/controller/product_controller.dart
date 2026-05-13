@@ -269,8 +269,8 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       var response = await request.send();
       var responseData = await http.Response.fromStream(response);
 
-      debugPrint("STATUS CODE: ${response.statusCode}");
-      debugPrint("RAW RESPONSE: ${responseData.body}");
+      // debugPrint("STATUS CODE: ${response.statusCode}");
+      // debugPrint("RAW RESPONSE: ${responseData.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -340,8 +340,8 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       var response = await request.send();
       var responseData = await http.Response.fromStream(response);
 
-      debugPrint("STATUS CODE: ${response.statusCode}");
-      debugPrint("RAW RESPONSE: ${responseData.body}");
+      // debugPrint("STATUS CODE: ${response.statusCode}");
+      // debugPrint("RAW RESPONSE: ${responseData.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -390,8 +390,8 @@ class ProductController extends GetxController with GetSingleTickerProviderState
       );
 
 
-      debugPrint("STATUS CODE: ${response.statusCode}");
-      debugPrint("RAW RESPONSE: ${response.body}");
+      // debugPrint("STATUS CODE: ${response.statusCode}");
+      // debugPrint("RAW RESPONSE: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1134,7 +1134,7 @@ debugPrint("selectedDateFilter $selectedDateFilter");
       );
 
       // debugPrint("STATUS CODE add_values: ${response.statusCode}");
-      debugPrint("get_quotations..: ${response.body}");
+      // debugPrint("get_quotations..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1177,8 +1177,8 @@ debugPrint("selectedDateFilter $selectedDateFilter");
         }),
       );
 
-      debugPrint(id);
-      debugPrint("get_quotations..: ${response.body}");
+      // debugPrint(id);
+      // debugPrint("get_quotations..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1222,7 +1222,7 @@ debugPrint("selectedDateFilter $selectedDateFilter");
       );
 
       // debugPrint("STATUS CODE add_values: ${response.statusCode}");
-      debugPrint("getTermsAndConditions..: ${response.body}");
+      // debugPrint("getTermsAndConditions..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1303,8 +1303,8 @@ debugPrint("selectedDateFilter $selectedDateFilter");
       );
 
 
-      debugPrint("STATUS CODE: ${response.statusCode}");
-      debugPrint("RAW RESPONSE: ${response.body}");
+      // debugPrint("STATUS CODE: ${response.statusCode}");
+      // debugPrint("RAW RESPONSE: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

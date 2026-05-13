@@ -128,6 +128,7 @@ class _CustomerNameHeaderState extends State<CustomerNameHeader> {
                       ? TextFormField(
                     initialValue: heading,
                     onFieldSubmitted: (value) async {
+                      final oldValue = tableController.headingFields[0];
                       if(value.trim().isNotEmpty){
                         if (controllers.fields.isEmpty) return;
                         tableController.isLoading.value = true;
@@ -140,7 +141,7 @@ class _CustomerNameHeaderState extends State<CustomerNameHeader> {
                                 .headingFields
                                 .toList()));
                         tableController.updateColumnNameAPI(
-                            context, value, id);
+                            context, value, oldValue, id);
 
                         setState(() {
                           isEditing = false;

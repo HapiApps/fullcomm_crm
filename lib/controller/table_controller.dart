@@ -189,7 +189,7 @@ class TableController extends GetxController {
   //   }
   // }
   void setHeading(List<dynamic> data) async {
-    debugPrint("Set Heading 1");
+    // debugPrint("Set Heading 1");
 
     try {
       // normalize function
@@ -201,7 +201,7 @@ class TableController extends GetxController {
           .formatHeading(e['user_heading'].toString().trim()))
           .toList();
 
-      debugPrint("Heading Fields: $headingFields");
+      // debugPrint("Heading Fields: $headingFields");
 
       final prefs = await SharedPreferences.getInstance();
       final saved = prefs.getString('tableHeadings');
@@ -406,12 +406,13 @@ class TableController extends GetxController {
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));
   }
 
-  Future updateColumnNameAPI(BuildContext context,String heading,String id) async {
+  Future updateColumnNameAPI(BuildContext context,String heading,String oldValue,String id) async {
     try{
       Map data = {
         "action": "update_column_name",
         "id": id,
         "user_heading": heading,
+        "old_value": oldValue,
         "updated_by": controllers.storage.read("id"),
         "cos_id": controllers.storage.read("cos_id")
       };
@@ -423,11 +424,13 @@ class TableController extends GetxController {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
+      print(data);
+      print(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return updateColumnNameAPI(context,heading,id);
+          return updateColumnNameAPI(context,heading,oldValue,id);
         } else {
           controllers.setLogOut();
         }

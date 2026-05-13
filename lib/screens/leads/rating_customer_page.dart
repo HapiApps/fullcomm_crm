@@ -907,6 +907,7 @@ class _RatingPageState extends State<RatingPage> {
                                           itemBuilder: (context, index) {
                                             NewLeadObj data = controllers.ratingList[index];
                                             return CustomLeadTile(
+                                              additional: data.additional!,
                                               leadIndex: "1000",
                                               key: ValueKey(data.userId),
                                               listIndex: index,

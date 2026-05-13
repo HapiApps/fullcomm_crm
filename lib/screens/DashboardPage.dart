@@ -474,330 +474,6 @@ void checkDate(){
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F8),
-      // appBar: PreferredSize(
-      //   preferredSize: Size.fromHeight(screenWidth < 900 ? 120 : 100),
-      //   child: Container(
-      //     width: controllers.isLeftOpen.value == false &&
-      //         controllers.isRightOpen.value == false
-      //         ? screenWidth - 100
-      //         : screenWidth - 150,
-      //     height: 90,
-      //     alignment: Alignment.topLeft,
-      //     // color: Colors.pinkAccent,
-      //     padding: EdgeInsets.fromLTRB(20, 20, 20, 20),
-      //     decoration: _topBarDecoration(),
-      //     child: Row(
-      //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //       crossAxisAlignment: CrossAxisAlignment.center,
-      //       children: [
-      //         /// ---------- LEFT ----------
-      //         Row(
-      //           children: [
-      //             Tooltip(
-      //               message: "Click to close the side panel.",
-      //               child: InkWell(
-      //                 child:Image.asset(DashboardAssets.menu,width:60,height:60),
-      //                 onTap: () {
-      //                   controllers.isLeftOpen.value = !controllers.isLeftOpen.value;
-      //                 },
-      //               ),
-      //             ),10.width,
-      //             Column(
-      //               crossAxisAlignment: CrossAxisAlignment.start,
-      //               mainAxisSize: MainAxisSize.min,
-      //               children: [
-      //                 CustomText(
-      //                   text:"ARUU's EasyCRM",size:18,isBold: true,isCopy: false,colors:Colors.white
-      //                 ),5.height,
-      //                 CustomText(text:"Hi, ${controllers.storage.read("f_name") ?? ""}",isBold:true,isCopy:false,colors:Colors.white,size:14),
-      //               ],
-      //             ),
-      //           ],
-      //         ),
-      //         SizedBox(
-      //           width: screenWidth/4,
-      //           child: CDropdownField<AllCustomersObj>(
-      //             items: controllers.customers,
-      //             labelBuilder: (item) => item.name,
-      //             leadBuilder: (item) => item.category,
-      //             subLabelBuilder: (item) => item.phoneNo, // 🔥 optional
-      //             itemBuilder: (item) => SizedBox(), // not used now
-      //             onSelected: (item) {
-      //               debugPrint("item.name");
-      //               debugPrint(item.name);
-      //               controllers.search.text = item.name.toString();
-      //               for (var i = 0; i < controllers.leadCategoryList.length; i++) {
-      //                 if(controllers.leadCategoryList[i].value==item.category.toString()){
-      //                   debugPrint(controllers.leadCategoryList[i].value);
-      //                   debugPrint(item.category.toString());
-      //
-      //                   controllers.selectedIndex.value =int.tryParse(item.leadStatus.toString()) ?? 0;
-      //                   Get.off(
-      //                         () => NewLeadPage(
-      //                       index: item.leadStatus,
-      //                       name: controllers.leadCategoryList[i].value,
-      //                       list: controllers.leadCategoryList[i].list,
-      //                       list2: controllers.leadCategoryList[i].list2,
-      //                       listIndex: i,
-      //                     ),
-      //                     preventDuplicates: false,
-      //                   );
-      //                   break;
-      //                 }
-      //               }
-      //               // showDialog(
-      //               //   context: context,
-      //               //   builder: (_) => AlertDialog(
-      //               //     title: Text("Customer"),
-      //               //     content: Text(item.name),
-      //               //   ),
-      //               // );
-      //             },
-      //             borderRadius: 8,
-      //             borderColor: Colors.grey,
-      //           ),
-      //         ),
-      //         /// ---------- CENTER ----------
-      //         Row(
-      //           mainAxisSize: MainAxisSize.min,
-      //           crossAxisAlignment: CrossAxisAlignment.end,
-      //           children: [
-      //             Obx(() {
-      //               return Container(
-      //                 padding: const EdgeInsets.all(6),
-      //                 decoration: _filterGroupDecoration(),
-      //                 child: Row(
-      //                   children: dashController.filters.map((filter) {
-      //                     final bool isSelected =
-      //                         dashController.selectedSortBy.value == filter;
-      //
-      //                     return MouseRegion(
-      //                       cursor: SystemMouseCursors.click,
-      //                       child: GestureDetector(
-      //                         behavior: HitTestBehavior.opaque,
-      //                         onTap: () {
-      //                           dashController.selectedSortBy.value = filter;
-      //                           DateTime now = DateTime.now();
-      //                           switch (filter) {
-      //                             case "Today":
-      //                               dashController.date1.value =
-      //                               "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-      //                               dashController.date2.value = dashController.date1.value;
-      //                               break;
-      //                             case "Yesterday":
-      //                               DateTime yesterday = now.subtract(const Duration(days: 1));
-      //                               dashController.date1.value =
-      //                               "${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}";
-      //                               dashController.date2.value = dashController.date1.value;
-      //                               break;
-      //                             case "Last 7 Days":
-      //                               DateTime start7 = now.subtract(const Duration(days: 6));
-      //                               dashController.date1.value =
-      //                               "${start7.year}-${start7.month.toString().padLeft(2, '0')}-${start7.day.toString().padLeft(2, '0')}";
-      //                               dashController.date2.value =
-      //                               "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-      //                               break;
-      //                             case "Last 30 Days":
-      //                               DateTime start30 = now.subtract(const Duration(days: 29));
-      //                               dashController.date1.value =
-      //                               "${start30.year}-${start30.month.toString().padLeft(2, '0')}-${start30.day.toString().padLeft(2, '0')}";
-      //                               dashController.date2.value =
-      //                               "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-      //                               break;
-      //                             case "Custom":
-      //                               dashController.showDatePickerDialog(context).then((range) {
-      //                                 if (range != null) {
-      //                                   dashController.selectedRange.value = range;
-      //
-      //                                   dashController.date1.value =
-      //                                   "${range.start.year}-${range.start.month.toString().padLeft(2, '0')}-${range.start.day.toString().padLeft(2, '0')}";
-      //
-      //                                   dashController.date2.value =
-      //                                   "${range.end.year}-${range.end.month.toString().padLeft(2, '0')}-${range.end.day.toString().padLeft(2, '0')}";
-      //
-      //                                   /// 👉 API calls here only after selection
-      //                                   dashController.getDashboardReport();
-      //                                   dashController.getLeadReport();
-      //                                   dashController.getStatusWiseReport();
-      //                                   dashController.getCustomerStatus();
-      //
-      //                                   dashController.getCustomerReport(
-      //                                     dashController.date1.value,
-      //                                     dashController.date2.value,
-      //                                   );
-      //                                 }
-      //                               });
-      //
-      //                               return;
-      //                           }
-      //                           dashController.getDashboardReport();
-      //                           dashController.getLeadReport();
-      //                           dashController.getStatusWiseReport();
-      //                           dashController.getCustomerStatus();
-      //                           final range = dashController.selectedRange.value;
-      //                           var today = DateTime.now();
-      //                           if (dashController.selectedSortBy.value != "Today" &&
-      //                               dashController.selectedSortBy.value != "Yesterday") {
-      //                             dashController.getCustomerReport(
-      //                                 range == null
-      //                                     ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
-      //                                     : "${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-      //                                 range == null
-      //                                     ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
-      //                                     : "${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
-      //                           } else {
-      //                             var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
-      //                             var last7days = DateTime.now().subtract(Duration(days: 7));
-      //                             dashController.getCustomerReport(
-      //                                 "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
-      //                                 today);
-      //                           }
-      //                           remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
-      //                           remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
-      //                           remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
-      //                           remController.dashboardMeetings(
-      //                             searchText: controllers.searchText.value.toLowerCase(),
-      //                             callType: controllers.selectMeetingType.value,
-      //                             sortField: controllers.sortFieldMeetingActivity.value,
-      //                             sortOrder: controllers.sortOrderMeetingActivity.value,
-      //                           );
-      //                           remController.dashboardCommunicationFilterList(
-      //                             dataList: remController.callMailsDetailsList2,
-      //                             searchText: controllers.searchText.value.toLowerCase(),
-      //                             callType: controllers.selectCallType.value,
-      //                             sortField: controllers.sortFieldCallActivity.value,
-      //                             sortOrder: controllers.sortOrderCallActivity.value,
-      //                             selectedMonth: remController.selectedCallMonth.value,
-      //                             selectedRange: remController.selectedCallRange.value,
-      //                             selectedDateFilter: remController.selectedCallSortBy.value,
-      //                           );
-      //                           remController.dashboardSortReminders();
-      //                         },
-      //                         child: Container(
-      //                           padding: const EdgeInsets.symmetric(
-      //                               horizontal: 16, vertical: 8),
-      //                           decoration: BoxDecoration(
-      //                             color: isSelected
-      //                                 ? Colors.white
-      //                                 : Colors.transparent,
-      //                             borderRadius: BorderRadius.circular(10),
-      //                             boxShadow: isSelected
-      //                                 ? const [
-      //                               BoxShadow(
-      //                                 color: Colors.black12,
-      //                                 blurRadius: 6,
-      //                                 offset: Offset(0, 2),
-      //                               ),
-      //                             ]
-      //                                 : null,
-      //                           ),
-      //                           child: CustomText(
-      //                             text: filter,
-      //                             isCopy: false,
-      //                             size: 12,
-      //                             isBold: true,
-      //                             colors: isSelected
-      //                                 ? const Color(0xff0078D7)
-      //                                 : const Color(0xff666666),
-      //                           ),
-      //                         ),
-      //                       ),
-      //                     );
-      //                   }).toList(),
-      //                 ),
-      //               );
-      //             }),
-      //             5.width,
-      //             CustomText(
-      //               text: version,
-      //               size: 11,
-      //               isCopy: false,
-      //               colors: Colors.white,
-      //               isBold: true,
-      //             ),
-      //           ],
-      //         ),
-      //         /// ---------- RIGHT ----------
-      //         Row(
-      //           mainAxisAlignment: MainAxisAlignment.end,
-      //           children: [
-      //             Column(
-      //               crossAxisAlignment: CrossAxisAlignment.end,
-      //               mainAxisSize: MainAxisSize.min,
-      //               children: [
-      //                 Row(
-      //                   mainAxisAlignment:
-      //                   MainAxisAlignment.center,
-      //                   children: [
-      //                     Icon(Icons.calendar_today_outlined,color:Colors.white,size: 15,),
-      //                     6.width,
-      //                     Obx(() {
-      //                       final range = dashController.selectedRange.value;
-      //                       if (range == null) {
-      //                         return const Text(
-      //                           "Filter by Date Range",
-      //                           style: TextStyle(
-      //                               color: Colors.black54,
-      //                               fontFamily: "Lato"),
-      //                         );
-      //                       }
-      //                       return CustomText(
-      //                           text:range.start == range.end
-      //                               ? "${range.start.day}-${range.start.month}-${range.start.year}"
-      //                               : "${range.start.day}-${range.start.month}-${range.start.year} - "
-      //                               "${range.end.day}-${range.end.month}-${range.end.year}",
-      //                           isBold: true,isCopy: false,colors:Colors.white
-      //                       );
-      //                     }),
-      //                   ],
-      //                 ),
-      //                 8.height,
-      //                 Obx(() {
-      //
-      //                   if (dashController.timestamp.value.isEmpty) {
-      //                     return const CustomText(
-      //                       isCopy: false,
-      //                       text: "Last Sync · --",
-      //                       size: 12.5,
-      //                       isBold: true,
-      //                       colors: Colors.white,
-      //                     );
-      //                   }
-      //
-      //                   final diff = DateTime.now()
-      //                       .difference(DateTime.parse(dashController.timestamp.value));
-      //
-      //                   String timeText = "";
-      //
-      //                   if (diff.inSeconds < 60) {
-      //                     timeText = "Just now";
-      //                   }
-      //                   else if (diff.inMinutes < 60) {
-      //                     timeText = "${diff.inMinutes} mins ago";
-      //                   }
-      //                   else if (diff.inHours < 24) {
-      //                     timeText = "${diff.inHours} hrs ago";
-      //                   }
-      //                   else {
-      //                     timeText = "${diff.inDays} days ago";
-      //                   }
-      //
-      //                   return CustomText(
-      //                     text: "Last Sync · $timeText",
-      //                     size: 12.5,
-      //                     isBold: true,
-      //                     isCopy: true,
-      //                     colors: Colors.white,
-      //                   );
-      //                 }),
-      //               ],
-      //             ),
-      //           ],
-      //         ),
-      //       ],
-      //     ),
-      //   ),
-      // ),
       body: PopScope(
         canPop: false,
         child: SelectionArea(
@@ -828,7 +504,7 @@ void checkDate(){
                     child: Stack(
                         children: [
                           SingleChildScrollView(
-                            child: Obx(()=>Column(
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Container(
@@ -909,145 +585,143 @@ void checkDate(){
                                           mainAxisSize: MainAxisSize.min,
                                           crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
-                                            Obx(() {
-                                              return Container(
-                                                padding: const EdgeInsets.all(6),
-                                                decoration: _filterGroupDecoration(),
-                                                child: Row(
-                                                  children: dashController.filters.map((filter) {
-                                                    final bool isSelected =
-                                                        dashController.selectedSortBy.value == filter;
+                                            Container(
+                                              padding: const EdgeInsets.all(6),
+                                              decoration: _filterGroupDecoration(),
+                                              child: Row(
+                                                children: dashController.filters.map((filter) {
+                                                  final bool isSelected =
+                                                      dashController.selectedSortBy.value == filter;
 
-                                                    return MouseRegion(
-                                                      cursor: SystemMouseCursors.click,
-                                                      child: GestureDetector(
-                                                        behavior: HitTestBehavior.opaque,
-                                                        onTap: () {
-                                                          dashController.selectedSortBy.value = filter;
-                                                          DateTime now = DateTime.now();
-                                                          switch (filter) {
-                                                            case "Today":
-                                                              dashController.date1.value =
-                                                              "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-                                                              dashController.date2.value = dashController.date1.value;
-                                                              break;
-                                                            case "Yesterday":
-                                                              DateTime yesterday = now.subtract(const Duration(days: 1));
-                                                              dashController.date1.value =
-                                                              "${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}";
-                                                              dashController.date2.value = dashController.date1.value;
-                                                              break;
-                                                            case "Last 7 Days":
-                                                              DateTime start7 = now.subtract(const Duration(days: 6));
-                                                              dashController.date1.value =
-                                                              "${start7.year}-${start7.month.toString().padLeft(2, '0')}-${start7.day.toString().padLeft(2, '0')}";
-                                                              dashController.date2.value =
-                                                              "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-                                                              break;
-                                                            case "Last 30 Days":
-                                                              DateTime start30 = now.subtract(const Duration(days: 29));
-                                                              dashController.date1.value =
-                                                              "${start30.year}-${start30.month.toString().padLeft(2, '0')}-${start30.day.toString().padLeft(2, '0')}";
-                                                              dashController.date2.value =
-                                                              "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-                                                              break;
-                                                            case "Custom":
-                                                              dashController.showDatePickerDialog(context).then((range) {
-                                                                if (range != null) {
-                                                                  dashController.selectedRange.value = range;
+                                                  return MouseRegion(
+                                                    cursor: SystemMouseCursors.click,
+                                                    child: GestureDetector(
+                                                      behavior: HitTestBehavior.opaque,
+                                                      onTap: () {
+                                                        dashController.selectedSortBy.value = filter;
+                                                        DateTime now = DateTime.now();
+                                                        switch (filter) {
+                                                          case "Today":
+                                                            dashController.date1.value =
+                                                            "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+                                                            dashController.date2.value = dashController.date1.value;
+                                                            break;
+                                                          case "Yesterday":
+                                                            DateTime yesterday = now.subtract(const Duration(days: 1));
+                                                            dashController.date1.value =
+                                                            "${yesterday.year}-${yesterday.month.toString().padLeft(2, '0')}-${yesterday.day.toString().padLeft(2, '0')}";
+                                                            dashController.date2.value = dashController.date1.value;
+                                                            break;
+                                                          case "Last 7 Days":
+                                                            DateTime start7 = now.subtract(const Duration(days: 6));
+                                                            dashController.date1.value =
+                                                            "${start7.year}-${start7.month.toString().padLeft(2, '0')}-${start7.day.toString().padLeft(2, '0')}";
+                                                            dashController.date2.value =
+                                                            "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+                                                            break;
+                                                          case "Last 30 Days":
+                                                            DateTime start30 = now.subtract(const Duration(days: 29));
+                                                            dashController.date1.value =
+                                                            "${start30.year}-${start30.month.toString().padLeft(2, '0')}-${start30.day.toString().padLeft(2, '0')}";
+                                                            dashController.date2.value =
+                                                            "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+                                                            break;
+                                                          case "Custom":
+                                                            dashController.showDatePickerDialog(context).then((range) {
+                                                              if (range != null) {
+                                                                dashController.selectedRange.value = range;
 
-                                                                  dashController.date1.value =
-                                                                  "${range.start.year}-${range.start.month.toString().padLeft(2, '0')}-${range.start.day.toString().padLeft(2, '0')}";
+                                                                dashController.date1.value =
+                                                                "${range.start.year}-${range.start.month.toString().padLeft(2, '0')}-${range.start.day.toString().padLeft(2, '0')}";
 
-                                                                  dashController.date2.value =
-                                                                  "${range.end.year}-${range.end.month.toString().padLeft(2, '0')}-${range.end.day.toString().padLeft(2, '0')}";
+                                                                dashController.date2.value =
+                                                                "${range.end.year}-${range.end.month.toString().padLeft(2, '0')}-${range.end.day.toString().padLeft(2, '0')}";
 
-                                                                  /// 👉 API calls here only after selection
-                                                                  dashController.getWholeReport();
+                                                                /// 👉 API calls here only after selection
+                                                                dashController.getWholeReport();
 
-                                                                  dashController.getCustomerReport(
-                                                                    dashController.date1.value,
-                                                                    dashController.date2.value,
-                                                                  );
-                                                                }
-                                                              });
+                                                                dashController.getCustomerReport(
+                                                                  dashController.date1.value,
+                                                                  dashController.date2.value,
+                                                                );
+                                                              }
+                                                            });
 
-                                                              return;
-                                                          }
-                                                          dashController.getWholeReport();
-                                                          final range = dashController.selectedRange.value;
-                                                          var today = DateTime.now();
-                                                          if (dashController.selectedSortBy.value != "Today" &&
-                                                              dashController.selectedSortBy.value != "Yesterday") {
-                                                            dashController.getCustomerReport(
-                                                                range == null
-                                                                    ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
-                                                                    : "${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
-                                                                range == null
-                                                                    ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
-                                                                    : "${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
-                                                          } else {
-                                                            var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
-                                                            var last7days = DateTime.now().subtract(Duration(days: 7));
-                                                            dashController.getCustomerReport(
-                                                                "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
-                                                                today);
-                                                          }
-                                                          remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
-                                                          remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
-                                                          remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
-                                                          remController.dashboardMeetings(
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            callType: controllers.selectMeetingType.value,
-                                                            sortField: controllers.sortFieldMeetingActivity.value,
-                                                            sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                          );
-                                                          remController.dashboardCommunicationFilterList(
-                                                            dataList: remController.callMailsDetailsList2,
-                                                            searchText: controllers.searchText.value.toLowerCase(),
-                                                            callType: controllers.selectCallType.value,
-                                                            sortField: controllers.sortFieldCallActivity.value,
-                                                            sortOrder: controllers.sortOrderCallActivity.value,
-                                                            selectedMonth: remController.selectedCallMonth.value,
-                                                            selectedRange: remController.selectedCallRange.value,
-                                                            selectedDateFilter: remController.selectedCallSortBy.value,
-                                                          );
-                                                          remController.dashboardSortReminders();
-                                                        },
-                                                        child: Container(
-                                                          padding: const EdgeInsets.symmetric(
-                                                              horizontal: 16, vertical: 8),
-                                                          decoration: BoxDecoration(
-                                                            color: isSelected
-                                                                ? Colors.white
-                                                                : Colors.transparent,
-                                                            borderRadius: BorderRadius.circular(10),
-                                                            boxShadow: isSelected
-                                                                ? const [
-                                                              BoxShadow(
-                                                                color: Colors.black12,
-                                                                blurRadius: 6,
-                                                                offset: Offset(0, 2),
-                                                              ),
-                                                            ]
-                                                                : null,
-                                                          ),
-                                                          child: CustomText(
-                                                            text: filter,
-                                                            isCopy: false,
-                                                            size: 12,
-                                                            isBold: true,
-                                                            colors: isSelected
-                                                                ? const Color(0xff0078D7)
-                                                                : const Color(0xff666666),
-                                                          ),
+                                                            return;
+                                                        }
+                                                        dashController.getWholeReport();
+                                                        final range = dashController.selectedRange.value;
+                                                        var today = DateTime.now();
+                                                        if (dashController.selectedSortBy.value != "Today" &&
+                                                            dashController.selectedSortBy.value != "Yesterday") {
+                                                          dashController.getCustomerReport(
+                                                              range == null
+                                                                  ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
+                                                                  : "${range.start.year}-${range.start.month.toString().padLeft(2, "0")}-${range.start.day.toString().padLeft(2, "0")}",
+                                                              range == null
+                                                                  ? "${today.year}-${today.month.toString().padLeft(2, "0")}-${today.day.toString().padLeft(2, "0")}"
+                                                                  : "${range.end.year}-${range.end.month.toString().padLeft(2, "0")}-${range.end.day.toString().padLeft(2, "0")}");
+                                                        } else {
+                                                          var today = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
+                                                          var last7days = DateTime.now().subtract(Duration(days: 7));
+                                                          dashController.getCustomerReport(
+                                                              "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
+                                                              today);
+                                                        }
+                                                        remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
+                                                        remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                                                        remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
+                                                        remController.dashboardMeetings(
+                                                          searchText: controllers.searchText.value.toLowerCase(),
+                                                          callType: controllers.selectMeetingType.value,
+                                                          sortField: controllers.sortFieldMeetingActivity.value,
+                                                          sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                        );
+                                                        remController.dashboardCommunicationFilterList(
+                                                          dataList: remController.callMailsDetailsList2,
+                                                          searchText: controllers.searchText.value.toLowerCase(),
+                                                          callType: controllers.selectCallType.value,
+                                                          sortField: controllers.sortFieldCallActivity.value,
+                                                          sortOrder: controllers.sortOrderCallActivity.value,
+                                                          selectedMonth: remController.selectedCallMonth.value,
+                                                          selectedRange: remController.selectedCallRange.value,
+                                                          selectedDateFilter: remController.selectedCallSortBy.value,
+                                                        );
+                                                        remController.dashboardSortReminders();
+                                                      },
+                                                      child: Container(
+                                                        padding: const EdgeInsets.symmetric(
+                                                            horizontal: 16, vertical: 8),
+                                                        decoration: BoxDecoration(
+                                                          color: isSelected
+                                                              ? Colors.white
+                                                              : Colors.transparent,
+                                                          borderRadius: BorderRadius.circular(10),
+                                                          boxShadow: isSelected
+                                                              ? const [
+                                                            BoxShadow(
+                                                              color: Colors.black12,
+                                                              blurRadius: 6,
+                                                              offset: Offset(0, 2),
+                                                            ),
+                                                          ]
+                                                              : null,
+                                                        ),
+                                                        child: CustomText(
+                                                          text: filter,
+                                                          isCopy: false,
+                                                          size: 12,
+                                                          isBold: true,
+                                                          colors: isSelected
+                                                              ? const Color(0xff0078D7)
+                                                              : const Color(0xff666666),
                                                         ),
                                                       ),
-                                                    );
-                                                  }).toList(),
-                                                ),
-                                              );
-                                            }),
+                                                    ),
+                                                  );
+                                                }).toList(),
+                                              ),
+                                            ),
                                             5.width,
                                             CustomText(
                                               text: version,
@@ -1514,62 +1188,60 @@ void checkDate(){
                                                   // dashController.selectedSortBy.value=="Last 30 Days"?"Next 30 Days":"", isCopy: false,)
                                                 ],
                                               ),
-                                              Obx(() {
-                                                return Container(
-                                                  padding: const EdgeInsets.all(6),
-                                                  decoration: _filterGroupDecoration(),
-                                                  child: Row(
-                                                    children: dashController.filterType.map((filter) {
-                                                      final bool isSelected = remController.filterApp.value == filter;
-                                                      return MouseRegion(
-                                                        cursor: SystemMouseCursors.click,
-                                                        child: GestureDetector(
-                                                          behavior: HitTestBehavior.opaque,
-                                                          onTap: () {
-                                                            remController.filterApp.value = filter;
-                                                            remController.dashboardMeetings(
-                                                              searchText: controllers.searchText.value.toLowerCase(),
-                                                              callType: controllers.selectMeetingType.value,
-                                                              sortField: controllers.sortFieldMeetingActivity.value,
-                                                              sortOrder: controllers.sortOrderMeetingActivity.value,
-                                                            );
-                                                          },
-                                                          child: Container(
-                                                            width: MediaQuery.of(context).size.width*0.03,
-                                                            decoration: BoxDecoration(
-                                                              color: isSelected
-                                                                  ? Colors.white
-                                                                  : Colors.transparent,
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              boxShadow: isSelected
-                                                                  ? const [
-                                                                BoxShadow(
-                                                                  color: Colors.black12,
-                                                                  blurRadius: 6,
-                                                                  offset: Offset(0, 2),
-                                                                ),
-                                                              ]
-                                                                  : null,
-                                                            ),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(5.0),
-                                                              child: CustomText(
-                                                                text: filter,
-                                                                isCopy: false,
-                                                                size: 12,
-                                                                isBold: true,
-                                                                colors: isSelected
-                                                                    ? const Color(0xff0078D7)
-                                                                    : const Color(0xff666666),
+                                              Container(
+                                                padding: const EdgeInsets.all(6),
+                                                decoration: _filterGroupDecoration(),
+                                                child: Row(
+                                                  children: dashController.filterType.map((filter) {
+                                                    final bool isSelected = remController.filterApp.value == filter;
+                                                    return MouseRegion(
+                                                      cursor: SystemMouseCursors.click,
+                                                      child: GestureDetector(
+                                                        behavior: HitTestBehavior.opaque,
+                                                        onTap: () {
+                                                          remController.filterApp.value = filter;
+                                                          remController.dashboardMeetings(
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectMeetingType.value,
+                                                            sortField: controllers.sortFieldMeetingActivity.value,
+                                                            sortOrder: controllers.sortOrderMeetingActivity.value,
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          width: MediaQuery.of(context).size.width*0.03,
+                                                          decoration: BoxDecoration(
+                                                            color: isSelected
+                                                                ? Colors.white
+                                                                : Colors.transparent,
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            boxShadow: isSelected
+                                                                ? const [
+                                                              BoxShadow(
+                                                                color: Colors.black12,
+                                                                blurRadius: 6,
+                                                                offset: Offset(0, 2),
                                                               ),
+                                                            ]
+                                                                : null,
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(5.0),
+                                                            child: CustomText(
+                                                              text: filter,
+                                                              isCopy: false,
+                                                              size: 12,
+                                                              isBold: true,
+                                                              colors: isSelected
+                                                                  ? const Color(0xff0078D7)
+                                                                  : const Color(0xff666666),
                                                             ),
                                                           ),
                                                         ),
-                                                      );
-                                                    }).toList(),
-                                                  ),
-                                                );
-                                              }),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              ),
                                             ],
                                           ),5.height,
                                           Container(
@@ -1614,7 +1286,7 @@ void checkDate(){
                                                                 sortOrder: controllers.sortOrderMeetingActivity.value,
                                                               );
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldMeetingActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderMeetingActivity.value == 'asc'
@@ -1622,8 +1294,7 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            ),
-                                                            ),
+                                                            )
                                                           ),
                                                         ],
                                                       ),),
@@ -1653,7 +1324,7 @@ void checkDate(){
                                                                 sortOrder: controllers.sortOrderMeetingActivity.value,
                                                               );
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldMeetingActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderMeetingActivity.value == 'asc'
@@ -1661,7 +1332,6 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            ),
                                                             ),
                                                           ),
                                                         ],
@@ -1692,7 +1362,7 @@ void checkDate(){
                                                                 sortOrder: controllers.sortOrderMeetingActivity.value,
                                                               );
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldMeetingActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderMeetingActivity.value == 'asc'
@@ -1700,7 +1370,6 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            ),
                                                             ),
                                                           ),
                                                         ],
@@ -1731,7 +1400,7 @@ void checkDate(){
                                                                 sortOrder: controllers.sortOrderMeetingActivity.value,
                                                               );
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldMeetingActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderMeetingActivity.value == 'asc'
@@ -1739,7 +1408,6 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            ),
                                                             ),
                                                           ),
                                                         ],
@@ -1986,57 +1654,55 @@ void checkDate(){
                                                   // dashController.selectedSortBy.value=="Last 30 Days"?"Next 30 Days":"", isCopy: false,)
                                                 ],
                                               ),
-                                              Obx(() {
-                                                return Container(
-                                                  padding: const EdgeInsets.all(6),
-                                                  decoration: _filterGroupDecoration(),
-                                                  child: Row(
-                                                    children: dashController.filterType.map((filter) {
-                                                      final bool isSelected = remController.filterRem.value == filter;
-                                                      return MouseRegion(
-                                                        cursor: SystemMouseCursors.click,
-                                                        child: GestureDetector(
-                                                          behavior: HitTestBehavior.opaque,
-                                                          onTap: () {
-                                                            remController.filterRem.value = filter;
-                                                            remController.dashboardSortReminders();
-                                                          },
-                                                          child: Container(
-                                                            width: MediaQuery.of(context).size.width*0.05,
-                                                            decoration: BoxDecoration(
-                                                              color: isSelected
-                                                                  ? Colors.white
-                                                                  : Colors.transparent,
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              boxShadow: isSelected
-                                                                  ? const [
-                                                                BoxShadow(
-                                                                  color: Colors.black12,
-                                                                  blurRadius: 6,
-                                                                  offset: Offset(0, 2),
-                                                                ),
-                                                              ]
-                                                                  : null,
-                                                            ),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(5.0),
-                                                              child: CustomText(
-                                                                text: filter,
-                                                                isCopy: false,
-                                                                size: 12,
-                                                                isBold: true,
-                                                                colors: isSelected
-                                                                    ? const Color(0xff0078D7)
-                                                                    : const Color(0xff666666),
+                                              Container(
+                                                padding: const EdgeInsets.all(6),
+                                                decoration: _filterGroupDecoration(),
+                                                child: Row(
+                                                  children: dashController.filterType.map((filter) {
+                                                    final bool isSelected = remController.filterRem.value == filter;
+                                                    return MouseRegion(
+                                                      cursor: SystemMouseCursors.click,
+                                                      child: GestureDetector(
+                                                        behavior: HitTestBehavior.opaque,
+                                                        onTap: () {
+                                                          remController.filterRem.value = filter;
+                                                          remController.dashboardSortReminders();
+                                                        },
+                                                        child: Container(
+                                                          width: MediaQuery.of(context).size.width*0.05,
+                                                          decoration: BoxDecoration(
+                                                            color: isSelected
+                                                                ? Colors.white
+                                                                : Colors.transparent,
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            boxShadow: isSelected
+                                                                ? const [
+                                                              BoxShadow(
+                                                                color: Colors.black12,
+                                                                blurRadius: 6,
+                                                                offset: Offset(0, 2),
                                                               ),
+                                                            ]
+                                                                : null,
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(5.0),
+                                                            child: CustomText(
+                                                              text: filter,
+                                                              isCopy: false,
+                                                              size: 12,
+                                                              isBold: true,
+                                                              colors: isSelected
+                                                                  ? const Color(0xff0078D7)
+                                                                  : const Color(0xff666666),
                                                             ),
                                                           ),
                                                         ),
-                                                      );
-                                                    }).toList(),
-                                                  ),
-                                                );
-                                              }),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              ),
                                             ],
                                           ),5.height,
                                           Container(
@@ -2077,7 +1743,7 @@ void checkDate(){
                                                               remController.sortFieldCallActivity.value = 'title';
                                                               remController.dashboardSortReminders();
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldCallActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderCallActivity.value == 'asc'
@@ -2085,7 +1751,7 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            )),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),),
@@ -2111,7 +1777,7 @@ void checkDate(){
                                                               remController.sortFieldCallActivity.value = 'type';
                                                               remController.dashboardSortReminders();
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldCallActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderCallActivity.value == 'asc'
@@ -2119,7 +1785,7 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            )),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),),
@@ -2145,7 +1811,7 @@ void checkDate(){
                                                               remController.sortBy.value = 'customerName';
                                                               remController.dashboardSortReminders();
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               remController.sortBy.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderCallActivity.value == 'asc'
@@ -2153,7 +1819,7 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            )),
+                                                            )
                                                           ),
                                                         ],
                                                       ),),
@@ -2179,7 +1845,7 @@ void checkDate(){
                                                               remController.sortFieldCallActivity.value = 'employeeName';
                                                               remController.dashboardSortReminders();
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldCallActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderCallActivity.value == 'asc'
@@ -2187,7 +1853,7 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            )),
+                                                            )
                                                           ),
                                                         ],
                                                       ),),
@@ -2213,7 +1879,7 @@ void checkDate(){
                                                               remController.sortFieldCallActivity.value = 'startDate';
                                                               remController.dashboardSortReminders();
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldCallActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderCallActivity.value == 'asc'
@@ -2221,7 +1887,7 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            )),
+                                                            ),
                                                           ),
                                                         ],
                                                       ),),
@@ -2633,66 +2299,64 @@ void checkDate(){
                                                   CustomText(text: "Communication Details", isCopy: false,isBold: true,size: 15,),
                                                 ],
                                               ),
-                                              Obx(() {
-                                                return Container(
-                                                  padding: const EdgeInsets.all(6),
-                                                  decoration: _filterGroupDecoration(),
-                                                  child: Row(
-                                                    children: dashController.filterType.map((filter) {
-                                                      final bool isSelected = remController.filterCall.value == filter;
-                                                      return MouseRegion(
-                                                        cursor: SystemMouseCursors.click,
-                                                        child: GestureDetector(
-                                                          behavior: HitTestBehavior.opaque,
-                                                          onTap: () {
-                                                            remController.filterCall.value = filter;
-                                                            remController.dashboardCommunicationFilterList(
-                                                              dataList: remController.callMailsDetailsList2,
-                                                              searchText: controllers.searchText.value.toLowerCase(),
-                                                              callType: controllers.selectCallType.value,
-                                                              sortField: controllers.sortFieldCallActivity.value,
-                                                              sortOrder: controllers.sortOrderCallActivity.value,
-                                                              selectedMonth: remController.selectedCallMonth.value,
-                                                              selectedRange: remController.selectedCallRange.value,
-                                                              selectedDateFilter: remController.selectedCallSortBy.value,
-                                                            );
-                                                          },
-                                                          child: Container(
-                                                            width: width/30,
-                                                            decoration: BoxDecoration(
-                                                              color: isSelected
-                                                                  ? Colors.white
-                                                                  : Colors.transparent,
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              boxShadow: isSelected
-                                                                  ? const [
-                                                                BoxShadow(
-                                                                  color: Colors.black12,
-                                                                  blurRadius: 6,
-                                                                  offset: Offset(0, 2),
-                                                                ),
-                                                              ]
-                                                                  : null,
-                                                            ),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.all(5.0),
-                                                              child: CustomText(
-                                                                text: filter,
-                                                                isCopy: false,
-                                                                size: 12,
-                                                                isBold: true,
-                                                                colors: isSelected
-                                                                    ? const Color(0xff0078D7)
-                                                                    : const Color(0xff666666),
+                                              Container(
+                                                padding: const EdgeInsets.all(6),
+                                                decoration: _filterGroupDecoration(),
+                                                child: Row(
+                                                  children: dashController.filterType.map((filter) {
+                                                    final bool isSelected = remController.filterCall.value == filter;
+                                                    return MouseRegion(
+                                                      cursor: SystemMouseCursors.click,
+                                                      child: GestureDetector(
+                                                        behavior: HitTestBehavior.opaque,
+                                                        onTap: () {
+                                                          remController.filterCall.value = filter;
+                                                          remController.dashboardCommunicationFilterList(
+                                                            dataList: remController.callMailsDetailsList2,
+                                                            searchText: controllers.searchText.value.toLowerCase(),
+                                                            callType: controllers.selectCallType.value,
+                                                            sortField: controllers.sortFieldCallActivity.value,
+                                                            sortOrder: controllers.sortOrderCallActivity.value,
+                                                            selectedMonth: remController.selectedCallMonth.value,
+                                                            selectedRange: remController.selectedCallRange.value,
+                                                            selectedDateFilter: remController.selectedCallSortBy.value,
+                                                          );
+                                                        },
+                                                        child: Container(
+                                                          width: width/30,
+                                                          decoration: BoxDecoration(
+                                                            color: isSelected
+                                                                ? Colors.white
+                                                                : Colors.transparent,
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            boxShadow: isSelected
+                                                                ? const [
+                                                              BoxShadow(
+                                                                color: Colors.black12,
+                                                                blurRadius: 6,
+                                                                offset: Offset(0, 2),
                                                               ),
+                                                            ]
+                                                                : null,
+                                                          ),
+                                                          child: Padding(
+                                                            padding: const EdgeInsets.all(5.0),
+                                                            child: CustomText(
+                                                              text: filter,
+                                                              isCopy: false,
+                                                              size: 12,
+                                                              isBold: true,
+                                                              colors: isSelected
+                                                                  ? const Color(0xff0078D7)
+                                                                  : const Color(0xff666666),
                                                             ),
                                                           ),
                                                         ),
-                                                      );
-                                                    }).toList(),
-                                                  ),
-                                                );
-                                              }),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                ),
+                                              ),
                                             ],
                                           ),5.height,
                                           Container(
@@ -2748,7 +2412,7 @@ void checkDate(){
                                                                 selectedDateFilter: remController.selectedCallSortBy.value,
                                                               );
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldCallActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderCallActivity.value == 'asc'
@@ -2756,7 +2420,6 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            ),
                                                             ),
                                                           ),
                                                         ],
@@ -2790,7 +2453,7 @@ void checkDate(){
                                                                 selectedDateFilter: remController.selectedCallSortBy.value,
                                                               );
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldCallActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderCallActivity.value == 'asc'
@@ -2798,7 +2461,6 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            ),
                                                             ),
                                                           ),
                                                         ],
@@ -2832,7 +2494,7 @@ void checkDate(){
                                                                 selectedDateFilter: remController.selectedCallSortBy.value,
                                                               );
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldCallActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderCallActivity.value == 'asc'
@@ -2840,7 +2502,6 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            ),
                                                             ),
                                                           ),
                                                         ],
@@ -2874,7 +2535,7 @@ void checkDate(){
                                                                 selectedDateFilter: remController.selectedCallSortBy.value,
                                                               );
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldCallActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderCallActivity.value == 'asc'
@@ -2882,7 +2543,6 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            ),
                                                             ),
                                                           ),
                                                         ],
@@ -2897,36 +2557,6 @@ void checkDate(){
                                                             isBold: true,
                                                             colors: Colors.white,
                                                           ),3.width,
-                                                          // GestureDetector(
-                                                          //   onTap: (){
-                                                          //     if(controllers.sortFieldCallActivity.value=='status' && controllers.sortOrderCallActivity.value=='asc'){
-                                                          //       controllers.sortOrderCallActivity.value='desc';
-                                                          //     }else{
-                                                          //       controllers.sortOrderCallActivity.value='asc';
-                                                          //     }
-                                                          //     controllers.sortFieldCallActivity.value='status';
-                                                          //     remController.dashboardCommunicationFilterList(
-                                                          //       dataList: remController.callMailsDetailsList,
-                                                          //       searchText: controllers.searchText.value.toLowerCase(),
-                                                          //       callType: controllers.selectCallType.value,
-                                                          //       sortField: controllers.sortFieldCallActivity.value,
-                                                          //       sortOrder: controllers.sortOrderCallActivity.value,
-                                                          //       selectedMonth: remController.selectedCallMonth.value,
-                                                          //       selectedRange: remController.selectedCallRange.value,
-                                                          //       selectedDateFilter: remController.selectedCallSortBy.value,
-                                                          //     );
-                                                          //   },
-                                                          //   child: Obx(() => Image.asset(
-                                                          //     controllers.sortFieldCallActivity.value.isEmpty
-                                                          //         ? "assets/images/arrow.png"
-                                                          //         : controllers.sortOrderCallActivity.value == 'asc'
-                                                          //         ? "assets/images/arrow_up.png"
-                                                          //         : "assets/images/arrow_down.png",
-                                                          //     width: 15,
-                                                          //     height: 15,
-                                                          //   ),
-                                                          //   ),
-                                                          // ),
                                                         ],
                                                       ),),
                                                       headerCell(5, Row(
@@ -2958,7 +2588,7 @@ void checkDate(){
                                                                 selectedDateFilter: remController.selectedCallSortBy.value,
                                                               );
                                                             },
-                                                            child: Obx(() => Image.asset(
+                                                            child: Image.asset(
                                                               controllers.sortFieldCallActivity.value.isEmpty
                                                                   ? "assets/images/arrow.png"
                                                                   : controllers.sortOrderCallActivity.value == 'asc'
@@ -2966,7 +2596,6 @@ void checkDate(){
                                                                   : "assets/images/arrow_down.png",
                                                               width: 15,
                                                               height: 15,
-                                                            ),
                                                             ),
                                                           ),
                                                         ],
@@ -3172,8 +2801,8 @@ void checkDate(){
                                 20.height,
                                 Row(
                                   children: [
-                                    Obx(() => ActivityOverTimeChart(
-                                      width: width,
+                                    ActivityOverTimeChart(
+                                      width: width/1.05,
 
                                       xLabels: controllers.xLabels.toList(),
 
@@ -3198,7 +2827,7 @@ void checkDate(){
                                         ),
 
                                       ],
-                                    )),
+                                    ),
                                     SizedBox(
                                       width: width/70,
                                     )
@@ -3206,7 +2835,7 @@ void checkDate(){
                                 ),
                                 50.height,
                               ],
-                            )),
+                            ),
                           ),
                           AnimatedPositioned(
                             duration: const Duration(milliseconds: 420),

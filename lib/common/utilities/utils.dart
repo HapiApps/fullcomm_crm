@@ -30,7 +30,6 @@ import '../constant/assets_constant.dart';
 import '../constant/colors_constant.dart';
 import 'package:http/http.dart' as http;
 import 'dart:html' as html;
-
 final Utils utils = Utils._();
 
 class Utils {
@@ -3774,16 +3773,43 @@ void appointmentStatus(context,String value){
     }
   }
 
+  // Future<void> downloadSampleExcel() async {
+  //   debugPrint("sbdsjh");
+  //   final data = await rootBundle.load("assets/easycrm_data_upload_template.xlsx");
+  //   final blob = html.Blob([data.buffer.asUint8List()]);
+  //   final url = html.Url.createObjectUrlFromBlob(blob);
+  //
+  //
+  //   // Revoke after a short delay
+  //   Future.delayed(const Duration(seconds: 1), () {
+  //     html.Url.revokeObjectUrl(url);
+  //   });
+  // }
+
+
   Future<void> downloadSampleExcel() async {
-    final data = await rootBundle.load("assets/easycrm_data_upload_template.xlsx");
-    final blob = html.Blob([data.buffer.asUint8List()]);
-    final url = html.Url.createObjectUrlFromBlob(blob);
+    try {
+      final data = await rootBundle
+          .load("assets/easycrm_data_upload_template.xlsx");
 
+      final bytes = data.buffer.asUint8List();
 
-    // Revoke after a short delay
-    Future.delayed(const Duration(seconds: 1), () {
+      final blob = html.Blob([
+        bytes
+      ]);
+
+      final url = html.Url.createObjectUrlFromBlob(blob);
+
+      final anchor = html.AnchorElement(href: url)
+        ..setAttribute(
+            "download", "easycrm_data_upload_template.xlsx")
+        ..click();
+
       html.Url.revokeObjectUrl(url);
-    });
+
+    } catch (e) {
+      print("Download Error: $e");
+    }
   }
   Future<void> downloadProductSampleExcel() async {
     final data = await rootBundle.load("assets/catlog_sheet.xlsx");
@@ -4482,13 +4508,13 @@ void appointmentStatus(context,String value){
                               borderRadius: BorderRadius.circular(5),
                               side: BorderSide(color: colorsConst.third))),
                       onPressed: () {
-                       // if(controllers.serverSheet.value.isEmpty){
+                       if(controllers.serverSheet.value.isEmpty){
                           debugPrint("Local Download");
                           downloadSampleExcel();
-                        // }else{
-                        //   debugPrint("Network Download");
-                        //   downloadSheetFromNetwork(controllers.serverSheet.value, "easycrm_data_upload_template.xlsx");
-                        // }
+                        }else{
+                          debugPrint("Network Download");
+                          downloadSheetFromNetwork(controllers.serverSheet.value, "easycrm_data_upload_template.xlsx");
+                        }
                       },
                       child: const CustomText(
                         text: "Download Sample Excel Sheet",

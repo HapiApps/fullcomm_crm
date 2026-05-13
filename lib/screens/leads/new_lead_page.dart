@@ -1145,7 +1145,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                                 expectedBillingValue: data.expectedBillingValue ?? "",
                                                 arpuValue: data.arpuValue ?? "",
                                                 updatedTs: data.updatedTs ?? "",
-                                                sourceDetails: data.sourceDetails ?? "",
+                                                sourceDetails: data.sourceDetails ?? "", additional: data.additional!,
                                               );
                                             },
                                           );

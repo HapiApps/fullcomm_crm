@@ -331,6 +331,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                                   LengthLimitingTextInputFormatter(40),
                                 ],
                                 onFieldSubmitted: (value) async {
+                                  final oldValue = tableController.headingFields[i];
                                   if(value.trim().isNotEmpty){
                                     tableController.isLoading.value = true;
                                     final id = controllers.fields[i].id;
@@ -338,7 +339,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                                     print(tableController.headingFields);
                                     final prefs = await SharedPreferences.getInstance();
                                     await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
-                                    tableController.updateColumnNameAPI(context, value, id);
+                                    tableController.updateColumnNameAPI(context, value, oldValue, id);
                                   }else{
                                     utils.showToast("Enter a value",Colors.red);
                                   }

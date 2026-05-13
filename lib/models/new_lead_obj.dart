@@ -60,6 +60,7 @@ class NewLeadObj {
   final String? x;
   final String? designation;
   final String? department;
+  final List? additional;
   bool? select;
 
   NewLeadObj(
@@ -117,11 +118,12 @@ class NewLeadObj {
       this.prospectGrading,
       this.detailsOfServiceRequired,
         this.additionalInfo,
-        this.whatsapp,this.industry,this.product,this.x
+        this.whatsapp,this.industry,this.product,this.x, this.additional
       });
   factory NewLeadObj.fromJson(Map<String, dynamic> json) {
     return NewLeadObj(
       select: false,
+      additional: json["additional_info"] ?? [],
       designation: json["designation"]?.toString() ?? '',
       department: json["department"]?.toString() ?? '',
       userId: json["user_id"]?.toString() ?? '',
@@ -194,6 +196,7 @@ class NewLeadObj {
     return {
       "select": select,
       "user_id": userId,
+      "additional_info": additional,
       "address_id": addressId,
       "firstname": firstname,
       "line_id": lineId,

@@ -499,7 +499,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           "search_type": "settings_roles"
         }),
       );
-    debugPrint("setting_roles"); // <-- ADD THIS
+    // debugPrint("setting_roles"); // <-- ADD THIS
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -509,7 +509,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
         }
       }
       if (response.statusCode == 200) {
-        debugPrint(response.body); // <-- ADD THIS
+        // debugPrint(response.body); // <-- ADD THIS
         final data = jsonDecode(response.body);
           final List<dynamic> rolesJson = data;
           roleList.value = rolesJson.map((json) => RoleModel.fromJson(json)).toList();

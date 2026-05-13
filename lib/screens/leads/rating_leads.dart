@@ -589,6 +589,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                                           itemBuilder: (context, index) {
                                             final data = controllers.paginatedRatingLeads[index];
                                             return Obx(()=>CustomLeadTile(
+                                              additional: data.additional!,
                                               leadIndex:0.toString(),
                                               listIndex: index,
                                               list: widget.list,list2: widget.list2,

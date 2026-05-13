@@ -639,16 +639,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-
-      debugPrint("================================================");
-      debugPrint("STATUS CODE");
-      debugPrint("================================================");
-      debugPrint(request.statusCode.toString());
-
       debugPrint("================================================");
       debugPrint("RAW RESPONSE");
       debugPrint("================================================");
-      debugPrint(request.body);
+      // debugPrint(request.body);
 
       if (request.statusCode == 401) {
 
@@ -665,10 +659,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
 
         final response = jsonDecode(request.body);
 
-        debugPrint("================================================");
-        debugPrint("FULL RESPONSE");
-        debugPrint("================================================");
-        debugPrint(response.toString());
+        // debugPrint("================================================");
+        // debugPrint("FULL RESPONSE");
+        // debugPrint("================================================");
+        // debugPrint(response.toString());
 
         /// =====================================================
         /// DASHBOARD REPORT
@@ -678,10 +672,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         Map<String, dynamic>.from(
             response['data']['dashboard_report']);
 
-        debugPrint("================================================");
-        debugPrint("DASHBOARD REPORT");
-        debugPrint("================================================");
-        debugPrint(dashboardReport.toString());
+        // debugPrint("================================================");
+        // debugPrint("DASHBOARD REPORT");
+        // debugPrint("================================================");
+        // debugPrint(dashboardReport.toString());
 
         dashController.totalMails.value =
             dashboardReport["total_mails"].toString();
@@ -714,7 +708,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
 
         List<dynamic> activityReport = List<dynamic>.from(response['data']['activity_customer_report']);
         customerStatusReport.value=activityReport;
-        debugPrint("Activity Customer REPORT ${customerStatusReport.value}");
+        // debugPrint("Activity Customer REPORT ${customerStatusReport.value}");
         // =====================================================
         /// RANGE REPORT
         /// =====================================================
@@ -722,9 +716,9 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         List<dynamic> rangeReport =
         List<dynamic>.from(response['data']['range_report']);
 
-        debugPrint("================================================");
-        debugPrint("RANGE REPORT");
-        debugPrint("================================================");
+        // debugPrint("================================================");
+        // debugPrint("RANGE REPORT");
+        // debugPrint("================================================");
         // debugPrint(rangeReport.toString());
 
         controllers.rangeStatusList.value =
@@ -766,10 +760,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         Map<String, dynamic>.from(
             response['data']['rating_report']);
 
-        debugPrint("================================================");
-        debugPrint("RATING REPORT");
-        debugPrint("================================================");
-        debugPrint(ratingReport.toString());
+        // debugPrint("================================================");
+        // debugPrint("RATING REPORT");
+        // debugPrint("================================================");
+        // debugPrint(ratingReport.toString());
 
         totalCold.value =
         "${ratingReport["lead_cold"] ?? 0}";
@@ -805,9 +799,9 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         List<dynamic>.from(
             response['data']['lead_count_report']);
 
-        debugPrint("================================================");
-        debugPrint("LEAD COUNT REPORT");
-        debugPrint("================================================");
+        // debugPrint("================================================");
+        // debugPrint("LEAD COUNT REPORT");
+        // debugPrint("================================================");
         // debugPrint(leadCountReport.toString());
 
         color = generateColors(leadCountReport.length);
@@ -825,9 +819,9 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         List<dynamic>.from(
             response['data']['visit_status_report']);
 
-        debugPrint("================================================");
-        debugPrint("VISIT STATUS REPORT");
-        debugPrint("================================================");
+        // debugPrint("================================================");
+        // debugPrint("VISIT STATUS REPORT");
+        // debugPrint("================================================");
         // debugPrint(callStatusReport.toString());
 
         visitStatusReport.value = callStatusReport;
@@ -851,9 +845,9 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
 
       } else {
 
-        debugPrint("================================================");
-        debugPrint("API FAILED");
-        debugPrint("================================================");
+        // debugPrint("================================================");
+        // debugPrint("API FAILED");
+        // debugPrint("================================================");
 
         throw Exception('Failed to load dashboard report');
       }

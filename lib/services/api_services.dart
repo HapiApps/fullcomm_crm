@@ -1516,7 +1516,7 @@ class ApiService {
       debugPrint("STATUS CODE: ${responseData.statusCode}");
 
 // FULL RAW RESPONSE
-      debugPrint("RAW RESPONSE: ${responseData.body}");
+//       debugPrint("RAW RESPONSE: ${responseData.body}");
 
 // JSON DECODE
       Map<String, dynamic> res = json.decode(responseData.body);
@@ -2853,8 +2853,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint("allCustomers");
-      debugPrint(request.body);
+      // debugPrint("allCustomers");
+      // debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5405,8 +5405,8 @@ debugPrint(response.body);
           "action": "get_data"
         }),
       );
-      // debugPrint("response.bodyyyy");
-      // debugPrint(response.body);
+      debugPrint("all_leads");
+      debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
