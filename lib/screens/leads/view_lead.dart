@@ -359,7 +359,7 @@ void checkType(){
                                                     ),10.width,
                                                     if(type!=controllers.leadCategoryList.length)
                                                       SizedBox(
-                                                        width: 100,
+                                                        width: 120,
                                                         height: 35,
                                                         child: ElevatedButton(
                                                           style: ElevatedButton.styleFrom(
