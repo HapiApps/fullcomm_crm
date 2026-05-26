@@ -1693,6 +1693,7 @@ class ApiService {
         "product_discussion": controllers.prodDescriptionController.text.trim(),
         "source": controllers.leadDisPointsCrt.text.trim(),
         "points": controllers.leadActions.text.trim(),
+        "referred_by": controllers.throughBy.text.trim(),
         "quotation_status": "",
 
         "door_no": controllers.doorNumberController.text.trim(),
@@ -1942,7 +1943,7 @@ class ApiService {
               notes: controllers.leadActions.text.trim(),
               quotationStatus: "",
               quotationRequired: "1",
-
+              points: controllers.leadActions.text.trim(),
               doorNo: controllers.doorNumberController.text.trim(),
               area: controllers.areaController.text.trim(),
               city: controllers.cityController.text.trim(),
@@ -3727,7 +3728,7 @@ class ApiService {
           controllers.setLogOut();
         }
       }
-      if (response.statusCode == 200 && body == "Message has been sent") {
+      if (body.toString().contains('Message has been sent')) {
         utils.snackBar(
             msg: "Mail has been sent",
             color: Colors.green,

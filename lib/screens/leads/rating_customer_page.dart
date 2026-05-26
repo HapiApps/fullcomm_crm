@@ -725,6 +725,7 @@ class _RatingPageState extends State<RatingPage> {
                                         itemBuilder: (context, index) {
                                           NewLeadObj data = controllers.ratingList[index];
                                           return CustomerNameTile(
+                                            refBy: data.referredBy.toString(),
                                             key: ValueKey(data.userId),
                                             listIndex: index,
                                             list: controllers.ratingList,list2: controllers.ratingList2,

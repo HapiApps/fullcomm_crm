@@ -464,6 +464,15 @@ class _AddLeadState extends State<AddLead> {
                           controllers.leadCtr.reset();
                           return;
                         }
+                        if (controllers.leadWebsite.text.trim().isNotEmpty&&!utils.validateWebsite(controllers.leadWebsite.text.trim())) {
+                          utils.snackBar(
+                            context: context,
+                            msg: "Enter valid Website",
+                            color: Colors.red,
+                          );
+                          controllers.leadCtr.reset();
+                          return;
+                        }
                         if (controllers.leadXCrt.text.trim().isNotEmpty&&!utils.isValidXId(controllers.leadXCrt.text.trim())) {
                           utils.snackBar(
                             context: context,
@@ -484,21 +493,6 @@ class _AddLeadState extends State<AddLead> {
                               context: context);
                           controllers.leadCtr.reset();
                         }
-                        // else if (controllers.leadMobileCrt[0].text.isEmpty) {
-                        //   utils.snackBar(
-                        //       msg: "Please Add Phone No",
-                        //       color: Colors.red,
-                        //       context: context);
-                        //   controllers.leadCtr.reset();
-                        // }
-                        // else if (controllers.numberList[0].text.length !=
-                        //     10) {
-                        //   utils.snackBar(
-                        //       msg: "Invalid Phone No",
-                        //       color: Colors.red,
-                        //       context: context);
-                        //   controllers.leadCtr.reset();
-                        // }
                         else if (controllers
                                 .leadWhatsCrt[0].text.isNotEmpty &&
                             controllers.leadWhatsCrt[0].text.length != 10) {
@@ -523,15 +517,6 @@ class _AddLeadState extends State<AddLead> {
                               context: context);
                           controllers.leadCtr.reset();
                         }
-                        // else if (controllers
-                        //         .leadCoMobileCrt.text.isNotEmpty &&
-                        //     controllers.leadCoMobileCrt.text.length != 10) {
-                        //   utils.snackBar(
-                        //       msg: "Invalid Company Phone No",
-                        //       color: Colors.red,
-                        //       context: context);
-                        //   controllers.leadCtr.reset();
-                        // }
                         else if (controllers.leadCoEmailCrt.text.isNotEmpty &&
                             !controllers.leadCoEmailCrt.text.isEmail) {
                           utils.snackBar(
@@ -894,8 +879,6 @@ class _AddLeadState extends State<AddLead> {
                                                                   setState(() {
                                                                     if(checkList[index]==true){
                                                                       controllers.leadWhatsCrt[0].text =controllers.numberList[index].text;
-                                                                    }else{
-                                                                      controllers.leadWhatsCrt[0].clear();
                                                                     }
                                                                   });
                                                                 },

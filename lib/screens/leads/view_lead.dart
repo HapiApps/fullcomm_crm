@@ -564,6 +564,8 @@ void checkType(){
                                                         onPressed: () {
                                                           Get.to(
                                                             UpdateLead(
+                                                              points: cust?.points,
+                                                              refBy: cust?.refBy.toString(),
                                                               additional: additional,
                                                               x: cust?.x,
                                                               pageName: widget.pageName,
@@ -575,7 +577,13 @@ void checkType(){
                                                               mainMobile: displayMobile,
                                                               mainEmail: displayEmail,
                                                               mainWhatsApp: widget.whatsAppNo,
-                                                              companyName: cust?.companyName ?? widget.companyName,
+                                                              linkedin: cust?.linkedin??"",
+                                                              productServices: cust?.product ?? "",
+                                                              companyName: cust?.companyName ?? "",
+                                                              companyWebsite: cust?.companyWebsite ?? "",
+                                                              companyNumber: cust?.companyNumber ?? "",
+                                                              companyEmail: cust?.companyEmail ?? "",
+                                                              industry: cust?.industry ?? "",
                                                               status: cust?.status?.toString(),
                                                               rating: cust?.rating,
                                                               detailsOfRequired: cust?.detailsOfServiceRequired,
@@ -594,7 +602,7 @@ void checkType(){
                                                               numOfHeadcount: cust?.numOfHeadcount,
                                                               expectedBillingValue: cust?.expectedBillingValue,
                                                               arpuValue: cust?.arpuValue,
-                                                              productDiscussion: cust?.product,
+                                                              productDiscussion: cust?.productDiscussion,
                                                               discussionPoint: cust?.discussionPoint,
                                                               notes: widget.notes,
                                                               sourceDetails: widget.sourceDetails,
@@ -871,7 +879,7 @@ void checkType(){
                                                               const SizedBox(height: 5),
 
                                                               CustomText(
-                                                                text: cust?.product ?? "",
+                                                                text: cust?.productDiscussion ?? "",
                                                                 isCopy: true,
                                                                 isBold: true,
                                                                 colors: Colors.white,
@@ -1025,9 +1033,9 @@ void checkType(){
 
                                                               CustomText(
                                                                 text: [
-                                                                  addr?.doorNo,
-                                                                  addr?.area,
-                                                                  addr?.city,
+                                                                  addr?.doorNo ?? widget.addressLine1,
+                                                                  addr?.area ?? widget.area,
+                                                                  addr?.city ?? widget.city,
                                                                 ].where((e) => e != null && e.toString().trim().isNotEmpty).join(", "),
                                                                 isCopy: true,
                                                                 isBold: true,
@@ -1035,9 +1043,9 @@ void checkType(){
 
                                                               CustomText(
                                                                 text: [
-                                                                  addr?.state,
-                                                                  addr?.country,
-                                                                  addr?.pincode,
+                                                                  addr?.state ?? widget.state,
+                                                                  addr?.country ?? widget.country,
+                                                                  addr?.pincode ?? widget.pinCode,
                                                                 ].where((e) => e != null && e.toString().trim().isNotEmpty).join(", "),
                                                                 isCopy: true,
                                                                 isBold: true,
@@ -1099,7 +1107,7 @@ void checkType(){
                                                                   .getUserHeading(
                                                                   "product_discussion") ??
                                                                   "Product Discussed").toUpperCase(),isCopy: true,size: 12),5.height,
-                                                              CustomText(text: cust?.product ?? "",isCopy: true,isBold: true,),
+                                                              CustomText(text: cust?.productDiscussion ?? "",isCopy: true,isBold: true,),
                                                               10.height,
                                                               CustomText(text: _formatHeading(controllers
                                                                   .getUserHeading("status") ??

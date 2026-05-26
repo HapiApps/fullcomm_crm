@@ -82,6 +82,7 @@ class CustomerNameTile extends StatefulWidget {
   final String? points;
   final String? detailsOfServiceReq;
   final String updatedTs;
+  final String refBy;
   final void Function(bool?) onChanged;
   final bool saveValue;
   final RxList<NewLeadObj> list;
@@ -146,7 +147,7 @@ class CustomerNameTile extends StatefulWidget {
         this.visitType,
         this.points,
         this.detailsOfServiceReq,
-        required this.pageName, required this.leadIndex, required this.list, required this.list2, required this.listIndex});
+        required this.pageName, required this.leadIndex, required this.list, required this.list2, required this.listIndex, required this.refBy});
 
   @override
   State<CustomerNameTile> createState() => _CustomerNameTileState();
@@ -355,6 +356,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                             onTap: () {
                               Get.to(UpdateLead(
                                 additional: [],
+                                refBy: widget.refBy,
                                 pageName: widget.pageName,
                                 index: widget.listIndex,
                                 list: widget.list,list2: widget.list2,
@@ -1045,6 +1047,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                               );
                             }else if(value=="edit"){
                               Get.to(UpdateLead(
+                                refBy: widget.refBy,
                                 additional: [],
                                 pageName: widget.pageName,
                                 index: widget.listIndex,

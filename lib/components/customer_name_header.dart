@@ -130,6 +130,20 @@ class _CustomerNameHeaderState extends State<CustomerNameHeader> {
                     onFieldSubmitted: (value) async {
                       final oldValue = tableController.headingFields[0];
                       if(value.trim().isNotEmpty){
+                        bool alreadyExists = false;
+                        for (var j = 0; j < tableController.headingFields.length; j++) {
+                          // Skip current editing item
+                          if (j == 0) continue;
+                          debugPrint( "heading => ${tableController.headingFields[j]} | new => ${value.trim()}");
+                          if (tableController.headingFields[j].trim().toLowerCase() ==value.trim().toLowerCase()) {
+                            alreadyExists = true;
+                            break;
+                          }
+                        }
+                        if (alreadyExists) {
+                          utils.showToast("This heading already exists", Colors.orange);
+                          return;
+                        }
                         if (controllers.fields.isEmpty) return;
                         tableController.isLoading.value = true;
                         final id = controllers.fields[0].id;

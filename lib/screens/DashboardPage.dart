@@ -25,6 +25,7 @@ import '../components/custom_sidebar.dart';
 import '../components/custom_text.dart';
 import '../components/customer_status_card.dart';
 import '../components/keyboard_search.dart';
+import '../components/new_search_dropdown.dart';
 import '../components/pie_stat_card.dart';
 import '../components/search_custom_dropdown.dart';
 import '../components/wave_stat_card.dart';
@@ -52,7 +53,9 @@ class _DashboardPageState extends State<DashboardPage>
     with SingleTickerProviderStateMixin {
   late FocusNode _focusNode;
   var services=NewPayrollApiServices.instance;
-  final ScrollController _controller = ScrollController();
+  final ScrollController _appScroll = ScrollController();
+  final ScrollController _remScroll = ScrollController();
+  final ScrollController _comScroll = ScrollController();
   String formatFirstDate(String input) {
     try {
       List<String> parts = input.split("||").map((e) => e.trim()).toList();
@@ -374,28 +377,71 @@ void checkDate(){
                                             ],
                                           ),
                                         ),
+                                        // SizedBox(
+                                        //   width: screenWidth/4,
+                                        //   child: CDropdownField<AllCustomersObj>(
+                                        //     items: controllers.customers,
+                                        //     labelBuilder: (item) => item.name,
+                                        //     leadBuilder: (item) => item.category,
+                                        //     subLabelBuilder: (item) => item.phoneNo, // 🔥 optional
+                                        //     itemBuilder: (item) => SizedBox(), // not used now
+                                        //     textEditingController:controllers.search,
+                                        //     onSelected: (item) {
+                                        //       debugPrint("item.name");
+                                        //       debugPrint(item.name);
+                                        //       controllers.search.text = item.name.toString();
+                                        //       for (var i = 0; i < controllers.leadCategoryList.length; i++) {
+                                        //         if(controllers.leadCategoryList[i].value==item.category.toString()){
+                                        //           debugPrint(controllers.leadCategoryList[i].value);
+                                        //           debugPrint(item.category.toString());
+                                        //
+                                        //           controllers.selectedIndex.value =int.tryParse(item.leadStatus.toString()) ?? 0;
+                                        //           Get.off(
+                                        //                 () => NewLeadPage(
+                                        //               index: item.leadStatus,
+                                        //               name: controllers.leadCategoryList[i].value,
+                                        //               list: controllers.leadCategoryList[i].list,
+                                        //               list2: controllers.leadCategoryList[i].list2,
+                                        //               listIndex: i,
+                                        //             ),
+                                        //             preventDuplicates: false,
+                                        //           );
+                                        //           break;
+                                        //         }
+                                        //       }
+                                        //       // showDialog(
+                                        //       //   context: context,
+                                        //       //   builder: (_) => AlertDialog(
+                                        //       //     title: Text("Customer"),
+                                        //       //     content: Text(item.name),
+                                        //       //   ),
+                                        //       // );
+                                        //     },
+                                        //     borderRadius: 8,
+                                        //     borderColor: Colors.grey,
+                                        //   ),
+                                        // ),
                                         SizedBox(
                                           width: screenWidth/4,
-                                          child: CDropdownField<AllCustomersObj>(
+                                          child: SearchObjectDropdown<AllCustomersObj>(
                                             items: controllers.customers,
-                                            labelBuilder: (item) => item.name,
-                                            leadBuilder: (item) => item.category,
-                                            subLabelBuilder: (item) => item.phoneNo, // 🔥 optional
-                                            itemBuilder: (item) => SizedBox(), // not used now
-                                            textEditingController:controllers.search,
-                                            onSelected: (item) {
-                                              debugPrint("item.name");
-                                              debugPrint(item.name);
-                                              controllers.search.text = item.name.toString();
+                                            hint: "Search Leads",
+                                            title: (e) => e.name,
+                                            subTitle: (e) => e.phoneNo,
+                                            trailingText: (e) =>e.category,
+                                            onSelected: (lead) {
+                                              // print(lead.id);
+                                              // print(lead.name);
+                                              controllers.search.text = lead.name.toString();
                                               for (var i = 0; i < controllers.leadCategoryList.length; i++) {
-                                                if(controllers.leadCategoryList[i].value==item.category.toString()){
+                                                if(controllers.leadCategoryList[i].value==lead.category.toString()){
                                                   debugPrint(controllers.leadCategoryList[i].value);
-                                                  debugPrint(item.category.toString());
+                                                  debugPrint(lead.category.toString());
 
-                                                  controllers.selectedIndex.value =int.tryParse(item.leadStatus.toString()) ?? 0;
+                                                  controllers.selectedIndex.value =int.tryParse(lead.leadStatus.toString()) ?? 0;
                                                   Get.off(
                                                         () => NewLeadPage(
-                                                      index: item.leadStatus,
+                                                      index: lead.leadStatus,
                                                       name: controllers.leadCategoryList[i].value,
                                                       list: controllers.leadCategoryList[i].list,
                                                       list2: controllers.leadCategoryList[i].list2,
@@ -406,16 +452,7 @@ void checkDate(){
                                                   break;
                                                 }
                                               }
-                                              // showDialog(
-                                              //   context: context,
-                                              //   builder: (_) => AlertDialog(
-                                              //     title: Text("Customer"),
-                                              //     content: Text(item.name),
-                                              //   ),
-                                              // );
                                             },
-                                            borderRadius: 8,
-                                            borderColor: Colors.grey,
                                           ),
                                         ),
                                         /// ---------- CENTER ----------
@@ -424,7 +461,7 @@ void checkDate(){
                                           crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
                                             Container(
-                                              padding: const EdgeInsets.all(6),
+                                              padding: const EdgeInsets.all(7),
                                               decoration: _filterGroupDecoration(),
                                               child: Row(
                                                 children: dashController.filters.map((filter) {
@@ -1268,7 +1305,7 @@ void checkDate(){
                                                 size: 16,),
                                             )
                                                 :ListView.builder(
-                                              controller: _controller,
+                                              controller: _appScroll,
                                               shrinkWrap: true,
                                               physics: const ScrollPhysics(),
                                               itemCount: remController.dMeetings.length,
@@ -1747,7 +1784,7 @@ void checkDate(){
                                                 size: 16,),
                                             )
                                                 :ListView.builder(
-                                              controller: _controller,
+                                              controller: _remScroll,
                                               shrinkWrap: true,
                                               physics: const ScrollPhysics(),
                                               itemCount: remController.reminderFilteredList2.length,
@@ -2456,7 +2493,7 @@ void checkDate(){
                                                 size: 16,),
                                             )
                                                 :ListView.builder(
-                                              controller: _controller,
+                                              controller: _comScroll,
                                               shrinkWrap: true,
                                               physics: const ScrollPhysics(),
                                               itemCount: remController.callMailsDetailsList.length,
@@ -2706,77 +2743,7 @@ void checkDate(){
       ),
     );
   }
-  // String formatDateTime(String dates,String times) {
-  //   try {
-  //     List<String> dateList = dates.split("||");
-  //     List<String> timeList = times.split("||");
-  //     String finalDate="";
-  //     String finalTime="";
-  //     String startDate = dateList[0];
-  //     String startTime = timeList[0];
-  //     String endDate = dateList[1];
-  //     String endTime = timeList[1];
-  //
-  //
-  //
-  //     if (startDate == endDate) {
-  //       // same date → no repeat
-  //       finalDate=startDate;
-  //     } else {
-  //       finalDate="$startDate - $endDate";
-  //     }
-  //     if (startTime == endTime) {
-  //       // same date → no repeat
-  //       finalTime=startTime;
-  //     } else {
-  //       finalTime="$startTime - $endTime";
-  //     }
-  //     return "$finalDate to $finalTime";
-  //   } catch (e) {
-  //     return "";
-  //   }
-  // }
-  ///
-  // String formatDateTime(String dates, String times) {
-  //   try {
-  //     List<String> dateList = dates.split("||");
-  //     List<String> timeList = times.split("||");
-  //
-  //     String startDate = dateList[0];
-  //     String endDate = dateList[1];
-  //
-  //     String startTime = timeList[0];
-  //     String endTime = timeList[1];
-  //
-  //     DateTime now = DateTime.now();
-  //
-  //     DateTime start = DateFormat("dd.MM.yyyy").parse(startDate);
-  //     DateTime end = DateFormat("dd.MM.yyyy").parse(endDate);
-  //
-  //     String formatDate(DateTime date) {
-  //       if (date.year == now.year) {
-  //         return DateFormat("dd/MM").format(date);
-  //       } else {
-  //         return DateFormat("dd/MM/yyyy").format(date);
-  //       }
-  //     }
-  //
-  //     // ✅ SAME DATE
-  //     if (startDate == endDate) {
-  //       if (startTime == endTime) {
-  //         return "${formatDate(start)} $startTime";
-  //       } else {
-  //         return "${formatDate(start)} $startTime to $endTime";
-  //       }
-  //     }
-  //
-  //     // ✅ DIFFERENT DATE
-  //     return "${formatDate(start)} $startTime to ${formatDate(end)} $endTime";
-  //
-  //   } catch (e) {
-  //     return "";
-  //   }
-  // }
+
   Widget headerCell(int index, Widget child) {
     return Stack(
       children: [

@@ -130,6 +130,7 @@ class Customer {
   final String? detailsOfServiceRequired;
   final String? prospectGrading;
   final String? createdTs;
+  final String? refBy;
 
   Customer({
     this.id,
@@ -160,12 +161,13 @@ class Customer {
     this.expectedBillingValue,
     this.detailsOfServiceRequired,
     this.prospectGrading,
-    this.createdTs,
+    this.createdTs, this.refBy,
   });
 
   factory Customer.fromJson(Map<String, dynamic> json) {
     return Customer(
       id: i(json['id']),
+      refBy: s(json['refBy']),
       companyName: s(json['company_name']),
       leadStatus: i(json['lead_status']),
       rating: s(json['rating']),
@@ -210,6 +212,7 @@ class Customer {
     'company_email': companyEmail,
     'linkedin': linkedin,
     'x': x,
+    'refBy': refBy,
     'industry': industry,
     'product': product,
     'points': points,

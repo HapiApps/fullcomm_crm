@@ -183,11 +183,18 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
                   onEditingComplete: () async {
                     final newValue = _controller.text;
                     for(var i=0;i<tableController.headingFields.length;i++){
-                      debugPrint("tableController.headingFields[i] ${tableController.headingFields[i]}");
-                      debugPrint("oldValue ${oldValue}");
-                      debugPrint("newValue ${newValue}");
+                      debugPrint("heading = '${tableController.headingFields[i]}'");
+                      debugPrint("newValue = '${newValue}'");
+                      if (tableController.headingFields[i].trim().toLowerCase() ==newValue.trim().toLowerCase()) {
+                        utils.showToast(
+                          "This heading already exists",
+                          Colors.orange,
+                        );
+                        return;
+                      }
                       if (tableController.headingFields[i].trim().toLowerCase() ==oldValue.trim().toLowerCase()) {
                         tableController.headingFields[i] = newValue;
+                        break;
                       }
                     }
                     final prefs = await SharedPreferences.getInstance();
@@ -222,7 +229,11 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
                     controllers.sortOrderN.value == 'asc'
                         ? 'desc'
                         : 'asc';
-                    widget.onSortName();
+                    if(selected.systemField=="mobile_number"){
+                      widget.onSortDate();
+                    }else{
+                      widget.onSortName();
+                    }
                 },
                 // onTap: widget.onSortDate,
                 child: Obx(() => Image.asset(

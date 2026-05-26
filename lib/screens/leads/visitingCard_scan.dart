@@ -7,6 +7,7 @@ import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 
+import '../../billing_utils/sized_box.dart';
 import '../../common/constant/key_constant.dart';
 import '../../common/utilities/ocr_web_helper.dart';
 import '../../components/custom_sidebar.dart';
@@ -26,6 +27,14 @@ class _VisitingCardPageState extends State<VisitingCardPage> {
   final emailController = TextEditingController();
   final websiteController = TextEditingController();
   final locationController = TextEditingController();
+
+  final nameFocus = FocusNode();
+  final companyFocus = FocusNode();
+  final jobFocus = FocusNode();
+  final phoneFocus = FocusNode();
+  final emailFocus = FocusNode();
+  final websiteFocus = FocusNode();
+  final locationFocus = FocusNode();
 
   bool isLoading = false;
 
@@ -75,21 +84,70 @@ class _VisitingCardPageState extends State<VisitingCardPage> {
   //   });
   // }
 
-  Widget buildField(String label, TextEditingController controller) {
+  Widget buildField(
+      String label,
+      TextEditingController controller, {
+        FocusNode? focusNode,
+        FocusNode? nextFocus,
+      }) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: TextField(
         controller: controller,
-        inputFormatters: controller==phoneController?constInputFormatters.mobileNumberInput:[],
+        focusNode: focusNode,
+
+        textInputAction:
+        nextFocus != null
+            ? TextInputAction.next
+            : TextInputAction.done,
+
+        onSubmitted: (_) {
+          if (nextFocus != null) {
+            FocusScope.of(context)
+                .requestFocus(nextFocus);
+          } else {
+            FocusScope.of(context)
+                .unfocus();
+          }
+        },
+
+        inputFormatters:
+        controller == phoneController
+            ? constInputFormatters
+            .mobileNumberInput
+            : [],
+
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10)),
+            borderRadius:
+            BorderRadius.circular(10),
+          ),
         ),
       ),
     );
   }
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      nameFocus.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    nameFocus.dispose();
+    companyFocus.dispose();
+    jobFocus.dispose();
+    phoneFocus.dispose();
+    emailFocus.dispose();
+    websiteFocus.dispose();
+    locationFocus.dispose();
+
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -102,21 +160,46 @@ class _VisitingCardPageState extends State<VisitingCardPage> {
             Container(
               width: screenWidth - 150,
               height: MediaQuery.of(context).size.height,
-              alignment: Alignment.center,
+              // alignment: Alignment.center,
               padding: EdgeInsets.all(20),
               child: SingleChildScrollView(
                 padding: EdgeInsets.all(16),
                 child: Column(
                   children: [
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        IconButton(onPressed: (){
-                          Get.back();
-                        }, icon: Icon(Icons.arrow_back_ios,size: 15,)),
-                        CustomText(text: "Visiting Card Scan", isCopy: false,isBold: true,size: 20,),
+                        SizedBox(
+                          width: screenWidth / 2.5,
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  Get.back();
+                                },
+                                icon: Icon(
+                                  Icons.arrow_back,
+                                  color: colorsConst.third,
+                                ),
+                              ),
+                              CustomText(
+                                text: "Visiting Card Scan",
+                                isCopy: true,
+                                colors: colorsConst.textColor,
+                                size: 20,
+                                isBold: true,
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                    Divider(color: Colors.grey.shade400,),
+                    10.height,
+                    Divider(
+                      color: Colors.grey.shade500,
+                      thickness: 0.5,
+                    ),
+                    20.height,
                     /// IMAGE PREVIEW
                     if (imageBytes != null)
                       Container(
@@ -142,13 +225,53 @@ class _VisitingCardPageState extends State<VisitingCardPage> {
                     SizedBox(height: 20),
 
                     /// FORM FIELDS
-                    buildField("Name", nameController),
-                    buildField("Company", companyController),
-                    buildField("Job Title", jobController),
-                    buildField("Phone", phoneController),
-                    buildField("Email", emailController),
-                    buildField("Website", websiteController),
-                    buildField("Location", locationController),
+                    buildField(
+                      "Name",
+                      nameController,
+                      focusNode: nameFocus,
+                      nextFocus: companyFocus,
+                    ),
+
+                    buildField(
+                      "Company",
+                      companyController,
+                      focusNode: companyFocus,
+                      nextFocus: jobFocus,
+                    ),
+
+                    buildField(
+                      "Job Title",
+                      jobController,
+                      focusNode: jobFocus,
+                      nextFocus: phoneFocus,
+                    ),
+
+                    buildField(
+                      "Phone",
+                      phoneController,
+                      focusNode: phoneFocus,
+                      nextFocus: emailFocus,
+                    ),
+
+                    buildField(
+                      "Email",
+                      emailController,
+                      focusNode: emailFocus,
+                      nextFocus: websiteFocus,
+                    ),
+
+                    buildField(
+                      "Website",
+                      websiteController,
+                      focusNode: websiteFocus,
+                      nextFocus: locationFocus,
+                    ),
+
+                    buildField(
+                      "Location",
+                      locationController,
+                      focusNode: locationFocus,
+                    ),
 
                     SizedBox(height: 20),
 

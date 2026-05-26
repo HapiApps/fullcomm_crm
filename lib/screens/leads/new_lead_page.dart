@@ -884,6 +884,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                         itemBuilder: (context, index) {
                                           NewLeadObj data = widget.list[index];
                                           return CustomerNameTile(
+                                            refBy: data.referredBy.toString(),
                                             key: ValueKey(data.userId),
                                             listIndex: index,
                                             list: widget.list,list2: widget.list2,
@@ -1020,23 +1021,12 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                         width: tableWidth,
                                         child: DynamicTableHeader(
                                           onSortName: () {
-                                            // controllers.sortField.value = 'name';
-                                            // controllers.sortOrderN.value =controllers.sortOrderN.value == 'asc' ? 'desc' : 'asc';
-                                            controllers.sortLeads(widget.list,widget.list2);
+                                            setState(() {
+                                              controllers.sortLeads(widget.list,widget.list2);
+                                            });
                                           },
                                           onSortDate: () {
-                                            setState(() {
-                                              // controllers.sortField.value = 'date';
-                                              // controllers.sortOrder.value =controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
-                                              controllers.sortLeads(widget.list,widget.list2);
-                                              // if(controllers.sortOrder.value=="asc"){
-                                              //   widget.list.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                              //   widget.list2.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                              // }else{
-                                              //   widget.list.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                              //   widget.list2.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                              // }
-                                            });
+                                            controllers.sortLeadsInt(widget.list,widget.list2);
                                           },
                                         ),
                                       ),
@@ -1145,7 +1135,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                                 expectedBillingValue: data.expectedBillingValue ?? "",
                                                 arpuValue: data.arpuValue ?? "",
                                                 updatedTs: data.updatedTs ?? "",
-                                                sourceDetails: data.sourceDetails ?? "", additional: data.additional!,
+                                                sourceDetails: data.sourceDetails ?? "", additional: data.additional??[],
                                               );
                                             },
                                           );
@@ -1162,7 +1152,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                       ),
                     ),
 
-                    widget.list.isNotEmpty? Obx(() {
+                    widget.list.isNotEmpty&&widget.list.length>=20? Obx(() {
                       int totalPages = controllers.totalProspectPages.value == 0 ? 1 : controllers.totalProspectPages.value;
                       final currentPage = controllers.currentProspectPage.value;
                       return Row(

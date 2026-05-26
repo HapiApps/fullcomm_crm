@@ -801,92 +801,43 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
     }
     return list1.assignAll(list2);
   }
+  void sortLeadsInt(List list1, List list2) {
+    if (sortField.isNotEmpty) {
+      list2.sort((a, b) {
 
-  // void sortLeads(RxList list1, List<NewLeadObj> list2) {
-  //   if (sortField.isNotEmpty) {
-  //     list2.sort((a, b) {
-  //
-  //       dynamic getFieldValue(NewLeadObj lead, String field) {
-  //         final value = lead.asMap()[field];
-  //
-  //         print("FIELD : $field");
-  //         print("RAW VALUE : $value");
-  //         print("TYPE : ${value.runtimeType}");
-  //
-  //         // null handle
-  //         if (value == null) {
-  //           print("RETURN TYPE : String (empty)");
-  //           return '';
-  //         }
-  //
-  //         // DateTime handle
-  //         if (value is DateTime) {
-  //           print("RETURN TYPE : DateTime");
-  //           return value;
-  //         }
-  //
-  //         // int/double handle
-  //         if (value is int || value is double) {
-  //           print("RETURN TYPE : Number");
-  //           return value;
-  //         }
-  //
-  //         // numeric string handle
-  //         if (num.tryParse(value.toString()) != null) {
-  //           print("RETURN TYPE : Parsed Number");
-  //           return num.parse(value.toString());
-  //         }
-  //
-  //         // date string handle
-  //         try {
-  //           final date = DateTime.parse(value.toString());
-  //           print("RETURN TYPE : Parsed DateTime");
-  //           return date;
-  //         } catch (_) {}
-  //
-  //         // default string
-  //         print("RETURN TYPE : String");
-  //         return value.toString().toLowerCase();
-  //       }
-  //
-  //       final valA = getFieldValue(a, sortField.value);
-  //       final valB = getFieldValue(b, sortField.value);
-  //
-  //       print("COMPARE A : $valA (${valA.runtimeType})");
-  //       print("COMPARE B : $valB (${valB.runtimeType})");
-  //
-  //       int comparison = 0;
-  //
-  //       // Date sorting
-  //       if (valA is DateTime && valB is DateTime) {
-  //         comparison = valA.compareTo(valB);
-  //         print("SORT TYPE : DateTime");
-  //       }
-  //
-  //       // Number sorting
-  //       else if (valA is num && valB is num) {
-  //         comparison = valA.compareTo(valB);
-  //         print("SORT TYPE : Number");
-  //       }
-  //
-  //       // String sorting
-  //       else {
-  //         comparison = valA.toString().compareTo(valB.toString());
-  //         print("SORT TYPE : String");
-  //       }
-  //
-  //       print("COMPARISON RESULT : $comparison");
-  //
-  //       return sortOrder.value == 'asc'
-  //           ? comparison
-  //           : -comparison;
-  //     });
-  //   }
-  //
-  //   list1.assignAll(list2);
-  //
-  //   print("FINAL SORTED LIST : ${list1.length}");
-  // }
+        int getFieldValue(
+            NewLeadObj lead,
+            String field,
+            ) {
+          final value =
+              lead.asMap()[field]?.toString() ?? '';
+
+          // Keep only digits
+          final digits =
+          value.replaceAll(
+            RegExp(r'[^0-9]'),
+            '',
+          );
+
+          return int.tryParse(digits) ?? 0;
+        }
+
+        final valA =
+        getFieldValue(a, sortField.value);
+
+        final valB =
+        getFieldValue(b, sortField.value);
+
+        return sortOrderN.value == 'asc'
+            ? valA.compareTo(valB)
+            : valB.compareTo(valA);
+      });
+    }
+
+    print("Intttt");
+
+    list1.assignAll(list2);
+  }
   var sortField = ''.obs;
   var sortOrder = 'asc'.obs;
   var sortOrderN = 'asc'.obs;
@@ -2409,6 +2360,18 @@ debugPrint("sortField ${sortField}");
 
           case 'Last 30 Days':
             matchesSort = diff <= 30;
+            // final fromDate = now.subtract(const Duration(days: 29));
+            // final toDate = now;
+            //
+            // matchesSort = updatedDate.isAfter(
+            //   fromDate.subtract(const Duration(days: 1)),
+            // ) &&
+            //     updatedDate.isBefore(
+            //       toDate.add(const Duration(days: 1)),
+            //     );
+            //
+            // print(
+            //     "Last 30 Days -> ${DateFormat('dd.MM.yyyy').format(fromDate)} to ${DateFormat('dd.MM.yyyy').format(toDate)}");
             break;
 
           case 'Custom Month':

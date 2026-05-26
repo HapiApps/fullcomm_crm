@@ -333,6 +333,16 @@ class _HeaderSectionState extends State<HeaderSection> {
                                 onFieldSubmitted: (value) async {
                                   final oldValue = tableController.headingFields[i];
                                   if(value.trim().isNotEmpty){
+                                    // Same value check
+                                    for(var i=0;i<tableController.headingFields.length;i++){
+                                      debugPrint("tableController.headingFields[i] ${tableController.headingFields[i]}");
+                                      debugPrint("oldValue ${oldValue}");
+                                      debugPrint("newValue ${value.trim()}");
+                                      if (tableController.headingFields[i].trim().toLowerCase() ==value.trim()) {
+                                        utils.showToast("This heading already exists", Colors.orange);
+                                        break;
+                                      }
+                                    }
                                     tableController.isLoading.value = true;
                                     final id = controllers.fields[i].id;
                                     tableController.headingFields[i]=value;

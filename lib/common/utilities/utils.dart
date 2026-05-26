@@ -34,6 +34,18 @@ final Utils utils = Utils._();
 
 class Utils {
   Utils._();
+  bool validateWebsite(String value) {
+    final regex = RegExp(
+      r'^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/.*)?$',
+    );
+
+    if (!regex.hasMatch(value.trim())) {
+      return false;
+    }else{
+      return true;
+    }
+  }
+
   String formatDob(String? dob) {
     if (dob == null || dob.isEmpty || dob == "null") {
       return "";
@@ -3411,6 +3423,31 @@ void appointmentStatus(context,String value){
       pathVal?.value = formattedTime;
     }
   }
+
+  Future<void> callTimePicker({
+    BuildContext? context,
+    TextEditingController? textEditingController,
+    RxString? pathVal,
+  }) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context!,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (pickedTime != null) {
+      String formattedTime =
+      MaterialLocalizations.of(context).formatTimeOfDay(
+        pickedTime,
+        alwaysUse24HourFormat: false,
+      );
+
+      // 03:48 PM -> 03.48 PM
+      formattedTime = formattedTime.replaceAll(':', '.');
+
+      textEditingController?.text = formattedTime;
+      pathVal?.value = formattedTime;
+    }
+  }
   // Future<void> datePicker(
   //     {BuildContext? context,
   //     TextEditingController? textEditingController,
@@ -3539,6 +3576,97 @@ void appointmentStatus(context,String value){
 
       textEditingController?.text = formattedDate;
       pathVal?.value = formattedDate;
+
+      debugPrint("Controller Updated Successfully ✅");
+
+    } else {
+      debugPrint("User Cancelled Date Picker ❌");
+    }
+
+    debugPrint("---- DATE PICKER END ----");
+  }
+  Future<void> callDatePicker({
+    BuildContext? context,
+    TextEditingController? textEditingController,
+    required RxString pathVal,
+  }) async {
+
+    DateTime dateTime = DateTime.now();
+
+    debugPrint("---- DATE PICKER OPEN ----");
+    debugPrint("Controller Text : ${textEditingController?.text}");
+
+    // ---------- Parse Existing Date ----------
+    if (pathVal.value!="") {
+
+      try {
+
+        String cleaned = pathVal.value
+            .replaceAll("/", "-")
+            .replaceAll(".", "-")
+            .trim();
+
+        debugPrint("Cleaned Date String : $cleaned");
+
+        List<String> parts = cleaned.split("-");
+
+        debugPrint("Split Parts : $parts");
+
+        if (parts.length == 3) {
+
+          int p1 = int.tryParse(parts[0]) ?? 0;
+          int p2 = int.tryParse(parts[1]) ?? 0;
+          int p3 = int.tryParse(parts[2]) ?? 0;
+
+          debugPrint("Parsed => p1:$p1  p2:$p2  p3:$p3");
+
+          // Detect format
+          if (p1 > 31) {
+            // YYYY-MM-DD
+            dateTime = DateTime(p1, p2, p3);
+            debugPrint("Format Detected : YYYY-MM-DD");
+
+          } else {
+            // DD-MM-YYYY
+            dateTime = DateTime(p3, p2, p1);
+            debugPrint("Format Detected : DD-MM-YYYY");
+          }
+
+          debugPrint("Initial DateTime Set : $dateTime");
+        }
+
+      } catch (e) {
+        debugPrint("Date Parse Error : $e");
+        dateTime = DateTime.now();
+      }
+    }
+
+    debugPrint("Opening DatePicker with Initial Date : $dateTime");
+
+    // ---------- Show Date Picker ----------
+    final value = await showDatePicker(
+      context: context!,
+      initialDate: dateTime,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2030),
+    );
+
+    debugPrint("Selected Date From Picker : $value");
+
+    // ---------- Set Selected Date ----------
+    if (value != null) {
+
+      dateTime = value;
+
+      String formattedDate =
+          "${dateTime.day.toString().padLeft(2, "0")}-"
+          "${dateTime.month.toString().padLeft(2, "0")}-"
+          "${dateTime.year}";
+
+      debugPrint("Formatted Date : $formattedDate");
+
+      textEditingController?.text = formattedDate;
+      pathVal.value = formattedDate;
 
       debugPrint("Controller Updated Successfully ✅");
 
@@ -4966,7 +5094,7 @@ void appointmentStatus(context,String value){
 
                                     Obx(() => InkWell(
                                       onTap: () async {
-                                        await utils.datePicker(
+                                        await utils.callDatePicker(
                                           context: context,
                                           textEditingController: controllers.dateOfConCtr,
                                           pathVal: controllers.empDOB,
@@ -5029,7 +5157,7 @@ void appointmentStatus(context,String value){
 
                                     Obx(() => InkWell(
                                       onTap: () async {
-                                        await utils.timePicker(
+                                        await utils.callTimePicker(
                                           context: context,
                                           textEditingController: controllers.timeOfConCtr,
                                           pathVal: controllers.callTime,

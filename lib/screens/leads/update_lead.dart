@@ -78,6 +78,7 @@ class UpdateLead extends StatefulWidget {
   final String? detailsOfRequired;
   final String? points;
   final String visitType;
+  final String? refBy;
   String updateTs;
   final RxList<NewLeadObj> list;
   final RxList<NewLeadObj> list2;
@@ -126,7 +127,7 @@ class UpdateLead extends StatefulWidget {
     this.quotationRequired, this.arpuValue,
     this.prospectEnrollmentDate, this.expectedConvertionDate,
     this.statusUpdate, this.numOfHeadcount, this.expectedBillingValue,
-    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired, required this.visitType, required this.type, required this.list, required this.list2, required this.index, required this.pageName, required this.additional
+    required this.notes,required this.sourceDetails,required this.updateTs, this.detailsOfRequired, required this.visitType, required this.type, required this.list, required this.list2, required this.index, required this.pageName, required this.additional, this.refBy
   });
 
 
@@ -198,7 +199,7 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.leadCoEmailCrt.text = safeValue(widget.companyEmail);
       controllers.leadProduct.text = safeValue(widget.productServices);
       controllers.leadOwnerNameCrt.text = safeValue(widget.owner);
-
+      controllers.throughBy.text = safeValue(widget.refBy);
       /// Discussion
       controllers.prodDescriptionController.text =
           safeValue(widget.productDiscussion);
@@ -379,6 +380,7 @@ class _UpdateLeadState extends State<UpdateLead> {
 
   @override
   Widget build(BuildContext context){
+    print("widget.refBy ${widget.refBy}");
     double textFieldSize = (MediaQuery.of(context).size.width - 400) / 1.8;
     return SelectionArea(
       child: Scaffold(
@@ -596,8 +598,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                     setState(() {
                                                                       if(checkList[index]==true){
                                                                         controllers.leadWhatsCrt[0].text =controllers.numberList[index].text;
-                                                                      }else{
-                                                                        controllers.leadWhatsCrt[0].clear();
                                                                       }
                                                                     });
                                                                   },
@@ -1722,6 +1722,7 @@ class _UpdateLeadState extends State<UpdateLead> {
 
                                 Row(
                                   children:[
+                                    if(widget.additional.isNotEmpty)
                                     CustomText(
                                       text: "Update Customer Additional Information",
                                       colors: colorsConst.textColor,
@@ -1731,7 +1732,8 @@ class _UpdateLeadState extends State<UpdateLead> {
                                   ],
                                 ),
                                 10.height,
-                                Divider(
+                                if(widget.additional.isNotEmpty)
+                                  Divider(
                                   color: Colors.grey.shade400,
                                   thickness: 1,
                                 ),
@@ -1832,6 +1834,15 @@ class _UpdateLeadState extends State<UpdateLead> {
                                         utils.snackBar(
                                           context: context,
                                           msg: "Enter valid X ID",
+                                          color: Colors.red,
+                                        );
+                                        controllers.leadCtr.reset();
+                                        return;
+                                      }
+                                      if (controllers.leadWebsite.text.trim().isNotEmpty&&!utils.validateWebsite(controllers.leadWebsite.text.trim())) {
+                                        utils.snackBar(
+                                          context: context,
+                                          msg: "Enter valid Website",
                                           color: Colors.red,
                                         );
                                         controllers.leadCtr.reset();
