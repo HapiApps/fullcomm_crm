@@ -6,6 +6,8 @@ import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/controller/reminder_controller.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart';
+import 'package:provider/provider.dart';
 import '../../billing/products/add_products.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
@@ -15,6 +17,7 @@ import '../../components/custom_text.dart';
 import '../../components/pagination.dart';
 import '../../controller/controller.dart';
 import '../../controller/product_controller.dart';
+import '../../view_models/billing_provider.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
@@ -60,6 +63,12 @@ class _ProductPageState extends State<ProductPage> {
         selectedRange: productCtr.selectedCallRange.value,
         selectedDateFilter: productCtr.selectedCallSortBy.value,
       );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final p = Provider.of<BillingProvider>(context, listen: false);
+        p.selectedCategoryId = null;
+        p.selectedSubCategoryId = null;
+        if (p.categories.isEmpty) p.fetchCategories();
+      });
     });
   }
 

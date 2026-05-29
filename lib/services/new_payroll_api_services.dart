@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart'as http;
 import 'package:provider/provider.dart';
@@ -156,11 +157,11 @@ class NewPayrollApiServices{
           }else{
             if (unitList[i].roleId != "null") {
               try {
-                debugPrint(Provider.of<EmployeeProvider>(context, listen: false).roleList.toString());
-                match = Provider.of<EmployeeProvider>(context, listen: false).roleList
+                debugPrint(settingsController.roleList.toString());
+                match = settingsController.roleList
                     .firstWhere(
-                      (item) => item['u_id'].toString() == unitList[i].roleId,
-                );
+                      (item) => item.uId.toString() == unitList[i].roleId,
+                ) as Map<String, dynamic>?;
               } catch (e) {
                 match = null;
               }

@@ -471,7 +471,9 @@ class ApiService {
 
           updatedTs: DateTime.now().toString(),
         );
-        controllers.selectedQualifiedSortBy.value="All";
+        if(controllers.selectedQualifiedSortBy.value==""){
+          controllers.selectedQualifiedSortBy.value="All";
+        }
         controllers.selectRadio(list,list2);
 
         list.sort((a, b) {
@@ -628,6 +630,46 @@ class ApiService {
       apiService.errorDialog(context, e.toString());
     }
   }
+  Future updateConditions(BuildContext context) async {
+    try {
+      Map data = {
+        "action": "update_terms_conditions",
+        "list": productCtr.termsAndConditionsList,
+        "cos_id": controllers.storage.read("cos_id"),
+        "updated_by": controllers.storage.read("id"),
+      };
+
+      final request = await http.post(
+        Uri.parse(scriptApi),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(data),
+        encoding: Encoding.getByName("utf-8"),
+      );
+      debugPrint(data.toString());
+      debugPrint(request.body);
+      // Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return updateConditions(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200) {
+        utils.snackBar(context: context, msg: "Reorder successfully", color: Colors.green);
+        controllers.productCtr.reset();
+      } else {
+        apiService.errorDialog(context, request.body);
+      }
+    } catch (e) {
+      apiService.errorDialog(context, e.toString());
+    }
+  }
+
   Future updateCategories(BuildContext context) async {
     try {
       for (int i = 0; i < controllers.allLeadCategoryList.length; i++) {
@@ -2160,7 +2202,9 @@ class ApiService {
         debugPrint("dataaaa: ${data!.list.length}");
         debugPrint("dataaaa: ${data.list2.length}");
         controllers.selectedIndex.value=int.parse(data.leadStatus.toString());
-        controllers.selectedQualifiedSortBy.value="All";
+        if(controllers.selectedQualifiedSortBy.value==""){
+          controllers.selectedQualifiedSortBy.value="All";
+        }
         controllers.selectRadio(list,list2);
         dashController.getWholeReport();
         controllers.leadCategoryList.refresh();

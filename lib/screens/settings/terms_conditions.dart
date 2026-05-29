@@ -71,35 +71,139 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
             alignment: Alignment.center,
             padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
             child: SizedBox(
-              // width:MediaQuery.of(context).size.width*0.7,
+              width:MediaQuery.of(context).size.width*0.7,
               child: Column(
                 children: [
+                  10.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          CustomText(
-                            text: "Terms & Conditions",
-                            colors: colorsConst.textColor,
-                            size: 20,
-                            isBold: true,
-                            isCopy: true,
+                          Row(
+                            children: [
+                              IconButton(onPressed: (){
+                                if(isEdit.value==true||editIndex.value!=100){
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (context) {
+                                      return Dialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        child: SizedBox(
+                                          width: 300,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(20),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                CustomText(
+                                                  text: "Confirm",
+                                                  size: 18,
+                                                  isBold: true, isCopy: false,
+                                                ),
+                                                10.height,
+                                                CustomText(
+                                                  text: "Are you sure you want to save changes?",
+                                                  size: 14,
+                                                  colors: Colors.black54,
+                                                  isCopy: false,
+                                                ),
+                                                20.height,
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        if(editIndex.value!=100){
+                                                          editIndex.value=100;
+                                                        }else{
+                                                          isEdit.value=false;
+                                                        }
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: CustomText(
+                                                        text: "Cancel",
+                                                        size: 14,
+                                                        isBold: true,
+                                                        colors: Colors.grey,
+                                                        isCopy: false,
+                                                      ),
+                                                    ),
+                                                    10.width,
+                                                    ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: Colors.blue,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(8),
+                                                        ),
+                                                      ),
+                                                      onPressed: () async {
+                                                        Navigator.pop(context);
+                                                        if(editIndex.value!=100){
+                                                          if (controllers.emailMessageCtr.text.trim().isEmpty) {
+                                                            utils.snackBar(
+                                                              context: context,
+                                                              msg: "Please enter lead category",
+                                                              color: Colors.red,
+                                                            );
+                                                            return;
+                                                          }else{
+                                                            addCategories(context,"update",productCtr.termsAndConditionsList[editIndex.value]["id"],editIndex.value);
+                                                          }
+                                                        }else{
+                                                          await apiService.updateCategories(context);
+                                                        }
+                                                      },
+                                                      child: CustomText(
+                                                        text: "Save",
+                                                        size: 14,
+                                                        isBold: true,
+                                                        colors: Colors.white,
+                                                        isCopy: false,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                }else{
+                                  Get.back();
+                                }
+                              }, icon: Icon(Icons.arrow_back_ios_new,size: 15,)),10.width,
+                              CustomText(
+                                text: "Terms & Conditions",
+                                colors: colorsConst.textColor,
+                                size: 20,
+                                isCopy: true,
+                                isBold: true,
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              IconButton(onPressed: null, icon: Icon(Icons.arrow_back_ios_new,size: 0,)),10.width,
+                              CustomText(
+                                text: "Add, edit and reorder condition used in the invoice.",
+                                colors: Colors.grey,
+                                size: 15,
+                                isCopy: true,
+                              ),
+                            ],
                           ),
                           10.height,
-                          CustomText(
-                            text: "Add, edit and reorder condition used in the invoice.",
-                            colors: colorsConst.textColor,
-                            size: 14,
-                            isCopy: true,
-                          ),
                         ],
                       ),
                     ],
                   ),
-                  10.height,
                   Divider(
                     thickness: 1.5,
                     color: colorsConst.secondary,
@@ -107,7 +211,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                   10.height,
                   Container(
                     height: 60,
-                    // width:MediaQuery.of(context).size.width*0.8,
+                    width:MediaQuery.of(context).size.width*0.8,
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(
@@ -116,14 +220,14 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(10),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          blurRadius: 6,
-                          spreadRadius: 1,
-                          offset: const Offset(0, -1), // top shadow
-                        ),
-                      ],
+                      // boxShadow: [
+                      //   BoxShadow(
+                      //     color: Colors.grey.withOpacity(0.3),
+                      //     blurRadius: 6,
+                      //     spreadRadius: 1,
+                      //     offset: const Offset(0, -1), // top shadow
+                      //   ),
+                      // ],
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -134,7 +238,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                             children: [
                               Container(
                                 decoration: customDecoration.baseBackgroundDecoration(
-                                    color: Colors.grey.shade100,radius: 20,
+                                  color: Colors.grey.shade100,radius: 20,
                                 ),
                                 child:  Padding(
                                   padding: const EdgeInsets.all(8.0),
@@ -146,12 +250,12 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                           Row(
                             children: [
                               if(isEdit.value==true)
-                              SizedBox(
+                                SizedBox(
                                   height:30,
                                   child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.lightGreen
-                                    ),
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.lightGreen
+                                      ),
                                       onPressed: ()async{
                                         if(isEdit.value==false) {
                                           controllers.productCtr.reset();
@@ -160,7 +264,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                               color: Colors.red);
                                         }else{
                                           isEdit.value=false;
-                                          await apiService.updateCategories(context);
+                                          await apiService.updateConditions(context);
                                         }
                                       },
                                       child: CustomText(text: "Save Changes", isCopy: false,colors: Colors.black,)),
@@ -207,7 +311,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                   ),
                   Container(
                     height: 40,
-                    // width:MediaQuery.of(context).size.width*0.8,
+                    width:MediaQuery.of(context).size.width*0.8,
                     color: colorsConst.primary,
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -215,22 +319,18 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          15.width,
                           SizedBox(
-                              width:MediaQuery.of(context).size.width*0.55,
-                              child:Row(
-                                children: [
-                                  10.width,
-                                  SizedBox(
-                                    width: 240,
-                                    child: Row(
-                                      children: [
-                                        CustomText(text: "TERMS AND CONDITIONS", isCopy: false,isBold: true,colors: Colors.white),
-                                        Icon(Icons.arrow_downward_sharp,color: Colors.white,size: 15,)
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )
+                              width: MediaQuery.of(context).size.width*0.06,
+                              child: CustomText(text: "ACTIONS", isCopy: false,isBold: true,colors: Colors.white,textAlign: TextAlign.start,)),
+                          SizedBox(
+                            width:MediaQuery.of(context).size.width*0.55,
+                            child: Row(
+                              children: [
+                                CustomText(text: "TERMS AND CONDITIONS", isCopy: false,isBold: true,colors: Colors.white),
+                                Icon(Icons.arrow_downward_sharp,color: Colors.white,size: 15,)
+                              ],
+                            ),
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width*0.05,
@@ -241,98 +341,69 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                               ],
                             ),
                           ),
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width*0.05,
-                              child: CustomText(text: "ACTIONS", isCopy: false,isBold: true,colors: Colors.white)),
                         ],
                       ),
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height*0.5,
-                    // width:MediaQuery.of(context).size.width*0.8,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      border: Border.all(
-                        color: Colors.grey.shade200,
-                      ),
-                      borderRadius: const BorderRadius.vertical(
-                        bottom: Radius.circular(10),
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          blurRadius: 6,
-                          spreadRadius: 1,
-                          offset: const Offset(0, -1), // top shadow
+                      height: MediaQuery.of(context).size.height*0.5,
+                      width:MediaQuery.of(context).size.width*0.8,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.grey.shade200,
                         ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ReorderableListView.builder(
-                            buildDefaultDragHandles: false, // default icon hide
-                            itemCount: productCtr.termsAndConditionsList.length,
-                        onReorder: (oldIndex, newIndex) {
-                          if (newIndex > oldIndex) newIndex--;
+                        borderRadius: const BorderRadius.vertical(
+                          bottom: Radius.circular(10),
+                        ),
+                        // boxShadow: [
+                        //   BoxShadow(
+                        //     color: Colors.grey.withOpacity(0.3),
+                        //     blurRadius: 6,
+                        //     spreadRadius: 1,
+                        //     offset: const Offset(0, -1), // top shadow
+                        //   ),
+                        // ],
+                      ),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            child: ReorderableListView.builder(
+                              buildDefaultDragHandles: false, // default icon hide
+                              itemCount: productCtr.termsAndConditionsList.length,
+                              onReorder: (oldIndex, newIndex) {
+                                if (newIndex > oldIndex) newIndex--;
 
-                          final list = productCtr.termsAndConditionsList;
+                                final list = productCtr.termsAndConditionsList;
 
-                          final item = list.removeAt(oldIndex);
-                          list.insert(newIndex, item);
+                                final item = list.removeAt(oldIndex);
+                                list.insert(newIndex, item);
 
-                          // update display order
-                          for (int i = 0; i < list.length; i++) {
-                            list[i]["display_order"] = i + 1;
-                          }
+                                // update display order
+                                for (int i = 0; i < list.length; i++) {
+                                  list[i]["display_order"] = i + 1;
+                                }
 
-                          isEdit.value = true;
+                                isEdit.value = true;
 
-                          productCtr.termsAndConditionsList.refresh(); // ✅ IMPORTANT (if RxList)
-                          controllers.update(); // if using GetBuilder
-                        },
-                        itemBuilder: (context, index) {
-                              var data = productCtr.termsAndConditionsList[index];
+                                productCtr.termsAndConditionsList.refresh(); // ✅ IMPORTANT (if RxList)
+                                controllers.update(); // if using GetBuilder
+                              },
+                              itemBuilder: (context, index) {
+                                var data = productCtr.termsAndConditionsList[index];
 
-                              return Padding(
-                                key: ValueKey(data["id"]),
-                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
-                                child: Container(
-                                  color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                          width:MediaQuery.of(context).size.width*0.55,
-                                          child: Obx(()=>editIndex.value==index?
-                                          TextField(
-                                            focusNode: nameFocusList[editIndex.value],
-                                            controller: controllers.emailMessageCtr,
-                                            inputFormatters: constInputFormatters.textInput2,
-                                            decoration: InputDecoration(
-                                              border: UnderlineInputBorder(),
-                                              contentPadding: const EdgeInsets.symmetric(
-                                                horizontal: 12,
-                                                vertical: 14,
-                                              ),
-                                            ),
-                                            onEditingComplete: (){
-                                              if (controllers.emailMessageCtr.text.trim().isEmpty) {
-                                                utils.snackBar(
-                                                  context: context,
-                                                  msg: "Please enter terms and conditions",
-                                                  color: Colors.red,
-                                                );
-                                                controllers.productCtr.reset();
-                                                return;
-                                              }else{
-                                                addCategories(context,"update",data["id"],index);
-                                              }
-                                            },
-                                          ):
-                                          Row(
+                                return Padding(
+                                  key: ValueKey(data["id"]),
+                                  padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
+                                  child: Container(
+                                    color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width:MediaQuery.of(context).size.width*0.08,
+                                          child: Row(
                                             children: [
                                               SizedBox(
                                                 width:50,
@@ -341,138 +412,167 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                                   child: const Icon(Icons.menu),
                                                 ),
                                               ),
-                                              10.width,
-                                              CustomText(
-                                                textAlign: TextAlign.start,
-                                                text: "${index+1} . ${data["name"].toString()}",
-                                                isCopy: false,
+                                              InkWell(
+                                                onTap: (){
+                                                  if(editIndex.value==index){
+                                                    if (controllers.emailMessageCtr.text.trim().isEmpty) {
+                                                      utils.snackBar(
+                                                        context: context,
+                                                        msg: "Please enter terms and conditions",
+                                                        color: Colors.red,
+                                                      );
+                                                      controllers.productCtr.reset();
+                                                      return;
+                                                    }else{
+                                                      addCategories(context,"update",data["id"],index);
+                                                    }
+                                                  }else{
+                                                    edit.value=true;
+                                                    editIndex.value=index;
+                                                    controllers.emailMessageCtr.text=data["name"];
+                                                    FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
+                                                  }
+                                                },
+                                                child: editIndex.value==index?Icon(Icons.check):Image.asset("assets/images/lead5.png"),
+                                              ),10.width,
+                                              PopupMenuButton(
+                                                icon: Padding(
+                                                  padding: const EdgeInsets.all(2.0),
+                                                  child: Image.asset("assets/images/lead8.png"),
+                                                ),
+                                                onSelected: (value) {
+                                                  if (value == "copy") {
+                                                    add.value=true;
+                                                    controllers.emailMessageCtr.text="${data["name"]}(copy)";
+                                                  } else if (value == "edit") {
+                                                    edit.value=true;
+                                                    editIndex.value=index;
+                                                    controllers.emailMessageCtr.text=data["name"];
+                                                    FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
+                                                  }else if (value == "delete") {
+                                                    addCategories(context,"delete",data["id"].toString(),index);
+                                                  }
+                                                },
+                                                itemBuilder: (context) => [
+                                                  // PopupMenuItem(
+                                                  //   value: "edit",
+                                                  //   child: Row(
+                                                  //     children: [
+                                                  //       Image.asset("assets/images/lead5.png"),10.width,
+                                                  //       const Text("Edit Name"),
+                                                  //     ],
+                                                  //   ),
+                                                  // ),
+                                                  PopupMenuItem(
+                                                    value: "copy",
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset("assets/images/lead6.png"),10.width,
+                                                        Text("Duplicate"),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  PopupMenuItem(
+                                                    value: "delete",
+                                                    child: Row(
+                                                      children: [
+                                                        SvgPicture.asset("assets/images/delete.svg",width: 20,height: 20,),10.width,
+                                                        Text("Delete"),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                             ],
-                                          ),)
-                                      ),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width*0.05,
-                                        child: CustomText(
-                                          text: data["display_order"].toString(),
-                                          isCopy: false,isBold: true,
-                                          colors: colorsConst.primary,
+                                          ),
                                         ),
-                                      ),
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width*0.05,
-                                        child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            InkWell(
-                                              onTap: (){
-                                                if(editIndex.value==index){
-                                                  if (controllers.emailMessageCtr.text.trim().isEmpty) {
-                                                    utils.snackBar(
-                                                      context: context,
-                                                      msg: "Please enter terms and conditions",
-                                                      color: Colors.red,
-                                                    );
-                                                    controllers.productCtr.reset();
-                                                    return;
-                                                  }else{
-                                                    addCategories(context,"update",data["id"],index);
-                                                  }
-                                                }else{
-                                                  edit.value=true;
-                                                  editIndex.value=index;
-                                                  controllers.emailMessageCtr.text=data["name"];
-                                                  FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
-                                                }
-                                              },
-                                              child: editIndex.value==index?Icon(Icons.check):Image.asset("assets/images/lead5.png"),
-                                            ),10.width,
-                                            PopupMenuButton(
-                                              icon: Padding(
-                                                padding: const EdgeInsets.all(2.0),
-                                                child: Image.asset("assets/images/lead8.png"),
+                                        SizedBox(
+                                            width:MediaQuery.of(context).size.width*0.55,
+                                            child: Obx(()=>editIndex.value==index?
+                                            TextField(
+                                              focusNode: nameFocusList[editIndex.value],
+                                              controller: controllers.emailMessageCtr,
+                                              inputFormatters: constInputFormatters.textInput2,
+                                              decoration: InputDecoration(
+                                                border: UnderlineInputBorder(),
+                                                contentPadding: const EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                  vertical: 14,
+                                                ),
                                               ),
-                                              onSelected: (value) {
-                                                if (value == "copy") {
-                                                  add.value=true;
-                                                  controllers.emailMessageCtr.text="${data["name"]}(copy)";
-                                                } else if (value == "edit") {
-                                                  edit.value=true;
-                                                  editIndex.value=index;
-                                                  controllers.emailMessageCtr.text=data["name"];
-                                                  FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
-                                                }else if (value == "delete") {
-                                                  addCategories(context,"delete",data["id"].toString(),index);
+                                              onEditingComplete: (){
+                                                if (controllers.emailMessageCtr.text.trim().isEmpty) {
+                                                  utils.snackBar(
+                                                    context: context,
+                                                    msg: "Please enter terms and conditions",
+                                                    color: Colors.red,
+                                                  );
+                                                  controllers.productCtr.reset();
+                                                  return;
+                                                }else{
+                                                  addCategories(context,"update",data["id"],index);
                                                 }
                                               },
-                                              itemBuilder: (context) => [
-                                                PopupMenuItem(
-                                                  value: "edit",
-                                                  child: Row(
-                                                    children: [
-                                                      Image.asset("assets/images/lead5.png"),10.width,
-                                                      const Text("Edit Name"),
-                                                    ],
-                                                  ),
-                                                ),
-                                                PopupMenuItem(
-                                                  value: "copy",
-                                                  child: Row(
-                                                    children: [
-                                                      Image.asset("assets/images/lead6.png"),10.width,
-                                                      Text("Duplicate"),
-                                                    ],
-                                                  ),
-                                                ),
-                                                PopupMenuItem(
-                                                  value: "delete",
-                                                  child: Row(
-                                                    children: [
-                                                      SvgPicture.asset("assets/images/delete.svg",width: 20,height: 20,),10.width,
-                                                      Text("Delete"),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                            ):
+                                            CustomText(
+                                              textAlign: TextAlign.start,
+                                              text: "${index+1} . ${data["name"].toString()}",
+                                              isCopy: false,
+                                            ),)
                                         ),
-                                      ),
-                                    ],
+                                        SizedBox(
+                                          width: MediaQuery.of(context).size.width*0.05,
+                                          child: CustomText(
+                                            text: data["display_order"].toString(),
+                                            isCopy: false,isBold: true,
+                                            colors: colorsConst.primary,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           ),
-                        ),
-                        if(add.value==true)
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              CustomTextField(
-                                focusNode: name,
-                                width: MediaQuery.of(context).size.width*0.4,
-                                text: "",isOptional:false,
-                                hintText: "Conditions",
-                                controller: controllers.emailMessageCtr,
-                                onChanged: (value){
-                                  if (value.toString().isNotEmpty) {
-                                    String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
-                                    if (newValue != value) {
-                                      controllers.emailMessageCtr.value = controllers.emailMessageCtr.value.copyWith(
-                                        text: newValue,
-                                        selection: TextSelection.collapsed(offset: newValue.length),
-                                      );
-                                    }
-                                  }
-                                },
-                                keyboardType: TextInputType.name,
-                                textInputAction: TextInputAction.next,
-                                inputFormatters: constInputFormatters.textInput2,
-                              ),
-                              Row(
+                          if(add.value==true)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
+                                  SizedBox(
+                                    width: 80,
+                                    height:30,
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        add.value=false;
+                                      },
+                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                                      child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                                    ),
+                                  ),
+                                  CustomTextField(
+                                    focusNode: name,
+                                    width: MediaQuery.of(context).size.width*0.4,
+                                    text: "",isOptional:false,
+                                    hintText: "Conditions",
+                                    controller: controllers.emailMessageCtr,
+                                    onChanged: (value){
+                                      if (value.toString().isNotEmpty) {
+                                        String newValue = value.toString()[0].toUpperCase() + value.toString().substring(1);
+                                        if (newValue != value) {
+                                          controllers.emailMessageCtr.value = controllers.emailMessageCtr.value.copyWith(
+                                            text: newValue,
+                                            selection: TextSelection.collapsed(offset: newValue.length),
+                                          );
+                                        }
+                                      }
+                                    },
+                                    keyboardType: TextInputType.name,
+                                    textInputAction: TextInputAction.next,
+                                    inputFormatters: constInputFormatters.textInput2,
+                                  ),
                                   SizedBox(
                                     height:30,
                                     child: CustomLoadingButton(callback: (){
@@ -489,26 +589,12 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                       }
                                     }, isLoading: true, controller: controllers.productCtr,text: "Save",
                                         backgroundColor: colorsConst.primary, radius: 5, width: 100),
-                                  ),10.width,
-                                  SizedBox(
-                                    width: 80,
-                                    height:30,
-                                    child: OutlinedButton(
-                                      onPressed: () {
-                                        add.value=false;
-                                      },
-                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                                      child: const Text("Cancel", style: TextStyle(color: Colors.black)),
-                                    ),
                                   ),
-
                                 ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
+                              ),
+                            ),
+                        ],
+                      )
                   ),
                   5.height,
                   Row(
@@ -519,7 +605,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                       CustomText(text: "handle to reorder. Right-click for more options.", isCopy: false,colors: Colors.grey)
                     ],
                   )
-              ],
+                ],
               ),
             ),
           ))

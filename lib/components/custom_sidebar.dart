@@ -120,7 +120,9 @@ class SideBar extends StatelessWidget {
                         // controllers.selectedIndex.value = 7;
                         controllers.selectedIndex.value = 500;
                         controllers.isLeadsExpanded.toggle();
-                        controllers.selectedQualifiedSortBy.value="All";
+                        if(controllers.selectedQualifiedSortBy.value==""){
+                          controllers.selectedQualifiedSortBy.value="All";
+                        }
                         isSettingsHovered.value=false;
                         isPayrollHovered.value=false;
                         controllers.isSettingsExpanded.value=false;

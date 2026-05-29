@@ -583,7 +583,7 @@ class EmployeeProvider with ChangeNotifier {
   var role;
   var roleId;
   List<dynamic> _roleList = [];
-  List<dynamic> get roleList => _roleList;
+  // List<dynamic> get roleList => _roleList;
   List<Map<String, dynamic>> get fRoleList => List<Map<String, dynamic>>.from(_roleList);
 
 
@@ -602,27 +602,27 @@ class EmployeeProvider with ChangeNotifier {
   }
 
 
-  Future<void> fetchRoleList() async {
-    role = null;
-    _roleList = [];
-    notifyListeners();
-    try {
-      final response = await _employeeRepository.getRole();
-
-      if (response.isNotEmpty) {
-        _roleList = response;
-        print("Role List: $_roleList");
-
-      } else {
-        _roleList = [];
-      }
-      notifyListeners();
-    } catch (e) {
-      print("fetchRoleList error $e");
-      _roleList = [];
-      notifyListeners();
-    }
-  }
+  // Future<void> fetchRoleList() async {
+  //   role = null;
+  //   _roleList = [];
+  //   notifyListeners();
+  //   try {
+  //     final response = await _employeeRepository.getRole();
+  //
+  //     if (response.isNotEmpty) {
+  //       _roleList = response;
+  //       print("Role List: $_roleList");
+  //
+  //     } else {
+  //       _roleList = [];
+  //     }
+  //     notifyListeners();
+  //   } catch (e) {
+  //     print("fetchRoleList error $e");
+  //     _roleList = [];
+  //     notifyListeners();
+  //   }
+  // }
   Future<void> fetchDepList() async {
     dep = null;
     _depList = [];

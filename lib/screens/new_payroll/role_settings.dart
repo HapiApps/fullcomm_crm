@@ -6,6 +6,7 @@ import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/controller/new_payroll_controller.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
+import 'package:fullcomm_crm/models/role_obj.dart';
 import 'package:fullcomm_crm/screens/settings/terms_conditions.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -122,8 +123,8 @@ class _RoleSettingState extends State<RoleSetting> {
       FocusScope.of(context).requestFocus(f1);
       pyrlCtr.isAdd.value=false;
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
-      if(employeeData.roleList.isEmpty){
-        employeeData.fetchRoleList();
+      if(settingsController.roleList.isEmpty){
+        settingsController.allRoles();
       }
       if(employeeData.depList.isEmpty){
         employeeData.fetchDepList();
@@ -1926,85 +1927,85 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       ),
                                                     ],
                                                   ),
-                                                  Container(
-                                                    width: screenWidth/5,
-                                                    height: 40,
-                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                        radius: 5,
-                                                        color: Colors.white,borderColor: Colors.grey
-                                                    ),
-                                                    child: DropdownButtonFormField<Map<String, dynamic>>(
-                                                      key: ValueKey(data.roleId), // 👈 forces dropdown to rebuild when reset
-                                                      decoration: InputDecoration(
-                                                        border: OutlineInputBorder(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        enabledBorder: OutlineInputBorder(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          borderSide: const BorderSide(
-                                                            color: Colors.white,
-                                                            width: 1,
-                                                          ),
-                                                        ),
-                                                        focusedBorder: OutlineInputBorder(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          borderSide: const BorderSide(
-                                                            color: Colors.white,
-                                                            width: 2,
-                                                          ),
-                                                        ),
-                                                        contentPadding:
-                                                        const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                                                      ),
-                                                      isExpanded: true,
-                                                      value: data.role,
-                                                      hint: CustomText(
-                                                        text: data.roleName==""?"Role":data.roleName.toString(),
-                                                        colors: Colors.grey, isCopy: false,
-                                                      ),
-                                                      items: employeeProvider.roleList
-                                                          .map<DropdownMenuItem<Map<String, dynamic>>>((item) {
-                                                        return DropdownMenuItem<Map<String, dynamic>>(
-                                                          value: item,
-                                                          child: CustomText(
-                                                            text: item["role_name"],
-                                                            colors: Colors.black,isCopy: false,
-                                                          ),
-                                                        );
-                                                      }).toList(),
-                                                      onChanged: (value) {
-                                                        if (value == null) return;
-
-                                                        final selectedRole = value;
-                                                        final selectedRoleId = selectedRole["u_id"].toString();
-
-                                                        bool roleExists = pyrlCtr.settingList.any((item) =>
-                                                        item != data &&
-                                                            item.roleId.toString() == selectedRoleId);
-
-                                                        if (roleExists) {
-                                                          utils.snackBar(context: context, msg: "This role is already added in another payroll setting.", color: Colors.red);
-                                                          setState(() {
-                                                            data.role = null;
-                                                            data.roleId = "";
-                                                            data.roleName = "";
-                                                          });
-
-                                                          return;
-                                                        }
-
-                                                        setState(() {
-                                                          data.role = selectedRole;
-                                                          data.roleId = selectedRoleId;
-                                                          data.roleName = selectedRole["role_name"].toString();
-
-                                                          data.dep = null;
-                                                          data.dId = "";
-                                                          data.dName = "";
-                                                        });
-                                                      },
-                                                    ),
-                                                  ),
+                                                  // Container(
+                                                  //   width: screenWidth/5,
+                                                  //   height: 40,
+                                                  //   decoration: customDecoration.baseBackgroundDecoration(
+                                                  //       radius: 5,
+                                                  //       color: Colors.white,borderColor: Colors.grey
+                                                  //   ),
+                                                  //   child: DropdownButtonFormField<Map<String, dynamic>>(
+                                                  //     key: ValueKey(data.roleId), // 👈 forces dropdown to rebuild when reset
+                                                  //     decoration: InputDecoration(
+                                                  //       border: OutlineInputBorder(
+                                                  //         borderRadius: BorderRadius.circular(10),
+                                                  //       ),
+                                                  //       enabledBorder: OutlineInputBorder(
+                                                  //         borderRadius: BorderRadius.circular(10),
+                                                  //         borderSide: const BorderSide(
+                                                  //           color: Colors.white,
+                                                  //           width: 1,
+                                                  //         ),
+                                                  //       ),
+                                                  //       focusedBorder: OutlineInputBorder(
+                                                  //         borderRadius: BorderRadius.circular(10),
+                                                  //         borderSide: const BorderSide(
+                                                  //           color: Colors.white,
+                                                  //           width: 2,
+                                                  //         ),
+                                                  //       ),
+                                                  //       contentPadding:
+                                                  //       const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                                                  //     ),
+                                                  //     isExpanded: true,
+                                                  //     value: data.role,
+                                                  //     hint: CustomText(
+                                                  //       text: data.roleName==""?"Role":data.roleName.toString(),
+                                                  //       colors: Colors.grey, isCopy: false,
+                                                  //     ),
+                                                  //     items: settingsController.roleList
+                                                  //         .map<DropdownMenuItem<RoleModel>>>((item) {
+                                                  //       return DropdownMenuItem<RoleModel>>(
+                                                  //         value: item,
+                                                  //         child: CustomText(
+                                                  //           text: item.roleName,
+                                                  //           colors: Colors.black,isCopy: false,
+                                                  //         ),
+                                                  //       );
+                                                  //     }).toList(),
+                                                  //     onChanged: (value) {
+                                                  //       if (value == null) return;
+                                                  //
+                                                  //       final selectedRole = value;
+                                                  //       final selectedRoleId = selectedRole["u_id"].toString();
+                                                  //
+                                                  //       bool roleExists = pyrlCtr.settingList.any((item) =>
+                                                  //       item != data &&
+                                                  //           item.roleId.toString() == selectedRoleId);
+                                                  //
+                                                  //       if (roleExists) {
+                                                  //         utils.snackBar(context: context, msg: "This role is already added in another payroll setting.", color: Colors.red);
+                                                  //         setState(() {
+                                                  //           data.role = null;
+                                                  //           data.roleId = "";
+                                                  //           data.roleName = "";
+                                                  //         });
+                                                  //
+                                                  //         return;
+                                                  //       }
+                                                  //
+                                                  //       setState(() {
+                                                  //         data.role = selectedRole;
+                                                  //         data.roleId = selectedRoleId;
+                                                  //         data.roleName = selectedRole["role_name"].toString();
+                                                  //
+                                                  //         data.dep = null;
+                                                  //         data.dId = "";
+                                                  //         data.dName = "";
+                                                  //       });
+                                                  //     },
+                                                  //   ),
+                                                  // ),
                                                 ],
                                               ),
                                               if(isDep==true)

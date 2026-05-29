@@ -5363,7 +5363,7 @@ void appointmentStatus(context,String value){
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: Color(0xFFF1F5F9),
+          backgroundColor: Color(0xFFE5E7EB),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

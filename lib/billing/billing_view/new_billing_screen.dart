@@ -5546,7 +5546,10 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                       pw.Row(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                          pw.Text("${i+1} . "),
+                          pw.Container(
+                              width:30,
+                            child:pw.Text("${i+1}. "),
+                          ),
                           pw.Text(productCtr.termsAndConditionsList[i]["name"])
                         ],
                       );

@@ -777,7 +777,7 @@ class _EmpDropdownState extends State<EmpDropdown> {
     double screenWidth = MediaQuery.of(context).size.width;
 
     return Container(
-      width: MediaQuery.of(context).size.width*0.5,
+      width: MediaQuery.of(context).size.width*0.4,
       height: 47,
       decoration: customDecoration.baseBackgroundDecoration(
         color: Colors.white,

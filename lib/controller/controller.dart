@@ -157,7 +157,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   RxString selectedProspectTemperature = "".obs;
   RxString selectedQualifiedTemperature = "".obs;
   RxString selectedProspectSortBy = "All".obs;
-  RxString selectedQualifiedSortBy = "All".obs;
+  RxString selectedQualifiedSortBy = "".obs;
   RxString selectedCustomerSortBy = "All".obs;
   RxBool isMenuOpen = false.obs;
   var allLeads = <NewLeadObj>[].obs;
@@ -4148,7 +4148,9 @@ var otp = "".obs,sentOtp = "".obs;
           }
         }
         controllers.selectedIndex.value=int.parse(data!.leadStatus.toString());
-        controllers.selectedQualifiedSortBy.value="All";
+        if(controllers.selectedQualifiedSortBy.value==""){
+          controllers.selectedQualifiedSortBy.value="All";
+        }
         dashController.getWholeReport();
         controllers.leadCategoryList.refresh();
         controllers.btnController.reset();

@@ -12,6 +12,8 @@ import '../../common/constant/colors_constant.dart';
 import '../../common/constant/key_constant.dart';
 import '../../common/styles/decoration.dart';
 import '../../components/custom_sidebar.dart';
+import '../../controller/settings_controller.dart';
+import '../../models/role_obj.dart';
 import '../../provider/employee_provider.dart';
 
 class AddEmployeePage extends StatefulWidget {
@@ -44,9 +46,10 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       FocusScope.of(context).requestFocus(nameFocus);
+      employeeData.role=null;
       employeeData.clearAllEmployeeControllers();
-      if(employeeData.roleList.isEmpty){
-        employeeData.fetchRoleList();
+      if(settingsController.roleList.isEmpty){
+        settingsController.allRoles();
       }
       if(employeeData.depList.isEmpty){
         employeeData.fetchDepList();
@@ -275,11 +278,12 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                         child: DropdownButtonHideUnderline(
                                           child: ButtonTheme(
                                             alignedDropdown: true,
-                                            child: DropdownButton(
+                                            child: DropdownButton<RoleModel>(
                                               underline: const SizedBox(),
                                               isExpanded: true,
                                               value: employeeProvider.role,
                                               iconEnabledColor: Colors.black,
+
                                               hint: CustomText(
                                                 text: "",
                                                 colors: Colors.grey.shade400,
@@ -288,25 +292,26 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                                 isStyle: true,
                                                 isCopy: true,
                                               ),
-                                              items: employeeProvider.roleList.map((item) {
-                                                return DropdownMenuItem(
+
+                                              items: settingsController.roleList
+                                                  .map<DropdownMenuItem<RoleModel>>((item) {
+                                                return DropdownMenuItem<RoleModel>(
                                                   value: item,
                                                   child: CustomText(
-                                                      text: item["role_name"],
-                                                      colors: Colors.black,
-                                                      size: 13,
-                                                      isCopy: false,
-                                                      isBold: false),
+                                                    text: item.roleName,
+                                                    colors: Colors.black,
+                                                    size: 13,
+                                                    isCopy: false,
+                                                    isBold: false,
+                                                  ),
                                                 );
                                               }).toList(),
-                                              onChanged: (value) {
+
+                                              onChanged: (RoleModel? value) {
                                                 setState(() {
-                                                  employeeProvider.role = value!;
-                                                  var list = [];
-                                                  list.add(value);
-                                                  employeeProvider.roleId = list[0]["u_id"];
+                                                  employeeProvider.role = value;
+                                                  employeeProvider.roleId = value?.uId;
                                                 });
-                                                // userProvider.storage.write("roleId",list[0]["id"]);
                                               },
                                             ),
                                           ),

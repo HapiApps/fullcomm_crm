@@ -12,7 +12,9 @@ import '../../components/custom_text.dart';
 import '../../components/custom_textfield.dart';
 import '../../components/password_text_field.dart';
 import '../../controller/controller.dart';
+import '../../controller/settings_controller.dart';
 import '../../models/employee_details.dart';
+import '../../models/role_obj.dart';
 import '../../provider/employee_provider.dart';
 
 
@@ -44,8 +46,9 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
     // TODO: implement initState
     super.initState();
     final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
-    if(employeeData.roleList.isEmpty){
-      employeeData.fetchRoleList();
+    if(settingsController.roleList.isEmpty){
+      settingsController.allRoles();
+      // employeeData.fetchRoleList();
     }
     if(employeeData.depList.isEmpty){
       employeeData.fetchDepList();
@@ -68,13 +71,13 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
       employeeData.WhatsappController.text  = widget.employeeData!.whatsapp.toString().isEmpty||widget.employeeData!.whatsapp.toString()=='null'?"":widget.employeeData!.whatsapp.toString();
       final roleId = widget.employeeData!.role?.toString();
       if (roleId != null && roleId != "null") {
-        final match = employeeData.roleList.firstWhere(
-              (item) => item['u_id'].toString() == roleId,
-          orElse: () => <String, dynamic>{},
+        final match = settingsController.roleList.firstWhere(
+              (item) => item.uId.toString() == roleId,
+          // orElse: () => {},
         );
-        if (match.isNotEmpty) {
+        if (match!=null) {
           employeeData.role = match;              // set whole map {id, role_name, u_id}
-          employeeData.roleId = match['u_id'];    // store u_id
+          employeeData.roleId = match.uId;    // store u_id
         }
       }
       final depId = widget.employeeData!.dId?.toString();
@@ -494,11 +497,12 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                         child: DropdownButtonHideUnderline(
                                           child: ButtonTheme(
                                             alignedDropdown: true,
-                                            child: DropdownButton(
+                                            child: DropdownButton<RoleModel>(
                                               underline: const SizedBox(),
                                               isExpanded: true,
                                               value: employeeProvider.role,
                                               iconEnabledColor: Colors.black,
+
                                               hint: CustomText(
                                                 text: "",
                                                 colors: Colors.grey.shade400,
@@ -507,25 +511,26 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                                 isStyle: true,
                                                 isCopy: true,
                                               ),
-                                              items: employeeProvider.roleList.map((item) {
-                                                return DropdownMenuItem(
+
+                                              items: settingsController.roleList
+                                                  .map<DropdownMenuItem<RoleModel>>((item) {
+                                                return DropdownMenuItem<RoleModel>(
                                                   value: item,
                                                   child: CustomText(
-                                                      text: item["role_name"],
-                                                      colors: Colors.black,
-                                                      size: 13,
-                                                      isCopy: false,
-                                                      isBold: false),
+                                                    text: item.roleName,
+                                                    colors: Colors.black,
+                                                    size: 13,
+                                                    isCopy: false,
+                                                    isBold: false,
+                                                  ),
                                                 );
                                               }).toList(),
-                                              onChanged: (value) {
+
+                                              onChanged: (RoleModel? value) {
                                                 setState(() {
-                                                  employeeProvider.role = value!;
-                                                  var list = [];
-                                                  list.add(value);
-                                                  employeeProvider.roleId = list[0]["u_id"];
+                                                  employeeProvider.role = value;
+                                                  employeeProvider.roleId = value?.uId;
                                                 });
-                                                // userProvider.storage.write("roleId",list[0]["id"]);
                                               },
                                             ),
                                           ),

@@ -5,9 +5,11 @@ import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/constant/key_constant.dart';
 import '../../components/custom_loading_button.dart';
+import '../../components/custom_no_data.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
@@ -539,7 +541,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                backgroundColor: Color(0xFFF1F5F9),
+                                backgroundColor: Color(0xFFE5E7EB),
                                 titlePadding: EdgeInsets.zero,
                                 contentPadding: EdgeInsets.zero,
                                 content: SizedBox(
@@ -1214,7 +1216,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      backgroundColor: const Color(0xFFF1F5F9),
+                                      backgroundColor: Color(0xFFE5E7EB),
                                       titlePadding: EdgeInsets.zero,
                                       contentPadding: EdgeInsets.zero,
                                       content: SizedBox(
@@ -1854,7 +1856,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (filteredList.isEmpty) {
-                      return const Center(child: Text("No shifts found"));
+                      return Container(
+                          alignment: Alignment.center,
+                          height: 300,width: 300,
+                          child: Center(child: CustomNoData()));
                     }
                     return ListView.builder(
                       itemCount: filteredList.length,
@@ -1882,13 +1887,16 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                 ),
                                 children:[
-                                  Checkbox(
-                                    value: settingsController.isCheckedOffice(officeHour.id),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        settingsController.toggleOfficeSelection(officeHour.id);
-                                      });
-                                    },
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Checkbox(
+                                      value: settingsController.isCheckedOffice(officeHour.id),
+                                      onChanged: (value) {
+                                        setState(() {
+                                          settingsController.toggleOfficeSelection(officeHour.id);
+                                        });
+                                      },
+                                    ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.all(3.0),
@@ -2023,7 +2031,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     child: CustomText(
                                       isCopy: true,
                                       textAlign: TextAlign.left,
-                                      text:controllers.formatDateTime(officeHour.updatedTs),
+                                      text:DateFormat('dd-MM-yyyy hh:mm:ss a').format(DateTime.parse(officeHour.updatedTs)),
                                       size: 14,
                                       colors: colorsConst.textColor,
                                     ),

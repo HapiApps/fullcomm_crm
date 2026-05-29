@@ -1049,17 +1049,14 @@ class _ReminderPageState extends State<ReminderPage> {
                                                      ),
                                                    ),
                                                  ),
-                                                 Tooltip(
-                                                   message: reminder.endDt.toString()=="null"?"":reminder.endDt.toString(),
-                                                   child: Padding(
-                                                     padding: const EdgeInsets.all(10.0),
-                                                     child: CustomText(
-                                                       isCopy: true,
-                                                       textAlign: TextAlign.left,
-                                                       text: controllers.formatDate(reminder.endDt.toString()),
-                                                       size: 14,
-                                                       colors: colorsConst.textColor,
-                                                     ),
+                                                 Padding(
+                                                   padding: const EdgeInsets.all(10.0),
+                                                   child: CustomText(
+                                                     isCopy: true,
+                                                     textAlign: TextAlign.left,
+                                                     text: controllers.formatDate(reminder.endDt.toString()),
+                                                     size: 14,
+                                                     colors: colorsConst.textColor,
                                                    ),
                                                  ),
                                                  Tooltip(

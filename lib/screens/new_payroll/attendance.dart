@@ -501,124 +501,157 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                                                 color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                               ),
                                               children: [
-                                                valueBox((index + 1).toString()),
-                                                IconButton(
-                                                    onPressed: (){
-                                                      showDialog(
-                                                          context: context,
-                                                          barrierDismissible: false,
-                                                          builder: (context) {
-                                                            return AlertDialog(
-                                                              content: CustomText(
-                                                                text: "Are you sure delete this user?",
-                                                                size: 16,
-                                                                isCopy: false,
-                                                                isBold: true,
-                                                                colors: colorsConst.textColor,
-                                                              ),
-                                                              actions: [
-                                                                Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                                  children: [
-                                                                    Container(
-                                                                      decoration: BoxDecoration(
-                                                                          border: Border.all(color: colorsConst.primary),
-                                                                          color: Colors.white),
-                                                                      width: 80,
-                                                                      height: 25,
-                                                                      child: ElevatedButton(
-                                                                          style: ElevatedButton.styleFrom(
-                                                                            shape: const RoundedRectangleBorder(
-                                                                              borderRadius: BorderRadius.zero,
-                                                                            ),
-                                                                            backgroundColor: Colors.white,
-                                                                          ),
-                                                                          onPressed: () {
-                                                                            Navigator.pop(context);
-                                                                          },
-                                                                          child: CustomText(
-                                                                            text: "Cancel",
-                                                                            isCopy: false,
-                                                                            colors: colorsConst.primary,
-                                                                            size: 14,
-                                                                          )),
-                                                                    ),
-                                                                    10.width,
-                                                                    CustomLoadingButton(
-                                                                      callback: (){
-                                                                        setState(() {
-                                                                          user.active = "2";
-                                                                          calculatePayroll(index);
-                                                                          Navigator.pop(context);
-                                                                        });
-                                                                      },
-                                                                      height: 35,
-                                                                      isLoading: false,
-                                                                      backgroundColor: colorsConst.primary,
-                                                                      radius: 2,
-                                                                      width: 80,
-                                                                      isImage: false,
-                                                                      text: "Delete",
-                                                                      textColor: Colors.white,
-                                                                    ),
-                                                                    5.width
-                                                                  ],
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: valueBox((index + 1).toString()),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: IconButton(
+                                                      onPressed: (){
+                                                        showDialog(
+                                                            context: context,
+                                                            barrierDismissible: false,
+                                                            builder: (context) {
+                                                              return AlertDialog(
+                                                                content: CustomText(
+                                                                  text: "Are you sure delete this user?",
+                                                                  size: 16,
+                                                                  isCopy: false,
+                                                                  isBold: true,
+                                                                  colors: colorsConst.textColor,
                                                                 ),
-                                                              ],
-                                                            );
-                                                          });
-                                                    },
-                                                    icon: SvgPicture.asset("assets/images/a_delete.svg",width: 20,height: 20,)),
+                                                                actions: [
+                                                                  Row(
+                                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                                    children: [
+                                                                      Container(
+                                                                        decoration: BoxDecoration(
+                                                                            border: Border.all(color: colorsConst.primary),
+                                                                            color: Colors.white),
+                                                                        width: 80,
+                                                                        height: 25,
+                                                                        child: ElevatedButton(
+                                                                            style: ElevatedButton.styleFrom(
+                                                                              shape: const RoundedRectangleBorder(
+                                                                                borderRadius: BorderRadius.zero,
+                                                                              ),
+                                                                              backgroundColor: Colors.white,
+                                                                            ),
+                                                                            onPressed: () {
+                                                                              Navigator.pop(context);
+                                                                            },
+                                                                            child: CustomText(
+                                                                              text: "Cancel",
+                                                                              isCopy: false,
+                                                                              colors: colorsConst.primary,
+                                                                              size: 14,
+                                                                            )),
+                                                                      ),
+                                                                      10.width,
+                                                                      CustomLoadingButton(
+                                                                        callback: (){
+                                                                          setState(() {
+                                                                            user.active = "2";
+                                                                            calculatePayroll(index);
+                                                                            Navigator.pop(context);
+                                                                          });
+                                                                        },
+                                                                        height: 35,
+                                                                        isLoading: false,
+                                                                        backgroundColor: colorsConst.primary,
+                                                                        radius: 2,
+                                                                        width: 80,
+                                                                        isImage: false,
+                                                                        text: "Delete",
+                                                                        textColor: Colors.white,
+                                                                      ),
+                                                                      5.width
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            });
+                                                      },
+                                                      icon: SvgPicture.asset("assets/images/a_delete.svg",width: 20,height: 20,)),
+                                                ),
                                                 valueBox(pyrlCtr.users[index].rank.toString()),
                                                 valueBox(pyrlCtr.users[index].name.toString()),
-                                                UnderLineTextField(
-                                                  width: 70,
-                                                  controller: user.duty,
-                                                  keyboardType: TextInputType.number,
-                                                  onChanged: (_) => calculatePayroll(index),
-                                                  isRequired: true,
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: UnderLineTextField(
+                                                    width: 70,
+                                                    controller: user.duty,
+                                                    keyboardType: TextInputType.number,
+                                                    onChanged: (_) => calculatePayroll(index),
+                                                    isRequired: true,
+                                                  ),
                                                 ),
-                                                UnderLineTextField(
-                                                  width: 70,
-                                                  controller: user.ot,
-                                                  inputFormatters: [
-                                                    FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
-                                                  ],
-                                                  keyboardType: TextInputType.number,
-                                                  onChanged: (_) => user.ot.text.isNotEmpty?calculatePayroll(index):null,
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: UnderLineTextField(
+                                                    width: 70,
+                                                    controller: user.ot,
+                                                    inputFormatters: [
+                                                      FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),
+                                                    ],
+                                                    keyboardType: TextInputType.number,
+                                                    onChanged: (_) => user.ot.text.isNotEmpty?calculatePayroll(index):null,
+                                                  ),
                                                 ),
-                                                UnderLineTextField(
-                                                  width: 70,
-                                                  controller: user.advance,
-                                                  keyboardType: TextInputType.number,
-                                                  onChanged: (_) => calculatePayroll(index),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: UnderLineTextField(
+                                                    width: 70,
+                                                    controller: user.advance,
+                                                    keyboardType: TextInputType.number,
+                                                    onChanged: (_) => calculatePayroll(index),
+                                                  ),
                                                 ),
-                                                UnderLineTextField(
-                                                  width: 70,
-                                                  controller: user.uniform,
-                                                  keyboardType: TextInputType.number,
-                                                  onChanged: (_) => calculatePayroll(index),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: UnderLineTextField(
+                                                    width: 70,
+                                                    controller: user.uniform,
+                                                    keyboardType: TextInputType.number,
+                                                    onChanged: (_) => calculatePayroll(index),
+                                                  ),
                                                 ),
-                                                UnderLineTextField(
-                                                  width: 70,
-                                                  controller: user.penalty,
-                                                  keyboardType: TextInputType.number,
-                                                  onChanged: (_) => calculatePayroll(index),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: UnderLineTextField(
+                                                    width: 70,
+                                                    controller: user.penalty,
+                                                    keyboardType: TextInputType.number,
+                                                    onChanged: (_) => calculatePayroll(index),
+                                                  ),
                                                 ),
-                                                UnderLineTextField(
-                                                  width: 70,
-                                                  controller: user.bonus2,
-                                                  keyboardType: TextInputType.number,
-                                                  onChanged: (_) => calculatePayroll(index),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: UnderLineTextField(
+                                                    width: 70,
+                                                    controller: user.bonus2,
+                                                    keyboardType: TextInputType.number,
+                                                    onChanged: (_) => calculatePayroll(index),
+                                                  ),
                                                 ),
-                                                UnderLineTextField(
-                                                  width: 70,
-                                                  controller: user.food,
-                                                  keyboardType: TextInputType.number,
-                                                  onChanged: (_) => calculatePayroll(index),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: UnderLineTextField(
+                                                    width: 70,
+                                                    controller: user.food,
+                                                    keyboardType: TextInputType.number,
+                                                    onChanged: (_) => calculatePayroll(index),
+                                                  ),
                                                 ),
-                                                valueBox(user.total.text),
-                                                valueBox(user.deduction.text)
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: valueBox(user.total.text),
+                                                ),
+                                                Padding(
+                                                  padding: const EdgeInsets.all(8.0),
+                                                  child: valueBox(user.deduction.text),
+                                                )
                                               ],
                                             );
                                           }),
