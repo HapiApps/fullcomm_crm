@@ -635,7 +635,8 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                             isBold: true,
                                                             isCopy: true,
                                                             colors: colorsConst.textColor,
-                                                          ),                                                                  actions: [
+                                                          ),
+                                                          actions: [
                                                           Row(
                                                             mainAxisAlignment: MainAxisAlignment.end,
                                                             children: [

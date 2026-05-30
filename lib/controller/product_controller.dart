@@ -22,15 +22,6 @@ class ProductController extends GetxController with GetSingleTickerProviderState
 
   var selectedProductId="".obs;
   var selectedProductName="".obs;
-  void selectProduct(ProductModel c) {
-    debugPrint("productsList");
-    selectedProductId.value = c.id.toString();
-    selectedProductName.value = c.title.toString();
-    controllers.search.text = c.title ?? "";
-    productsList.value.add(c);
-    controllers.search.clear();
-    productsList.refresh();
-  }
   void clearProduct() {
     selectedProductId.value = "";
     selectedProductName.value = "";
@@ -451,9 +442,27 @@ var isSelectAll=false.obs;
       return "₹0";
     }
   }
- RxList<ProductData> products=<ProductData>[].obs;
+  var selectedPrdIds = <String>[].obs;
+  void selectAllCalls() {
+    selectedPrdIds.assignAll(products.map((e) => e.id.toString()).toList());
+  }
+
+  void unselectAllCalls() {
+    selectedPrdIds.clear();
+  }
+  bool isCheckedRecordCall(String id) {
+    return selectedPrdIds.contains(id);
+  }
+
+  void toggleRecordSelectionCall(String id) {
+    if (selectedPrdIds.contains(id)) {
+      selectedPrdIds.remove(id);
+    } else {
+      selectedPrdIds.add(id);
+    }
+  }
+  RxList<ProductData> products=<ProductData>[].obs;
  RxList<ProductData> products2=<ProductData>[].obs;
-  RxList<ProductModel> productsList=<ProductModel>[].obs;
 
   Future<List<ProductData>> getProducts() async {
     try {
@@ -482,13 +491,9 @@ var isSelectAll=false.obs;
         }
       }
       if (response.statusCode == 200) {
-        // final List data = jsonDecode(response.body);
-        // ProductsResponse.fromJson(jsonDecode(response.body));
-        // products.value =data.map((e) => ProductModel.fromJson(e)).toList();
-        // products2.value =data.map((e) => ProductModel.fromJson(e)).toList();
         final ProductsResponse data = ProductsResponse.fromJson(jsonDecode(response.body));
-        products.value = data.productList ?? [];
         products2.value = data.productList ?? [];
+        products.value = data.productList ?? [];
         return products;
       }else{
           return [];
@@ -614,66 +619,57 @@ var isSelectAll=false.obs;
     required DateTime? selectedMonth,
     required DateTimeRange? selectedRange,
   }) {
+    debugPrint("===== FILTER START =====");
+    debugPrint("products2 count : ${products2.length}");
+    debugPrint("searchText : $searchText");
+    debugPrint("selectedDateFilter : $selectedDateFilter");
+    debugPrint("selectedMonth : $selectedMonth");
+    debugPrint("selectedRange : $selectedRange");
+
     DateTime parseDate(String dateStr) {
       try {
-        return DateTime.parse(dateStr); // 🔥 BEST
+        return DateTime.parse(dateStr);
       } catch (e) {
+        debugPrint("Date Parse Error : $dateStr");
         return DateTime(1900);
       }
     }
 
-    // final now = DateTime.now();
-
     final filtered = products2.where((activity) {
+      /// SEARCH
+      bool matchesSearch = true;
 
-      final matchesSearch =
-          searchText.isEmpty ||
-              activity.pTitle.toString().toLowerCase().contains(searchText.toLowerCase()) ||
-              activity.hsnCode.toString().toLowerCase().contains(searchText.toLowerCase());
+      if (searchText.trim().isNotEmpty) {
+        matchesSearch =
+            activity.pTitle
+                .toString()
+                .toLowerCase()
+                .contains(searchText.toLowerCase()) ||
+                activity.hsnCode
+                    .toString()
+                    .toLowerCase()
+                    .contains(searchText.toLowerCase()) ||
+                activity.barcode
+                    .toString()
+                    .toLowerCase()
+                    .contains(searchText.toLowerCase()) ||
+                activity.skuId
+                    .toString()
+                    .toLowerCase()
+                    .contains(searchText.toLowerCase());
+      }
 
       final activityDate = parseDate(activity.createdTs.toString());
 
       bool matchesDate = true;
 
-      final now = DateTime.now();
-      final todayStart = DateTime(now.year, now.month, now.day);
-
-      /// Today
-      if (selectedDateFilter == "Today") {
-        final tomorrowStart = todayStart.add(const Duration(days: 1));
-
-        matchesDate = activityDate.isAfter(todayStart) &&
-            activityDate.isBefore(tomorrowStart);
+      /// ALL
+      if (selectedDateFilter == "All") {
+        matchesDate = true;
       }
 
-      /// Yesterday
-      else if (selectedDateFilter == "Yesterday") {
-        final yesterdayStart = todayStart.subtract(const Duration(days: 1));
-
-        matchesDate = activityDate.isAfter(yesterdayStart) &&
-            activityDate.isBefore(todayStart);
-      }
-
-      /// Last 7 Days
-      else if (selectedDateFilter == "Last 7 Days") {
-        final start = todayStart.subtract(const Duration(days: 6));
-
-        matchesDate = activityDate.isAfter(start) &&
-            activityDate.isBefore(todayStart.add(const Duration(days: 1)));
-      }
-
-      /// Last 30 Days
-      else if (selectedDateFilter == "Last 30 Days") {
-        final start = todayStart.subtract(const Duration(days: 29));
-
-        matchesDate = activityDate.isAfter(start) &&
-            activityDate.isBefore(todayStart.add(const Duration(days: 1)));
-      }
-      debugPrint("activityDate ${activityDate}");
-      debugPrint("selectedRange ${selectedRange}");
-
-      /// Date Range Filter (same date issue fixed)
-      if (selectedRange != null) {
+      /// DATE RANGE
+      else if (selectedRange != null) {
         final start = DateTime(
           selectedRange.start.year,
           selectedRange.start.month,
@@ -684,99 +680,116 @@ var isSelectAll=false.obs;
           selectedRange.end.year,
           selectedRange.end.month,
           selectedRange.end.day,
-          23, 59, 59,
+          23,
+          59,
+          59,
         );
 
         matchesDate = !activityDate.isBefore(start) &&
             !activityDate.isAfter(end);
       }
-      /// Month Filter
-      if (selectedMonth != null) {
-        matchesDate = activityDate.month == selectedMonth.month &&
-            activityDate.year == selectedMonth.year;
+
+      /// MONTH
+      else if (selectedMonth != null) {
+        matchesDate =
+            activityDate.month == selectedMonth.month &&
+                activityDate.year == selectedMonth.year;
+      }
+
+      /// TODAY
+      else if (selectedDateFilter == "Today") {
+        final now = DateTime.now();
+
+        final start = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        );
+
+        final end = start.add(const Duration(days: 1));
+
+        matchesDate = !activityDate.isBefore(start) &&
+            activityDate.isBefore(end);
+      }
+
+      /// YESTERDAY
+      else if (selectedDateFilter == "Yesterday") {
+        final now = DateTime.now();
+
+        final start = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).subtract(const Duration(days: 1));
+
+        final end = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        );
+
+        matchesDate = !activityDate.isBefore(start) &&
+            activityDate.isBefore(end);
+      }
+
+      /// LAST 7 DAYS
+      else if (selectedDateFilter == "Last 7 Days") {
+        final now = DateTime.now();
+
+        final start = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).subtract(const Duration(days: 6));
+
+        final end = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).add(const Duration(days: 1));
+
+        matchesDate = !activityDate.isBefore(start) &&
+            activityDate.isBefore(end);
+      }
+
+      /// LAST 30 DAYS
+      else if (selectedDateFilter == "Last 30 Days") {
+        final now = DateTime.now();
+
+        final start = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).subtract(const Duration(days: 29));
+
+        final end = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).add(const Duration(days: 1));
+
+        matchesDate = !activityDate.isBefore(start) &&
+            activityDate.isBefore(end);
       }
 
       return matchesSearch && matchesDate;
-
     }).toList();
 
-    /// Sorting
-    if (sortField == 'name') {
-      filtered.sort((a, b) {
-        final comparison =
-        a.pTitle.toString().toLowerCase().compareTo(b.pTitle.toString().toLowerCase());
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }else if (sortField == 'mrp') {
-      filtered.sort((a, b) {
-        final aVal = int.tryParse(a.mrp.toString()) ?? 0;
-        final bVal = int.tryParse(b.mrp.toString()) ?? 0;
-        final comparison = aVal.compareTo(bVal);
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }else if (sortField == 'price') {
-      filtered.sort((a, b) {
-        final aVal = int.tryParse(a.outPrice.toString()) ?? 0;
-        final bVal = int.tryParse(b.outPrice.toString()) ?? 0;
-        final comparison = aVal.compareTo(bVal);
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }else if (sortField == 'sku') {
-      filtered.sort((a, b) {
-        final aVal = int.tryParse(a.skuId.toString()) ?? 0;
-        final bVal = int.tryParse(b.skuId.toString()) ?? 0;
-        final comparison = aVal.compareTo(bVal);
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }else if (sortField == 'hsn') {
-      filtered.sort((a, b) {
-        final aVal = int.tryParse(a.hsnCode.toString()) ?? 0;
-        final bVal = int.tryParse(b.hsnCode.toString()) ?? 0;
-        final comparison = aVal.compareTo(bVal);
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }else if (sortField == 'gst') {
-      filtered.sort((a, b) {
-        final aVal = int.tryParse(a.cgst.toString()) ?? 0;
-        final bVal = int.tryParse(b.cgst.toString()) ?? 0;
-        final comparison = aVal.compareTo(bVal);
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }
-    else if (sortField == 'date') {
-      filtered.sort((a, b) {
-        final dateA = parseDate(a.createdTs.toString());
-        final dateB = parseDate(b.createdTs.toString());
-        final comparison = dateA.compareTo(dateB);
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }
-    else if (sortField == 'barcode') {
-      filtered.sort((a, b) {
-        final comparison =
-        a.barcode.toString().toLowerCase().compareTo(b.barcode.toString().toLowerCase());
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }else if (sortField == 'cat') {
-      filtered.sort((a, b) {
-        final comparison =
-        a.category.toString().toLowerCase().compareTo(b.category.toString().toLowerCase());
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }else if (sortField == 'subcat') {
-      filtered.sort((a, b) {
-        final comparison =
-        a.subCategory.toString().toLowerCase().compareTo(b.subCategory.toString().toLowerCase());
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }else if (sortField == 'brand') {
-      filtered.sort((a, b) {
-        final comparison =
-        a.brand.toString().toLowerCase().compareTo(b.brand.toString().toLowerCase());
-        return sortOrder == 'asc' ? comparison : -comparison;
-      });
-    }
+    debugPrint("Filtered Products Count : ${filtered.length}");
+    debugPrint("Before assign");
+    debugPrint("products : ${products.length}");
+    debugPrint("products2 : ${products2.length}");
+
     products.assignAll(filtered);
+
+    debugPrint("After assign");
+    debugPrint("products : ${products.length}");
+    debugPrint("products2 : ${products2.length}");
+
+    // products.assignAll(filtered);
+    // products.refresh();
+    // products2.refresh();
+    // debugPrint("END products2 count : ${products2.length}");
   }
 
   void filterAndSortOrders({
@@ -915,6 +928,180 @@ debugPrint("selectedDateFilter $selectedDateFilter");
       });
     }
     ordersList.assignAll(filtered);
+  }
+
+  void filterAndSortProductsDetails({
+    required String searchText,
+    required String sortField,
+    required String sortOrder,
+    required String selectedDateFilter,
+    required DateTime? selectedMonth,
+    required DateTimeRange? selectedRange,
+  }) {
+    DateTime parseDate(String dateStr) {
+      try {
+        return DateTime.parse(dateStr); // 🔥 BEST
+      } catch (e) {
+        return DateTime(1900);
+      }
+    }
+    debugPrint("selectedDateFilter $selectedDateFilter");
+    // final now = DateTime.now();
+
+    final filtered = products2.where((activity) {
+
+      final matchesSearch =
+          searchText.isEmpty ||
+              activity.pTitle.toString().toLowerCase().contains(searchText.toLowerCase()) ||
+              activity.mrp.toString().toLowerCase().contains(searchText.toLowerCase());
+
+      final activityDate = parseDate(activity.createdTs.toString());
+
+      bool matchesDate = true;
+
+      final now = DateTime.now();
+      final todayStart = DateTime(now.year, now.month, now.day);
+
+      /// Today
+      if (selectedDateFilter == "Today") {
+        final tomorrowStart = todayStart.add(const Duration(days: 1));
+
+        matchesDate = activityDate.isAfter(todayStart) &&
+            activityDate.isBefore(tomorrowStart);
+      }
+
+      /// Yesterday
+      else if (selectedDateFilter == "Yesterday") {
+        final yesterdayStart = todayStart.subtract(const Duration(days: 1));
+
+        matchesDate = activityDate.isAfter(yesterdayStart) &&
+            activityDate.isBefore(todayStart);
+      }
+
+      /// Last 7 Days
+      else if (selectedDateFilter == "Last 7 Days") {
+        final start = todayStart.subtract(const Duration(days: 6));
+
+        matchesDate = activityDate.isAfter(start) &&
+            activityDate.isBefore(todayStart.add(const Duration(days: 1)));
+      }
+
+      /// Last 30 Days
+      else if (selectedDateFilter == "Last 30 Days") {
+        final start = todayStart.subtract(const Duration(days: 29));
+
+        matchesDate = activityDate.isAfter(start) &&
+            activityDate.isBefore(todayStart.add(const Duration(days: 1)));
+      }
+      debugPrint("activityDate ${activityDate}");
+      debugPrint("selectedRange ${selectedRange}");
+
+      /// Date Range Filter (same date issue fixed)
+      if (selectedRange != null) {
+        final start = DateTime(
+          selectedRange.start.year,
+          selectedRange.start.month,
+          selectedRange.start.day,
+        );
+
+        final end = DateTime(
+          selectedRange.end.year,
+          selectedRange.end.month,
+          selectedRange.end.day,
+          23, 59, 59,
+        );
+
+        matchesDate = !activityDate.isBefore(start) &&
+            !activityDate.isAfter(end);
+      }
+      /// Month Filter
+      if (selectedMonth != null) {
+        matchesDate = activityDate.month == selectedMonth.month &&
+            activityDate.year == selectedMonth.year;
+      }
+
+      return matchesSearch && matchesDate;
+
+    }).toList();
+
+    /// Sorting
+    /// Sorting
+    if (sortField == 'name') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.pTitle.toString().toLowerCase().compareTo(b.pTitle.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'mrp') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.mrp.toString()) ?? 0;
+        final bVal = int.tryParse(b.mrp.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'price') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.outPrice.toString()) ?? 0;
+        final bVal = int.tryParse(b.outPrice.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'sku') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.skuId.toString()) ?? 0;
+        final bVal = int.tryParse(b.skuId.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'hsn') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.hsnCode.toString()) ?? 0;
+        final bVal = int.tryParse(b.hsnCode.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'gst') {
+      filtered.sort((a, b) {
+        final aVal = int.tryParse(a.cgst.toString()) ?? 0;
+        final bVal = int.tryParse(b.cgst.toString()) ?? 0;
+        final comparison = aVal.compareTo(bVal);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'date') {
+      filtered.sort((a, b) {
+        final dateA = parseDate(a.createdTs.toString());
+        final dateB = parseDate(b.createdTs.toString());
+        final comparison = dateA.compareTo(dateB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'barcode') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.barcode.toString().toLowerCase().compareTo(b.barcode.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'cat') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.category.toString().toLowerCase().compareTo(b.category.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'subcat') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.subCategory.toString().toLowerCase().compareTo(b.subCategory.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }else if (sortField == 'brand') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.brand.toString().toLowerCase().compareTo(b.brand.toString().toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    products.assignAll(filtered);
   }
 
   void filterAndSortQuotations({

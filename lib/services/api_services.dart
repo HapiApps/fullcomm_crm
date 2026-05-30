@@ -3488,7 +3488,6 @@ class ApiService {
         controllers.emailMessageCtr.clear();
         controllers.emailToCtr.clear();
         controllers.emailSubjectCtr.clear();
-        productCtr.productsList.clear();
         Provider.of<BillingProvider>(context, listen: false).billingItems.clear();
         productCtr.getQuotationDetails();
         Navigator.pop(Get.context!);
@@ -3559,7 +3558,6 @@ class ApiService {
         controllers.emailMessageCtr.clear();
         controllers.emailToCtr.clear();
         controllers.emailSubjectCtr.clear();
-        productCtr.productsList.clear();
         Provider.of<BillingProvider>(context, listen: false).billingItems.clear();
         productCtr.getQuotationDetails();
         Navigator.pop(Get.context!);

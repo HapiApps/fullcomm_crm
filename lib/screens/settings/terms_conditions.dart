@@ -28,7 +28,7 @@ class TermsAndConditions extends StatefulWidget {
 }
 
 class _TermsAndConditionsState extends State<TermsAndConditions> {
-  final FocusNode name = FocusNode();
+  late FocusNode name;
   var isEdit=false.obs;
   var total=0.obs;
   var add=false.obs;
@@ -48,7 +48,9 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
       productCtr.termsAndConditionsList.length,
           (index) => FocusNode(),
     );
+    name = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      name.requestFocus();
       lead.value=productCtr.termsAndConditionsList;
       controllers.notesController.clear();
     });
@@ -152,7 +154,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                                             );
                                                             return;
                                                           }else{
-                                                            addCategories(context,"update",productCtr.termsAndConditionsList[editIndex.value]["id"],editIndex.value);
+                                                            addConditions(context,"update",productCtr.termsAndConditionsList[editIndex.value]["id"],editIndex.value);
                                                           }
                                                         }else{
                                                           await apiService.updateCategories(context);
@@ -291,11 +293,20 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                               ),10.width,
                               OutlinedButton(
                                   onPressed: (){
+                                    // WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    //   if (mounted) {
+                                    //     FocusScope.of(context).requestFocus(name);
+                                    //   }
+                                    // });
+                                    Future.delayed(const Duration(milliseconds: 100), () {
+                                      if (mounted) {
+                                        name.requestFocus();
+                                      }
+                                    });
                                     add.value=true;
                                     edit.value=false;
                                     editIndex.value=100;
                                     controllers.emailMessageCtr.clear();
-                                    FocusScope.of(context).requestFocus(name);
                                   },
                                   child: Row(
                                     children: [
@@ -424,7 +435,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                                       controllers.productCtr.reset();
                                                       return;
                                                     }else{
-                                                      addCategories(context,"update",data["id"],index);
+                                                      addConditions(context,"update",data["id"],index);
                                                     }
                                                   }else{
                                                     edit.value=true;
@@ -450,7 +461,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                                     controllers.emailMessageCtr.text=data["name"];
                                                     FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
                                                   }else if (value == "delete") {
-                                                    addCategories(context,"delete",data["id"].toString(),index);
+                                                    addConditions(context,"delete",data["id"].toString(),index);
                                                   }
                                                 },
                                                 itemBuilder: (context) => [
@@ -510,7 +521,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                                   controllers.productCtr.reset();
                                                   return;
                                                 }else{
-                                                  addCategories(context,"update",data["id"],index);
+                                                  addConditions(context,"update",data["id"],index);
                                                 }
                                               },
                                             ):
@@ -541,17 +552,6 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  SizedBox(
-                                    width: 80,
-                                    height:30,
-                                    child: OutlinedButton(
-                                      onPressed: () {
-                                        add.value=false;
-                                      },
-                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
-                                      child: const Text("Cancel", style: TextStyle(color: Colors.black)),
-                                    ),
-                                  ),
                                   CustomTextField(
                                     focusNode: name,
                                     width: MediaQuery.of(context).size.width*0.4,
@@ -574,6 +574,17 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                     inputFormatters: constInputFormatters.textInput2,
                                   ),
                                   SizedBox(
+                                    width: 80,
+                                    height:30,
+                                    child: OutlinedButton(
+                                      onPressed: () {
+                                        add.value=false;
+                                      },
+                                      style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
+                                      child: const Text("Cancel", style: TextStyle(color: Colors.black)),
+                                    ),
+                                  ),
+                                  SizedBox(
                                     height:30,
                                     child: CustomLoadingButton(callback: (){
                                       if (controllers.emailMessageCtr.text.trim().isEmpty) {
@@ -585,7 +596,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                         controllers.productCtr.reset();
                                         return;
                                       }else{
-                                        addCategories(context,"add","",100);
+                                        addConditions(context,"add","",100);
                                       }
                                     }, isLoading: true, controller: controllers.productCtr,text: "Save",
                                         backgroundColor: colorsConst.primary, radius: 5, width: 100),
@@ -613,7 +624,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
       ),
     );
   }
-  Future addCategories(BuildContext context,String ops,String id,int index) async {
+  Future addConditions(BuildContext context,String ops,String id,int index) async {
     try {
       Map data = {
         "action": "insert_terms",
@@ -639,7 +650,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return addCategories(context,ops,id,index);
+          return addConditions(context,ops,id,index);
         } else {
           controllers.setLogOut();
         }

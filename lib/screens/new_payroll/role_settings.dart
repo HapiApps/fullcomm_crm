@@ -1525,7 +1525,7 @@ class _RoleSettingState extends State<RoleSetting> {
 
                                 void calculateAmounts() {
                                   setState(() {
-                                    double perDay = double.tryParse(data.perDay.text) ?? 0.0;
+                                    double perDay = double.tryParse(data.monthlyWages==true?data.salary.text:data.perDay.text) ?? 0.0;
                                     double basic = double.tryParse(data.basic.text) ?? 0.0;
                                     double hra = double.tryParse(data.hra.text) ?? 0.0;
                                     double da = double.tryParse(data.da.text) ?? 0.0;
@@ -1570,6 +1570,7 @@ class _RoleSettingState extends State<RoleSetting> {
                                       data.pf.text = pf.toString();
                                       data.esi.text = esi.toString();
                                     }
+                                    calculateAmounts();
                                   });
                                 }
 
@@ -2006,6 +2007,83 @@ class _RoleSettingState extends State<RoleSetting> {
                                                   //     },
                                                   //   ),
                                                   // ),
+                                                  Container(
+                                                    width: screenWidth/5,
+                                                    height: 40,
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                        radius: 8,
+                                                        color: Colors.white,
+                                                        borderColor: Colors.grey.shade400),
+                                                    child: DropdownButtonHideUnderline(
+                                                      child: ButtonTheme(
+                                                        alignedDropdown: true,
+                                                        child: DropdownButton<RoleModel>(
+                                                          underline: const SizedBox(),
+                                                          isExpanded: true,
+                                                          value: data.role,
+                                                          iconEnabledColor: Colors.black,
+
+                                                          hint: CustomText(
+                                                            text: "",
+                                                            colors: Colors.grey.shade400,
+                                                            size: 13,
+                                                            isBold: false,
+                                                            isStyle: true,
+                                                            isCopy: true,
+                                                          ),
+
+                                                          items: settingsController.roleList
+                                                              .map<DropdownMenuItem<RoleModel>>((item) {
+                                                            return DropdownMenuItem<RoleModel>(
+                                                              value: item,
+                                                              child: CustomText(
+                                                                text: item.roleName,
+                                                                colors: Colors.black,
+                                                                size: 13,
+                                                                isCopy: false,
+                                                                isBold: false,
+                                                              ),
+                                                            );
+                                                          }).toList(),
+
+                                                          onChanged: (RoleModel? value) {
+                                                            // setState(() {
+                                                            //   employeeProvider.role = value;
+                                                            //   employeeProvider.roleId = value?.uId;
+                                                            // });
+                                                            if (value == null) return;
+                                                            final selectedRole = value;
+                                                            final selectedRoleId = selectedRole.uId.toString();
+
+                                                            bool roleExists = pyrlCtr.settingList.any((item) =>
+                                                            item != data &&
+                                                                item.roleId.toString() == selectedRoleId);
+
+                                                            if (roleExists) {
+                                                              utils.snackBar(context: context, msg: "This role is already added in another payroll setting.", color: Colors.red);
+                                                              setState(() {
+                                                                data.role = null;
+                                                                data.roleId = "";
+                                                                data.roleName = "";
+                                                              });
+
+                                                              return;
+                                                            }
+
+                                                            setState(() {
+                                                              data.role = selectedRole;
+                                                              data.roleId = selectedRoleId;
+                                                              data.roleName = selectedRole.roleName.toString();
+
+                                                              data.dep = null;
+                                                              data.dId = "";
+                                                              data.dName = "";
+                                                            });
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
                                               if(isDep==true)

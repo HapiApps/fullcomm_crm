@@ -1915,7 +1915,8 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                       isBold: true,
                                                       isCopy: true,
                                                       colors: colorsConst.textColor,
-                                                    ),                                                                  actions: [
+                                                    ),
+                                                    actions: [
                                                     Row(
                                                       mainAxisAlignment: MainAxisAlignment.end,
                                                       children: [

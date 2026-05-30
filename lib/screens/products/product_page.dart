@@ -29,6 +29,8 @@ class ProductPage extends StatefulWidget {
 class _ProductPageState extends State<ProductPage> {
   List<double> colWidths = [
     70,   // S.No
+    70,   // S.No
+    120,   // actions
     120,  // SKU
     120,  // HSN
     150,  // Barcode
@@ -55,7 +57,7 @@ class _ProductPageState extends State<ProductPage> {
       productCtr.isSelectAll.value = false;
       productCtr.idsList.value.clear();
       _focusNode.requestFocus();
-      productCtr.filterAndSortProducts(
+      productCtr.filterAndSortProductsDetails(
         searchText: controllers.searchText.value.toLowerCase(),
         sortField: controllers.sortFieldCallActivity.value,
         sortOrder: controllers.sortOrderCallActivity.value,
@@ -212,6 +214,108 @@ class _ProductPageState extends State<ProductPage> {
                   10.height,
 
                   // --- SEARCH & FILTERS ---
+                  productCtr.selectedPrdIds.isNotEmpty?
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CustomText(text: "Selected count: ${productCtr.selectedPrdIds.value.length}", isCopy: false),15.width,
+                      InkWell(
+                        focusColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: CustomText(
+                                  text: "Are you sure delete this products?",
+                                  isCopy: true,
+                                  size: 16,
+                                  isBold: true,
+                                  colors: colorsConst.textColor,
+                                ),
+                                actions: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        decoration: BoxDecoration(
+                                            border: Border.all(color: colorsConst.primary),
+                                            color: Colors.white),
+                                        width: 80,
+                                        height: 25,
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                              shape: const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.zero,
+                                              ),
+                                              backgroundColor: Colors.white,
+                                            ),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                            child: CustomText(
+                                              text: "Cancel",
+                                              colors: colorsConst.primary,
+                                              size: 14,
+                                              isCopy: false,
+                                            )),
+                                      ),
+                                      10.width,
+                                      CustomLoadingButton(
+                                        callback: (){
+                                          final p = context.read<BillingProvider>();
+                                          p.deleteProduct(context,productCtr.selectedPrdIds);
+                                        },
+                                        height: 35,
+                                        isLoading: true,
+                                        backgroundColor: colorsConst.primary,
+                                        radius: 2,
+                                        width: 80,
+                                        controller: controllers.productCtr,
+                                        isImage: false,
+                                        text: "Delete",
+                                        textColor: Colors.white,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: Container(
+                          height: 40,
+                          width: 100,
+                          decoration: BoxDecoration(
+                            color: colorsConst.secondary,
+                            borderRadius: BorderRadius.circular(4),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.2),
+                                spreadRadius: 1,
+                                blurRadius: 5,
+                              ),
+                            ],
+                          ),
+                          child:  Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset("assets/images/action_delete.png"),
+                              10.width,
+                              CustomText(
+                                text: "Delete",
+                                colors: colorsConst.textColor,
+                                size: 14,
+                                isBold: true,
+                                isCopy: false,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ):1.width,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -234,7 +338,9 @@ class _ProductPageState extends State<ProductPage> {
                         selectedMonth: productCtr.selectedCallMonth,
                         focusNode: _focusNode,
                         onDaysSelected: () {
-                          productCtr.filterAndSortProducts(
+                          print("clicked");
+                          print(productCtr.selectedCallSortBy.value);
+                          productCtr.filterAndSortProductsDetails(
                             searchText: controllers.searchText.value.toLowerCase(),
                             sortField: controllers.sortFieldCallActivity.value,
                             sortOrder: controllers.sortOrderCallActivity.value,
@@ -249,7 +355,7 @@ class _ProductPageState extends State<ProductPage> {
                             productCtr.selectedCallSortBy,
                             productCtr.selectedCallMonth,
                                 () {
-                              productCtr.filterAndSortProducts(
+                              productCtr.filterAndSortProductsDetails(
                                 searchText: controllers.searchText.value.toLowerCase(),
                                 sortField: controllers.sortFieldCallActivity.value,
                                 sortOrder: controllers.sortOrderCallActivity.value,
@@ -263,7 +369,7 @@ class _ProductPageState extends State<ProductPage> {
                         onSelectDateRange: (ctx) {
                           remController.showDatePickerDialog(ctx, (pickedRange) {
                             productCtr.selectedCallRange.value = pickedRange;
-                            productCtr.filterAndSortProducts(
+                            productCtr.filterAndSortProductsDetails(
                               searchText: controllers.searchText.value.toLowerCase(),
                               sortField: controllers.sortFieldCallActivity.value,
                               sortOrder: controllers.sortOrderCallActivity.value,
@@ -322,7 +428,38 @@ class _ProductPageState extends State<ProductPage> {
                                             isCopy: true,
                                             colors: Colors.white,
                                           ),),//s.no
-                                          headerCell(1, Row(
+                                          headerCell(1, Obx(() => Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Checkbox(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(2.0),
+                                              ),
+                                              side: WidgetStateBorderSide.resolveWith(
+                                                    (states) => const BorderSide(width: 1.0, color: Colors.white),
+                                              ),
+                                              value: productCtr.selectedPrdIds.length == productCtr.paginatedPrdItems.length && productCtr.paginatedPrdItems.isNotEmpty,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  if (value == true) {
+                                                    productCtr.selectAllCalls();
+                                                  } else {
+                                                    productCtr.unselectAllCalls();
+                                                  }
+                                                });
+                                              },
+                                              activeColor: Colors.white,
+                                              checkColor: colorsConst.primary,
+                                            ),
+                                          ))),
+                                          headerCell(2,  CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: "Actions",
+                                            size: 15,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: Colors.white,
+                                          ),),//Actions
+                                          headerCell(3, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -341,7 +478,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='sku';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -363,7 +500,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//SKU
-                                          headerCell(2, Row(
+                                          headerCell(4, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -382,7 +519,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='hsn';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -404,7 +541,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//HSN
-                                          headerCell(3, Row(
+                                          headerCell(5, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -423,7 +560,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='barcode';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -445,7 +582,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//HSN
-                                          headerCell(4, Row(
+                                          headerCell(6, Row(
                                             children: [
                                               CustomText(//2
                                                 textAlign: TextAlign.left,
@@ -464,7 +601,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='name';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -486,7 +623,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//product name
-                                          headerCell(5, Row(
+                                          headerCell(7, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -505,7 +642,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='hsn';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -527,7 +664,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//Variation
-                                          headerCell(6, Row(
+                                          headerCell(8, Row(
                                             children: [
                                               CustomText(
                                                 textAlign: TextAlign.left,
@@ -546,7 +683,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='mrp';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -568,7 +705,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//MRP
-                                          headerCell(7, Row(
+                                          headerCell(9, Row(
                                             children: [
                                               CustomText(
                                                 textAlign: TextAlign.left,
@@ -587,7 +724,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='price';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -609,7 +746,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//Price
-                                          headerCell(8, Row(
+                                          headerCell(10, Row(
                                             children: [
                                               CustomText(//2
                                                 textAlign: TextAlign.left,
@@ -628,7 +765,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='brand';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -650,7 +787,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//brand
-                                          headerCell(9, Row(
+                                          headerCell(11, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -669,7 +806,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='cat';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -691,7 +828,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//Cat
-                                          headerCell(10, Row(
+                                          headerCell(12, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -710,7 +847,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='subcat';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -732,7 +869,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//Sub Cat
-                                          headerCell(11, Row(
+                                          headerCell(13, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -751,7 +888,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='gst';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -773,7 +910,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//GST
-                                          headerCell(12, Row(
+                                          headerCell(14, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -792,7 +929,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='date';
-                                                  productCtr.filterAndSortProducts(
+                                                  productCtr.filterAndSortProductsDetails(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -841,6 +978,106 @@ class _ProductPageState extends State<ProductPage> {
                                                 ),
                                                 children: [
                                                   _dataCell(0, "${index + 1}", align: Alignment.center),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: Checkbox(
+                                                      value: productCtr.isCheckedRecordCall(p.id.toString()),
+                                                      onChanged: (value) {
+                                                        setState(() {
+                                                          productCtr.toggleRecordSelectionCall(p.id.toString());
+                                                        });
+                                                      },
+                                                    ),
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      IconButton(
+                                                          onPressed: (){
+                                                            showDialog(
+                                                              context: context,
+                                                              barrierDismissible: true,
+                                                              builder: (_) => EditProductDialog(
+                                                                id: p.id, title: p.pTitle, category: p.category, subCategory: p.subCategory, sku: p.hsnCode,
+                                                                barcode: p.barcode, units: p.unit, isLoose: int.parse(p.isLoose.toString().runtimeType==String?"1":"0"),
+                                                                variations: p.pVariation, qty: '', mrp: p.mrp, outPrice: p.outPrice, inPrice: '',),
+                                                            );
+                                                          },
+                                                          icon: SvgPicture.asset(
+                                                            "assets/images/a_edit.svg",
+                                                            width: 16,
+                                                            height: 16,
+                                                          )),
+                                                      IconButton(
+                                                          onPressed: (){
+                                                            showDialog(
+                                                              context: context,
+                                                              builder: (BuildContext context) {
+                                                                return AlertDialog(
+                                                                  content: CustomText(
+                                                                    text: "Are you sure delete this product?",
+                                                                    size: 16,
+                                                                    isBold: true,
+                                                                    isCopy: true,
+                                                                    colors: colorsConst.textColor,
+                                                                  ),
+                                                                  actions: [
+                                                                    Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                      children: [
+                                                                        Container(
+                                                                          decoration: BoxDecoration(
+                                                                              border: Border.all(color: colorsConst.primary),
+                                                                              color: Colors.white),
+                                                                          width: 80,
+                                                                          height: 25,
+                                                                          child: ElevatedButton(
+                                                                              style: ElevatedButton.styleFrom(
+                                                                                shape: const RoundedRectangleBorder(
+                                                                                  borderRadius: BorderRadius.zero,
+                                                                                ),
+                                                                                backgroundColor: Colors.white,
+                                                                              ),
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: CustomText(
+                                                                                text: "Cancel",
+                                                                                isCopy: false,
+                                                                                colors: colorsConst.primary,
+                                                                                size: 14,
+                                                                              )),
+                                                                        ),
+                                                                        10.width,
+                                                                        CustomLoadingButton(
+                                                                          callback: (){
+                                                                            final p = context.read<BillingProvider>();
+                                                                            p.deleteProduct(context,productCtr.selectedPrdIds);
+                                                                          },
+                                                                          height: 35,
+                                                                          isLoading: true,
+                                                                          backgroundColor: colorsConst.primary,
+                                                                          radius: 2,
+                                                                          width: 80,
+                                                                          controller: controllers.productCtr,
+                                                                          isImage: false,
+                                                                          text: "Delete",
+                                                                          textColor: Colors.white,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              },
+                                                            );
+                                                          },
+                                                          icon: SvgPicture.asset(
+                                                            "assets/images/a_delete.svg",
+                                                            width: 16,
+                                                            height: 16,
+                                                          ))
+                                                    ],
+                                                  ),
                                                   _dataCell(1, p.skuId ?? "-"),
                                                   _dataCell(2, p.hsnCode ?? "-"),
                                                   _dataCell(3, p.barcode ?? "-"),

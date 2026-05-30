@@ -266,35 +266,65 @@ void showMonthPicker({
 void showMonthPicker2({
   required BuildContext context,
   required RxString month,
-  VoidCallback?  function,
+  VoidCallback? function,
 }) {
+
+  int initialMonth = DateTime.now().month;
+  int initialYear = DateTime.now().year;
+
+  if (month.value.isNotEmpty) {
+    try {
+      final selectedDate = DateFormat('MMMM yyyy').parse(month.value);
+      initialMonth = selectedDate.month;
+      initialYear = selectedDate.year;
+    } catch (e) {
+      // Invalid format -> current month/year use pannum
+    }
+  }
+
   showDialog(
     context: context,
     builder: (BuildContext context) {
       return Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
         child: SizedBox(
           width: 300,
           height: 400,
           child: CustomMonthPicker(
-            initialMonth: DateTime.now().month,
-            initialYear:  DateTime.now().year,
+            initialMonth: initialMonth,
+            initialYear: initialYear,
             firstYear: 2024,
             lastYear: 2050,
-            // onSelected: onSelected,
             onSelected: (value) {
-                var m  =value.month ;
-                var y = value.year;
-                pyrlCtr.saveMonth = value.month;
-                pyrlCtr.year = value.year;
-                pyrlCtr.start =
-                ("01-${(m.toString().padLeft(2, "0"))}-$y");
-                var ex = pyrlCtr.start.split("-");
-                var date = DateTime(int.parse(ex.first), int.parse(ex[1]) + 1,0);
-                pyrlCtr.lastDate = date.day;
-                pyrlCtr.end = "${date.day.toString().padLeft(2, "0")}-${m.toString().padLeft(2, "0")}-$y";
-                month.value =  DateFormat('MMMM yyyy').format(DateTime(y, m));
-                function!();
+              var m = value.month;
+              var y = value.year;
+
+              pyrlCtr.saveMonth = m;
+              pyrlCtr.year = y;
+
+              pyrlCtr.start =
+              "01-${m.toString().padLeft(2, "0")}-$y";
+
+              var ex = pyrlCtr.start.split("-");
+              var date = DateTime(
+                int.parse(ex[2]), // year
+                int.parse(ex[1]) + 1,
+                0,
+              );
+
+              pyrlCtr.lastDate = date.day;
+
+              pyrlCtr.end =
+              "${date.day.toString().padLeft(2, "0")}-${m.toString().padLeft(2, "0")}-$y";
+
+              month.value =
+                  DateFormat('MMMM yyyy').format(DateTime(y, m));
+
+              Navigator.pop(context);
+
+              function?.call();
             },
           ),
         ),

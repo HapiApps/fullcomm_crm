@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:fullcomm_crm/components/custom_no_data.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row, Stack;
 import 'package:universal_html/html.dart' show AnchorElement;
@@ -281,7 +282,11 @@ class _UnitSlipState extends State<UnitSlip> {
                       child: CircularProgressIndicator(),
                     ):
                     pyrlCtr.unitPayrollList.isEmpty ?
-                    const CustomText(text: "\n\n\n\n\n\nNo Data Found", isCopy: true,) :
+                    Center(
+                      child: SizedBox(
+                        height: 500,width: 300,
+                          child: const CustomNoData()),
+                    ):
                     Expanded(
                       child: KeyboardListener(
                         focusNode: _focusNode,

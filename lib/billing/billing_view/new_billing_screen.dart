@@ -2856,6 +2856,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                       Align(
                                                                           alignment: Alignment.topRight,
                                                                           child: InkWell(
+                                                                              hoverColor: Colors.transparent,
+                                                                              splashColor: Colors.transparent,
+                                                                              highlightColor: Colors.transparent,
+                                                                              focusColor: Colors.transparent,
+                                                                              overlayColor: WidgetStateProperty.all(Colors.transparent),
                                                                               onTap: () {
                                                                                 Navigator.pop(context);
                                                                               },
@@ -3230,6 +3235,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                       Align(
                                                                           alignment: Alignment.topRight,
                                                                           child: InkWell(
+                                                                              hoverColor: Colors.transparent,
+                                                                              splashColor: Colors.transparent,
+                                                                              highlightColor: Colors.transparent,
+                                                                              focusColor: Colors.transparent,
+                                                                              overlayColor: WidgetStateProperty.all(Colors.transparent),
                                                                               onTap: () {
                                                                                 Navigator.pop(context);
                                                                               },
@@ -3642,6 +3652,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                       Align(
                                                                           alignment: Alignment.topRight,
                                                                           child: InkWell(
+                                                                              hoverColor: Colors.transparent,
+                                                                              splashColor: Colors.transparent,
+                                                                              highlightColor: Colors.transparent,
+                                                                              focusColor: Colors.transparent,
+                                                                              overlayColor: WidgetStateProperty.all(Colors.transparent),
                                                                               onTap: () {
                                                                                 Navigator.pop(context);
                                                                               },
@@ -4011,6 +4026,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                             Align(
                                                                 alignment: Alignment.topRight,
                                                                 child: InkWell(
+                                                                    hoverColor: Colors.transparent,
+                                                                    splashColor: Colors.transparent,
+                                                                    highlightColor: Colors.transparent,
+                                                                    focusColor: Colors.transparent,
+                                                                    overlayColor: WidgetStateProperty.all(Colors.transparent),
                                                                     onTap: () {
                                                                       Navigator.pop(context);
                                                                     },
@@ -4112,6 +4132,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                       Align(
                                                                                           alignment: Alignment.topRight,
                                                                                           child: InkWell(
+                                                                                              hoverColor: Colors.transparent,
+                                                                                              splashColor: Colors.transparent,
+                                                                                              highlightColor: Colors.transparent,
+                                                                                              focusColor: Colors.transparent,
+                                                                                              overlayColor: WidgetStateProperty.all(Colors.transparent),
                                                                                               onTap: () {
                                                                                                 Navigator.pop(context);
                                                                                               },
@@ -4532,6 +4557,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                       Align(
                                                                                           alignment: Alignment.topRight,
                                                                                           child: InkWell(
+                                                                                              hoverColor: Colors.transparent,
+                                                                                              splashColor: Colors.transparent,
+                                                                                              highlightColor: Colors.transparent,
+                                                                                              focusColor: Colors.transparent,
+                                                                                              overlayColor: WidgetStateProperty.all(Colors.transparent),
                                                                                               onTap: () {
                                                                                                 Navigator.pop(context);
                                                                                               },

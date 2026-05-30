@@ -19,7 +19,8 @@ class PyrlCtr extends GetxController {
   }) {
     final filtered = unitPayrollList2.where((activity) {
       final matchesSearch = searchText.isEmpty ||
-          activity.name.toLowerCase().contains(searchText.toLowerCase());
+          activity.name.toLowerCase().contains(searchText.toLowerCase())||
+          activity.roleName.toLowerCase().contains(searchText.toLowerCase());
       return matchesSearch;
 
     }).toList();

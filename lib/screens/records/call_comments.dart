@@ -1412,7 +1412,8 @@ class _CallCommentsState extends State<CallComments> {
                                                                       isBold: true,
                                                                       isCopy: true,
                                                                       colors: colorsConst.textColor,
-                                                                    ),                                                                  actions: [
+                                                                    ),
+                                                                    actions: [
                                                                     Row(
                                                                       mainAxisAlignment: MainAxisAlignment.end,
                                                                       children: [

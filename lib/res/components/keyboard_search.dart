@@ -365,6 +365,10 @@ class _KeyboardDropdownFieldState<T extends Object>
             hintText: widget.hintText,
             hintStyle: widget.hintStyle,
             suffixIcon: IconButton(
+              hoverColor: Colors.transparent,
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              focusColor: Colors.transparent,
               onPressed: () {
                 setState(() {
                   ctrl.clear();

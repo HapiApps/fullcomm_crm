@@ -439,7 +439,11 @@ class _LeadCategoriesState extends State<LeadCategories> {
                               ),10.width,
                               OutlinedButton(
                                   onPressed: (){
-                                    FocusScope.of(context).requestFocus(name);
+                                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                                      if (mounted) {
+                                        FocusScope.of(context).requestFocus(name);
+                                      }
+                                    });
                                     if(controllers.leadCategoryList.length!=10){
                                       add.value=true;
                                       edit.value=false;
@@ -743,23 +747,82 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                           ),
                                         ),
                                         InkWell(
-                                          // onTap: (){
-                                          //   controllers.manageLead(context,data.id,data.active=="1"?2:1);
-                                          // },
+                                          onTap: (){
+                                            showDialog(
+                                                context: context,
+                                                barrierDismissible: false,
+                                                builder: (context) {
+                                                  return AlertDialog(
+                                                    content: CustomText(
+                                                      text: "Are you sure ${data.active=="1"?"inactive":"active"} this category?",
+                                                      size: 16,
+                                                      isCopy: false,
+                                                      isBold: true,
+                                                      colors: colorsConst.textColor,
+                                                    ),
+                                                    actions: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                        children: [
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                                border: Border.all(color: colorsConst.primary),
+                                                                color: Colors.white),
+                                                            width: 80,
+                                                            height: 25,
+                                                            child: ElevatedButton(
+                                                                style: ElevatedButton.styleFrom(
+                                                                  shape: const RoundedRectangleBorder(
+                                                                    borderRadius: BorderRadius.zero,
+                                                                  ),
+                                                                  backgroundColor: Colors.white,
+                                                                ),
+                                                                onPressed: () {
+                                                                  Navigator.pop(context);
+                                                                },
+                                                                child: CustomText(
+                                                                  text: "Cancel",
+                                                                  isCopy: false,
+                                                                  colors: colorsConst.primary,
+                                                                  size: 14,
+                                                                )),
+                                                          ),
+                                                          10.width,
+                                                          CustomLoadingButton(
+                                                            callback: (){
+                                                              controllers.manageLead(context,data.id,data.active=="1"?2:1);
+                                                              Navigator.pop(context);
+                                                            },
+                                                            height: 35,
+                                                            isLoading: false,
+                                                            backgroundColor: colorsConst.primary,
+                                                            radius: 2,
+                                                            width: 80,
+                                                            isImage: false,
+                                                            text: "YES",
+                                                            textColor: Colors.white,
+                                                          ),
+                                                          5.width
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  );
+                                                });
+                                          },
                                           child: Container(
                                             decoration: customDecoration.baseBackgroundDecoration(
-                                                color: data.active.toString()=="1"?Colors.green.shade100:Colors.orangeAccent.shade100,radius: 10
+                                                color: data.active.toString()=="1"?Colors.green.shade100:Colors.orange.shade50,radius: 10
                                             ),
                                             height: 20,
                                             width: 100,
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
-                                                Icon(Icons.circle,size: 8,color: data.active.toString()=="1"?Colors.green:Colors.orangeAccent.shade100,),5.width,
+                                                Icon(Icons.circle,size: 8,color: data.active.toString()=="1"?Colors.green:Colors.orange,),5.width,
                                                 CustomText(
                                                     text: data.active.toString()=="1"?"Active":"In Active",
                                                     isCopy: false,
-                                                    colors: data.active.toString()=="1"?Colors.green:Colors.orangeAccent
+                                                    colors: data.active.toString()=="1"?Colors.green:Colors.orange
                                                 ),
                                               ],
                                             ),

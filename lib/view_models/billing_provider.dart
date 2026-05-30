@@ -16,6 +16,7 @@ import '../billing/pdf/bill_pdf.dart';
 import '../billing_utils/text_formats.dart';
 import '../common/utilities/utils.dart';
 import '../controller/controller.dart';
+import '../controller/product_controller.dart';
 import '../models/billing_models/billing_product.dart';
 import '../models/billing_models/category_model.dart';
 import '../models/billing_models/online_orders.dart';
@@ -1803,14 +1804,81 @@ class BillingProvider with ChangeNotifier{
     if (success) {
       Navigator.pop(context);
       clearProductForm();
-      if (isWChecked) {
-        getWholeSaleProducts();
-      } else {
-        getProducts();
-      }
-      _toast(context, "Product Added Successfully");
+      productCtr.getProducts();
+      utils.snackBar(context: context, msg: "Product Added Successfully", color: Colors.green);
     } else {
-      _toast(context, "Product Added Failed");
+      utils.snackBar(context: context, msg: "Product Added Failed", color: Colors.red);
+    }
+  }
+  Future<void> updateProduct(BuildContext context,String id) async {
+    final catProv = context.read<BillingProvider>();
+
+    if (catProv.selectedCategory == null ||
+        catProv.selectedSubCategory == null) {
+      _toast(context, "Select Category & Sub Category");
+      return;
+    }
+    debugPrint("barcode: ${barcode.text.trim()}");
+    final int qtyVal = int.tryParse(qty.text.trim()) ?? 0;
+    final double mrpVal = double.tryParse(mrp.text.trim()) ?? 0;
+    final double outPriceVal = double.tryParse(outPrice.text.trim()) ?? 0;
+    final double inPriceVal = double.tryParse(inPrice.text.trim()) ?? 0;
+
+    if (
+    mrpVal <= outPriceVal ||
+        inPriceVal >= outPriceVal) {
+      _toast(context, "Check price values");
+      return;
+    }
+
+    loading = true;
+    notifyListeners();
+
+    final success = await PlaceOrderRepository.insertProduct({
+      "action": "edit_product",
+      "id": id,
+      "p_title": title.text.trim(),
+      "cat_id": catProv.selectedCategory!.id.toString(),
+      "sub_cat_id": catProv.selectedSubCategory!.id.toString(),
+      "sku_id": sku.text.trim(),
+      "barcode": barcode.text.trim(),
+      "unit_weight": units.text.trim(),
+      "p_variation": isLoose == 1
+          ? "Loose"
+          : variations.text.trim(),
+      "is_loose": isLoose.toString(),
+      "qty": qtyVal,
+      "mrp": mrpVal,
+      "out_price": outPriceVal,
+      "in_price": inPriceVal,
+    });
+
+    loading = false;
+    notifyListeners();
+    if (success) {
+      Navigator.pop(context);
+      clearProductForm();
+      productCtr.getProducts();
+      utils.snackBar(context: context, msg: "Product Updated Successfully", color: Colors.green);
+    } else {
+      utils.snackBar(context: context, msg: "Product Updated Failed", color: Colors.red);
+    }
+  }
+  Future<void> deleteProduct(BuildContext context,List idList) async {
+    final success = await PlaceOrderRepository.insertProduct({
+      "action": "del_product",
+      "product_ids": idList,
+      "updated_by": controllers.storage.read("id")});
+    if (success) {
+      Navigator.pop(context);
+      clearProductForm();
+      productCtr.getProducts();
+      controllers.productCtr.reset();
+      productCtr.selectedPrdIds.clear();
+      utils.snackBar(context: context, msg: "Product Deleted Successfully", color: Colors.green);
+    } else {
+      utils.snackBar(context: context, msg: "Product Deleted Failed", color: Colors.red);
+      controllers.productCtr.reset();
     }
   }
 
