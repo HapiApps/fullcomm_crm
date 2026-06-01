@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
+import 'package:fullcomm_crm/components/custom_no_data.dart';
 import 'package:fullcomm_crm/models/order_model.dart';
 import 'package:get/get.dart';
 import 'package:pdf/pdf.dart';
@@ -596,8 +597,10 @@ class _OrderPageState extends State<OrderPage> {
                                   Expanded(
                                     child: Obx(() {
                                       if (productCtr.paginatedOrdersItems.isEmpty) {
-                                        return const Center(
-                                            child: Text("No Data Found"));
+                                        return Center(
+                                            child: SizedBox(
+                                              height: 500,width: 500,
+                                                child: CustomNoData()));
                                       }
                                       return ListView.builder(
                                         controller: _controller,
