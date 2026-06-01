@@ -428,25 +428,28 @@ class _ProductPageState extends State<ProductPage> {
                                             isCopy: true,
                                             colors: Colors.white,
                                           ),),//s.no
-                                          headerCell(1, Obx(() => Checkbox(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(2.0),
+                                          headerCell(1, Obx(() => Padding(
+                                            padding: const EdgeInsets.fromLTRB(10, 0, 5, 0),
+                                            child: Checkbox(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(2.0),
+                                              ),
+                                              side: WidgetStateBorderSide.resolveWith(
+                                                    (states) => const BorderSide(width: 1.0, color: Colors.white),
+                                              ),
+                                              value: productCtr.selectedPrdIds.length == productCtr.paginatedPrdItems.length && productCtr.paginatedPrdItems.isNotEmpty,
+                                              onChanged: (value) {
+                                                setState(() {
+                                                  if (value == true) {
+                                                    productCtr.selectAllCalls();
+                                                  } else {
+                                                    productCtr.unselectAllCalls();
+                                                  }
+                                                });
+                                              },
+                                              activeColor: Colors.white,
+                                              checkColor: colorsConst.primary,
                                             ),
-                                            side: WidgetStateBorderSide.resolveWith(
-                                                  (states) => const BorderSide(width: 1.0, color: Colors.white),
-                                            ),
-                                            value: productCtr.selectedPrdIds.length == productCtr.paginatedPrdItems.length && productCtr.paginatedPrdItems.isNotEmpty,
-                                            onChanged: (value) {
-                                              setState(() {
-                                                if (value == true) {
-                                                  productCtr.selectAllCalls();
-                                                } else {
-                                                  productCtr.unselectAllCalls();
-                                                }
-                                              });
-                                            },
-                                            activeColor: Colors.white,
-                                            checkColor: colorsConst.primary,
                                           ))),
                                           headerCell(2,  CustomText(
                                             textAlign: TextAlign.left,
