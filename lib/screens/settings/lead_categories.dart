@@ -615,8 +615,8 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                                 child: Row(
                                                   mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
-                                                    InkWell(
-                                                      onTap: (){
+                                                    IconButton(
+                                                      onPressed: (){
                                                         if(editIndex.value==index){
                                                           if (controllers.emailMessageCtr.text.trim().isEmpty) {
                                                             utils.snackBar(
@@ -636,55 +636,61 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                                           FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
                                                         }
                                                       },
-                                                      child: editIndex.value==index?Icon(Icons.check):Image.asset("assets/images/lead5.png"),
-                                                    ),10.width,
-                                                    PopupMenuButton(
-                                                      icon: Padding(
-                                                        padding: const EdgeInsets.all(2.0),
-                                                        child: Image.asset("assets/images/lead8.png"),
-                                                      ),
-                                                      onSelected: (value) {
-                                                        if (value == "copy") {
-                                                          add.value=true;
-                                                          controllers.emailMessageCtr.text="${data.value}(copy)";
-                                                        } else if (value == "edit") {
-                                                          edit.value=true;
-                                                          editIndex.value=index;
-                                                          controllers.emailMessageCtr.text=data.value;
-                                                          FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
-                                                        }else if (value == "status") {
-                                                        }
-                                                      },
-                                                      itemBuilder: (context) => [
-                                                        // PopupMenuItem(
-                                                        //   value: "edit",
-                                                        //   child: Row(
-                                                        //     children: [
-                                                        //       Image.asset("assets/images/lead5.png"),10.width,
-                                                        //       const Text("Edit Name"),
-                                                        //     ],
-                                                        //   ),
-                                                        // ),
-                                                        PopupMenuItem(
-                                                          value: "copy",
-                                                          child: Row(
-                                                            children: [
-                                                              Image.asset("assets/images/lead6.png"),10.width,
-                                                              Text("Duplicate"),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        // PopupMenuItem(
-                                                        //   value: "status",
-                                                        //   child: Row(
-                                                        //     children: [
-                                                        //       Image.asset("assets/images/lead7.png"),10.width,
-                                                        //       Text("Toggle Status"),
-                                                        //     ],
-                                                        //   ),
-                                                        // ),
-                                                      ],
+                                                      icon: editIndex.value==index?Icon(Icons.check):Image.asset("assets/images/lead5.png"),
                                                     ),
+                                                    IconButton(
+                                                      onPressed: (){
+                                                        add.value=true;
+                                                        controllers.emailMessageCtr.text="${data.value}(copy)";
+                                                      },
+                                                      icon: Image.asset("assets/images/lead6.png"),
+                                                    )
+                                                    // PopupMenuButton(
+                                                    //   icon: Padding(
+                                                    //     padding: const EdgeInsets.all(2.0),
+                                                    //     child: Image.asset("assets/images/lead8.png"),
+                                                    //   ),
+                                                    //   onSelected: (value) {
+                                                    //     if (value == "copy") {
+                                                    //
+                                                    //     } else if (value == "edit") {
+                                                    //       edit.value=true;
+                                                    //       editIndex.value=index;
+                                                    //       controllers.emailMessageCtr.text=data.value;
+                                                    //       FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
+                                                    //     }else if (value == "status") {
+                                                    //     }
+                                                    //   },
+                                                    //   itemBuilder: (context) => [
+                                                    //     // PopupMenuItem(
+                                                    //     //   value: "edit",
+                                                    //     //   child: Row(
+                                                    //     //     children: [
+                                                    //     //       Image.asset("assets/images/lead5.png"),10.width,
+                                                    //     //       const Text("Edit Name"),
+                                                    //     //     ],
+                                                    //     //   ),
+                                                    //     // ),
+                                                    //     PopupMenuItem(
+                                                    //       value: "copy",
+                                                    //       child: Row(
+                                                    //         children: [
+                                                    //           Image.asset("assets/images/lead6.png"),10.width,
+                                                    //           Text("Duplicate"),
+                                                    //         ],
+                                                    //       ),
+                                                    //     ),
+                                                    //     // PopupMenuItem(
+                                                    //     //   value: "status",
+                                                    //     //   child: Row(
+                                                    //     //     children: [
+                                                    //     //       Image.asset("assets/images/lead7.png"),10.width,
+                                                    //     //       Text("Toggle Status"),
+                                                    //     //     ],
+                                                    //     //   ),
+                                                    //     // ),
+                                                    //   ],
+                                                    // ),
                                                   ],
                                                 ),
                                               ),
@@ -926,7 +932,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                   ):
                   Container(
                       alignment: Alignment.center,
-                      height: 300,width: 300,
+                      height: 400,width: 400,
                       child: Center(child: CustomNoData())),
                   5.height,
                   if(controllers.allLeadCategoryList.isNotEmpty)
@@ -977,7 +983,10 @@ class _LeadCategoriesState extends State<LeadCategories> {
           controllers.setLogOut();
         }
       }
-      if (request.statusCode==200) {
+      if (request.body.contains("category already exists")) {
+        utils.snackBar(context: context, msg: "This Category Already Exists", color: Colors.red);
+        controllers.productCtr.reset();
+      }else if (request.statusCode==200) {
         add.value=false;
         edit.value=false;
         editIndex.value=100;

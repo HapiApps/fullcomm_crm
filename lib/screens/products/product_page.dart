@@ -57,7 +57,7 @@ class _ProductPageState extends State<ProductPage> {
       productCtr.isSelectAll.value = false;
       productCtr.idsList.value.clear();
       _focusNode.requestFocus();
-      productCtr.filterAndSortProductsDetails(
+      productCtr.filterAndSortPrds(
         searchText: controllers.searchText.value.toLowerCase(),
         sortField: controllers.sortFieldCallActivity.value,
         sortOrder: controllers.sortOrderCallActivity.value,
@@ -340,7 +340,7 @@ class _ProductPageState extends State<ProductPage> {
                         onDaysSelected: () {
                           print("clicked");
                           print(productCtr.selectedCallSortBy.value);
-                          productCtr.filterAndSortProductsDetails(
+                          productCtr.filterAndSortPrds(
                             searchText: controllers.searchText.value.toLowerCase(),
                             sortField: controllers.sortFieldCallActivity.value,
                             sortOrder: controllers.sortOrderCallActivity.value,
@@ -355,7 +355,7 @@ class _ProductPageState extends State<ProductPage> {
                             productCtr.selectedCallSortBy,
                             productCtr.selectedCallMonth,
                                 () {
-                              productCtr.filterAndSortProductsDetails(
+                              productCtr.filterAndSortPrds(
                                 searchText: controllers.searchText.value.toLowerCase(),
                                 sortField: controllers.sortFieldCallActivity.value,
                                 sortOrder: controllers.sortOrderCallActivity.value,
@@ -369,7 +369,7 @@ class _ProductPageState extends State<ProductPage> {
                         onSelectDateRange: (ctx) {
                           remController.showDatePickerDialog(ctx, (pickedRange) {
                             productCtr.selectedCallRange.value = pickedRange;
-                            productCtr.filterAndSortProductsDetails(
+                            productCtr.filterAndSortPrds(
                               searchText: controllers.searchText.value.toLowerCase(),
                               sortField: controllers.sortFieldCallActivity.value,
                               sortOrder: controllers.sortOrderCallActivity.value,
@@ -428,8 +428,7 @@ class _ProductPageState extends State<ProductPage> {
                                             isCopy: true,
                                             colors: Colors.white,
                                           ),),//s.no
-                                          headerCell(1, Obx(() => Padding(
-                                            padding: const EdgeInsets.fromLTRB(10, 0, 5, 0),
+                                          headerCell(1, Obx(() => Center(
                                             child: Checkbox(
                                               shape: RoundedRectangleBorder(
                                                 borderRadius: BorderRadius.circular(2.0),
@@ -478,7 +477,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='sku';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -519,7 +518,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='hsn';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -560,7 +559,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='barcode';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -601,7 +600,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='name';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -642,7 +641,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='hsn';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -683,7 +682,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='mrp';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -724,7 +723,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='price';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -765,7 +764,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='brand';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -806,7 +805,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='cat';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -847,7 +846,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='subcat';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -888,7 +887,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='gst';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,
@@ -929,7 +928,7 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='date';
-                                                  productCtr.filterAndSortProductsDetails(
+                                                  productCtr.filterAndSortPrds(
                                                     searchText: controllers.searchText.value.toLowerCase(),
                                                     sortField: controllers.sortFieldCallActivity.value,
                                                     sortOrder: controllers.sortOrderCallActivity.value,

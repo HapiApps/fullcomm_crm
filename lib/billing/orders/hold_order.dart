@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fullcomm_crm/billing_utils/sized_box.dart';
+import 'package:fullcomm_crm/components/custom_no_data.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import '../../common/constant/colors_constant.dart';
+import '../../components/Customtext.dart';
+import '../../components/custom_sidebar.dart';
+import '../../controller/controller.dart';
 import '../../view_models/billing_provider.dart';
 import '../../res/colors.dart';
 import '../../res/components/k_text.dart';
@@ -45,170 +52,183 @@ class _HoldBillState extends State<HoldBill> {
     final billingProvider = Provider.of<BillingProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const MyText(
-          text: 'Release Bills Details',
-          color: AppColors.primary,
-        ),
-      ),
+      body: Row(
+        children: [
+          SideBar(),
+          Obx(()=>Container(
+            width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+            padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
+            child: RawKeyboardListener(
+              focusNode: _keyboardFocusNode..requestFocus(),
+              onKey: (RawKeyEvent event) {
+                if (event is! RawKeyDownEvent) return;
 
-      // 🔥 Keyboard handling
-      body: RawKeyboardListener(
-        focusNode: _keyboardFocusNode..requestFocus(),
-        onKey: (RawKeyEvent event) {
-          if (event is! RawKeyDownEvent) return;
+                // ✅ ESC → just go back (NO EXIT DIALOG)
+                if (event.logicalKey == LogicalKeyboardKey.escape) {
+                  if (Navigator.canPop(context)) {
+                    _closeAndFocusProduct(billingProvider);
+                  }
+                }
 
-          // ✅ ESC → just go back (NO EXIT DIALOG)
-          if (event.logicalKey == LogicalKeyboardKey.escape) {
-            if (Navigator.canPop(context)) {
-              _closeAndFocusProduct(billingProvider);
-            }
-          }
+                // ⬇ Arrow Down
+                else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                  setState(() {
+                    if (selectedRowIndex <
+                        billingProvider.heldOrders.length - 1) {
+                      selectedRowIndex++;
+                    }
+                  });
+                }
 
-          // ⬇ Arrow Down
-          else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-            setState(() {
-              if (selectedRowIndex <
-                  billingProvider.heldOrders.length - 1) {
-                selectedRowIndex++;
-              }
-            });
-          }
+                // ⬆ Arrow Up
+                else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                  setState(() {
+                    if (selectedRowIndex > 0) {
+                      selectedRowIndex--;
+                    }
+                  });
+                }
 
-          // ⬆ Arrow Up
-          else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-            setState(() {
-              if (selectedRowIndex > 0) {
-                selectedRowIndex--;
-              }
-            });
-          }
+                // ⏎ ENTER → Release bill
+                else if (event.logicalKey == LogicalKeyboardKey.enter) {
+                  if (selectedRowIndex >= 0 &&
+                      selectedRowIndex < billingProvider.heldOrders.length) {
+                    billingProvider.releaseHeldBill(selectedRowIndex);
 
-          // ⏎ ENTER → Release bill
-          else if (event.logicalKey == LogicalKeyboardKey.enter) {
-            if (selectedRowIndex >= 0 &&
-                selectedRowIndex < billingProvider.heldOrders.length) {
-              billingProvider.releaseHeldBill(selectedRowIndex);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Bill released to main billing screen'),
+                        backgroundColor: Colors.green,
+                      ),
+                    );
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Bill released to main billing screen'),
-                  backgroundColor: Colors.green,
-                ),
-              );
+                    _closeAndFocusProduct(billingProvider);
+                  }
+                }
+              },
 
-              _closeAndFocusProduct(billingProvider);
-            }
-          }
-        },
-
-        child: billingProvider.heldOrders.isEmpty
-            ? const Center(child: Text('No hold bills found'))
-            : Padding(
-          padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
-          child: SingleChildScrollView(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minWidth: MediaQuery.of(context).size.width,
-                ),
-                child: DataTable(
-                  showCheckboxColumn: false,
-                  headingRowColor:
-                  WidgetStateProperty.all(Colors.grey.shade200),
-                  dataRowColor:
-                  MaterialStateProperty.resolveWith<Color?>(
-                        (states) {
-                      if (states.contains(MaterialState.selected)) {
-                        return Colors.blue.shade100;
-                      }
-                      return null;
-                    },
-                  ),
-                  columnSpacing: 30,
-                  columns: const [
-                    DataColumn(label: Text('Date')),
-                    DataColumn(label: Text('Bill No')),
-                    DataColumn(label: Text('Name')),
-                    DataColumn(label: Text('Bill Amount')),
-                    DataColumn(label: Text('Actions')),
-                  ],
-                  rows: List.generate(
-                    billingProvider.heldOrders.length,
-                        (index) {
-                      final data =
-                      billingProvider.heldOrders[index];
-
-                      return DataRow(
-                        selected: selectedRowIndex == index,
-                        onSelectChanged: (_) async {
-                          await billingProvider
-                              .releaseHeldBill(index);
-
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                  'Bill released to main billing screen'),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-
-                          _closeAndFocusProduct(billingProvider);
-                        },
-                        cells: [
-                          DataCell(
-                              Text(data.createdTs.toString())),
-                          DataCell(Text(data.id.toString())),
-                          DataCell(Text(
-                            data.customerName.isEmpty
-                                ? "-"
-                                : data.customerName,
-                          )),
-                          DataCell(
-                              Text("₹${data.orderGrandTotal}")),
-                          DataCell(
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.primary,
-                                shape: const StadiumBorder(),
-                                padding:
-                                const EdgeInsets.symmetric(
-                                    horizontal: 10),
-                              ),
-                              onPressed: () async {
-                                await billingProvider
-                                    .releaseHeldBill(index);
-
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Bill released to main billing screen'),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
-
-                                _closeAndFocusProduct(
-                                    billingProvider);
-                              },
-                              child: const Text(
-                                "Release",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12),
-                              ),
-                            ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  10.height,
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                    child: CustomText(text: "Release Bills Details", colors: colorsConst.textColor, size: 20, isBold: true,isCopy: true),
+                  ),30.height,
+                  billingProvider.heldOrders.isEmpty
+                      ? Center(
+                        child: SizedBox(
+                        height: 500,width: 500,
+                        child: CustomNoData()),
+                      )
+                      : Padding(
+                    padding: const EdgeInsets.fromLTRB(30, 10, 30, 10),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minWidth: MediaQuery.of(context).size.width,
+                        ),
+                        child: DataTable(
+                          showCheckboxColumn: false,
+                          headingRowColor:
+                          WidgetStateProperty.all(Colors.grey.shade200),
+                          dataRowColor:
+                          MaterialStateProperty.resolveWith<Color?>(
+                                (states) {
+                              if (states.contains(MaterialState.selected)) {
+                                return Colors.blue.shade100;
+                              }
+                              return null;
+                            },
                           ),
-                        ],
-                      );
-                    },
+                          columnSpacing: 30,
+                          columns: const [
+                            DataColumn(label: Text('Date')),
+                            DataColumn(label: Text('Bill No')),
+                            DataColumn(label: Text('Name')),
+                            DataColumn(label: Text('Bill Amount')),
+                            DataColumn(label: Text('Actions')),
+                          ],
+                          rows: List.generate(
+                            billingProvider.heldOrders.length,
+                                (index) {
+                              final data =
+                              billingProvider.heldOrders[index];
+
+                              return DataRow(
+                                selected: selectedRowIndex == index,
+                                onSelectChanged: (_) async {
+                                  await billingProvider
+                                      .releaseHeldBill(index);
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Bill released to main billing screen'),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+
+                                  _closeAndFocusProduct(billingProvider);
+                                },
+                                cells: [
+                                  DataCell(
+                                      Text(data.createdTs.toString())),
+                                  DataCell(Text(data.id.toString())),
+                                  DataCell(Text(
+                                    data.customerName.isEmpty
+                                        ? "-"
+                                        : data.customerName,
+                                  )),
+                                  DataCell(
+                                      Text("₹${data.orderGrandTotal}")),
+                                  DataCell(
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.green,
+                                        shape: const StadiumBorder(),
+                                        padding:
+                                        const EdgeInsets.symmetric(
+                                            horizontal: 10),
+                                      ),
+                                      onPressed: () async {
+                                        await billingProvider
+                                            .releaseHeldBill(index);
+
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Bill released to main billing screen'),
+                                            backgroundColor: Colors.green,
+                                          ),
+                                        );
+
+                                        _closeAndFocusProduct(
+                                            billingProvider);
+                                      },
+                                      child: const Text(
+                                        "Release",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-          ),
-        ),
+          ))
+        ],
       ),
     );
   }

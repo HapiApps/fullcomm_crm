@@ -3436,7 +3436,7 @@ class ApiService {
   Future insertQuotationAPI(BuildContext context,pw.Document pdf,String productListJson) async {
     try {
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
-      request.fields['clientMail'] = controllers.selectedCustomerEmail.value;
+      request.fields['clientMail'] = controllers.emailToCtr.text;
       request.fields['subject'] = controllers.emailSubjectCtr.text;
       request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
       request.fields['count'] = '${controllers.emailCount.value + 1}';

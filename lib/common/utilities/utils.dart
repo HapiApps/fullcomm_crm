@@ -557,7 +557,7 @@ class Utils {
                           children: [
                             TextButton(
                                 onPressed: () {
-                                  Navigator.of(context).pop();
+                                  // Navigator.of(context).pop();
                                   settingsController.showAddTemplateDialog(context);
                                 },
                                 child: CustomText(
@@ -826,56 +826,52 @@ class Utils {
                                       color: colorsConst.secondary,
                                       borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: SingleChildScrollView(
-                                      child: Column(
-                                        children: [
-                                          SizedBox(
-                                            width: 500,
-                                            height: 210,
-                                            child: Table(
-                                              defaultColumnWidth: const FixedColumnWidth(120.0),
-                                              border: TableBorder.all(
-                                                color: Colors.grey.shade300,
-                                                style: BorderStyle.solid,
-                                                borderRadius: BorderRadius.circular(10),
-                                                width: 1,
-                                              ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SizedBox(
+                                        width: 500,
+                                        child: Table(
+                                          defaultColumnWidth: const FixedColumnWidth(120.0),
+                                          border: TableBorder.all(
+                                            color: Colors.grey.shade300,
+                                            style: BorderStyle.solid,
+                                            borderRadius: BorderRadius.circular(10),
+                                            width: 1,
+                                          ),
+                                          children: [
+                                            // Header Row
+                                            TableRow(
                                               children: [
-                                                // Header Row
-                                                TableRow(
-                                                  children: [
-                                                    CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: "\nTemplate Name\n",
-                                                      colors: colorsConst.textColor,
-                                                      size: 15,
-                                                      isBold: true,
-                                                      isCopy: false,
-                                                    ),
-                                                    CustomText(
-                                                      textAlign: TextAlign.center,
-                                                      text: "\nSubject\n",
-                                                      colors: colorsConst.textColor,
-                                                      size: 15,
-                                                      isBold: true,
-                                                      isCopy: false,
-                                                    ),
-                                                  ],
+                                                CustomText(
+                                                  textAlign: TextAlign.center,
+                                                  text: "\nTemplate Name\n",
+                                                  colors: colorsConst.textColor,
+                                                  size: 15,
+                                                  isBold: true,
+                                                  isCopy: false,
                                                 ),
-                                                // Dynamic Rows
-                                                for (var item in settingsController.templateList)
-                                                  utils.emailRow(
-                                                    context,
-                                                    isCheck: controllers.isAdd,
-                                                    templateName: item.templateName,
-                                                    msg: item.message,
-                                                    subject: item.subject,
-                                                    id: item.id
-                                                  ),
+                                                CustomText(
+                                                  textAlign: TextAlign.center,
+                                                  text: "\nSubject\n",
+                                                  colors: colorsConst.textColor,
+                                                  size: 15,
+                                                  isBold: true,
+                                                  isCopy: false,
+                                                ),
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                            // Dynamic Rows
+                                            for (var item in settingsController.templateList)
+                                              utils.emailRow(
+                                                context,
+                                                isCheck: controllers.isAdd,
+                                                templateName: item.templateName,
+                                                msg: item.message,
+                                                subject: item.subject,
+                                                id: item.id
+                                              ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -3722,10 +3718,10 @@ void appointmentStatus(context,String value){
                     controllers.emailQuotationCtr.text = templateName.toString();
                   },
                 ),
-              ),
+              ),10.width,
               InkWell(
                 onTap: (){
-                  Navigator.of(context).pop();
+                  // Navigator.of(context).pop();
                   settingsController.addNameController.text = templateName.toString();
                   settingsController.addSubjectController.text = subject.toString();
                   settingsController.addMessageController.text = msg.toString();

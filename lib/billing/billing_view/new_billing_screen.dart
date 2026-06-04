@@ -2795,7 +2795,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                           children: [
                                                                             TextButton(
                                                                                 onPressed: () {
-                                                                                  Navigator.of(context).pop();
+                                                                                  // Navigator.of(context).pop();
                                                                                   settingsController.showAddTemplateDialog(context);
                                                                                 },
                                                                                 child: CustomText(
@@ -2853,36 +2853,43 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                 child: SingleChildScrollView(
                                                                   child: Column(
                                                                     children: [
-                                                                      Align(
-                                                                          alignment: Alignment.topRight,
-                                                                          child: InkWell(
-                                                                              hoverColor: Colors.transparent,
-                                                                              splashColor: Colors.transparent,
-                                                                              highlightColor: Colors.transparent,
-                                                                              focusColor: Colors.transparent,
-                                                                              overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                                                              onTap: () {
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: Icon(
-                                                                                Icons.clear,
-                                                                                size: 18,
-                                                                                color: colorsConst.textColor,
-                                                                              ))),
-                                                                      Align(
-                                                                        alignment: Alignment.topRight,
-                                                                        child: TextButton(
-                                                                            onPressed: () {
-                                                                              controllers.isTemplate.value = !controllers.isTemplate.value;
-                                                                            },
-                                                                            child: CustomText(
-                                                                              text: "Get From Template",
-                                                                              colors: colorsConst.third,
-                                                                              size: 18,
-                                                                              isCopy: false,
-                                                                              isBold: true,
-                                                                            )),
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          CustomText(text: "Send Quotation", isCopy: false,isBold: true,size: 18,),
+                                                                          Row(
+                                                                            children: [
+                                                                              TextButton(
+                                                                                  onPressed: () {
+                                                                                    controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                  },
+                                                                                  child: CustomText(
+                                                                                    text: "Get From Template",
+                                                                                    colors: colorsConst.third,
+                                                                                    size: 18,
+                                                                                    isCopy: false,
+                                                                                    isBold: true,
+                                                                                  )),
+                                                                              10.width,
+                                                                              InkWell(
+                                                                                  hoverColor: Colors.transparent,
+                                                                                  splashColor: Colors.transparent,
+                                                                                  highlightColor: Colors.transparent,
+                                                                                  focusColor: Colors.transparent,
+                                                                                  overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                                                                  onTap: () {
+                                                                                    Navigator.pop(context);
+                                                                                  },
+                                                                                  child: Icon(
+                                                                                    Icons.clear,
+                                                                                    size: 18,
+                                                                                    color: colorsConst.textColor,
+                                                                                  )),
+                                                                            ],
+                                                                          )
+                                                                        ],
                                                                       ),
+                                                                      10.height,
                                                                       Padding(
                                                                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                                                                         child: Row(
@@ -3029,61 +3036,58 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                     :Obx(() => UnconstrainedBox(
                                                                                   child: Container(
                                                                                     width: 500,
+                                                                                    height: 300,
                                                                                     alignment: Alignment.center,
                                                                                     decoration: BoxDecoration(
                                                                                       color: colorsConst.secondary,
                                                                                       borderRadius: BorderRadius.circular(10),
                                                                                     ),
-                                                                                    child: SingleChildScrollView(
-                                                                                      child: Column(
-                                                                                        children: [
-                                                                                          SizedBox(
-                                                                                            width: 500,
-                                                                                            height: 170,
-                                                                                            child: Table(
-                                                                                              defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                                              border: TableBorder.all(
-                                                                                                color: Colors.grey.shade300,
-                                                                                                style: BorderStyle.solid,
-                                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                                width: 1,
-                                                                                              ),
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.all(8.0),
+                                                                                      child: SizedBox(
+                                                                                        width: 500,
+                                                                                        child: Table(
+                                                                                          defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                          border: TableBorder.all(
+                                                                                            color: Colors.grey.shade300,
+                                                                                            style: BorderStyle.solid,
+                                                                                            borderRadius: BorderRadius.circular(10),
+                                                                                            width: 1,
+                                                                                          ),
+                                                                                          children: [
+                                                                                            // Header Row
+                                                                                            TableRow(
                                                                                               children: [
-                                                                                                // Header Row
-                                                                                                TableRow(
-                                                                                                  children: [
-                                                                                                    CustomText(
-                                                                                                      textAlign: TextAlign.center,
-                                                                                                      text: "\nTemplate Name\n",
-                                                                                                      colors: colorsConst.textColor,
-                                                                                                      size: 15,
-                                                                                                      isBold: true,
-                                                                                                      isCopy: false,
-                                                                                                    ),
-                                                                                                    CustomText(
-                                                                                                      textAlign: TextAlign.center,
-                                                                                                      text: "\nSubject\n",
-                                                                                                      colors: colorsConst.textColor,
-                                                                                                      size: 15,
-                                                                                                      isBold: true,
-                                                                                                      isCopy: false,
-                                                                                                    ),
-                                                                                                  ],
+                                                                                                CustomText(
+                                                                                                  textAlign: TextAlign.center,
+                                                                                                  text: "\nTemplate Name\n",
+                                                                                                  colors: colorsConst.textColor,
+                                                                                                  size: 15,
+                                                                                                  isBold: true,
+                                                                                                  isCopy: false,
                                                                                                 ),
-                                                                                                // Dynamic Rows
-                                                                                                for (var item in settingsController.templateList)
-                                                                                                  utils.emailRow(
-                                                                                                      context,
-                                                                                                      isCheck: controllers.isAdd,
-                                                                                                      templateName: item.templateName,
-                                                                                                      msg: item.message,
-                                                                                                      subject: item.subject,
-                                                                                                      id: item.id
-                                                                                                  ),
+                                                                                                CustomText(
+                                                                                                  textAlign: TextAlign.center,
+                                                                                                  text: "\nSubject\n",
+                                                                                                  colors: colorsConst.textColor,
+                                                                                                  size: 15,
+                                                                                                  isBold: true,
+                                                                                                  isCopy: false,
+                                                                                                ),
                                                                                               ],
                                                                                             ),
-                                                                                          ),
-                                                                                        ],
+                                                                                            // Dynamic Rows
+                                                                                            for (var item in settingsController.templateList)
+                                                                                              utils.emailRow(
+                                                                                                  context,
+                                                                                                  isCheck: controllers.isAdd,
+                                                                                                  templateName: item.templateName,
+                                                                                                  msg: item.message,
+                                                                                                  subject: item.subject,
+                                                                                                  id: item.id
+                                                                                              ),
+                                                                                          ],
+                                                                                        ),
                                                                                       ),
                                                                                     ),
                                                                                   ),
@@ -3174,7 +3178,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                           children: [
                                                                             TextButton(
                                                                                 onPressed: () {
-                                                                                  Navigator.of(context).pop();
+                                                                                  // Navigator.of(context).pop();
                                                                                   settingsController.showAddTemplateDialog(context);
                                                                                 },
                                                                                 child: CustomText(
@@ -3232,36 +3236,43 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                 child: SingleChildScrollView(
                                                                   child: Column(
                                                                     children: [
-                                                                      Align(
-                                                                          alignment: Alignment.topRight,
-                                                                          child: InkWell(
-                                                                              hoverColor: Colors.transparent,
-                                                                              splashColor: Colors.transparent,
-                                                                              highlightColor: Colors.transparent,
-                                                                              focusColor: Colors.transparent,
-                                                                              overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                                                              onTap: () {
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: Icon(
-                                                                                Icons.clear,
-                                                                                size: 18,
-                                                                                color: colorsConst.textColor,
-                                                                              ))),
-                                                                      Align(
-                                                                        alignment: Alignment.topRight,
-                                                                        child: TextButton(
-                                                                            onPressed: () {
-                                                                              controllers.isTemplate.value = !controllers.isTemplate.value;
-                                                                            },
-                                                                            child: CustomText(
-                                                                              text: "Get From Template",
-                                                                              colors: colorsConst.third,
-                                                                              size: 18,
-                                                                              isCopy: false,
-                                                                              isBold: true,
-                                                                            )),
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          CustomText(text: "Create Invoice", isCopy: false,isBold: true,size: 18,),
+                                                                          Row(
+                                                                            children: [
+                                                                              TextButton(
+                                                                                  onPressed: () {
+                                                                                    controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                  },
+                                                                                  child: CustomText(
+                                                                                    text: "Get From Template",
+                                                                                    colors: colorsConst.third,
+                                                                                    size: 18,
+                                                                                    isCopy: false,
+                                                                                    isBold: true,
+                                                                                  )),
+                                                                              10.width,
+                                                                              InkWell(
+                                                                                  hoverColor: Colors.transparent,
+                                                                                  splashColor: Colors.transparent,
+                                                                                  highlightColor: Colors.transparent,
+                                                                                  focusColor: Colors.transparent,
+                                                                                  overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                                                                  onTap: () {
+                                                                                    Navigator.pop(context);
+                                                                                  },
+                                                                                  child: Icon(
+                                                                                    Icons.clear,
+                                                                                    size: 18,
+                                                                                    color: colorsConst.textColor,
+                                                                                  )),
+                                                                            ],
+                                                                          )
+                                                                        ],
                                                                       ),
+                                                                      10.height,
                                                                       Padding(
                                                                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                                                                         child: Row(
@@ -3287,25 +3298,6 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                             width: 500,
                                                                             child: TextField(
                                                                               controller: controllers.emailToCtr,
-                                                                              onChanged: (value){
-                                                                                if (value.toString().isNotEmpty) {
-                                                                                  String newValue = value
-                                                                                      .toString()[0]
-                                                                                      .toUpperCase() +
-                                                                                      value.toString().substring(1);
-                                                                                  if (newValue != value) {
-                                                                                    controllers.emailToCtr.value =
-                                                                                        controllers.emailToCtr.value
-                                                                                            .copyWith(
-                                                                                          text: newValue,
-                                                                                          selection:
-                                                                                          TextSelection.collapsed(
-                                                                                              offset:
-                                                                                              newValue.length),
-                                                                                        );
-                                                                                  }
-                                                                                }
-                                                                              },
                                                                               style: TextStyle(
                                                                                   fontSize: 15, color: colorsConst.textColor),
                                                                               decoration: const InputDecoration(
@@ -3432,56 +3424,52 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                       color: colorsConst.secondary,
                                                                                       borderRadius: BorderRadius.circular(10),
                                                                                     ),
-                                                                                    child: SingleChildScrollView(
-                                                                                      child: Column(
-                                                                                        children: [
-                                                                                          SizedBox(
-                                                                                            width: 500,
-                                                                                            height: 170,
-                                                                                            child: Table(
-                                                                                              defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                                              border: TableBorder.all(
-                                                                                                color: Colors.grey.shade300,
-                                                                                                style: BorderStyle.solid,
-                                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                                width: 1,
-                                                                                              ),
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.all(8.0),
+                                                                                      child: SizedBox(
+                                                                                        width: 500,
+                                                                                        child: Table(
+                                                                                          defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                          border: TableBorder.all(
+                                                                                            color: Colors.grey.shade300,
+                                                                                            style: BorderStyle.solid,
+                                                                                            borderRadius: BorderRadius.circular(10),
+                                                                                            width: 1,
+                                                                                          ),
+                                                                                          children: [
+                                                                                            // Header Row
+                                                                                            TableRow(
                                                                                               children: [
-                                                                                                // Header Row
-                                                                                                TableRow(
-                                                                                                  children: [
-                                                                                                    CustomText(
-                                                                                                      textAlign: TextAlign.center,
-                                                                                                      text: "\nTemplate Name\n",
-                                                                                                      colors: colorsConst.textColor,
-                                                                                                      size: 15,
-                                                                                                      isBold: true,
-                                                                                                      isCopy: false,
-                                                                                                    ),
-                                                                                                    CustomText(
-                                                                                                      textAlign: TextAlign.center,
-                                                                                                      text: "\nSubject\n",
-                                                                                                      colors: colorsConst.textColor,
-                                                                                                      size: 15,
-                                                                                                      isBold: true,
-                                                                                                      isCopy: false,
-                                                                                                    ),
-                                                                                                  ],
+                                                                                                CustomText(
+                                                                                                  textAlign: TextAlign.center,
+                                                                                                  text: "\nTemplate Name\n",
+                                                                                                  colors: colorsConst.textColor,
+                                                                                                  size: 15,
+                                                                                                  isBold: true,
+                                                                                                  isCopy: false,
                                                                                                 ),
-                                                                                                // Dynamic Rows
-                                                                                                for (var item in settingsController.templateList)
-                                                                                                  utils.emailRow(
-                                                                                                      context,
-                                                                                                      isCheck: controllers.isAdd,
-                                                                                                      templateName: item.templateName,
-                                                                                                      msg: item.message,
-                                                                                                      subject: item.subject,
-                                                                                                      id: item.id
-                                                                                                  ),
+                                                                                                CustomText(
+                                                                                                  textAlign: TextAlign.center,
+                                                                                                  text: "\nSubject\n",
+                                                                                                  colors: colorsConst.textColor,
+                                                                                                  size: 15,
+                                                                                                  isBold: true,
+                                                                                                  isCopy: false,
+                                                                                                ),
                                                                                               ],
                                                                                             ),
-                                                                                          ),
-                                                                                        ],
+                                                                                            // Dynamic Rows
+                                                                                            for (var item in settingsController.templateList)
+                                                                                              utils.emailRow(
+                                                                                                  context,
+                                                                                                  isCheck: controllers.isAdd,
+                                                                                                  templateName: item.templateName,
+                                                                                                  msg: item.message,
+                                                                                                  subject: item.subject,
+                                                                                                  id: item.id
+                                                                                              ),
+                                                                                          ],
+                                                                                        ),
                                                                                       ),
                                                                                     ),
                                                                                   ),
@@ -3591,7 +3579,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                           children: [
                                                                             TextButton(
                                                                                 onPressed: () {
-                                                                                  Navigator.of(context).pop();
+                                                                                  // Navigator.of(context).pop();
                                                                                   settingsController.showAddTemplateDialog(context);
                                                                                 },
                                                                                 child: CustomText(
@@ -3649,36 +3637,43 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                 child: SingleChildScrollView(
                                                                   child: Column(
                                                                     children: [
-                                                                      Align(
-                                                                          alignment: Alignment.topRight,
-                                                                          child: InkWell(
-                                                                              hoverColor: Colors.transparent,
-                                                                              splashColor: Colors.transparent,
-                                                                              highlightColor: Colors.transparent,
-                                                                              focusColor: Colors.transparent,
-                                                                              overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                                                              onTap: () {
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: Icon(
-                                                                                Icons.clear,
-                                                                                size: 18,
-                                                                                color: colorsConst.textColor,
-                                                                              ))),
-                                                                      Align(
-                                                                        alignment: Alignment.topRight,
-                                                                        child: TextButton(
-                                                                            onPressed: () {
-                                                                              controllers.isTemplate.value = !controllers.isTemplate.value;
-                                                                            },
-                                                                            child: CustomText(
-                                                                              text: "Get From Template",
-                                                                              colors: colorsConst.third,
-                                                                              size: 18,
-                                                                              isCopy: false,
-                                                                              isBold: true,
-                                                                            )),
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                        children: [
+                                                                          CustomText(text: "Proforma Invoice", isCopy: false,isBold: true,size: 18,),
+                                                                          Row(
+                                                                            children: [
+                                                                              TextButton(
+                                                                                  onPressed: () {
+                                                                                    controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                  },
+                                                                                  child: CustomText(
+                                                                                    text: "Get From Template",
+                                                                                    colors: colorsConst.third,
+                                                                                    size: 18,
+                                                                                    isCopy: false,
+                                                                                    isBold: true,
+                                                                                  )),
+                                                                              10.width,
+                                                                              InkWell(
+                                                                                  hoverColor: Colors.transparent,
+                                                                                  splashColor: Colors.transparent,
+                                                                                  highlightColor: Colors.transparent,
+                                                                                  focusColor: Colors.transparent,
+                                                                                  overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                                                                  onTap: () {
+                                                                                    Navigator.pop(context);
+                                                                                  },
+                                                                                  child: Icon(
+                                                                                    Icons.clear,
+                                                                                    size: 18,
+                                                                                    color: colorsConst.textColor,
+                                                                                  )),
+                                                                            ],
+                                                                          )
+                                                                        ],
                                                                       ),
+                                                                      10.height,
                                                                       Padding(
                                                                         padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                                                                         child: Row(
@@ -3704,25 +3699,6 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                             width: 500,
                                                                             child: TextField(
                                                                               controller: controllers.emailToCtr,
-                                                                              onChanged: (value){
-                                                                                if (value.toString().isNotEmpty) {
-                                                                                  String newValue = value
-                                                                                      .toString()[0]
-                                                                                      .toUpperCase() +
-                                                                                      value.toString().substring(1);
-                                                                                  if (newValue != value) {
-                                                                                    controllers.emailToCtr.value =
-                                                                                        controllers.emailToCtr.value
-                                                                                            .copyWith(
-                                                                                          text: newValue,
-                                                                                          selection:
-                                                                                          TextSelection.collapsed(
-                                                                                              offset:
-                                                                                              newValue.length),
-                                                                                        );
-                                                                                  }
-                                                                                }
-                                                                              },
                                                                               style: TextStyle(
                                                                                   fontSize: 15, color: colorsConst.textColor),
                                                                               decoration: const InputDecoration(
@@ -3849,56 +3825,52 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                       color: colorsConst.secondary,
                                                                                       borderRadius: BorderRadius.circular(10),
                                                                                     ),
-                                                                                    child: SingleChildScrollView(
-                                                                                      child: Column(
-                                                                                        children: [
-                                                                                          SizedBox(
-                                                                                            width: 500,
-                                                                                            height: 170,
-                                                                                            child: Table(
-                                                                                              defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                                              border: TableBorder.all(
-                                                                                                color: Colors.grey.shade300,
-                                                                                                style: BorderStyle.solid,
-                                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                                width: 1,
-                                                                                              ),
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.all(8.0),
+                                                                                      child: SizedBox(
+                                                                                        width: 500,
+                                                                                        child: Table(
+                                                                                          defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                          border: TableBorder.all(
+                                                                                            color: Colors.grey.shade300,
+                                                                                            style: BorderStyle.solid,
+                                                                                            borderRadius: BorderRadius.circular(10),
+                                                                                            width: 1,
+                                                                                          ),
+                                                                                          children: [
+                                                                                            // Header Row
+                                                                                            TableRow(
                                                                                               children: [
-                                                                                                // Header Row
-                                                                                                TableRow(
-                                                                                                  children: [
-                                                                                                    CustomText(
-                                                                                                      textAlign: TextAlign.center,
-                                                                                                      text: "\nTemplate Name\n",
-                                                                                                      colors: colorsConst.textColor,
-                                                                                                      size: 15,
-                                                                                                      isBold: true,
-                                                                                                      isCopy: false,
-                                                                                                    ),
-                                                                                                    CustomText(
-                                                                                                      textAlign: TextAlign.center,
-                                                                                                      text: "\nSubject\n",
-                                                                                                      colors: colorsConst.textColor,
-                                                                                                      size: 15,
-                                                                                                      isBold: true,
-                                                                                                      isCopy: false,
-                                                                                                    ),
-                                                                                                  ],
+                                                                                                CustomText(
+                                                                                                  textAlign: TextAlign.center,
+                                                                                                  text: "\nTemplate Name\n",
+                                                                                                  colors: colorsConst.textColor,
+                                                                                                  size: 15,
+                                                                                                  isBold: true,
+                                                                                                  isCopy: false,
                                                                                                 ),
-                                                                                                // Dynamic Rows
-                                                                                                for (var item in settingsController.templateList)
-                                                                                                  utils.emailRow(
-                                                                                                      context,
-                                                                                                      isCheck: controllers.isAdd,
-                                                                                                      templateName: item.templateName,
-                                                                                                      msg: item.message,
-                                                                                                      subject: item.subject,
-                                                                                                      id: item.id
-                                                                                                  ),
+                                                                                                CustomText(
+                                                                                                  textAlign: TextAlign.center,
+                                                                                                  text: "\nSubject\n",
+                                                                                                  colors: colorsConst.textColor,
+                                                                                                  size: 15,
+                                                                                                  isBold: true,
+                                                                                                  isCopy: false,
+                                                                                                ),
                                                                                               ],
                                                                                             ),
-                                                                                          ),
-                                                                                        ],
+                                                                                            // Dynamic Rows
+                                                                                            for (var item in settingsController.templateList)
+                                                                                              utils.emailRow(
+                                                                                                  context,
+                                                                                                  isCheck: controllers.isAdd,
+                                                                                                  templateName: item.templateName,
+                                                                                                  msg: item.message,
+                                                                                                  subject: item.subject,
+                                                                                                  id: item.id
+                                                                                              ),
+                                                                                          ],
+                                                                                        ),
                                                                                       ),
                                                                                     ),
                                                                                   ),
@@ -4071,7 +4043,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                           children: [
                                                                                             TextButton(
                                                                                                 onPressed: () {
-                                                                                                  Navigator.of(context).pop();
+                                                                                                  // Navigator.of(context).pop();
                                                                                                   settingsController.showAddTemplateDialog(context);
                                                                                                 },
                                                                                                 child: CustomText(
@@ -4329,56 +4301,52 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                                       color: colorsConst.secondary,
                                                                                                       borderRadius: BorderRadius.circular(10),
                                                                                                     ),
-                                                                                                    child: SingleChildScrollView(
-                                                                                                      child: Column(
-                                                                                                        children: [
-                                                                                                          SizedBox(
-                                                                                                            width: 500,
-                                                                                                            height: 170,
-                                                                                                            child: Table(
-                                                                                                              defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                                                              border: TableBorder.all(
-                                                                                                                color: Colors.grey.shade300,
-                                                                                                                style: BorderStyle.solid,
-                                                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                                                width: 1,
-                                                                                                              ),
+                                                                                                    child: Padding(
+                                                                                                      padding: const EdgeInsets.all(8.0),
+                                                                                                      child: SizedBox(
+                                                                                                        width: 500,
+                                                                                                        child: Table(
+                                                                                                          defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                                          border: TableBorder.all(
+                                                                                                            color: Colors.grey.shade300,
+                                                                                                            style: BorderStyle.solid,
+                                                                                                            borderRadius: BorderRadius.circular(10),
+                                                                                                            width: 1,
+                                                                                                          ),
+                                                                                                          children: [
+                                                                                                            // Header Row
+                                                                                                            TableRow(
                                                                                                               children: [
-                                                                                                                // Header Row
-                                                                                                                TableRow(
-                                                                                                                  children: [
-                                                                                                                    CustomText(
-                                                                                                                      textAlign: TextAlign.center,
-                                                                                                                      text: "\nTemplate Name\n",
-                                                                                                                      colors: colorsConst.textColor,
-                                                                                                                      size: 15,
-                                                                                                                      isBold: true,
-                                                                                                                      isCopy: false,
-                                                                                                                    ),
-                                                                                                                    CustomText(
-                                                                                                                      textAlign: TextAlign.center,
-                                                                                                                      text: "\nSubject\n",
-                                                                                                                      colors: colorsConst.textColor,
-                                                                                                                      size: 15,
-                                                                                                                      isBold: true,
-                                                                                                                      isCopy: false,
-                                                                                                                    ),
-                                                                                                                  ],
+                                                                                                                CustomText(
+                                                                                                                  textAlign: TextAlign.center,
+                                                                                                                  text: "\nTemplate Name\n",
+                                                                                                                  colors: colorsConst.textColor,
+                                                                                                                  size: 15,
+                                                                                                                  isBold: true,
+                                                                                                                  isCopy: false,
                                                                                                                 ),
-                                                                                                                // Dynamic Rows
-                                                                                                                for (var item in settingsController.templateList)
-                                                                                                                  utils.emailRow(
-                                                                                                                      context,
-                                                                                                                      isCheck: controllers.isAdd,
-                                                                                                                      templateName: item.templateName,
-                                                                                                                      msg: item.message,
-                                                                                                                      subject: item.subject,
-                                                                                                                      id: item.id
-                                                                                                                  ),
+                                                                                                                CustomText(
+                                                                                                                  textAlign: TextAlign.center,
+                                                                                                                  text: "\nSubject\n",
+                                                                                                                  colors: colorsConst.textColor,
+                                                                                                                  size: 15,
+                                                                                                                  isBold: true,
+                                                                                                                  isCopy: false,
+                                                                                                                ),
                                                                                                               ],
                                                                                                             ),
-                                                                                                          ),
-                                                                                                        ],
+                                                                                                            // Dynamic Rows
+                                                                                                            for (var item in settingsController.templateList)
+                                                                                                              utils.emailRow(
+                                                                                                                  context,
+                                                                                                                  isCheck: controllers.isAdd,
+                                                                                                                  templateName: item.templateName,
+                                                                                                                  msg: item.message,
+                                                                                                                  subject: item.subject,
+                                                                                                                  id: item.id
+                                                                                                              ),
+                                                                                                          ],
+                                                                                                        ),
                                                                                                       ),
                                                                                                     ),
                                                                                                   ),
@@ -4496,7 +4464,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                           children: [
                                                                                             TextButton(
                                                                                                 onPressed: () {
-                                                                                                  Navigator.of(context).pop();
+                                                                                                  // Navigator.of(context).pop();
                                                                                                   settingsController.showAddTemplateDialog(context);
                                                                                                 },
                                                                                                 child: CustomText(
@@ -4754,56 +4722,52 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                                       color: colorsConst.secondary,
                                                                                                       borderRadius: BorderRadius.circular(10),
                                                                                                     ),
-                                                                                                    child: SingleChildScrollView(
-                                                                                                      child: Column(
-                                                                                                        children: [
-                                                                                                          SizedBox(
-                                                                                                            width: 500,
-                                                                                                            height: 170,
-                                                                                                            child: Table(
-                                                                                                              defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                                                              border: TableBorder.all(
-                                                                                                                color: Colors.grey.shade300,
-                                                                                                                style: BorderStyle.solid,
-                                                                                                                borderRadius: BorderRadius.circular(10),
-                                                                                                                width: 1,
-                                                                                                              ),
+                                                                                                    child: Padding(
+                                                                                                      padding: const EdgeInsets.all(8.0),
+                                                                                                      child: SizedBox(
+                                                                                                        width: 500,
+                                                                                                        child: Table(
+                                                                                                          defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                                          border: TableBorder.all(
+                                                                                                            color: Colors.grey.shade300,
+                                                                                                            style: BorderStyle.solid,
+                                                                                                            borderRadius: BorderRadius.circular(10),
+                                                                                                            width: 1,
+                                                                                                          ),
+                                                                                                          children: [
+                                                                                                            // Header Row
+                                                                                                            TableRow(
                                                                                                               children: [
-                                                                                                                // Header Row
-                                                                                                                TableRow(
-                                                                                                                  children: [
-                                                                                                                    CustomText(
-                                                                                                                      textAlign: TextAlign.center,
-                                                                                                                      text: "\nTemplate Name\n",
-                                                                                                                      colors: colorsConst.textColor,
-                                                                                                                      size: 15,
-                                                                                                                      isBold: true,
-                                                                                                                      isCopy: false,
-                                                                                                                    ),
-                                                                                                                    CustomText(
-                                                                                                                      textAlign: TextAlign.center,
-                                                                                                                      text: "\nSubject\n",
-                                                                                                                      colors: colorsConst.textColor,
-                                                                                                                      size: 15,
-                                                                                                                      isBold: true,
-                                                                                                                      isCopy: false,
-                                                                                                                    ),
-                                                                                                                  ],
+                                                                                                                CustomText(
+                                                                                                                  textAlign: TextAlign.center,
+                                                                                                                  text: "\nTemplate Name\n",
+                                                                                                                  colors: colorsConst.textColor,
+                                                                                                                  size: 15,
+                                                                                                                  isBold: true,
+                                                                                                                  isCopy: false,
                                                                                                                 ),
-                                                                                                                // Dynamic Rows
-                                                                                                                for (var item in settingsController.templateList)
-                                                                                                                  utils.emailRow(
-                                                                                                                      context,
-                                                                                                                      isCheck: controllers.isAdd,
-                                                                                                                      templateName: item.templateName,
-                                                                                                                      msg: item.message,
-                                                                                                                      subject: item.subject,
-                                                                                                                      id: item.id
-                                                                                                                  ),
+                                                                                                                CustomText(
+                                                                                                                  textAlign: TextAlign.center,
+                                                                                                                  text: "\nSubject\n",
+                                                                                                                  colors: colorsConst.textColor,
+                                                                                                                  size: 15,
+                                                                                                                  isBold: true,
+                                                                                                                  isCopy: false,
+                                                                                                                ),
                                                                                                               ],
                                                                                                             ),
-                                                                                                          ),
-                                                                                                        ],
+                                                                                                            // Dynamic Rows
+                                                                                                            for (var item in settingsController.templateList)
+                                                                                                              utils.emailRow(
+                                                                                                                  context,
+                                                                                                                  isCheck: controllers.isAdd,
+                                                                                                                  templateName: item.templateName,
+                                                                                                                  msg: item.message,
+                                                                                                                  subject: item.subject,
+                                                                                                                  id: item.id
+                                                                                                              ),
+                                                                                                          ],
+                                                                                                        ),
                                                                                                       ),
                                                                                                     ),
                                                                                                   ),
