@@ -72,12 +72,12 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
       final roleId = widget.employeeData!.role?.toString();
       if (roleId != null && roleId != "null") {
         final match = settingsController.roleList.firstWhere(
-              (item) => item.uId.toString() == roleId,
+              (item) => item.id.toString() == roleId,
           // orElse: () => {},
         );
         if (match!=null) {
           employeeData.role = match;              // set whole map {id, role_name, u_id}
-          employeeData.roleId = match.uId;    // store u_id
+          employeeData.roleId = match.id;    // store u_id
         }
       }
       final depId = widget.employeeData!.dId?.toString();
@@ -529,7 +529,7 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                               onChanged: (RoleModel? value) {
                                                 setState(() {
                                                   employeeProvider.role = value;
-                                                  employeeProvider.roleId = value?.uId;
+                                                  employeeProvider.roleId = value?.id;
                                                 });
                                               },
                                             ),

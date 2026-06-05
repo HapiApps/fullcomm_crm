@@ -161,7 +161,10 @@ class _CusMailCommentsState extends State<CusMailComments> {
                               },
                             );
                           } else {
-                            return const Center(child: Text("No Data found"));
+                            return Center(
+                                child: SizedBox(
+                                    height: 500,width: 500,
+                                    child: CustomNoData()));
                           }
                         },
                       ),

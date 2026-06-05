@@ -123,6 +123,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero,(){
+      print("selectedMeetSortBy ${remController.selectedMeetSortBy}");
       remController.sortMeetings(
         searchText: controllers.searchText.value.toLowerCase(),
         callType: controllers.selectMeetingType.value,

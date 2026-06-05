@@ -8,6 +8,7 @@ import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
+import 'package:fullcomm_crm/controller/product_controller.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
@@ -549,7 +550,6 @@ void showMailImageDialog(
                                 padding: const EdgeInsets.only(top: 5),
                                 child: Column(
                                   children: [
-                                    Text(m),
                                     Image.network(
                                       "$getImage?path=${Uri.encodeComponent(m)}",
                                       height: 50,
@@ -1238,8 +1238,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     controllers.selectedCustomerSortBy.value = storage ?? "All";
     selectedCallSortBy.value = storage ?? "All";
     selectedMailSortBy.value = storage ?? "All";
-    selectedMeetSortBy.value = storage ?? "All";
-    selectedReminderSortBy.value = storage ?? "All";
+    selectedReminderSortBy.value = storage =="Last 7 Days"?"Next 7 Days":storage =="Last 30 Days"?"Next 30 Days":storage ?? "All";
+    selectedMeetSortBy.value = storage =="Last 7 Days"?"Next 7 Days":storage =="Last 30 Days"?"Next 30 Days":storage ?? "All";
+    productCtr.selectedCallSortBy.value =storage ?? "All";
   }
 
   var selectedCallRange = Rxn<DateTimeRange>();
@@ -1650,6 +1651,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       final matchesSearch =
           searchText.isEmpty ||
               activity.customerName.toLowerCase().contains(searchText.toLowerCase()) ||
+              activity.companyName.toLowerCase().contains(searchText.toLowerCase()) ||
               activity.sentDate.toLowerCase().contains(searchText.toLowerCase());
 
       final activityDate = parseDate(activity.sentDate);

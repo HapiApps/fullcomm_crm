@@ -310,7 +310,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                               onChanged: (RoleModel? value) {
                                                 setState(() {
                                                   employeeProvider.role = value;
-                                                  employeeProvider.roleId = value?.uId;
+                                                  employeeProvider.roleId = value?.id;
                                                 });
                                               },
                                             ),

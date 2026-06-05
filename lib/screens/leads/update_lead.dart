@@ -274,7 +274,7 @@ class _UpdateLeadState extends State<UpdateLead> {
       controllers.leadTime.text = safeValue(widget.timelineDecision);
       controllers.budgetCrt.text = safeValue(widget.budget);
       controllers.leadActions.text = safeValue(widget.points);
-
+      controllers.empDOB.value=safeValue(widget.prospectEnrollmentDate);
       controllers.selectPinCodeList = [];
     });
   }
@@ -620,12 +620,33 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                     fillColor:Colors.white,
                                                                     filled: true,
                                                                     suffixIcon: InkWell(
+                                                                        // onTap: () {
+                                                                        //   setState(() {
+                                                                        //     checkList[index]=!checkList[index];
+                                                                        //     if(checkList[index]==true){
+                                                                        //       controllers.leadWhatsCrt[0].text =controllers.numberList[index].text;
+                                                                        //     }else{
+                                                                        //       controllers.leadWhatsCrt[0].clear();
+                                                                        //     }
+                                                                        //   });
+                                                                        // },
                                                                         onTap: () {
                                                                           setState(() {
-                                                                            checkList[index]=!checkList[index];
-                                                                            if(checkList[index]==true){
-                                                                              controllers.leadWhatsCrt[0].text =controllers.numberList[index].text;
-                                                                            }else{
+                                                                            bool newValue = !checkList[index];
+
+                                                                            // 🔥 first: reset all
+                                                                            for (int i = 0; i < checkList.length; i++) {
+                                                                              checkList[i] = false;
+                                                                            }
+
+                                                                            // 🔥 then set only selected one
+                                                                            checkList[index] = newValue;
+
+                                                                            // 🔥 update controller
+                                                                            if (newValue) {
+                                                                              controllers.leadWhatsCrt[0].text =
+                                                                                  controllers.numberList[index].text;
+                                                                            } else {
                                                                               controllers.leadWhatsCrt[0].clear();
                                                                             }
                                                                           });
@@ -672,7 +693,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                                   child:SvgPicture.asset("assets/images/delete.svg",width: 20,height: 20,)
                                                               )
                                                             ]
-                                                        ),
+                                                        ),10.height
                                                       ]
                                                   );
                                                 }),
@@ -710,59 +731,6 @@ class _UpdateLeadState extends State<UpdateLead> {
                                           //     return null;
                                           //   }
                                           // }
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children:[
-                                        CustomTextField(
-                                          onEdit: () {
-                                            FocusScope.of(context)
-                                                .requestFocus(email);
-                                          },
-                                          focusNode: account,
-                                          hintText:_formatHeading(
-                                              controllers.getUserHeading(
-                                                  "owner") ??
-                                                  "Account Manager"),
-                                          text:_formatHeading(
-                                              controllers.getUserHeading(
-                                                  "owner") ??
-                                                  "Account Manager"),
-                                          isOptional: false,
-                                          controller: controllers.leadTitleCrt[0],
-                                          width:textFieldSize,
-                                          keyboardType: TextInputType.text,
-                                          textInputAction: TextInputAction.next,
-                                          inputFormatters: constInputFormatters.textInput,
-                                          onChanged:(value) async {},
-                                        ),
-                                        CustomTextField(
-                                          focusNode: email,
-                                          onEdit: () {
-                                            FocusScope.of(context)
-                                                .requestFocus(
-                                                cName);
-                                          },
-                                          hintText:_formatHeading(
-                                              controllers.getUserHeading(
-                                                  "email") ??
-                                                  "Email id"),
-                                          text:_formatHeading(
-                                              controllers.getUserHeading(
-                                                  "email") ??
-                                                  "Email id"),
-                                          controller: controllers.leadEmailCrt[0],
-                                          width:textFieldSize,
-                                          isOptional: false,
-                                          keyboardType: TextInputType.text,
-                                          textInputAction: TextInputAction.next,
-                                          inputFormatters: constInputFormatters.emailInput,
-                                          onChanged:(value) async {
-                                            // SharedPreferences sharedPref = await SharedPreferences.getInstance();
-                                            //sharedPref.setString("leadEmail$index", value.toString().trim());
-                                          },
                                         ),
                                         SizedBox(
                                           width: textFieldSize,
@@ -822,6 +790,76 @@ class _UpdateLeadState extends State<UpdateLead> {
                                                 }).toList(),
                                               ),
                                             ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children:[
+                                        CustomTextField(
+                                          onEdit: () {
+                                            FocusScope.of(context)
+                                                .requestFocus(email);
+                                          },
+                                          focusNode: account,
+                                          hintText:_formatHeading(
+                                              controllers.getUserHeading(
+                                                  "owner") ??
+                                                  "Account Manager"),
+                                          text:_formatHeading(
+                                              controllers.getUserHeading(
+                                                  "owner") ??
+                                                  "Account Manager"),
+                                          isOptional: false,
+                                          controller: controllers.leadTitleCrt[0],
+                                          width:textFieldSize,
+                                          keyboardType: TextInputType.text,
+                                          textInputAction: TextInputAction.next,
+                                          inputFormatters: constInputFormatters.textInput,
+                                          onChanged:(value) async {},
+                                        ),
+                                        CustomTextField(
+                                          focusNode: email,
+                                          onEdit: () {
+                                            FocusScope.of(context)
+                                                .requestFocus(
+                                                cName);
+                                          },
+                                          hintText:_formatHeading(
+                                              controllers.getUserHeading(
+                                                  "email") ??
+                                                  "Email id"),
+                                          text:_formatHeading(
+                                              controllers.getUserHeading(
+                                                  "email") ??
+                                                  "Email id"),
+                                          controller: controllers.leadEmailCrt[0],
+                                          width:textFieldSize,
+                                          isOptional: false,
+                                          keyboardType: TextInputType.text,
+                                          textInputAction: TextInputAction.next,
+                                          inputFormatters: constInputFormatters.emailInput,
+                                          onChanged:(value) async {
+                                            // SharedPreferences sharedPref = await SharedPreferences.getInstance();
+                                            //sharedPref.setString("leadEmail$index", value.toString().trim());
+                                          },
+                                        ),
+                                        Obx(
+                                              () => CustomDateBox(
+                                            text: "Date of Connection",
+                                            value: controllers.empDOB.value,
+                                            width: textFieldSize,
+                                            isOptional: false,
+                                            onTap: () {
+                                              utils.datePicker(
+                                                  context: context,
+                                                  textEditingController:
+                                                  controllers.dateOfConCtr,
+                                                  pathVal: controllers.empDOB);
+                                              FocusScope.of(context)
+                                                  .requestFocus(cName);
+                                            },
                                           ),
                                         ),
                                       ],

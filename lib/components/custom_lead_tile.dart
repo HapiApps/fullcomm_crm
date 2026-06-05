@@ -818,8 +818,7 @@ debugPrint("widget.additional $data");
                         child:  Container(
                           height: 45,
                           alignment: Alignment.centerLeft,
-                          padding:
-                          const EdgeInsets.only(left: 6, right: 5, bottom: 5),
+                          padding:const EdgeInsets.only(left: 5, right: 5),
                           // child: TextField(
                           //   readOnly: true,
                           //   controller: controller,
@@ -857,7 +856,7 @@ debugPrint("widget.additional $data");
                           //
                           //   },
                           // ),
-                          child: CustomText(text: controller?.text ?? "", isCopy: false),
+                          child: CustomText(text: controller?.text.trim() ?? "", isCopy: false),
                         ),
                       );
                     }

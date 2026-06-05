@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/custom_loading_button.dart';
+import '../../components/custom_no_data.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_text.dart';
 import '../../components/pagination.dart';
@@ -446,7 +447,7 @@ class _CallCommentsState extends State<CallComments> {
                   children: [
                     CustomSearchTextField(
                       controller: controllers.search,
-                      hintText: "Search Lead Name, Mobile",
+                      hintText: "Search Lead Name, Company Name, Mobile",
                       onChanged: (value) {
                         controllers.searchText.value = value.toString().trim();
                         remController.filterAndSortCalls(
@@ -974,7 +975,10 @@ class _CallCommentsState extends State<CallComments> {
                                 Expanded(
                                   child: Obx(() {
                                     if (remController.paginatedItems.isEmpty) {
-                                      return const Center(child: Text("No reminders found"));
+                                      return Center(
+                                          child: SizedBox(
+                                              height: 500,width: 500,
+                                              child: CustomNoData()));
                                     }
                                     return ListView.builder(
                                       controller: _controller,

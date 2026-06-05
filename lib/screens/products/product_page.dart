@@ -10,6 +10,7 @@ import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import '../../billing/products/add_products.dart';
 import '../../components/custom_loading_button.dart';
+import '../../components/custom_no_data.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/date_filter_bar.dart';
@@ -57,12 +58,11 @@ class _ProductPageState extends State<ProductPage> {
       productCtr.isSelectAll.value = false;
       productCtr.idsList.value.clear();
       _focusNode.requestFocus();
-      productCtr.filterAndSortPrds(
-        searchText: controllers.searchText.value.toLowerCase(),
-        sortField: controllers.sortFieldCallActivity.value,
-        sortOrder: controllers.sortOrderCallActivity.value,
+      productCtr.filterProducts(
+        value: controllers.searchText.value.toLowerCase(),
+        selectedRangeStart: productCtr.selectedCallRange.value?.start,
+        selectedRangeEnd: productCtr.selectedCallRange.value?.end,
         selectedMonth: productCtr.selectedCallMonth.value,
-        selectedRange: productCtr.selectedCallRange.value,
         selectedDateFilter: productCtr.selectedCallSortBy.value,
       );
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -340,14 +340,22 @@ class _ProductPageState extends State<ProductPage> {
                         onDaysSelected: () {
                           print("clicked");
                           print(productCtr.selectedCallSortBy.value);
-                          productCtr.filterAndSortPrds(
-                            searchText: controllers.searchText.value.toLowerCase(),
-                            sortField: controllers.sortFieldCallActivity.value,
-                            sortOrder: controllers.sortOrderCallActivity.value,
+                          productCtr.filterProducts(
+                            value: controllers.searchText.value.toLowerCase(),
+                            selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                            selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                             selectedMonth: productCtr.selectedCallMonth.value,
-                            selectedRange: productCtr.selectedCallRange.value,
                             selectedDateFilter: productCtr.selectedCallSortBy.value,
                           );
+
+                          // productCtr.filterAndSortPrds(
+                          //   searchText: controllers.searchText.value.toLowerCase(),
+                          //   sortField: controllers.sortFieldCallActivity.value,
+                          //   sortOrder: controllers.sortOrderCallActivity.value,
+                          //   selectedMonth: productCtr.selectedCallMonth.value,
+                          //   selectedRange: productCtr.selectedCallRange.value,
+                          //   selectedDateFilter: productCtr.selectedCallSortBy.value,
+                          // );
                         },
                         onSelectMonth: () {
                           remController.selectMonth(
@@ -355,26 +363,24 @@ class _ProductPageState extends State<ProductPage> {
                             productCtr.selectedCallSortBy,
                             productCtr.selectedCallMonth,
                                 () {
-                              productCtr.filterAndSortPrds(
-                                searchText: controllers.searchText.value.toLowerCase(),
-                                sortField: controllers.sortFieldCallActivity.value,
-                                sortOrder: controllers.sortOrderCallActivity.value,
-                                selectedMonth: productCtr.selectedCallMonth.value,
-                                selectedRange: productCtr.selectedCallRange.value,
-                                selectedDateFilter: productCtr.selectedCallSortBy.value,
-                              );
+                                  productCtr.filterProducts(
+                                    value: controllers.searchText.value.toLowerCase(),
+                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                  );
                             },
                           );
                         },
                         onSelectDateRange: (ctx) {
                           remController.showDatePickerDialog(ctx, (pickedRange) {
                             productCtr.selectedCallRange.value = pickedRange;
-                            productCtr.filterAndSortPrds(
-                              searchText: controllers.searchText.value.toLowerCase(),
-                              sortField: controllers.sortFieldCallActivity.value,
-                              sortOrder: controllers.sortOrderCallActivity.value,
+                            productCtr.filterProducts(
+                              value: controllers.searchText.value.toLowerCase(),
+                              selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                              selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                               selectedMonth: productCtr.selectedCallMonth.value,
-                              selectedRange: productCtr.selectedCallRange.value,
                               selectedDateFilter: productCtr.selectedCallSortBy.value,
                             );
                           });
@@ -477,12 +483,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='sku';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -518,12 +523,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='hsn';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -559,12 +563,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='barcode';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -600,12 +603,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='name';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -641,12 +643,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='hsn';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -682,12 +683,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='mrp';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -723,12 +723,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='price';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -764,12 +763,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='brand';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -805,12 +803,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='cat';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -846,12 +843,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='subcat';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -887,12 +883,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='gst';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -928,12 +923,11 @@ class _ProductPageState extends State<ProductPage> {
                                                     controllers.sortOrderCallActivity.value='asc';
                                                   }
                                                   controllers.sortFieldCallActivity.value='date';
-                                                  productCtr.filterAndSortPrds(
-                                                    searchText: controllers.searchText.value.toLowerCase(),
-                                                    sortField: controllers.sortFieldCallActivity.value,
-                                                    sortOrder: controllers.sortOrderCallActivity.value,
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
-                                                    selectedRange: productCtr.selectedCallRange.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
                                                 },
@@ -957,7 +951,12 @@ class _ProductPageState extends State<ProductPage> {
                                   // BODY LIST
                                   Expanded(
                                     child: Obx(() {
-                                      if (productCtr.paginatedPrdItems.isEmpty) return const Center(child: Text("No Data Found"));
+                                      if (productCtr.paginatedPrdItems.isEmpty) {
+                                        return Center(
+                                          child: SizedBox(
+                                              height: 500,width: 500,
+                                              child: CustomNoData()));
+                                      }
                                       return ListView.builder(
                                         controller: _controller,
                                         itemCount: productCtr.paginatedPrdItems.length,

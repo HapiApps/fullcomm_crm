@@ -410,7 +410,7 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                     color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         SizedBox(
                                           width:MediaQuery.of(context).size.width*0.08,
@@ -423,8 +423,8 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                                   child: const Icon(Icons.menu),
                                                 ),
                                               ),
-                                              InkWell(
-                                                onTap: (){
+                                              IconButton(
+                                                onPressed: (){
                                                   if(editIndex.value==index){
                                                     if (controllers.emailMessageCtr.text.trim().isEmpty) {
                                                       utils.snackBar(
@@ -444,56 +444,61 @@ class _TermsAndConditionsState extends State<TermsAndConditions> {
                                                     FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
                                                   }
                                                 },
-                                                child: editIndex.value==index?Icon(Icons.check):Image.asset("assets/images/lead5.png"),
-                                              ),10.width,
-                                              PopupMenuButton(
-                                                icon: Padding(
-                                                  padding: const EdgeInsets.all(2.0),
-                                                  child: Image.asset("assets/images/lead8.png"),
-                                                ),
-                                                onSelected: (value) {
-                                                  if (value == "copy") {
+                                                icon: editIndex.value==index?Icon(Icons.check):Image.asset("assets/images/lead5.png"),
+                                              ),
+                                              IconButton(
+                                                  onPressed: (){
                                                     add.value=true;
                                                     controllers.emailMessageCtr.text="${data["name"]}(copy)";
-                                                  } else if (value == "edit") {
-                                                    edit.value=true;
-                                                    editIndex.value=index;
-                                                    controllers.emailMessageCtr.text=data["name"];
-                                                    FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
-                                                  }else if (value == "delete") {
-                                                    addConditions(context,"delete",data["id"].toString(),index);
-                                                  }
-                                                },
-                                                itemBuilder: (context) => [
-                                                  // PopupMenuItem(
-                                                  //   value: "edit",
-                                                  //   child: Row(
-                                                  //     children: [
-                                                  //       Image.asset("assets/images/lead5.png"),10.width,
-                                                  //       const Text("Edit Name"),
-                                                  //     ],
-                                                  //   ),
-                                                  // ),
-                                                  PopupMenuItem(
-                                                    value: "copy",
-                                                    child: Row(
-                                                      children: [
-                                                        Image.asset("assets/images/lead6.png"),10.width,
-                                                        Text("Duplicate"),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  PopupMenuItem(
-                                                    value: "delete",
-                                                    child: Row(
-                                                      children: [
-                                                        SvgPicture.asset("assets/images/delete.svg",width: 20,height: 20,),10.width,
-                                                        Text("Delete"),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                                  },
+                                                  icon: Image.asset("assets/images/lead6.png"))
+                                              // PopupMenuButton(
+                                              //   icon: Padding(
+                                              //     padding: const EdgeInsets.all(2.0),
+                                              //     child: Image.asset("assets/images/lead8.png"),
+                                              //   ),
+                                              //   onSelected: (value) {
+                                              //     if (value == "copy") {
+                                              //
+                                              //     } else if (value == "edit") {
+                                              //       edit.value=true;
+                                              //       editIndex.value=index;
+                                              //       controllers.emailMessageCtr.text=data["name"];
+                                              //       FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
+                                              //     }else if (value == "delete") {
+                                              //       addConditions(context,"delete",data["id"].toString(),index);
+                                              //     }
+                                              //   },
+                                              //   itemBuilder: (context) => [
+                                              //     // PopupMenuItem(
+                                              //     //   value: "edit",
+                                              //     //   child: Row(
+                                              //     //     children: [
+                                              //     //       Image.asset("assets/images/lead5.png"),10.width,
+                                              //     //       const Text("Edit Name"),
+                                              //     //     ],
+                                              //     //   ),
+                                              //     // ),
+                                              //     PopupMenuItem(
+                                              //       value: "copy",
+                                              //       child: Row(
+                                              //         children: [
+                                              //           Image.asset("assets/images/lead6.png"),10.width,
+                                              //           Text("Duplicate"),
+                                              //         ],
+                                              //       ),
+                                              //     ),
+                                              //     PopupMenuItem(
+                                              //       value: "delete",
+                                              //       child: Row(
+                                              //         children: [
+                                              //           SvgPicture.asset("assets/images/delete.svg",width: 20,height: 20,),10.width,
+                                              //           Text("Delete"),
+                                              //         ],
+                                              //       ),
+                                              //     ),
+                                              //   ],
+                                              // ),
                                             ],
                                           ),
                                         ),

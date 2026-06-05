@@ -38,10 +38,18 @@ class HeaderSection extends StatefulWidget {
 }
 
 class _HeaderSectionState extends State<HeaderSection> {
-  Future<void> exportLeadsToExcel(List<NewLeadObj> leads,List<CustomerField> fields) async {
+  Future<void> exportLeadsToExcel(
+      List<NewLeadObj> leads,
+      List<CustomerField> fields) async {
+
+    print("excellllll ${leads.length} - ${fields.length}");
+
     final excel = Excel.createExcel();
     final sheet = excel.sheets[excel.getDefaultSheet()!];
+
     final headers = fields.map((f) => f.userHeading).toList();
+
+    // Header row
     sheet?.appendRow(headers.map((h) => TextCellValue(h)).toList());
 
     final headerStyle = CellStyle(
@@ -49,28 +57,52 @@ class _HeaderSectionState extends State<HeaderSection> {
       backgroundColorHex: ExcelColor.blue,
       fontColorHex: ExcelColor.white,
     );
+
     for (var col = 0; col < headers.length; col++) {
-      final cell = sheet?.cell(CellIndex.indexByColumnRow(columnIndex: col, rowIndex: 0));
+      final cell = sheet?.cell(
+        CellIndex.indexByColumnRow(columnIndex: col, rowIndex: 0),
+      );
       cell?.cellStyle = headerStyle;
     }
+
+    // Data rows
     for (final lead in leads) {
       final map = lead.toJson();
+
       final row = fields.map((f) {
-        final key = f.systemField;
-        final value = map[key];
+        final value = map[f.systemField];
+
         return TextCellValue(
-          (value == null || value.toString() == 'null') ? '' : value.toString(),
+          (value == null || value.toString() == 'null')
+              ? ''
+              : value.toString(),
         );
       }).toList();
+
       sheet?.appendRow(row);
     }
-    controllers.idList.clear();
+
+    // Convert to bytes
     final fileBytes = excel.encode();
+
+    if (fileBytes == null) {
+      print("Excel encode failed");
+      return;
+    }
+
     final blob = html.Blob([fileBytes]);
     final url = html.Url.createObjectUrlFromBlob(blob);
-    html.Url.revokeObjectUrl(url);
-  }
 
+    // ✅ create download link
+    final anchor = html.AnchorElement(href: url)
+      ..setAttribute("download", "leads_export.xlsx")
+      ..click();
+
+    // ✅ delay revoke (important)
+    Future.delayed(Duration(seconds: 2), () {
+      html.Url.revokeObjectUrl(url);
+    });
+  }
   @override
   Widget build(BuildContext context) {
     final controllers = Get.find<Controller>();
@@ -125,7 +157,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                 if(widget.list.isEmpty){
                   mobileUtils.snackBar(
                       context: Get.context!,
-                      msg: "No billing_data available to export",
+                      msg: "No data available to export",
                       color: Colors.red);
                 }else{
                   RxList<NewLeadObj> storeList=<NewLeadObj>[].obs;

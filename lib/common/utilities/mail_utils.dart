@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -628,7 +629,7 @@ class MailUtils {
                                 //       context, "Select only 100 customers at a time for email.");
                                 //   return;
                                 // }
-                                apiService.bulkEmailAPI(context, withMail, imageController.photo1.value);
+                                apiService.bulkEmailAPI(context, withMail);
                                 focusNode.requestFocus();
                               },
                               controller: controllers.emailCtr,
@@ -1041,10 +1042,36 @@ class MailUtils {
                                   //     icon:SvgPicture.asset(assets.textFilter,width: 17,height: 17,)
                                   // ),
                                   IconButton(
-                                      onPressed: () {
-                                        utils.chooseFile(mediaDataV:imageController.empMediaData,
-                                            fileName:imageController.empFileName,
-                                            pathName:imageController.photo1);
+                                      onPressed: () async {
+                                        // utils.chooseFile(mediaDataV:imageController.empMediaData,
+                                        //     fileName:imageController.empFileName,
+                                        //     pathName:imageController.photo1);
+                                        FilePickerResult? result =
+                                            await FilePicker.platform.pickFiles(
+                                          allowMultiple: true,
+
+                                          /// ALL TYPES
+                                          type: FileType.any,
+
+                                          withData: true,
+                                        );
+
+                                        if (result != null) {
+
+                                          for (var file in result.files) {
+                                            imageController.images.add({
+                                              "fileName": file.name,
+                                              "bytes": file.bytes,
+                                            });
+                                          }
+
+                                          debugPrint(
+                                            "Selected files : ${imageController.images.length}",
+                                          );
+
+                                        } else {
+                                          debugPrint('No file selected');
+                                        }
                                       },
                                       icon: SvgPicture.asset(assets.file)),
                                   IconButton(
@@ -1088,7 +1115,7 @@ class MailUtils {
                                   "mail_id": e.email ?? "",
                                 })
                                     .toList();
-                                apiService.bulkEmailAPI(context, withMail, imageController.photo1.value);
+                                apiService.bulkEmailAPI(context, withMail);
                                 focusNode.requestFocus();
                               },
                               controller: controllers.emailCtr,
@@ -1182,6 +1209,9 @@ class MailUtils {
                                             width: 500,
                                             height: 50,
                                             child: TextField(
+                                              onChanged: (value){
+                                                controllers.firstCaps(value, controllers.emailSubjectCtr);
+                                              },
                                               controller: controllers.emailSubjectCtr,
                                               maxLines: null,
                                               minLines: 1,
@@ -1195,52 +1225,83 @@ class MailUtils {
                                           )
                                         ],
                                       ),
+                                      SizedBox(
+                                        width: 650,
+                                        height: 223,
+                                        child: TextField(
+                                          textInputAction: TextInputAction.newline,
+                                          controller: controllers.emailMessageCtr,
+                                          onChanged: (value){
+                                            controllers.firstCaps(value, controllers.emailMessageCtr);
+                                          },
+                                          keyboardType: TextInputType.multiline,
+                                          maxLines: 21,
+                                          expands: false,
+                                          style: TextStyle(
+                                            color: colorsConst.textColor,
+                                          ),
+                                          decoration: InputDecoration(
+                                            hintText: "Message",
+                                            hintStyle: TextStyle(
+                                                color: colorsConst.textColor,
+                                                fontSize: 14,
+                                                fontFamily: "Lato"),
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
                                       Divider(
                                         color: Colors.grey.shade300,
                                         thickness: 1,
                                       ),
-                                      SingleChildScrollView(
-                                        child: Column(
-                                          children: [
-                                            Obx(() => imageController.photo1.value.isEmpty
-                                                ? 0.height
-                                                :Container(
-                                              height: 40,
-                                              padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
+                                      Obx(
+                                            () => imageController.images.isEmpty
+                                            ? 0.height
+                                            : ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                          itemCount: imageController.images.length,
+                                          itemBuilder: (context, index) {
+
+                                            final item = imageController.images[index];
+
+                                            return Container(
+                                              margin: EdgeInsets.only(bottom: 8),
+                                              padding: const EdgeInsets.symmetric(
+                                                horizontal: 10,
+                                                vertical: 8,
+                                              ),
+                                              decoration: BoxDecoration(
+                                                color: const Color(0xff86BAE3FF),
+                                                borderRadius: BorderRadius.circular(20),
+                                              ),
                                               child: Row(
                                                 children: [
-                                                  Obx(()=>CustomText(text: imageController.empFileName.value,
-                                                    isCopy: false,
-                                                  ))
+
+                                                  Expanded(
+                                                    child: CustomText(
+                                                      text: item["fileName"],
+                                                      isCopy: false,
+                                                    ),
+                                                  ),
+
+                                                  IconButton(
+                                                    padding: EdgeInsets.zero,
+                                                    constraints: const BoxConstraints(),
+                                                    onPressed: () {
+                                                      imageController.images.removeAt(index);
+                                                    },
+                                                    icon: const Icon(
+                                                      Icons.close,
+                                                      size: 14,
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
-                                            )
-                                            ),
-                                            SizedBox(
-                                              width: 650,
-                                              height: 223,
-                                              child: TextField(
-                                                textInputAction: TextInputAction.newline,
-                                                controller: controllers.emailMessageCtr,
-                                                keyboardType: TextInputType.multiline,
-                                                maxLines: 21,
-                                                expands: false,
-                                                style: TextStyle(
-                                                  color: colorsConst.textColor,
-                                                ),
-                                                decoration: InputDecoration(
-                                                  hintText: "Message",
-                                                  hintStyle: TextStyle(
-                                                      color: colorsConst.textColor,
-                                                      fontSize: 14,
-                                                      fontFamily: "Lato"),
-                                                  border: InputBorder.none,
-                                                ),
-                                              ),
-                                            ),
-                                          ],
+                                            );
+                                          },
                                         ),
-                                      )
+                                      ),
                                     ],
                                   ),
                                 )),

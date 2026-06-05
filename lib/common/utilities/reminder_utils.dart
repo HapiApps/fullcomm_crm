@@ -1223,8 +1223,8 @@ class ReminderUtils {
     remController.assignedIds.value="";
     remController.assignedNames.value="";
     final futureDate = DateTime.now().add(const Duration(days: 3));
-    remController.stDate.value = DateFormat('dd-MM-yyyy').format(futureDate);
-    controllers.dateOfConCtr.text = DateFormat('dd-MM-yyyy').format(futureDate);
+    remController.stDate.value = DateFormat('dd.MM.yyyy').format(futureDate);
+    controllers.dateOfConCtr.text = DateFormat('dd.MM.yyyy').format(futureDate);
     remController.stTime.value = DateFormat('hh.mm a').format(DateTime.now().subtract(const Duration(minutes: 15)));
     showDialog(
       context: context,
@@ -1429,6 +1429,9 @@ class ReminderUtils {
                               child: TextFormField(
                                   textCapitalization: TextCapitalization.sentences,
                                   controller: remController.detailsController,
+                                  onChanged: (value){
+                                    controllers.firstCaps(value.toString(),remController.detailsController);
+                                  },
                                   style: GoogleFonts.lato(
                                     color: Colors.black,
                                     fontSize: 17,

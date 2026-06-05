@@ -505,6 +505,7 @@ class EmployeeProvider with ChangeNotifier {
         Navigator.pop(context);
         utils.snackBar(msg: "Employee Inserted Successfully", color: Colors.green,context:context);
         addEmployeeButtonController.reset();
+        apiService.getAllEmployees();
         staffRoleDetailsData(context: context);
        } else if(response.responseCode.toString().trim() == "409"){
         addEmployeeButtonController.reset();
@@ -556,10 +557,9 @@ class EmployeeProvider with ChangeNotifier {
         debugPrint("response:$response");
         staffRoleDetailsData(context: context);
         Navigator.pop(context);
-        utils.snackBar(msg: "Employee Updated Successfully",
-            color: Colors.green,context:context);
-
+        utils.snackBar(msg: "Employee Updated Successfully", color: Colors.green,context:context);
         addEmployeeButtonController.reset();
+        apiService.getAllEmployees();
       }
       else if(response.responseCode == 409){
       addEmployeeButtonController.reset();
@@ -677,6 +677,7 @@ class EmployeeProvider with ChangeNotifier {
               color: Colors.green,context:context);
         }
         staffRoleDetailsData(context: context);
+        apiService.getAllEmployees();
         notifyListeners();
       } else {
         utils.snackBar(msg: "Employee deletion failed",

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:group_button/group_button.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/constant/default_constant.dart';
@@ -159,7 +160,7 @@ class _AddLeadState extends State<AddLead> {
         controllers.sourceCrt.clear();
         controllers.prospectEnrollmentDateCrt.clear();
         controllers.statusCrt.clear();
-        controllers.empDOB.value = "";
+        controllers.empDOB.value =DateFormat('dd-MM-yyyy').format(DateTime.now());
         controllers.exDate.value = "";
         controllers.prospectDate.value = "";
         for (int i = 0;
@@ -903,14 +904,42 @@ class _AddLeadState extends State<AddLead> {
                                                                   suffixIcon: InkWell(
                                                                       onTap: () {
                                                                         setState(() {
-                                                                          checkList[index]=!checkList[index];
-                                                                          if(checkList[index]==true){
-                                                                            controllers.leadWhatsCrt[0].text =controllers.numberList[index].text;
-                                                                          }else{
+                                                                          bool newValue = !checkList[index];
+
+                                                                          // 🔥 first: reset all
+                                                                          for (int i = 0; i < checkList.length; i++) {
+                                                                            checkList[i] = false;
+                                                                          }
+
+                                                                          // 🔥 then set only selected one
+                                                                          checkList[index] = newValue;
+
+                                                                          // 🔥 update controller
+                                                                          if (newValue) {
+                                                                            controllers.leadWhatsCrt[0].text =
+                                                                                controllers.numberList[index].text;
+                                                                          } else {
                                                                             controllers.leadWhatsCrt[0].clear();
                                                                           }
                                                                         });
                                                                       },
+                                                                      // onTap: () {
+                                                                      //   setState(() {
+                                                                      //     checkList[index]=!checkList[index];
+                                                                      //     if(checkList[index]==true){
+                                                                      //       controllers.leadWhatsCrt[0].text =controllers.numberList[index].text;
+                                                                      //       for(var i=0;i<checkList.length;i++){
+                                                                      //         if(i!=index){
+                                                                      //           checkList[index]=false;
+                                                                      //         }else{
+                                                                      //           checkList[index]=true;
+                                                                      //         }
+                                                                      //       }
+                                                                      //     }else{
+                                                                      //       controllers.leadWhatsCrt[0].clear();
+                                                                      //     }
+                                                                      //   });
+                                                                      // },
                                                                       child: Icon(Icons.check_circle, color: checkList[index]==false?Colors.grey:Colors.green)),
                                                                   enabledBorder: OutlineInputBorder(
                                                                       borderSide: BorderSide(

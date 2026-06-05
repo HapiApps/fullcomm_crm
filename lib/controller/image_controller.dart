@@ -12,7 +12,7 @@ class ImageController extends GetxController {
       idCardMediaData = <int>[].obs;
   var imagePath1 = "";
   var imagePath2 = "";
-
+var attachment=[].obs;
   var photo2 = "".obs;
   var imageLength = 1;
   RxList images = [].obs;

@@ -630,7 +630,7 @@ class _MailCommentsState extends State<MailComments> {
                                         child: CustomText(
                                           textAlign: TextAlign.left,
                                           isCopy: true,
-                                          text:data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                          text:data.customerName.toString()=="null"?"":data.customerName.toString().trim(),
                                           size: 14,
                                           colors: colorsConst.textColor,
                                         ),
@@ -640,7 +640,7 @@ class _MailCommentsState extends State<MailComments> {
                                         child: CustomText(
                                           textAlign: TextAlign.left,
                                           isCopy: true,
-                                          text:data.companyName.toString()=="null"?"":data.companyName.toString(),
+                                          text:data.companyName.toString()=="null"?"":data.companyName.toString().trim(),
                                           size: 14,
                                           colors: colorsConst.textColor,
                                         ),
@@ -650,7 +650,7 @@ class _MailCommentsState extends State<MailComments> {
                                         child: CustomText(
                                           textAlign: TextAlign.left,
                                           isCopy: true,
-                                          text:data.toData.toString()=="null"?"":data.toData.toString(),
+                                          text:data.toData.toString()=="null"?"":data.toData.toString().trim(),
                                           size: 14,
                                           colors: colorsConst.textColor,
                                         ),
@@ -662,7 +662,7 @@ class _MailCommentsState extends State<MailComments> {
                                           child: CustomText(
                                             textAlign: TextAlign.left,
                                             isCopy: true,
-                                            text: data.subject.toString(),
+                                            text: data.subject.toString().trim(),
                                             size: 14,
                                             colors:colorsConst.textColor,
                                           ),
@@ -675,7 +675,7 @@ class _MailCommentsState extends State<MailComments> {
                                           child: CustomText(
                                             isCopy: true,
                                             textAlign: TextAlign.left,
-                                            text: data.message.toString(),
+                                            text: data.message.toString().trim(),
                                             size: 14,
                                             colors:colorsConst.textColor,
                                           ),

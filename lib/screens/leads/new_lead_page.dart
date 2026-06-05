@@ -16,6 +16,7 @@ import '../../components/dynamic_table_header.dart';
 import '../../components/custom_text.dart';
 import '../../components/customer_name_header.dart';
 import '../../controller/controller.dart';
+import '../../controller/image_controller.dart';
 import '../../controller/table_controller.dart';
 import '../../models/all_customers_obj.dart';
 import '../../models/new_lead_obj.dart';
@@ -242,6 +243,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                       onMail: () {
                         // mailUtils.bulkEmailDialog(_focusNode, list: widget.list);
                         // mailUtils.bulkEmailDialog(_focusNode, list: controllers.allLeadList);
+                        imageController.images.clear();
                         mailUtils.bulkEmail(_focusNode, list: widget.list);
                       },
                       onPromote: () {
@@ -441,6 +443,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                           BorderRadius.circular(4),
                                         ),
                                         child: DropdownButton<String>(
+                                          focusColor: Colors.transparent,
                                           value: controllers
                                               .leadCategoryList
                                               .any((e) =>
@@ -450,9 +453,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                               : null,
                                           isExpanded: true,
                                           underline: const SizedBox(),
-                                          items: controllers
-                                              .leadCategoryList
-                                              .map((item) {
+                                          items: controllers.leadCategoryList.map((item) {
                                             return DropdownMenuItem<String>(
                                               value: item.leadStatus,
                                               child: Text(item.value),

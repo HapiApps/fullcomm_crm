@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/reminder_utils.dart';
 import '../../components/custom_loading_button.dart';
+import '../../components/custom_no_data.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
@@ -78,7 +79,7 @@ class _ReminderPageState extends State<ReminderPage> {
     super.initState();
     _focusNode = FocusNode();
 
-    // initialize santhiya
+    print("selectedReminderSortBy ${remController.selectedReminderSortBy}");
     Future.delayed(Duration.zero,() {
       remController.sortReminders();
     });
@@ -849,7 +850,10 @@ class _ReminderPageState extends State<ReminderPage> {
                                      return const Center(child: CircularProgressIndicator());
                                    }
                                    if (filteredList.isEmpty) {
-                                     return const Center(child: Text("No reminders found"));
+                                     return Center(
+                                         child: SizedBox(
+                                             height: 500,width: 500,
+                                             child: CustomNoData()));
                                    }
                                    return ListView.builder(
                                      controller: _controller,

@@ -660,11 +660,13 @@ class SidebarItem extends StatelessWidget {
             onTap!();
           } else if (page != null) {
             controllers.search.clear();
-            remController.selectedCallSortBy.value="All";
-            remController.selectedMailSortBy.value="All";
-            remController.selectedMeetSortBy.value="All";
-            remController.selectedReminderSortBy.value="All";
-            productCtr.selectedCallSortBy.value ="All";
+            // remController.selectedCallSortBy.value="All";
+            // remController.selectedMailSortBy.value="All";
+            // remController.selectedMeetSortBy.value="All";
+            // remController.selectedReminderSortBy.value="All";
+            // productCtr.selectedCallSortBy.value ="All";
+            remController.selectedReminderRange.value=null;
+            remController.selectedMeetRange.value=null;
             controllers.changeTab(0);
             Navigator.push(
               context,

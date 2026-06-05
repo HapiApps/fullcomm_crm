@@ -541,11 +541,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                             context: context,
                             builder: (context) {
                               return AlertDialog(
-                                backgroundColor: Color(0xFFE5E7EB),
+                                // backgroundColor: Color(0xFFE5E7EB),
+                                backgroundColor: Color(0xFFF1F5F9),
                                 titlePadding: EdgeInsets.zero,
                                 contentPadding: EdgeInsets.zero,
                                 content: SizedBox(
                                   width: 420,
+                                  height: 500,
                                   child: Obx(()=>Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -610,76 +612,58 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                         ),
                                       ),
                                       /// STATUS LIST
-                                      Column(
-                                        children: List.generate(controllers.hCallStatusList.length, (index) {
-                                          return Container(
-                                            margin: const EdgeInsets.only(bottom: 10),
-                                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                                            decoration: customDecoration.baseBackgroundDecoration(
-                                              color: Colors.white,
-                                              borderColor: Colors.grey.shade300,
-                                              radius: 8,
-                                            ),
-                                            child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                editIndex.value==index?
-                                                SizedBox(
-                                                  width:140,
-                                                  child: TextField(
-                                                    focusNode: focusList[index],
-                                                    controller: ctrList[index],
-                                                    decoration: InputDecoration(
-                                                      border: UnderlineInputBorder(),
-                                                      contentPadding: const EdgeInsets.symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 14,
-                                                      ),
+                                      Expanded(
+                                          child: ListView.builder(
+                                            itemCount: controllers.hCallStatusList.length,
+                                              itemBuilder: (context,index){
+                                                return Padding(
+                                                  padding: const EdgeInsets.all(15),
+                                                  child: Container(
+                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Colors.white,
+                                                      borderColor: Colors.grey.shade300,
+                                                      radius: 8,
                                                     ),
-                                                    onEditingComplete: (){
-                                                      if (ctrList[index].text.trim().isEmpty) {
-                                                        utils.snackBar(
-                                                          context: context,
-                                                          msg: "Please enter status type",
-                                                          color: Colors.red,
-                                                        );
-                                                        controllers.productCtr.reset();
-                                                        return;
-                                                      }else if (ctrList[index].text.length>15) {
-                                                        utils.snackBar(
-                                                          context: context,
-                                                          msg: "Status type must be 15 chars only",
-                                                          color: Colors.red,
-                                                        );
-                                                        controllers.productCtr.reset();
-                                                        return;
-                                                      }else{
-                                                        controllers.correctionStatus(context,"update",controllers.hCallStatusList[index]["id"].toString(),ctrList[index].text.trim());
-                                                      }
-                                                    },
+                                                    child: TextField(
+                                                      focusNode: focusList[index],
+                                                      controller: ctrList[index],
+                                                      onChanged: (value){
+                                                        controllers.firstCaps(value, ctrList[index]);
+                                                      },
+                                                      inputFormatters: constInputFormatters.fifteenChars,
+                                                      decoration: InputDecoration(
+                                                        border: InputBorder.none,
+                                                        contentPadding: const EdgeInsets.symmetric(
+                                                          horizontal: 12,
+                                                          vertical: 14,
+                                                        ),
+                                                      ),
+                                                      onEditingComplete: (){
+                                                        if (ctrList[index].text.trim().isEmpty) {
+                                                          utils.snackBar(
+                                                            context: context,
+                                                            msg: "Please enter status type",
+                                                            color: Colors.red,
+                                                          );
+                                                          controllers.productCtr.reset();
+                                                          return;
+                                                        }else if (ctrList[index].text.length>15) {
+                                                          utils.snackBar(
+                                                            context: context,
+                                                            msg: "Status type must be 15 chars only",
+                                                            color: Colors.red,
+                                                          );
+                                                          controllers.productCtr.reset();
+                                                          return;
+                                                        }else{
+                                                          controllers.correctionStatus(context,"update",controllers.hCallStatusList[index]["id"].toString(),ctrList[index].text.trim());
+                                                        }
+                                                      },
+                                                    ),
                                                   ),
-                                                ):
-                                                CustomText(
-                                                  text: controllers.hCallStatusList[index]["value"],
-                                                  isCopy: false,
-                                                  size: 14,
-                                                ),
-                                                InkWell(
-                                                  onTap: (){
-                                                    isAdd.value = false;
-                                                    editIndex.value=index;
-                                                    Future.delayed(const Duration(milliseconds: 100), () {
-                                                      focusList[index].requestFocus();
-                                                    });
-                                                  },
-                                                  child: Icon(Icons.edit_outlined,
-                                                      size: 18, color: Colors.grey.shade600),
-                                                )
-                                              ],
-                                            ),
-                                          );
-                                        }),
-                                      ),                                      /// ADD STATUS
+                                                );
+                                              }
+                                          )),/// ADD STATUS
                                       isAdd.value
                                           ? Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -695,9 +679,16 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                     radius: 6),
                                                 child: TextField(
                                                   controller: addCtr,
+                                                  onChanged: (value){
+                                                    controllers.firstCaps(value, addCtr);
+                                                  },
+                                                  inputFormatters: constInputFormatters.fifteenChars,
                                                   focusNode: addFocus,
                                                   decoration:
-                                                  const InputDecoration(border: InputBorder.none),
+                                                  const InputDecoration(
+                                                    border: InputBorder.none,
+                                                    contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 15),
+                                                  )
                                                 ),
                                               ),
                                             ),
@@ -734,6 +725,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                       const SizedBox(height: 10),
                                       /// FOOTER BUTTONS
                                       Container(
+                                        height: 70,
                                         padding:
                                         const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                                         decoration: const BoxDecoration(
@@ -1092,7 +1084,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                         if(settingsController.selectedOfficeIds.isNotEmpty)
                         Row(
                           children: [
-                            CustomText(text: "Selected Count : ${settingsController.selectedOfficeIds.length.toString()}", isCopy: false),5.width,
+                            CustomText(text: "Selected Count : ${settingsController.selectedOfficeIds.length.toString()}", isCopy: false),20.width,
                             InkWell(
                               focusColor: Colors.transparent,
                               hoverColor: Colors.transparent,
@@ -1856,10 +1848,12 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (filteredList.isEmpty) {
-                      return Container(
-                          alignment: Alignment.center,
-                          height: 300,width: 300,
-                          child: Center(child: CustomNoData()));
+                      return Center(
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: 500,width: 500,
+                            child: Center(child: CustomNoData())),
+                      );
                     }
                     return ListView.builder(
                       itemCount: filteredList.length,
@@ -1977,9 +1971,9 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                   Tooltip(
                                     message: officeHour.employeeName,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
+                                      padding: const EdgeInsets.all(15.0),
                                       child: CustomText(
-                                        textAlign: TextAlign.left,
+                                        textAlign: TextAlign.start,
                                         text:officeHour.employeeName,//1
                                         size: 14,
                                         isCopy: true,
@@ -1988,7 +1982,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(10.0),
+                                    padding: const EdgeInsets.all(15.0),
                                     child: CustomText(
                                       textAlign: TextAlign.left,
                                       text: officeHour.shiftName,//2
@@ -1998,7 +1992,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(10.0),
+                                    padding: const EdgeInsets.all(15.0),
                                     child: CustomText(
                                       isCopy: true,
                                       textAlign: TextAlign.left,
@@ -2008,7 +2002,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(10.0),
+                                    padding: const EdgeInsets.all(15.0),
                                     child: CustomText(
                                       isCopy: true,
                                       textAlign: TextAlign.left,
@@ -2018,7 +2012,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(10.0),
+                                    padding: const EdgeInsets.all(15.0),
                                     child: CustomText(
                                       isCopy: true,
                                       textAlign: TextAlign.left,
@@ -2028,7 +2022,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: const EdgeInsets.all(10.0),
+                                    padding: const EdgeInsets.all(13.0),
                                     child: CustomText(
                                       isCopy: true,
                                       textAlign: TextAlign.left,

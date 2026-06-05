@@ -1345,7 +1345,7 @@ class ApiService {
   //     controllers.emailCtr.reset();
   //   }
   // }
-  Future bulkEmailAPI(BuildContext context,List<Map<String, String>> list,String image) async {
+  Future bulkEmailAPI(BuildContext context,List<Map<String, String>> list) async {
     try {
       debugPrint("📤 bulkEmailAPI called");
       debugPrint("📦 Total leads: ${list.length}");
@@ -1378,6 +1378,21 @@ class ApiService {
 
       request.fields['clientMail'] = emails.join(",");
       request.fields['id']         = ids.join(",");
+
+      if (imageController.images.isNotEmpty) {
+
+        for (var file in imageController.images) {
+
+          request.files.add(
+            http.MultipartFile.fromBytes(
+              "attachment[]",
+              file["bytes"],
+              filename: file["fileName"],
+            ),
+          );
+        }
+      }
+
 
       debugPrint("📧 Emails: ${emails.join(",")}");
       debugPrint("🆔 Lead IDs: ${ids.join(",")}");
@@ -1417,7 +1432,7 @@ class ApiService {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return bulkEmailAPI(context,list,image);
+          return bulkEmailAPI(context,list);
         } else {
           controllers.setLogOut();
         }
@@ -2934,6 +2949,7 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      // debugPrint("allEmployees ${request.body}");
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3118,8 +3134,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      // debugPrint(data);
-      // debugPrint(request.body);
+      debugPrint(data.toString());
+      debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5448,8 +5464,8 @@ debugPrint(response.body);
           "action": "get_data"
         }),
       );
-      debugPrint("all_leads");
-      debugPrint(response.body);
+      // debugPrint("all_leads");
+      // debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
