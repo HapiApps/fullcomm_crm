@@ -3707,6 +3707,8 @@ class ApiService {
       });
       var response = await request.send();
       var body = await response.stream.bytesToString();
+      print(request.fields);
+      print(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3739,11 +3741,61 @@ class ApiService {
         controllers.selectedIndex.value = 101;
       } else {
         controllers.productCtr.reset();
-        errorDialog(Get.context!, "Mail has been not sent");
+        errorDialog(Get.context!, "Failed");
       }
     } catch (e) {
       errorDialog(Get.context!, e.toString());
       controllers.productCtr.reset();
+    }
+  }
+  Future crmReminder(BuildContext context) async {
+    try{
+      Map data = {
+        "action": "crm_reminder",
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      debugPrint("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return crmReminder(context);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200 && response["message"]=="Department added successfully"){
+        // final newDept = {
+        //   "id": response["data"]["id"], // keep as int
+        //   "department": response["data"]["department"]
+        // };
+
+        // depList.add(newDept);   // ✅ update real list
+        //
+        // dep = newDept;          // ✅ selected value
+        // depId = newDept["id"];  // ✅ id assign
+        //
+        // notifyListeners();
+        // nameRoleController.clear();
+        // descriptionRoleController.clear();
+        // Navigator.pop(context);
+        // utils.snackBar(context: context, msg: "Department added successfully", color: Colors.green);
+        // // fetchDepList();
+        // addRoleButtonController.reset();
+      } else {
+        apiService.errorDialog(context,request.body);
+        // addRoleButtonController.reset();
+      }
+    }catch(e){
+      apiService.errorDialog(context,e.toString());
+      // addRoleButtonController.reset();
     }
   }
 
@@ -4591,8 +4643,8 @@ debugPrint(response.body);
     int totalCount = controllers.hCallStatusList.fold(
         0, (sum, item) => sum + ((item["count"] ?? 0) as int));
 
-    debugPrint("Total Calls: $totalCount");
-    debugPrint("Merged Status List: ${controllers.hCallStatusList}");
+    // debugPrint("Total Calls: $totalCount");
+    // debugPrint("Merged Status List: ${controllers.hCallStatusList}");
 
     controllers.allCalls.value = remController.callFilteredList.length.toString();
 

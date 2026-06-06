@@ -933,7 +933,8 @@ class CustomerDropdown extends StatefulWidget {
   const CustomerDropdown({
     super.key,
     required this.custList,
-    required this.onChanged, required this.width,
+    required this.onChanged,
+    required this.width,
   });
 
   @override
@@ -958,28 +959,25 @@ class _CustomerDropdownState extends State<CustomerDropdown> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
     return Container(
       width: widget.width,
       height: 40,
       decoration: customDecoration.baseBackgroundDecoration(
         color: Colors.white,
         radius: 5,
-        // borderColor: Colors.grey.shade300,
       ),
       child: DropdownSearch<AllCustomersObj>(
         items: widget.custList,
 
-        /// Text format
         itemAsString: (customer) => _formatCustomer(customer),
 
         onChanged: widget.onChanged,
 
-        /// Dropdown UI
         dropdownDecoratorProps: DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
-            hintText: controllers.cusController.text.isEmpty?"Search Mobile Number":controllers.cusController.text,
+            hintText: controllers.cusController.text.isEmpty
+                ? "Search Mobile Number"
+                : controllers.cusController.text,
             hintStyle: GoogleFonts.lato(
               color: Colors.grey,
               fontSize: 15,
@@ -992,44 +990,45 @@ class _CustomerDropdownState extends State<CustomerDropdown> {
               ),
             ),
             suffixIcon: InkWell(
-              onTap: (){
+              onTap: () {
                 controllers.cusController.clear();
                 controllers.clearSelectedCustomer();
               },
-                child: Icon(Icons.clear)),
+              child: const Icon(Icons.clear),
+            ),
             contentPadding: const EdgeInsets.all(10),
           ),
         ),
 
-        /// 🔥 Popup with autofocus fix
         popupProps: PopupProps.menu(
           showSearchBox: true,
           fit: FlexFit.loose,
 
-          /// ✅ AUTO FOCUS FIX
+          /// 🔥 AUTO FOCUS FIX (MAIN PART)
+          // onPopupBuilder: (context, child) {
+          //   WidgetsBinding.instance.addPostFrameCallback((_) {
+          //     Future.delayed(const Duration(milliseconds: 120), () {
+          //       if (mounted) {
+          //         FocusScope.of(context).requestFocus(_searchFocusNode);
+          //       }
+          //     });
+          //   });
+          //   return child;
+          // },
+
           searchFieldProps: TextFieldProps(
             focusNode: _searchFocusNode,
             autofocus: true,
             decoration: const InputDecoration(
               hintText: "Type to search...",
             ),
-
-            /// 🔥 Force focus (important for some devices)
-            onTap: () {
-              Future.delayed(const Duration(milliseconds: 100), () {
-                if (mounted) {
-                  FocusScope.of(context).requestFocus(_searchFocusNode);
-                }
-              });
-            },
           ),
 
           constraints: BoxConstraints(
             maxWidth: MediaQuery.of(context).size.width * 0.9,
           ),
 
-          itemBuilder:
-              (context, AllCustomersObj customer, bool isSelected) {
+          itemBuilder: (context, AllCustomersObj customer, bool isSelected) {
             return Padding(
               padding: const EdgeInsets.all(10.0),
               child: CustomText(
@@ -1045,6 +1044,127 @@ class _CustomerDropdownState extends State<CustomerDropdown> {
     );
   }
 }
+
+// class CustomerDropdown extends StatefulWidget {
+//   final double width;
+//   final List<AllCustomersObj> custList;
+//   final ValueChanged<AllCustomersObj?> onChanged;
+//
+//   const CustomerDropdown({
+//     super.key,
+//     required this.custList,
+//     required this.onChanged, required this.width,
+//   });
+//
+//   @override
+//   State<CustomerDropdown> createState() => _CustomerDropdownState();
+// }
+//
+// class _CustomerDropdownState extends State<CustomerDropdown> {
+//   final FocusNode _searchFocusNode = FocusNode();
+//
+//   @override
+//   void dispose() {
+//     _searchFocusNode.dispose();
+//     super.dispose();
+//   }
+//
+//   String _formatCustomer(AllCustomersObj customer) {
+//     return '${customer.name}'
+//         '${customer.companyName.toString().isEmpty ? "" : ", ${customer.companyName}"} '
+//         '${customer.name.toString().isEmpty ? "" : "-"} '
+//         '${customer.phoneNo} - ${customer.category}';
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     double screenWidth = MediaQuery.of(context).size.width;
+//
+//     return Container(
+//       width: widget.width,
+//       height: 40,
+//       decoration: customDecoration.baseBackgroundDecoration(
+//         color: Colors.white,
+//         radius: 5,
+//         // borderColor: Colors.grey.shade300,
+//       ),
+//       child: DropdownSearch<AllCustomersObj>(
+//         items: widget.custList,
+//
+//         /// Text format
+//         itemAsString: (customer) => _formatCustomer(customer),
+//
+//         onChanged: widget.onChanged,
+//
+//         /// Dropdown UI
+//         dropdownDecoratorProps: DropDownDecoratorProps(
+//           dropdownSearchDecoration: InputDecoration(
+//             hintText: controllers.cusController.text.isEmpty?"Search Mobile Number":controllers.cusController.text,
+//             hintStyle: GoogleFonts.lato(
+//               color: Colors.grey,
+//               fontSize: 15,
+//             ),
+//             border: OutlineInputBorder(
+//               borderRadius: BorderRadius.circular(5),
+//               borderSide: BorderSide(
+//                 width: 0,
+//                 color: Colors.grey.shade300,
+//               ),
+//             ),
+//             suffixIcon: InkWell(
+//               onTap: (){
+//                 controllers.cusController.clear();
+//                 controllers.clearSelectedCustomer();
+//               },
+//                 child: Icon(Icons.clear)),
+//             contentPadding: const EdgeInsets.all(10),
+//           ),
+//         ),
+//
+//         /// 🔥 Popup with autofocus fix
+//         popupProps: PopupProps.menu(
+//           showSearchBox: true,
+//           fit: FlexFit.loose,
+//
+//           /// ✅ AUTO FOCUS FIX
+//           searchFieldProps: TextFieldProps(
+//             focusNode: _searchFocusNode,
+//             autofocus: true,
+//             decoration: const InputDecoration(
+//               hintText: "Type to search...",
+//             ),
+//
+//             /// 🔥 Force focus (important for some devices)
+//             onTap: () {
+//               Future.delayed(const Duration(milliseconds: 100), () {
+//                 if (mounted) {
+//                   FocusScope.of(context).requestFocus(_searchFocusNode);
+//                 }
+//               });
+//             },
+//           ),
+//
+//           constraints: BoxConstraints(
+//             maxWidth: MediaQuery.of(context).size.width * 0.9,
+//           ),
+//
+//           itemBuilder:
+//               (context, AllCustomersObj customer, bool isSelected) {
+//             return Padding(
+//               padding: const EdgeInsets.all(10.0),
+//               child: CustomText(
+//                 textAlign: TextAlign.start,
+//                 colors: AppColors.black,
+//                 text: _formatCustomer(customer),
+//                 isCopy: false,
+//               ),
+//             );
+//           },
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class ProductDropdown extends StatefulWidget {
   final List<ProductModel> prdList;

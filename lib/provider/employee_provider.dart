@@ -826,11 +826,22 @@ class EmployeeProvider with ChangeNotifier {
         }
       }
       if (request.statusCode == 200 && response["message"]=="Department added successfully"){
+        final newDept = {
+          "id": response["data"]["id"], // keep as int
+          "department": response["data"]["department"]
+        };
+
+        depList.add(newDept);   // ✅ update real list
+
+        dep = newDept;          // ✅ selected value
+        depId = newDept["id"];  // ✅ id assign
+
+        notifyListeners();
         nameRoleController.clear();
         descriptionRoleController.clear();
         Navigator.pop(context);
         utils.snackBar(context: context, msg: "Department added successfully", color: Colors.green);
-        fetchDepList();
+        // fetchDepList();
         addRoleButtonController.reset();
       } else {
         apiService.errorDialog(context,request.body);

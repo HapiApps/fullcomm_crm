@@ -217,7 +217,7 @@ class TableController extends GetxController {
           savedHeadings = decoded.cast<String>();
         }
 
-        debugPrint("Saved Headings: $savedHeadings");
+        // debugPrint("Saved Headings: $savedHeadings");
 
         combined = List<String>.from(savedHeadings);
 
@@ -438,6 +438,49 @@ class TableController extends GetxController {
       if (request.statusCode == 200 && response["message"]=="Heading updated successfully"){
         apiService.getHeading();
         utils.snackBar(context: context, msg: "Heading updated successfully", color: Colors.green);
+        controllers.productCtr.reset();
+      } else {
+        apiService.errorDialog(Get.context!,request.body);
+        controllers.productCtr.reset();
+      }
+      tableController.isLoading.value=false;
+    }catch(e){
+      tableController.isLoading.value=false;
+      apiService.errorDialog(Get.context!,e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+  Future deleteColumnAPI(BuildContext context,String id) async {
+    try{
+      Map data = {
+        "action": "delete_column",
+        "id": id,
+        "updated_by": controllers.storage.read("id"),
+        "cos_id": controllers.storage.read("cos_id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      print(data);
+      print(request.body);
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return deleteColumnAPI(context,id);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200 && response["message"]=="Heading deleted successfully"){
+        Navigator.pop(context);
+        apiService.getHeading();
+        utils.snackBar(context: context, msg: "Heading deleted successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {
         apiService.errorDialog(Get.context!,request.body);

@@ -891,12 +891,23 @@ class _ReminderPageState extends State<ReminderPage> {
                                                      children: [
                                                        IconButton(
                                                            onPressed: (){
-                                                             remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
+                                                             // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
+                                                             // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
+                                                             // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
+                                                             // remController.startController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
+                                                             // remController.endController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
+
+                                                             remController.titleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
+                                                             // remp.selectedNotification.text = reminder.type.toString()=="1"?"Follow-up":"Appointment";
                                                              remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
-                                                             remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
-                                                             remController.startController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
-                                                             remController.endController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-                                                             reminderUtils.showUpdateReminderDialog(reminder.id.toString(),context);
+                                                             remController.detailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
+                                                             remController.stDate.value = controllers.formatDateOnly(reminder.startDt.toString());
+                                                             remController.stTime.value = controllers.formatTime(reminder.startDt.toString());
+                                                             remController.enDate.value = controllers.formatDateOnly(reminder.endDt.toString());
+                                                             remController.enTime.value = controllers.formatTime(reminder.endDt.toString());
+                                                             remController.assignedNames.value=reminder.employeeName.toString();
+                                                             controllers.cusController.text=reminder.customerName.toString();
+                                                             reminderUtils.showEditReminderDialog(reminder.id.toString(),context);
                                                            },
                                                            icon:  SvgPicture.asset(
                                                              "assets/images/a_edit.svg",

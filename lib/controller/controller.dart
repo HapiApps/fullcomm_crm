@@ -400,6 +400,24 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       return inputDate;
     }
   }
+  String formatDateOnly(String inputDate) {
+    try {
+      String normalized = inputDate.replaceAll('.', '-');
+      DateTime dateTime = DateFormat("dd-MM-yyyy h:mm a").parse(normalized);
+      return DateFormat("dd MMM yyyy").format(dateTime);
+    } catch (e) {
+      return inputDate;
+    }
+  }
+  String formatTime(String inputDate) {
+    try {
+      String normalized = inputDate.replaceAll('.', '-');
+      DateTime dateTime = DateFormat("dd-MM-yyyy h:mm a").parse(normalized);
+      return DateFormat("h:mm a").format(dateTime);
+    } catch (e) {
+      return inputDate;
+    }
+  }
   // void setDateRange(PickerDateRange range,RxList<NewLeadObj> list,RxList<NewLeadObj> list2) {
   //   if (range.startDate != null && range.endDate != null) {
   //     selectedRange.value = DateTimeRange(
@@ -2918,8 +2936,14 @@ debugPrint("sortField ${sortField}");
         List<Map<String, dynamic>>.from(decoded["billing_data"]);
 
         // ✅ Store into RxList
-        hCallStatusList.assignAll(list);
-
+        // hCallStatusList.assignAll(list);
+        for(var i=0;i<list.length;i++){
+          hCallStatusList.add({
+            "id":list[i]["id"],
+            "value":list[i]["value"],
+            "ctr":TextEditingController(text: list[i]["value"]),
+          });
+        }
         // debugPrint("Loaded Items: ${hCallStatusList.length}");
 
       } else {
@@ -3638,11 +3662,19 @@ var otp = "".obs,sentOtp = "".obs;
   Future correctionStatus(BuildContext context,String ops,String id,String value) async {
     try{
       debugPrint("statusCrt.text..........${statusCrt.text}");
+      var valueList=[];
+      for(var i=0;i<hCallStatusList.length;i++){
+        valueList.add({
+          "id":hCallStatusList[i]["id"],
+          "value":hCallStatusList[i]["value"],
+        });
+      }
       Map data = {
         "action": "correction_status",
         "ops": ops,
         "value": value,
         "id": id,
+        "valueList": valueList,
         "cos_id": controllers.storage.read("cos_id")
       };
       final request = await http.post(Uri.parse(scriptApi),

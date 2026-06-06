@@ -833,15 +833,15 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
           total += int.parse(
               item["total_count"].toString());
 
-          debugPrint(
-              "Loop Count => ${item["total_count"]}");
+          // debugPrint(
+          //     "Loop Count => ${item["total_count"]}");
         }
 
-        debugPrint("FINAL TOTAL => $total");
+        // debugPrint("FINAL TOTAL => $total");
 
         timestamp.value = "${DateTime.now()}";
 
-        debugPrint("timestamp => ${timestamp.value}");
+        // debugPrint("timestamp => ${timestamp.value}");
 
       } else {
 

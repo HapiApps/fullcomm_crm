@@ -630,7 +630,7 @@ class CustomerActivityCard extends StatelessWidget {
                     isCopy: false,
                   ),
                   CustomText(
-                    text: controllers.leadCategoryList.value.last.list2.length.toString(),
+                    text: controllers.leadCategoryList.isEmpty?"0":controllers.leadCategoryList.value.last.list2.length.toString(),
                     size: 13,
                     colors: Color(0xff666666),isCopy: false,isBold: true,
                   ),
@@ -739,7 +739,7 @@ class CustomerActivityCard extends StatelessWidget {
                     isCopy: false,
                   ),
                   CustomText(
-                    text: "${controllers.leadCategoryList.fold(0, (sum, item) => sum + (item.list2.length ?? 0))-controllers.leadCategoryList.value.last.list2.length}",
+                    text: "${controllers.leadCategoryList.isEmpty?"0":controllers.leadCategoryList.fold(0, (sum, item) => sum + (item.list2.length ?? 0))-controllers.leadCategoryList.value.last.list2.length}",
                     size: 13,
                     colors: Color(0xff666666),isCopy: false,isBold: true,
                   ),

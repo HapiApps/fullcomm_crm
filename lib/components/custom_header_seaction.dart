@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:html' as html;
-import 'package:excel/excel.dart';
+import 'package:excel/excel.dart' hide Border;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/controller/table_controller.dart';
@@ -357,6 +358,79 @@ class _HeaderSectionState extends State<HeaderSection> {
                           for (int i = 0; i < tableController.headingFields.length; i++)
                             ListTile(
                               key: ValueKey(tableController.headingFields[i]),
+                              leading: IconButton(
+                                  onPressed: (){
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          content: CustomText(
+                                            text: "Are you sure delete this column?",
+                                            size: 16,
+                                            isBold: true,
+                                            isCopy: true,
+                                            colors: colorsConst.textColor,
+                                          ),
+                                          actions: [
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                      border: Border.all(color: colorsConst.primary),
+                                                      color: Colors.white),
+                                                  width: 80,
+                                                  height: 25,
+                                                  child: ElevatedButton(
+                                                      style: ElevatedButton.styleFrom(
+                                                        shape: const RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.zero,
+                                                        ),
+                                                        backgroundColor: Colors.white,
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                      child: CustomText(
+                                                        text: "Cancel",
+                                                        isCopy: false,
+                                                        colors: colorsConst.primary,
+                                                        size: 14,
+                                                      )),
+                                                ),
+                                                10.width,
+                                                CustomLoadingButton(
+                                                  callback: () async {
+                                                  tableController.isLoading.value = true;
+                                                  final id = controllers.fields[i].id;
+                                                  final prefs = await SharedPreferences.getInstance();
+                                                  tableController.headingFields.removeWhere((item) => item == controllers.fields[i].userHeading);
+                                                  tableController.tableHeadings.removeWhere((item) => item == controllers.fields[i].userHeading);
+                                                  await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
+                                                  tableController.deleteColumnAPI(context,id);
+                                                  },
+                                                  height: 35,
+                                                  isLoading: true,
+                                                  backgroundColor: colorsConst.primary,
+                                                  radius: 2,
+                                                  width: 80,
+                                                  controller: controllers.productCtr,
+                                                  isImage: false,
+                                                  text: "Delete",
+                                                  textColor: Colors.white,
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  icon: SvgPicture.asset(
+                                    "assets/images/a_delete.svg",
+                                    width: 16,
+                                    height: 16,
+                                  )),
                               title: TextFormField(
                                 initialValue: tableController.headingFields[i],
                                 inputFormatters: [

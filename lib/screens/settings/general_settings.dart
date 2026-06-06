@@ -534,9 +534,9 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           List<FocusNode> focusList =
                           List.generate(controllers.hCallStatusList.length, (index) => FocusNode());
 
-                          List<TextEditingController> ctrList =
-                          List.generate(controllers.hCallStatusList.length, (index) =>
-                              TextEditingController(text: controllers.hCallStatusList[index]["value"]));
+                          // List<TextEditingController> ctrList =
+                          // List.generate(controllers.hCallStatusList.length, (index) =>
+                          //     TextEditingController(text: controllers.hCallStatusList[index]["value"]));
                           showDialog(
                             context: context,
                             builder: (context) {
@@ -626,9 +626,10 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                     ),
                                                     child: TextField(
                                                       focusNode: focusList[index],
-                                                      controller: ctrList[index],
+                                                      controller: controllers.hCallStatusList[index]["ctr"],
                                                       onChanged: (value){
-                                                        controllers.firstCaps(value, ctrList[index]);
+                                                        controllers.firstCaps(value,  controllers.hCallStatusList[index]["ctr"]);
+                                                        controllers.hCallStatusList[index]["value"]=controllers.hCallStatusList[index]["ctr"].text;
                                                       },
                                                       inputFormatters: constInputFormatters.fifteenChars,
                                                       decoration: InputDecoration(
@@ -637,9 +638,76 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                           horizontal: 12,
                                                           vertical: 14,
                                                         ),
+                                                        suffixIcon: IconButton(
+                                                            onPressed: (){
+                                                              showDialog(
+                                                                context: context,
+                                                                builder: (BuildContext context) {
+                                                                  return AlertDialog(
+                                                                    content: CustomText(
+                                                                      text: "Are you sure delete this status?",
+                                                                      size: 16,
+                                                                      isBold: true,
+                                                                      isCopy: true,
+                                                                      colors: colorsConst.textColor,
+                                                                    ),
+                                                                    actions: [
+                                                                      Row(
+                                                                        mainAxisAlignment: MainAxisAlignment.end,
+                                                                        children: [
+                                                                          Container(
+                                                                            decoration: BoxDecoration(
+                                                                                border: Border.all(color: colorsConst.primary),
+                                                                                color: Colors.white),
+                                                                            width: 80,
+                                                                            height: 25,
+                                                                            child: ElevatedButton(
+                                                                                style: ElevatedButton.styleFrom(
+                                                                                  shape: const RoundedRectangleBorder(
+                                                                                    borderRadius: BorderRadius.zero,
+                                                                                  ),
+                                                                                  backgroundColor: Colors.white,
+                                                                                ),
+                                                                                onPressed: () {
+                                                                                  Navigator.pop(context);
+                                                                                },
+                                                                                child: CustomText(
+                                                                                  text: "Cancel",
+                                                                                  isCopy: false,
+                                                                                  colors: colorsConst.primary,
+                                                                                  size: 14,
+                                                                                )),
+                                                                          ),
+                                                                          10.width,
+                                                                          CustomLoadingButton(
+                                                                            callback: (){
+                                                                              controllers.correctionStatus(context,"delete",controllers.hCallStatusList[index]["id"].toString(), "");
+                                                                            },
+                                                                            height: 35,
+                                                                            isLoading: true,
+                                                                            backgroundColor: colorsConst.primary,
+                                                                            radius: 2,
+                                                                            width: 80,
+                                                                            controller: controllers.productCtr,
+                                                                            isImage: false,
+                                                                            text: "Delete",
+                                                                            textColor: Colors.white,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                },
+                                                              );
+                                                            },
+                                                            icon: SvgPicture.asset(
+                                                              "assets/images/a_delete.svg",
+                                                              width: 16,
+                                                              height: 16,
+                                                            ))
                                                       ),
                                                       onEditingComplete: (){
-                                                        if (ctrList[index].text.trim().isEmpty) {
+                                                        if ( controllers.hCallStatusList[index]["ctr"].text.trim().isEmpty) {
                                                           utils.snackBar(
                                                             context: context,
                                                             msg: "Please enter status type",
@@ -647,7 +715,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                           );
                                                           controllers.productCtr.reset();
                                                           return;
-                                                        }else if (ctrList[index].text.length>15) {
+                                                        }else if ( controllers.hCallStatusList[index]["ctr"].text.length>15) {
                                                           utils.snackBar(
                                                             context: context,
                                                             msg: "Status type must be 15 chars only",
@@ -656,7 +724,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                           controllers.productCtr.reset();
                                                           return;
                                                         }else{
-                                                          controllers.correctionStatus(context,"update",controllers.hCallStatusList[index]["id"].toString(),ctrList[index].text.trim());
+                                                          controllers.correctionStatus(context,"update",controllers.hCallStatusList[index]["id"].toString(), controllers.hCallStatusList[index]["ctr"].text.trim());
                                                         }
                                                       },
                                                     ),
@@ -755,16 +823,12 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                             SizedBox(height: 35,width: 150,
                                               child: CustomLoadingButton(
                                                 callback: (){
-                                                  if (ctrList[editIndex.value].text.trim().isEmpty) {
-                                                    utils.snackBar(
-                                                      context: context,
-                                                      msg: "Please enter status type",
-                                                      color: Colors.red,
-                                                    );
-                                                    controllers.leadCtr.reset();
-                                                  }else{
-                                                    controllers.correctionStatus(context,"update",controllers.hCallStatusList[editIndex.value]["id"].toString(),ctrList[editIndex.value].text.trim());
-                                                  }
+                                                  // if (controllers.hCallStatusList[index]["ctr"].text.trim().isEmpty) {
+                                                  //   utils.showToast("Please enter status type",Colors.red,);
+                                                  //   controllers.leadCtr.reset();
+                                                  // }else{
+                                                    controllers.correctionStatus(context,"update","","");
+                                                  // }
                                                 }, isLoading: true, backgroundColor: colorsConst.primary,
                                                 radius: 5, width: 130,text: "Save Changes",controller: controllers.leadCtr,),
                                             )

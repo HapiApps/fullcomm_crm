@@ -4624,15 +4624,15 @@ void unSelectAllAppointments() {
       Map data = {
         "action": "update_reminder",
         "id": id,
-        "title": updateTitleController.text.trim(),
+        "title": titleController.text.trim(),
         "type": type,
-        "location": updateLocation,
+        "location": location,
         "repeat_type": updateRepeat,
         "employee": controllers.selectedEmployeeId.value,
         "customer": controllers.selectedCustomerId.value,
         "start_dt":startController.text.trim(),
         "end_dt": endController.text.trim(),
-        "details": updateDetailsController.text.trim(),
+        "details": detailsController.text.trim(),
         "updated_by": controllers.storage.read("id"),
         "cos_id": controllers.storage.read("cos_id")
       };

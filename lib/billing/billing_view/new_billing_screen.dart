@@ -4156,25 +4156,6 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                             width: 500,
                                                                                             child: TextField(
                                                                                               controller: controllers.emailToCtr,
-                                                                                              onChanged: (value){
-                                                                                                if (value.toString().isNotEmpty) {
-                                                                                                  String newValue = value
-                                                                                                      .toString()[0]
-                                                                                                      .toUpperCase() +
-                                                                                                      value.toString().substring(1);
-                                                                                                  if (newValue != value) {
-                                                                                                    controllers.emailToCtr.value =
-                                                                                                        controllers.emailToCtr.value
-                                                                                                            .copyWith(
-                                                                                                          text: newValue,
-                                                                                                          selection:
-                                                                                                          TextSelection.collapsed(
-                                                                                                              offset:
-                                                                                                              newValue.length),
-                                                                                                        );
-                                                                                                  }
-                                                                                                }
-                                                                                              },
                                                                                               style: TextStyle(
                                                                                                   fontSize: 15, color: colorsConst.textColor),
                                                                                               decoration: const InputDecoration(
@@ -4577,25 +4558,6 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                             width: 500,
                                                                                             child: TextField(
                                                                                               controller: controllers.emailToCtr,
-                                                                                              onChanged: (value){
-                                                                                                if (value.toString().isNotEmpty) {
-                                                                                                  String newValue = value
-                                                                                                      .toString()[0]
-                                                                                                      .toUpperCase() +
-                                                                                                      value.toString().substring(1);
-                                                                                                  if (newValue != value) {
-                                                                                                    controllers.emailToCtr.value =
-                                                                                                        controllers.emailToCtr.value
-                                                                                                            .copyWith(
-                                                                                                          text: newValue,
-                                                                                                          selection:
-                                                                                                          TextSelection.collapsed(
-                                                                                                              offset:
-                                                                                                              newValue.length),
-                                                                                                        );
-                                                                                                  }
-                                                                                                }
-                                                                                              },
                                                                                               style: TextStyle(
                                                                                                   fontSize: 15, color: colorsConst.textColor),
                                                                                               decoration: const InputDecoration(
