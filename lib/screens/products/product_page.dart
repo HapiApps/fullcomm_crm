@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import '../../billing/products/add_products.dart';
+import '../../components/custom_appbar.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_no_data.dart';
 import '../../components/custom_search_textfield.dart';
@@ -179,40 +180,7 @@ class _ProductPageState extends State<ProductPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CustomText(text: "Products", colors: colorsConst.textColor, size: 20, isBold: true,isCopy: true),
-                          10.height,
-                          CustomText(text: "View all of your Products Details", colors: colorsConst.textColor, size: 14,isCopy: true),
-                        ],
-                      ),
-                      CustomLoadingButton(
-                        callback: (){
-                          showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (_) => const AddProductDialog(),
-                          );
-                        },
-                        isLoading: false,
-                        height: 35,
-                        backgroundColor: colorsConst.primary,
-                        radius: 2,
-                        width: MediaQuery.of(context).size.width*0.07,
-                        isImage: false,
-                        text: "Add Product",
-                        textColor: Colors.white,
-                      ),
-                    ],
-                  ),
-                  10.height,
-                  Divider(thickness: 1.5, color: colorsConst.secondary),
-                  10.height,
-
+                  CustomAppbar(text:"Products",subText: "View all of your Products Details",),
                   // --- SEARCH & FILTERS ---
                   productCtr.selectedPrdIds.isNotEmpty?
                   Row(
@@ -385,7 +353,24 @@ class _ProductPageState extends State<ProductPage> {
                             );
                           });
                         },
-                      )
+                      ),
+                      CustomLoadingButton(
+                        callback: (){
+                          showDialog(
+                            context: context,
+                            barrierDismissible: true,
+                            builder: (_) => const AddProductDialog(),
+                          );
+                        },
+                        isLoading: false,
+                        height: 35,
+                        backgroundColor: colorsConst.primary,
+                        radius: 2,
+                        width: MediaQuery.of(context).size.width*0.07,
+                        isImage: false,
+                        text: "Add Product",
+                        textColor: Colors.white,
+                      ),
                     ],
                   ),
                   10.height,

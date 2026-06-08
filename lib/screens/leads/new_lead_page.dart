@@ -1046,7 +1046,12 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                           }
 
                                           if (widget.list.isEmpty) {
-                                            return CustomNoData();
+                                            return Padding(
+                                              padding: const EdgeInsets.fromLTRB(150, 0, 0, 0),
+                                              child: SizedBox(
+                                                  height: 500,width: 500,
+                                                  child: CustomNoData()),
+                                            );
                                           }
 
                                           // sortedList.sort((a, b) {

@@ -13,7 +13,9 @@ import 'package:provider/provider.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/constant/key_constant.dart';
 import '../../components/action_button.dart';
+import '../../components/custom_appbar.dart';
 import '../../components/custom_loading_button.dart';
+import '../../components/custom_no_data.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
@@ -123,6 +125,7 @@ class _RoleSettingState extends State<RoleSetting> {
       FocusScope.of(context).requestFocus(f1);
       pyrlCtr.isAdd.value=false;
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
+      services.getRoleSettings(context);
       if(settingsController.roleList.isEmpty){
         settingsController.allRoles();
       }
@@ -213,29 +216,7 @@ class _RoleSettingState extends State<RoleSetting> {
             child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                20.height,
-                Row(
-                  children: [
-                    // IconButton(
-                    //     onPressed: (){
-                    //       Get.back();
-                    //     },
-                    //     icon: Icon(Icons.arrow_back)),
-                    CustomText(
-                      text: "Payroll Settings",
-                      colors: colorsConst.textColor,
-                      size: 20,
-                      isBold: true,
-                      isCopy: true,
-                    ),
-                  ],
-                ),
-                10.height,
-                Divider(
-                  thickness: 1.5,
-                  color: colorsConst.secondary,
-                ),
-                20.height,
+                CustomAppbar(text:"Payroll Settings"),
                 if(pyrlCtr.isAdd.value==false)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -327,7 +308,11 @@ class _RoleSettingState extends State<RoleSetting> {
                 pyrlCtr.getUnits.value==false?
                 CircularProgressIndicator():
                 pyrlCtr.settingList.isEmpty?
-                Center(child: CustomText(text: "No settings found", isCopy: false)):
+                Center(
+                child: SizedBox(
+                height: 500,width: 500,
+                child: const CustomNoData()),
+                ):
                 Expanded(
                   child: KeyboardListener(
                     focusNode: _focusNode,
@@ -1229,16 +1214,19 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
-                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].salary.text.isEmpty?pyrlCtr.settingList[index].perDay.text:pyrlCtr.settingList[index].salary.text.isEmpty),
+                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].salary.text!="null"&&pyrlCtr.settingList[index].salary.text!="0"&&pyrlCtr.settingList[index].salary.text!=""
+                                                          ?pyrlCtr.settingList[index].salary.text:pyrlCtr.settingList[index].perDay.text),
                                                       size: 14,
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
@@ -1400,59 +1388,6 @@ class _RoleSettingState extends State<RoleSetting> {
                     ),
                   ),
                 ),
-                // ListView.builder(
-                //     itemCount: pyrlCtr.settingList.length,
-                //     shrinkWrap: true,
-                //     physics: const NeverScrollableScrollPhysics(),
-                //     itemBuilder: (context,index){
-                //       return Column(
-                //         crossAxisAlignment: CrossAxisAlignment.start,
-                //         children: [
-                //           Row(
-                //             children: [
-                //               CustomText(text: pyrlCtr.settingList[index].monthlyWages==true?"Monthly Wages":"Daily Wages",isBold: true,colors: colorsConst.primary, isCopy: false,),
-                //               20.width,
-                //               CustomText(text: clearText(pyrlCtr.settingList[index].roleName.toString()),colors: colorsConst.primary, isCopy: false,),
-                //               10.width,
-                //               CustomText(text: productCtr.formatAmount(pyrlCtr.settingList[index].netPay.text),isBold: true,isCopy: false,),
-                //             ],
-                //           ),
-                //           Row(
-                //             children: [
-                //               AppCustomDataText(title: 'Salary', value: productCtr.formatAmount(pyrlCtr.settingList[index].salary.text),),
-                //               AppCustomDataText(title: 'Basic', value: productCtr.formatAmount(pyrlCtr.settingList[index].basic.text)),
-                //               AppCustomDataText(title: 'DA', value: productCtr.formatAmount(pyrlCtr.settingList[index].da.text)),
-                //               AppCustomDataText(title: 'HRA', value: productCtr.formatAmount(pyrlCtr.settingList[index].hra.text)),
-                //             ],
-                //           ),
-                //           Row(
-                //             children: [
-                //               AppCustomDataText(title: 'PF', value: productCtr.formatAmount(pyrlCtr.settingList[index].pf.text)),
-                //               AppCustomDataText(title: 'ESI', value: productCtr.formatAmount(pyrlCtr.settingList[index].esi.text)),
-                //               AppCustomDataText(title: 'Bonus', value: productCtr.formatAmount(pyrlCtr.settingList[index].bonus.text)),
-                //               AppCustomDataText(title: 'LWF', value: productCtr.formatAmount(pyrlCtr.settingList[index].tds.text)),
-                //             ],
-                //           ),
-                //           Row(
-                //             children: [
-                //               AppCustomDataText(title: 'National Holidays', value: pyrlCtr.settingList[index].nH.text,),
-                //               AppCustomDataText(title: 'State Holidays', value: pyrlCtr.settingList[index].sH.text,),
-                //               AppCustomDataText(title: 'Others Holidays', value: pyrlCtr.settingList[index].oH.text,),
-                //               AppCustomDataText(title: 'PT', value: productCtr.formatAmount(pyrlCtr.settingList[index].pt.text)),
-                //             ],
-                //           ),
-                //           Row(
-                //             children: [
-                //               AppCustomDataText(title: 'PF Wages', value: productCtr.formatAmount(pyrlCtr.settingList[index].pfWages.text)),
-                //               AppCustomDataText(title: 'ESI Wages', value: productCtr.formatAmount(pyrlCtr.settingList[index].esiWages.text)),
-                //               AppCustomDataText(title: 'Deduction', value: productCtr.formatAmount(pyrlCtr.settingList[index].deduction.text)),
-                //               AppCustomDataText(title: 'Total Amount', value: productCtr.formatAmount(pyrlCtr.settingList[index].totalAmt.text)),
-                //             ],
-                //           ),
-                //           Divider(thickness: 0.5,color: colorsConst.third,),
-                //         ],
-                //       );
-                //     }),
                 if(pyrlCtr.isAdd.value==true)
                 Expanded(
                   child: Center(
@@ -1471,25 +1406,6 @@ class _RoleSettingState extends State<RoleSetting> {
                                     pyrlCtr.settingList.removeAt(pyrlCtr.editIndex.value);
                                   }, isLoading: false, text: "Cancel",isImage: false,textColor: colorsConst.primary,
                                   backgroundColor: Colors.white, radius: 5, width: 100,height: 35,),10.width,
-                              // CustomLoadingButton(
-                              //     callback: (){
-                              //       bool hasInvalid = false;
-                              //
-                              //       for (var data in pyrlCtr.settingList) {
-                              //         // Check if role or salary missing
-                              //         if (data.roleName ==""  ||(data.salary.text.trim().isEmpty&& data.perDay.text.trim().isEmpty)) {
-                              //           hasInvalid = true;
-                              //           break;
-                              //         }
-                              //       }
-                              //
-                              //       if (hasInvalid) {
-                              //         utils.snackBar(context: context, msg: "Please fill Role and Salary", color: Colors.red);
-                              //       } else {
-                              //         pyrlCtr.addSetting();
-                              //       }
-                              //     }, isLoading: false, text: "Add Role",isImage: false,textColor: colorsConst.primary,
-                              //     backgroundColor: Colors.white, radius: 5, width: 100,height: 35,),10.width,
                               CustomLoadingButton(
                                   callback: (){
                                     bool hasInvalid = false;
@@ -1715,6 +1631,31 @@ class _RoleSettingState extends State<RoleSetting> {
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculateAmounts(),
                                         ),
+                                        CustomTextField(text: "Bonus",hintText: "Bonus",controller: data.bonus,
+                                          width: screenWidth/5,
+                                          focusNode: f7,
+                                          onFieldSubmitted: (_){
+                                            FocusScope.of(context).requestFocus(f8);
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: constInputFormatters.decimalInput,
+                                          onChanged: (_) => calculateAmounts(),
+                                        ),
+                                        CustomTextField(text: "PT",hintText: "PT",controller: data.pt,
+                                          width: screenWidth/5,
+                                          focusNode: f12,
+                                          onFieldSubmitted: (_){
+                                            FocusScope.of(context).requestFocus(f13);
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: constInputFormatters.decimalInput,
+                                          onChanged: (_) => calculateAmounts(),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
                                         CustomTextField(text: controllers.storage.read("com_id")=="1"?"Basic":"Optional Salary",hintText: controllers.storage.read("com_id")=="1"?"Basic":"Optional Salary",
                                           controller: controllers.storage.read("com_id")=="1"?data.basic:data.optionSalary,
                                           width: screenWidth/5,
@@ -1726,111 +1667,12 @@ class _RoleSettingState extends State<RoleSetting> {
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculateAmounts(),
                                         ),
-                                        CustomTextField(text: "Bonus",hintText: "Bonus",controller: data.bonus,
-                                          width: screenWidth/5,
-                                          focusNode: f3,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f4);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculateAmounts(),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"DA":"Conveyance",
-                                          hintText: controllers.storage.read("com_id")=="1"?"DA":"Conveyance",controller: data.da,
-                                          width: screenWidth/5,
-                                          focusNode: f4,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f5);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculateAmounts(),
-                                        ),
-                                        CustomTextField(text: "ESI",hintText: "ESI",controller: data.esi,
-                                          width: screenWidth/5,
-                                          focusNode: f5,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f6);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculatePFandESI(),
-                                        ),
-                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"HRA":"Holidays",hintText: controllers.storage.read("com_id")=="1"?"HRA":"Holidays",
-                                          controller: controllers.storage.read("com_id")=="1"?data.hra:data.oH,
-                                          width: screenWidth/5,
-                                          focusNode: f6,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f7);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculateAmounts(),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        CustomTextField(text: "PF",hintText: "PF",controller: data.pf,
-                                          width: screenWidth/5,
-                                          focusNode: f7,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f8);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculatePFandESI(),
-                                        ),
                                         CustomTextField(text: controllers.storage.read("com_id")=="1"?"National Holidays":"Leave",hintText: controllers.storage.read("com_id")=="1"?"National Holidays":"Leave",
                                           controller: controllers.storage.read("com_id")=="1"?data.nH:data.leave,
                                           width: screenWidth/5,
                                           focusNode: f8,
                                           onFieldSubmitted: (_){
                                             FocusScope.of(context).requestFocus(f10);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculateAmounts(),
-                                        ),
-                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"LWF":"Admin Charges",hintText: controllers.storage.read("com_id")=="1"?"LWF":"Admin Charges",
-                                          controller: controllers.storage.read("com_id")=="1"?data.tds:data.adminCharges,
-                                          width: screenWidth/5,
-                                          focusNode: f10,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f11);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculateAmounts(),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"State Holidays":"Gravity",hintText: controllers.storage.read("com_id")=="1"?"State Holidays":"Gravity",
-                                          controller: controllers.storage.read("com_id")=="1"?data.sH:data.gravity,
-                                          width: screenWidth/5,
-                                          focusNode: f11,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f12);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculateAmounts(),
-                                        ),
-                                        CustomTextField(text: "PT",hintText: "PT",controller: data.pt,
-                                          width: screenWidth/5,
-                                          focusNode: f12,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f13);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
@@ -1851,11 +1693,60 @@ class _RoleSettingState extends State<RoleSetting> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
+                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"DA":"Conveyance",
+                                          hintText: controllers.storage.read("com_id")=="1"?"DA":"Conveyance",controller: data.da,
+                                          width: screenWidth/5,
+                                          focusNode: f3,
+                                          onFieldSubmitted: (_){
+                                            FocusScope.of(context).requestFocus(f4);
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: constInputFormatters.decimalInput,
+                                          onChanged: (_) => calculateAmounts(),
+                                        ),
+                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"State Holidays":"Gravity",hintText: controllers.storage.read("com_id")=="1"?"State Holidays":"Gravity",
+                                          controller: controllers.storage.read("com_id")=="1"?data.sH:data.gravity,
+                                          width: screenWidth/5,
+                                          focusNode: f10,
+                                          onFieldSubmitted: (_){
+                                            FocusScope.of(context).requestFocus(f11);
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: constInputFormatters.decimalInput,
+                                          onChanged: (_) => calculateAmounts(),
+                                        ),
                                         CustomTextField(text: "Deduction",hintText: "Deduction",controller: data.deduction,
                                           width: screenWidth/5,
                                           focusNode: f14,
                                           onFieldSubmitted: (_){
                                             FocusScope.of(context).requestFocus(f15);
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: constInputFormatters.decimalInput,
+                                          onChanged: (_) => calculateAmounts(),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"HRA":"Holidays",hintText: controllers.storage.read("com_id")=="1"?"HRA":"Holidays",
+                                          controller: controllers.storage.read("com_id")=="1"?data.hra:data.oH,
+                                          width: screenWidth/5,
+                                          focusNode: f4,
+                                          onFieldSubmitted: (_){
+                                            FocusScope.of(context).requestFocus(f5);
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: constInputFormatters.decimalInput,
+                                          onChanged: (_) => calculateAmounts(),
+                                        ),
+                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"LWF":"Admin Charges",hintText: controllers.storage.read("com_id")=="1"?"LWF":"Admin Charges",
+                                          controller: controllers.storage.read("com_id")=="1"?data.tds:data.adminCharges,
+                                          width: screenWidth/5,
+                                          focusNode: f11,
+                                          onFieldSubmitted: (_){
+                                            FocusScope.of(context).requestFocus(f12);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
@@ -1870,6 +1761,31 @@ class _RoleSettingState extends State<RoleSetting> {
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculateAmounts(),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        CustomTextField(text: "PF",hintText: "PF",controller: data.pf,
+                                          width: screenWidth/5,
+                                          focusNode: f5,
+                                          onFieldSubmitted: (_){
+                                            FocusScope.of(context).requestFocus(f6);
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: constInputFormatters.decimalInput,
+                                          onChanged: (_) => calculatePFandESI(),
+                                        ),
+                                        CustomTextField(text: "PF wages",hintText: "PF wages",controller: data.pfWages,
+                                          width: screenWidth/5,
+                                          focusNode: f12,
+                                          onFieldSubmitted: (_){
+                                            FocusScope.of(context).requestFocus(f13);
+                                          },
+                                          keyboardType: TextInputType.number,
+                                          inputFormatters: constInputFormatters.decimalInput,
+                                          onChanged: (_)=>calculatePFandESI(),
                                         ),
                                         CustomTextField(text: "Net Pay",hintText: "Net Pay",controller: data.netPay,
                                           width: screenWidth/5,
@@ -1886,21 +1802,21 @@ class _RoleSettingState extends State<RoleSetting> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        CustomTextField(text: "PF wages",hintText: "PF wages",controller: data.pfWages,
+                                        CustomTextField(text: "ESI",hintText: "ESI",controller: data.esi,
                                           width: screenWidth/5,
-                                          focusNode: f17,
+                                          focusNode: f6,
                                           onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f18);
+                                            FocusScope.of(context).requestFocus(f7);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_)=>calculatePFandESI(),
+                                          onChanged: (_) => calculatePFandESI(),
                                         ),
                                         CustomTextField(text: "ESI wages",hintText: "ESI wages",controller: data.esiWages,
                                           width: screenWidth/5,
-                                          focusNode: f18,
+                                          focusNode: f13,
                                           onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f19);
+                                            FocusScope.of(context).requestFocus(f14);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
@@ -2053,12 +1969,11 @@ class _RoleSettingState extends State<RoleSetting> {
                                                             // });
                                                             if (value == null) return;
                                                             final selectedRole = value;
-                                                            final selectedRoleId = selectedRole.uId.toString();
+                                                            final selectedRoleId = selectedRole.id.toString();
 
                                                             bool roleExists = pyrlCtr.settingList.any((item) =>
                                                             item != data &&
                                                                 item.roleId.toString() == selectedRoleId);
-
                                                             if (roleExists) {
                                                               utils.snackBar(context: context, msg: "This role is already added in another payroll setting.", color: Colors.red);
                                                               setState(() {

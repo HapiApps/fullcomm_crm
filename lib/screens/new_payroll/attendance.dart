@@ -21,6 +21,7 @@ import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/jwt_storage.dart';
 import '../../components/Customtext.dart';
 import '../../components/action_button.dart';
+import '../../components/custom_appbar.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_no_data.dart';
 import '../../components/custom_sidebar.dart';
@@ -186,26 +187,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  20.height,
-                  Row(
-                    children: [
-                      // IconButton(onPressed: (){
-                      //   Get.back();
-                      // }, icon: Icon(Icons.arrow_back)),
-                      CustomText(
-                        text: "Payroll Attendance",
-                        colors: colorsConst.textColor,
-                        size: 20,
-                        isBold: true,
-                        isCopy: true,
-                      ),
-                    ],
-                  ),10.height,
-                  Divider(
-                    thickness: 1.5,
-                    color: colorsConst.secondary,
-                  ),
-                  10.height,
+                  CustomAppbar(text:"Payroll Attendance"),
                   pyrlCtr.getData.value==false?const CircularProgressIndicator():
                   Expanded(
                     child: SingleChildScrollView(
@@ -458,19 +440,19 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                                                     topLeft: Radius.circular(5),
                                                     topRight: Radius.circular(5))),
                                             children: [
-                                              textBox("S.No"),
-                                              textBox("Action"),
-                                              textBox("Rank"),
-                                              textBox("Name"),
-                                              textBox("Duty"),
-                                              textBox("OT"),
-                                              textBox("Advance"),
-                                              textBox("Uniform"),
-                                              textBox("Penalty"),
-                                              textBox("Bonus"),
-                                              textBox("Food Charges"),
-                                              textBox("Total"),
-                                              textBox("Deduction"),
+                                              textBox("S.No",textColor: Colors.white),
+                                              textBox("Action",textColor: Colors.white),
+                                              textBox("Rank",textColor: Colors.white),
+                                              textBox("Name",textColor: Colors.white),
+                                              textBox("Duty",textColor: Colors.white),
+                                              textBox("OT",textColor: Colors.white),
+                                              textBox("Advance",textColor: Colors.white),
+                                              textBox("Uniform",textColor: Colors.white),
+                                              textBox("Penalty",textColor: Colors.white),
+                                              textBox("Bonus",textColor: Colors.white),
+                                              textBox("Food Charges",textColor: Colors.white),
+                                              textBox("Total",textColor: Colors.white),
+                                              textBox("Deduction",textColor: Colors.white),
                                             ],
                                           ),
 
@@ -638,21 +620,21 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                                           }),
                                           // Totals row
                                           TableRow(
-                                            decoration: BoxDecoration(color: colorsConst.primary),
+                                            decoration: BoxDecoration(color: colorsConst.primary.withOpacity(0.1)),
                                             children: [
-                                              textBox(""),
-                                              textBox(""),
-                                              textBox("Total", width: 150),
-                                              textBox(totalDuty.value.toString()),
-                                              textBox(totalOT.value.toString()),
-                                              textBox(totalAdvance.value.toStringAsFixed(2)),
-                                              textBox(totalUniform.value.toStringAsFixed(2)),
-                                              textBox(totalPenalty.value.toStringAsFixed(2)),
-                                              textBox(totalBonus2.value.toStringAsFixed(2)),
-                                              textBox(totalFood.value.toStringAsFixed(2)),
-                                              textBox(totalEarned.value.toStringAsFixed(2)),
-                                              textBox(totalDed.value.toStringAsFixed(2)),
-                                              textBox(""),
+                                              textBox("",textColor: Colors.black),
+                                              textBox("",textColor: Colors.black),
+                                              textBox("Total", width: 150,textColor: Colors.black),
+                                              textBox("", width: 150,textColor: Colors.black),
+                                              textBox(totalDuty.value.toString(),textColor: Colors.black),
+                                              textBox(totalOT.value.toString(),textColor: Colors.black),
+                                              textBox(totalAdvance.value.toStringAsFixed(2),textColor: Colors.black),
+                                              textBox(totalUniform.value.toStringAsFixed(2),textColor: Colors.black),
+                                              textBox(totalPenalty.value.toStringAsFixed(2),textColor: Colors.black),
+                                              textBox(totalBonus2.value.toStringAsFixed(2),textColor: Colors.black),
+                                              textBox(totalFood.value.toStringAsFixed(2),textColor: Colors.black),
+                                              textBox(totalEarned.value.toStringAsFixed(2),textColor: Colors.black),
+                                              textBox(totalDed.value.toStringAsFixed(2),textColor: Colors.black),
                                             ],
                                           ),
                                         ],
@@ -665,7 +647,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
                             if(pyrlCtr.users.isEmpty)
                             Center(
                               child: SizedBox(
-                                  height: 500,width: 300,
+                                  height: 500,width: 500,
                                   child: const CustomNoData()),
                             ),
                             50.height
@@ -684,10 +666,10 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
     });
   }
 
-  Widget textBox(String text, {double? width = 70}){
+  Widget textBox(String text, {double? width = 70,required Color textColor}){
     return Padding(
       padding: const EdgeInsets.all(10),
-      child: CustomText(text: text, isCopy: true,colors: Colors.white,isBold: true,size: 15,),
+      child: CustomText(text: text, isCopy: true,colors: textColor,isBold: true,size: 15,),
     );
   }
   Widget valueBox(String value, {double? width = 90}){
@@ -924,6 +906,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
 
       print("User: ${pyrlCtr.users[index].name}");
       print("Role: ${pyrlCtr.users[index].rank}");
+      print("Role: ${pyrlCtr.settingList}");
 
       double salary = 0.0, perSalary = 0.0;
       double basicCalc = 0.0, daCalc = 0.0, hraCalc = 0.0;

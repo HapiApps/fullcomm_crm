@@ -42,6 +42,7 @@ class NewPayrollApiServices{
     );
 
     // json.decode(request.body);
+    print(data);
     print("request.body");
     debugPrint(response.body);
     // unitCtr.submitController.reset();
@@ -274,7 +275,6 @@ class NewPayrollApiServices{
         "cos_id":controllers.storage.read("cos_id"),
         // "com_id":controllers.storage.read("com_id"),
       };
-      debugPrint(sendData.toString());
 
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -326,6 +326,7 @@ class NewPayrollApiServices{
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      debugPrint(request.body.toString());
       final List dataValue= json.decode(request.body);
       pyrlCtr.unitPayrollList2.clear();
       pyrlCtr.unitPayrollList.clear();

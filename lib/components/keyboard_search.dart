@@ -816,7 +816,7 @@ class _EmpDropdownState extends State<EmpDropdown> {
         /// Dropdown UI
         dropdownDecoratorProps: DropDownDecoratorProps(
           dropdownSearchDecoration: InputDecoration(
-            hintText: "Search Customer Name",
+            hintText: "Search Employee Name",
             hintStyle: GoogleFonts.lato(
               color: Colors.black,
               fontSize: 15,

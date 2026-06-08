@@ -8,6 +8,7 @@ import 'package:fullcomm_crm/screens/settings/terms_conditions.dart';
 import 'package:get/get.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/constant/key_constant.dart';
+import '../../components/custom_appbar.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
@@ -52,31 +53,7 @@ class _QuotationSettingsState extends State<QuotationSettings> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CustomText(
-                          text: "\nInvoice Settings",
-                          colors: colorsConst.textColor,
-                          size: 20,
-                          isBold: true,
-                          isCopy: true,
-                        ),
-                        10.height,
-                        CustomText(
-                          text: "Manage global settings across the application.  \n",
-                          colors: colorsConst.textColor,
-                          isCopy: true,
-                          size: 14,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                10.height,
+                CustomAppbar(text:"Invoice Settings",subText:"Manage global settings across the application."),
                 Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

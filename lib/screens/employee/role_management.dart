@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/utils.dart';
+import '../../components/custom_appbar.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
@@ -571,95 +572,54 @@ class _RoleManagementState extends State<RoleManagement> {
             padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
             child: Column(
               children: [
+                CustomAppbar(text:"Role Management",subText: "Define what each user can access",),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Row(
                       children: [
                         CustomText(
-                          text: "Role Management",
-                          colors: colorsConst.textColor,
-                          size: 20,
+                          text: "Roles",
                           isCopy: false,
+                          colors: colorsConst.primary,
                           isBold: true,
+                          size: 15,
                         ),
-                        10.height,
-                        CustomText(
-                          text: "Define what each user can access",
-                          colors: colorsConst.textColor,
-                          size: 14,
-                          isCopy: false,
+                        10.width,
+                        CircleAvatar(
+                          backgroundColor: colorsConst.primary,
+                          radius: 17,
+                          child: Obx(()=>CustomText(
+                            isCopy: false,
+                            text: settingsController.rolesCount.value.toString(),
+                            colors: Colors.white,
+                            size: 13,
+                          ),)
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 40,
-                      child: ElevatedButton.icon(
-                        icon: Icon(Icons.add,color: Colors.white,),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: colorsConst.primary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        onPressed: (){
-                          print(">>>>>");
-                          String plan = controllers.planType.value.toLowerCase();
+                    CustomLoadingButton(callback: (){
+                      print(">>>>>");
+                      String plan = controllers.planType.value.toLowerCase();
 
-                          if(plan=="business essential"&&(settingsController.roleList.length ?? 0) < 2){
-                            _showAddRoleDialog();
-                          }else if(plan=="business fit"&&(settingsController.roleList.length ?? 0) < 5){
-                            _showAddRoleDialog();
-                          }else if(plan=="business pro"||plan=="enterprise"){
-                            _showAddRoleDialog();
-                          }else{
-                            utils.snackBar(
-                              context: context,
-                              msg: "Update your business plan",
-                              color: Colors.red,
-                            );
-                          }
-                        },
-                        label: CustomText(
-                          text: "Add Role",
-                          isCopy: false,
-                          colors: Colors.white,
-                          isBold :true,
-                          size: 14,
-                        ),),
-                    )
-                  ],
-                ),
-                10.height,
-                Row(
-                  children: [
-                    CustomText(
-                      text: "Roles",
-                      isCopy: false,
-                      colors: colorsConst.primary,
-                      isBold: true,
-                      size: 15,
-                    ),
-                    10.width,
-                    CircleAvatar(
-                      backgroundColor: colorsConst.primary,
-                      radius: 17,
-                      child: Obx(()=>CustomText(
-                        isCopy: false,
-                        text: settingsController.rolesCount.value.toString(),
-                        colors: Colors.white,
-                        size: 13,
-                      ),)
-                    ),
+                      if(plan=="business essential"&&(settingsController.roleList.length ?? 0) < 2){
+                        _showAddRoleDialog();
+                      }else if(plan=="business fit"&&(settingsController.roleList.length ?? 0) < 5){
+                        _showAddRoleDialog();
+                      }else if(plan=="business pro"||plan=="enterprise"){
+                        _showAddRoleDialog();
+                      }else{
+                        utils.snackBar(
+                          context: context,
+                          msg: "Update your business plan",
+                          color: Colors.red,
+                        );
+                      }
+                    }, isLoading: false, backgroundColor: colorsConst.primary, radius: 5, width: 100,height: 40,isImage: false,text: "Add Role",)
                   ],
                 ),
                 5.height,
-                Divider(
-                  thickness: 1.5,
-                  color: colorsConst.secondary,
-                ),
-                5.height,
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

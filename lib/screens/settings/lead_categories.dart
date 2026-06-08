@@ -89,6 +89,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+
                           Row(
                             children: [
                               IconButton(onPressed: (){

@@ -486,7 +486,7 @@ class SideBar extends StatelessWidget {
                           subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Role Management", 702, const RoleManagement()),
                           //subItem(context,controllers.isSettingsExpanded, "User Plan & Access", 703, const UserPlan()),
                           subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "User Management", 704, const EmployeeScreen()),
-                          subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Reminder Settings", 705, const ReminderSettings()),
+                          // subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Reminder Settings", 705, const ReminderSettings()),
                           subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Invoice Settings", 706, const QuotationSettings()),
                         ],
                       ),

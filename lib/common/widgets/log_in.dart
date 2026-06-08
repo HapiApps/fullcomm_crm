@@ -44,8 +44,8 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       controllers.loginNumber.text = mobileNumber.toString();
       controllers.loginPassword.text = password.toString();
       if (kDebugMode) {
-        controllers.loginNumber.text = isRelease==false?"9900000000":"8220074826";
-        controllers.loginPassword.text = isRelease==false?"a1b2CC###":"Mahesh@123";
+        controllers.loginNumber.text = isRelease==false?"9900000000":"9585245494";
+        controllers.loginPassword.text = isRelease==false?"a1b2CC###":"";//hU#yB$7E%5
       }
     });
   }
@@ -345,7 +345,6 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
       Map<String, dynamic> response = json.decode(request.body.trim());
       if (request.statusCode == 200 && response.containsKey("s_name")) {
-        // log("res $response");
         isLoading.value=false;
         if (isRelease) {
 

@@ -20,6 +20,8 @@ import '../../common/constant/colors_constant.dart';
 import '../../common/styles/decoration.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/Customtext.dart';
+import '../../components/custom_appbar.dart';
+import '../../components/custom_no_data.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/emp_drop.dart';
@@ -182,26 +184,7 @@ class _PaySlipState extends State<PaySlip> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    20.height,
-                    Row(
-                      children: [
-                        // IconButton(onPressed: (){
-                        //   Get.back();
-                        // }, icon: Icon(Icons.arrow_back)),
-                        CustomText(
-                          text: "Pay Slip",
-                          colors: colorsConst.textColor,
-                          size: 20,
-                          isBold: true,
-                          isCopy: true,
-                        ),
-                      ],
-                    ),10.height,
-                    Divider(
-                      thickness: 1.5,
-                      color: colorsConst.secondary,
-                    ),
-                    10.height,
+                    CustomAppbar(text:"Pay Slip"),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -230,9 +213,13 @@ class _PaySlipState extends State<PaySlip> {
                       child: CircularProgressIndicator(),
                     ):
                     empId=="" ?
-                    Center(child: const CustomText(text: "\n\n\n\n\n\nSelect Employee Name", isCopy: true,isBold: true,)) :
+                    Center(child: const CustomText(text: "\n\n\n\n\n\nSelect Employee Name", isCopy: true,isBold: true,size: 18,)) :
                     pyrlCtr.unitPayrollList.isEmpty ?
-                    Center(child: const CustomText(text: "\n\n\n\n\n\nNo Data Found", isCopy: true,textAlign: TextAlign.center,)) :
+                    Center(
+                      child: SizedBox(
+                          height: 500,width: 500,
+                          child: const CustomNoData()),
+                    ):
                     Expanded(
                       child: KeyboardListener(
                         focusNode: _focusNode,

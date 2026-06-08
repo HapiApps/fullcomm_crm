@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/utils.dart';
+import '../../components/custom_appbar.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
@@ -56,93 +57,51 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
               padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
               child: Column(
                 children: [
+                        CustomAppbar(text:"Employees",subText: "View all employees",),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                            Row(
                               children: [
                                 CustomText(
                                   text: "Employees",
-                                  colors: colorsConst.textColor,
-                                  size: 20,
+                                  colors: colorsConst.primary,
                                   isBold: true,
-                                  isCopy: true,
+                                  size: 15,
+                                  isCopy: false,
                                 ),
-                                10.height,
-                                CustomText(
-                                  text: "View all employees",
-                                  colors: colorsConst.textColor,
-                                  size: 14,
-                                  isCopy: true,
+                                10.width,
+                                CircleAvatar(
+                                  backgroundColor: colorsConst.primary,
+                                  radius: 17,
+                                  child: CustomText(
+                                    text: employeeProvider.filteredStaff.length.toString(),
+                                    colors: Colors.white,
+                                    size: 13,
+                                    isCopy: false,
+                                  ),
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 40,
-                              child: ElevatedButton.icon(
-                                icon: Icon(Icons.add,color: Colors.white,),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: colorsConst.primary,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                ),
-                                onPressed: (){
-                                  String plan = controllers.planType.value.toLowerCase();
-                                  if(plan=="business essential"&&(employeeProvider.filteredStaff.length) < 2){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
-                                  }else if(plan=="business fit"&&(employeeProvider.filteredStaff.length) < 10){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
-                                  }else if(plan=="business pro"||plan=="enterprise"){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
-                                  }else if(plan==""){
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
-                                  }else{
-                                    utils.snackBar(
-                                      context: context,
-                                      msg: "Update your business plan",
-                                      color: Colors.red,
-                                    );
-                                  }
-                                },
-                                label: CustomText(
-                                  text: "Add Employee",
-                                  colors: Colors.white,
-                                  isBold :true,
-                                  isCopy: false,
-                                  size: 14,
-                                ),),
-                            )
+                            CustomLoadingButton(callback: (){
+                              String plan = controllers.planType.value.toLowerCase();
+                              if(plan=="business essential"&&(employeeProvider.filteredStaff.length) < 2){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
+                              }else if(plan=="business fit"&&(employeeProvider.filteredStaff.length) < 10){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
+                              }else if(plan=="business pro"||plan=="enterprise"){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
+                              }else if(plan==""){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=>AddEmployeePage()));
+                              }else{
+                                utils.snackBar(
+                                  context: context,
+                                  msg: "Update your business plan",
+                                  color: Colors.red,
+                                );
+                              }
+                            }, isLoading: false, backgroundColor: colorsConst.primary, radius: 5, width: MediaQuery.of(context).size.width*0.08,height: 40,isImage: false,text: "Add Employee",)
                           ],
-                        ),
-                        10.height,
-                        Row(
-                          children: [
-                            CustomText(
-                              text: "Employees",
-                              colors: colorsConst.primary,
-                              isBold: true,
-                              size: 15,
-                              isCopy: false,
-                            ),
-                            10.width,
-                            CircleAvatar(
-                              backgroundColor: colorsConst.primary,
-                              radius: 17,
-                              child: CustomText(
-                                text: employeeProvider.filteredStaff.length.toString(),
-                                colors: Colors.white,
-                                size: 13,
-                                isCopy: false,
-                              ),
-                            ),
-                          ],
-                        ),
-                        5.height,
-                        Divider(
-                          thickness: 1.5,
-                          color: colorsConst.secondary,
                         ),
                         5.height,
                         Row(

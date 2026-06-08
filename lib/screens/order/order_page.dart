@@ -12,6 +12,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../components/Customtext.dart';
+import '../../components/custom_appbar.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/date_filter_bar.dart';
@@ -202,37 +203,7 @@ class _OrderPageState extends State<OrderPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CustomText(
-                            text: "Orders",
-                            colors: colorsConst.textColor,
-                            size: 20,
-                            isBold: true,
-                            isCopy: true,
-                          ),
-                          10.height,
-                          CustomText(
-                            text: "View all of your Orders Details",
-                            colors: colorsConst.textColor,
-                            size: 14,
-                            isCopy: true,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  10.height,
-                  Divider(
-                    thickness: 1.5,
-                    color: colorsConst.secondary,
-                  ),
-                  10.height,
+                  CustomAppbar(text:"Orders Details",subText: "View all of your Orders Details",),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

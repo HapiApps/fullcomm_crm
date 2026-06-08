@@ -17,6 +17,7 @@ import '../../common/constant/colors_constant.dart';
 import '../../common/styles/decoration.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/Customtext.dart';
+import '../../components/custom_appbar.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/custom_sidebar.dart';
@@ -177,26 +178,7 @@ class _UnitSlipState extends State<UnitSlip> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    20.height,
-                    Row(
-                      children: [
-                        // IconButton(onPressed: (){
-                        //   Get.back();
-                        // }, icon: Icon(Icons.arrow_back)),
-                        CustomText(
-                          text: "Wages Sheet",
-                          colors: colorsConst.textColor,
-                          size: 20,
-                          isBold: true,
-                          isCopy: true,
-                        ),
-                      ],
-                    ),10.height,
-                    Divider(
-                      thickness: 1.5,
-                      color: colorsConst.secondary,
-                    ),
-                    10.height,
+                    CustomAppbar(text:"Wages Sheet"),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -1006,7 +988,11 @@ class _UnitSlipState extends State<UnitSlip> {
                                     Expanded(
                                       child: Obx(() {
                                         if (pyrlCtr.unitPayrollList.isEmpty) {
-                                          return const Center(child: Text("No reminders found"));
+                                          return const Center(
+                                            child: SizedBox(
+                                                height: 500,width: 800,
+                                                child: const CustomNoData()),
+                                          );
                                         }
                                         return ListView.builder(
                                           controller: _controller,
