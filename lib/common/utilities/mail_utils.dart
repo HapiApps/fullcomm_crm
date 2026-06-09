@@ -1065,12 +1065,7 @@ class MailUtils {
                                             });
                                           }
 
-                                          debugPrint(
-                                            "Selected files : ${imageController.images.length}",
-                                          );
-
                                         } else {
-                                          debugPrint('No file selected');
                                         }
                                       },
                                       icon: SvgPicture.asset(assets.file)),

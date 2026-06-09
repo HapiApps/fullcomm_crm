@@ -178,7 +178,7 @@ class _MyDropdownMenuState<T> extends State<MyDropdownMenu2<T>> {
         setState(() {});
       }
     } catch (e) {
-      debugPrint("openMenu() error: $e");
+      //
     }
   }
 

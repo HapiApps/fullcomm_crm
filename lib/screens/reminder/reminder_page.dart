@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/reminder_utils.dart';
+import '../../components/custom_appbar.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_no_data.dart';
 import '../../components/custom_search_textfield.dart';
@@ -147,33 +148,12 @@ class _ReminderPageState extends State<ReminderPage> {
            child: Column(
              crossAxisAlignment: CrossAxisAlignment.start,
              children: [
-               Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: [
-                   Column(
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                     mainAxisAlignment: MainAxisAlignment.center,
-                     children: [
-                       CustomText(
-                         text: "Reminder",
-                         colors: colorsConst.textColor,
-                         size: 20,
-                         isBold: true,
-                         isCopy: true,
-                       ),
-                       10.height,
-                       CustomText(
-                         text: "View all of your call activity Report",
-                         colors: colorsConst.textColor,
-                         size: 14,
-                         isCopy: true,
-                       ),
-                     ],
-                   ),
-                   Row(
-                     mainAxisAlignment: MainAxisAlignment.end,
-                     children: [
-                      if(controllers.planType.value!="Business Essential"&&controllers.planType.value!="Business Fit")
+               CustomAppbar(
+                 text:"Reminder",subText: "View all of your reminders",isDivider: false,
+                 actionsWidget: Row(
+                   mainAxisAlignment: MainAxisAlignment.end,
+                   children: [
+                     if(controllers.planType.value!="Business Essential"&&controllers.planType.value!="Business Fit")
                        SizedBox(
                          height: 40,
                          child: ElevatedButton(
@@ -187,7 +167,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                  reverseTransitionDuration: Duration.zero,
                                ),
                              );
-                             },
+                           },
                            style: ElevatedButton.styleFrom(
                              backgroundColor: const Color(0xff0078D7),
                              padding: const EdgeInsets.symmetric(
@@ -199,56 +179,54 @@ class _ReminderPageState extends State<ReminderPage> {
                            child: Text(
                              'Reminder Calender',
                              style: GoogleFonts.lato(
-                               color: Colors.white,
-                               fontSize: 14,
-                               fontWeight: FontWeight.bold
+                                 color: Colors.white,
+                                 fontSize: 14,
+                                 fontWeight: FontWeight.bold
                              ),
                            ),
                          ),
                        ),10.width,
-                       SizedBox(
-                         height: 40,
-                         child: ElevatedButton(
-                           onPressed: (){
-                             // Navigator.push(
-                             //   context,
-                             //   PageRouteBuilder(
-                             //     pageBuilder: (context, animation1, animation2) => AddReminder(),
-                             //     transitionDuration: Duration.zero,
-                             //     reverseTransitionDuration: Duration.zero,
-                             //   ),
-                             // );
-                             reminderUtils.showAddReminderDialog(context);
-                           },
-                           style: ElevatedButton.styleFrom(
-                             backgroundColor: const Color(0xff0078D7),
-                             padding: const EdgeInsets.symmetric(
-                                 horizontal: 20, vertical: 12),
-                             shape: RoundedRectangleBorder(
-                               borderRadius: BorderRadius.circular(4),
-                             ),
-                           ),
-                           child: Row(
-                             children: [
-                               const Icon(Icons.add,color: Colors.white),
-                               const SizedBox(width: 5),
-                               Text(
-                                 'Add Reminder',
-                                 style: GoogleFonts.lato(
-                                     color: Colors.white,
-                                     fontSize: 14,
-                                     fontWeight: FontWeight.bold
-                                 ),
-                               ),
-                             ],
+                     SizedBox(
+                       height: 40,
+                       child: ElevatedButton(
+                         onPressed: (){
+                           // Navigator.push(
+                           //   context,
+                           //   PageRouteBuilder(
+                           //     pageBuilder: (context, animation1, animation2) => AddReminder(),
+                           //     transitionDuration: Duration.zero,
+                           //     reverseTransitionDuration: Duration.zero,
+                           //   ),
+                           // );
+                           reminderUtils.showAddReminderDialog(context);
+                         },
+                         style: ElevatedButton.styleFrom(
+                           backgroundColor: const Color(0xff0078D7),
+                           padding: const EdgeInsets.symmetric(
+                               horizontal: 20, vertical: 12),
+                           shape: RoundedRectangleBorder(
+                             borderRadius: BorderRadius.circular(4),
                            ),
                          ),
+                         child: Row(
+                           children: [
+                             const Icon(Icons.add,color: Colors.white),
+                             const SizedBox(width: 5),
+                             Text(
+                               'Add Reminder',
+                               style: GoogleFonts.lato(
+                                   color: Colors.white,
+                                   fontSize: 14,
+                                   fontWeight: FontWeight.bold
+                               ),
+                             ),
+                           ],
+                         ),
                        ),
-                     ],
-                   ),
-                 ],
+                     ),
+                   ],
+                 ),
                ),
-               10.height,
                Obx(()=>Row(
                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                  children: [

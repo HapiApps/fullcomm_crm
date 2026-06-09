@@ -114,19 +114,30 @@ class _HeaderSectionState extends State<HeaderSection> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            CustomText(
-              text: widget.title,
-              colors: colorsConst.textColor,
-              size: 25,
-              isBold: true,
-              isCopy: true,
+            Row(
+              children: [
+                InkWell(
+                    onTap: (){
+                      Get.back();
+                    }, child: Icon(Icons.arrow_back_rounded)),10.width,
+                CustomText(
+                  text: widget.title,
+                  colors: colorsConst.textColor,
+                  size: 25,
+                  isBold: true,
+                  isCopy: true,
+                ),
+              ],
             ),
             10.height,
-            CustomText(
-              text: widget.subtitle,
-              colors: colorsConst.textColor,
-              size: 14,
-              isCopy: true,
+            Padding(
+              padding: const EdgeInsets.fromLTRB(35, 0, 0, 0),
+              child: CustomText(
+                text: widget.subtitle,
+                colors: colorsConst.textColor,
+                size: 14,
+                isCopy: true,
+              ),
             ),
           ],
         ),

@@ -9,8 +9,6 @@ import '../../components/Customtext.dart';
 import '../../components/custom_sidebar.dart';
 import '../../controller/controller.dart';
 import '../../view_models/billing_provider.dart';
-import '../../res/colors.dart';
-import '../../res/components/k_text.dart';
 
 class HoldBill extends StatefulWidget {
   const HoldBill({Key? key}) : super(key: key);

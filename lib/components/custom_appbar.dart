@@ -7,7 +7,9 @@ import 'Customtext.dart';
 class CustomAppbar extends StatelessWidget {
   final String text;
   final String? subText;
-  const CustomAppbar({super.key, required this.text, this.subText=""});
+  final Widget? actionsWidget;
+  final bool? isDivider;
+  const CustomAppbar({super.key, required this.text, this.subText="", this.actionsWidget, this.isDivider=true});
 
   @override
   Widget build(BuildContext context) {
@@ -16,37 +18,41 @@ class CustomAppbar extends StatelessWidget {
       children: [
         20.height,
         Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(onPressed: (){
-              Get.back();
-            }, icon: Icon(Icons.arrow_back)),
-            CustomText(
-              text: text,
-              colors: colorsConst.textColor,
-              size: 20,
-              isBold: true,
-              isCopy: true,
+            Row(
+              children: [
+                InkWell(
+                    onTap: (){
+                  Get.back();
+                }, child: Icon(Icons.arrow_back)),10.width,
+                CustomText(
+                  text: text,
+                  colors: colorsConst.textColor,
+                  size: 20,
+                  isBold: true,
+                  isCopy: true,
+                ),
+              ],
             ),
+            actionsWidget??SizedBox()
           ],
         ),
         if(subText!="")
         Column(
           children: [
             10.height,
-            Row(
-              children: [
-                40.width,
-                CustomText(
-                  text: subText!,
-                  colors: colorsConst.textColor,
-                  size: 14,
-                  isCopy: true,
-                ),
-              ],
+            CustomText(
+              text: subText!,
+              colors: colorsConst.textColor,
+              size: 14,
+              isCopy: true,
             ),
           ],
         ),
+        if(isDivider==true)
         10.height,
+        if(isDivider==true)
         Divider(
           thickness: 1.5,
           color: colorsConst.secondary,

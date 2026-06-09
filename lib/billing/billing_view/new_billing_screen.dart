@@ -404,8 +404,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
     billingProvider.changeBillMethod(method);
 
     // ðŸ‘‰ Auto-fill Cash Amount field with total amount
-    double totalAmount = billingProvider.grandTotal ??
-        0; // Use your total variable
+    double totalAmount = billingProvider.grandTotal; // Use your total variable
     billingProvider.paymentReceived.text = totalAmount.toStringAsFixed(2);
 
     // Recalculate balance
@@ -5158,9 +5157,6 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                           if (qty < 0) qty = 0;
 
                                                           // stock limit
-                                                          final int maxQty =
-                                                              int.tryParse(billProduct.product.qtyLeft=="null"||billProduct.product.qtyLeft==""?"0"
-                                                                  :billProduct.product.qtyLeft.toString()) ?? 0;
 
                                                           // if (qty > maxQty) {
                                                           //   qty = maxQty;
@@ -5382,7 +5378,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
                           // rowText("Quotation No:", (10000 + Random().nextInt(90000)).toString()),
-                          rowText("Quotation No:", getNextQuotationNo(productCtr.quotationsList2.first.quotationNo ?? "")),
+                          rowText("Quotation No:", getNextQuotationNo(productCtr.quotationsList2.first.quotationNo)),
                           rowText("Quotation Date:", DateFormat("dd-MM-yyyy").format(DateTime.now())),
                           // rowText("OrderNo:", data.id),
                         ],

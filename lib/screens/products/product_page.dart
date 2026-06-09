@@ -180,7 +180,26 @@ class _ProductPageState extends State<ProductPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CustomAppbar(text:"Products",subText: "View all of your Products Details",),
+                  CustomAppbar(
+                    text:"Products",subText: "View all of your Products Details",
+                    actionsWidget: CustomLoadingButton(
+                      callback: (){
+                        showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (_) => const AddProductDialog(),
+                        );
+                      },
+                      isLoading: false,
+                      height: 35,
+                      backgroundColor: colorsConst.primary,
+                      radius: 2,
+                      width: MediaQuery.of(context).size.width*0.07,
+                      isImage: false,
+                      text: "Add Product",
+                      textColor: Colors.white,
+                    ),
+                  ),
                   // --- SEARCH & FILTERS ---
                   productCtr.selectedPrdIds.isNotEmpty?
                   Row(
@@ -353,23 +372,6 @@ class _ProductPageState extends State<ProductPage> {
                             );
                           });
                         },
-                      ),
-                      CustomLoadingButton(
-                        callback: (){
-                          showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (_) => const AddProductDialog(),
-                          );
-                        },
-                        isLoading: false,
-                        height: 35,
-                        backgroundColor: colorsConst.primary,
-                        radius: 2,
-                        width: MediaQuery.of(context).size.width*0.07,
-                        isImage: false,
-                        text: "Add Product",
-                        textColor: Colors.white,
                       ),
                     ],
                   ),

@@ -1830,12 +1830,7 @@ class Utils {
                               });
                             }
 
-                            debugPrint(
-                              "Selected files : ${imageController.images.length}",
-                            );
-
                           } else {
-                            debugPrint('No file selected');
                           }
                         },
                         child: Row(
@@ -2654,7 +2649,6 @@ class Utils {
   //     return "${formatDate(start)} $startTime to ${formatDate(end)} $endTime";
   //
   //   } catch (e) {
-  //     debugPrint("Error: $e"); // debug
   //     return "";
   //   }
   // }
@@ -2741,7 +2735,6 @@ class Utils {
       return "${formatDate(start)} $startTime to ${formatDate(end)} $endTime";
 
     } catch (e) {
-      debugPrint("Error: $e");
       return "";
     }
   }

@@ -572,54 +572,49 @@ class _RoleManagementState extends State<RoleManagement> {
             padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
             child: Column(
               children: [
-                CustomAppbar(text:"Role Management",subText: "Define what each user can access",),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        CustomText(
-                          text: "Roles",
-                          isCopy: false,
-                          colors: colorsConst.primary,
-                          isBold: true,
-                          size: 15,
-                        ),
-                        10.width,
-                        CircleAvatar(
-                          backgroundColor: colorsConst.primary,
-                          radius: 17,
-                          child: Obx(()=>CustomText(
-                            isCopy: false,
-                            text: settingsController.rolesCount.value.toString(),
-                            colors: Colors.white,
-                            size: 13,
-                          ),)
-                        ),
-                      ],
-                    ),
-                    CustomLoadingButton(callback: (){
-                      print(">>>>>");
-                      String plan = controllers.planType.value.toLowerCase();
+                CustomAppbar(
+                  text:"Role Management",subText: "Define what each user can access",
+                  actionsWidget: CustomLoadingButton(callback: (){
+                    print(">>>>>");
+                    String plan = controllers.planType.value.toLowerCase();
 
-                      if(plan=="business essential"&&(settingsController.roleList.length ?? 0) < 2){
-                        _showAddRoleDialog();
-                      }else if(plan=="business fit"&&(settingsController.roleList.length ?? 0) < 5){
-                        _showAddRoleDialog();
-                      }else if(plan=="business pro"||plan=="enterprise"){
-                        _showAddRoleDialog();
-                      }else{
-                        utils.snackBar(
-                          context: context,
-                          msg: "Update your business plan",
-                          color: Colors.red,
-                        );
-                      }
-                    }, isLoading: false, backgroundColor: colorsConst.primary, radius: 5, width: 100,height: 40,isImage: false,text: "Add Role",)
-                  ],
+                    if(plan=="business essential"&&(settingsController.roleList.length ?? 0) < 2){
+                      _showAddRoleDialog();
+                    }else if(plan=="business fit"&&(settingsController.roleList.length ?? 0) < 5){
+                      _showAddRoleDialog();
+                    }else if(plan=="business pro"||plan=="enterprise"){
+                      _showAddRoleDialog();
+                    }else{
+                      utils.snackBar(
+                        context: context,
+                        msg: "Update your business plan",
+                        color: Colors.red,
+                      );
+                    }
+                  }, isLoading: false, backgroundColor: colorsConst.primary, radius: 5, width: 100,height: 40,isImage: false,text: "Add Role",)
                 ),
-                5.height,
-
+                Row(
+                  children: [
+                    CustomText(
+                      text: "Roles",
+                      isCopy: false,
+                      colors: colorsConst.primary,
+                      isBold: true,
+                      size: 15,
+                    ),
+                    10.width,
+                    CircleAvatar(
+                        backgroundColor: colorsConst.primary,
+                        radius: 17,
+                        child: Obx(()=>CustomText(
+                          isCopy: false,
+                          text: settingsController.rolesCount.value.toString(),
+                          colors: Colors.white,
+                          size: 13,
+                        ),)
+                    ),
+                  ],
+                ),10.height,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

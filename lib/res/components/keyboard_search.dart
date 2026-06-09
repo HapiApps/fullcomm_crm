@@ -340,7 +340,6 @@ class _KeyboardDropdownFieldState<T extends Object>
           onSubmitted: (value) {
             // 🔥 EMPTY text → Enter block
             if (value.trim().isEmpty) {
-              debugPrint("⛔ ENTER BLOCKED (empty input)");
               focus.requestFocus();
               return;
             }
@@ -429,7 +428,6 @@ class _KeyboardDropdownFieldState<T extends Object>
                       return widget.itemBuilder(option);
                     } catch (e, st) {
                       // Log details to help debug which product causes the problem
-                      debugPrint('⚠️ itemBuilder threw for option: $option\nError: $e\n$st');
 
                       // Return a safe fallback UI (non-crashing)
                       return Padding(
