@@ -503,7 +503,7 @@ class ApiService {
         controllers.leadCtr.reset();
       }
     } catch (e) {
-      log(e.toString());
+      // log(e.toString());
       errorDialog(Get.context!, e.toString());
       controllers.leadCtr.reset();
     }
@@ -567,10 +567,10 @@ class ApiService {
           controllers.comCity.text = district;
 
           // ✅ FINAL PRINT (THIS is what you want)
-          debugPrint("PINCODE: $pinCode");
-          debugPrint("COUNTRY: ${controllers.comCountry.text}");
-          debugPrint("STATE  : ${controllers.comState.text}");
-          debugPrint("CITY   : ${controllers.comCity.text}");
+          // debugPrint("PINCODE: $pinCode");
+          // debugPrint("COUNTRY: ${controllers.comCountry.text}");
+          // debugPrint("STATE  : ${controllers.comState.text}");
+          // debugPrint("CITY   : ${controllers.comCity.text}");
         } else {
           _resetPinValues();
         }
@@ -579,7 +579,7 @@ class ApiService {
       }
     } catch (e) {
       _resetPinValues();
-      debugPrint("PINCODE ERROR: $e");
+      // debugPrint("PINCODE ERROR: $e");
     }
   }
   void _resetPinValues() {
@@ -648,8 +648,8 @@ class ApiService {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      debugPrint(data.toString());
-      debugPrint(request.body);
+      // debugPrint(data.toString());
+      // debugPrint(request.body);
       // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -815,8 +815,8 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      debugPrint("No Matches request.body");
-      debugPrint(request.body);
+      // debugPrint("No Matches request.body");
+      // debugPrint(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -1080,8 +1080,8 @@ class ApiService {
                 "id":id
               }),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint("request.body");
-      debugPrint(request.body);
+      // debugPrint("request.body");
+      // debugPrint(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -1200,8 +1200,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint("request.body");
-      debugPrint(request.body);
+      // debugPrint("request.body");
+      // debugPrint(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -1482,8 +1482,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint("request.body");
-      debugPrint(request.body);
+      // debugPrint("request.body");
+      // debugPrint(request.body);
       // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -2620,8 +2620,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint("request.body");
-      debugPrint(request.body);
+      // debugPrint("request.body");
+      // debugPrint(request.body);
 
       final Map<String, dynamic> response = json.decode(request.body);
 
@@ -2780,7 +2780,7 @@ class ApiService {
   Future getLeadCategories() async {
     try {
       // controllers.leadCategoryList.clear();
-      debugPrint("get leadddddd");
+      // debugPrint("get leadddddd");
       Map data = {
         "search_type": "lead_categories",
         "cos_id": controllers.storage.read("cos_id"),
@@ -2793,9 +2793,9 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint("leadddddd");
-      debugPrint(data.toString());
-      debugPrint(request.body);
+      // debugPrint("leadddddd");
+      // debugPrint(data.toString());
+      // debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -2848,8 +2848,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint("allleadddddd");
-      debugPrint(request.body);
+      // debugPrint("allleadddddd");
+      // debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3134,8 +3134,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint(data.toString());
-      debugPrint(request.body);
+      // debugPrint(data.toString());
+      // debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -4666,7 +4666,7 @@ debugPrint(response.body);
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint(request.body);
+      // debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5006,6 +5006,7 @@ debugPrint(response.body);
     try {
       Map data = {
         "search_type": "checkVersion",
+        "version": versionNum,
         "cos_id": controllers.storage.read("cos_id"),
         "action":"get_data"
       };
@@ -5016,6 +5017,8 @@ debugPrint(response.body);
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      // print("request.body");
+      // print(request.body);
       controllers.versionActive.value = false;
       controllers.updateAvailable.value = false;
       if (request.statusCode == 401) {
@@ -5496,7 +5499,7 @@ debugPrint(response.body);
   List<Map<String, String>> newLeadList = [];
 
   Future<void> getCustomLeads() async {
-    debugPrint("getCustomLeads");
+    // debugPrint("getCustomLeads");
     controllers.isCrmData.value = false;
     controllers.allLeadList.clear();
     final url = Uri.parse(scriptApi);
@@ -5517,6 +5520,7 @@ debugPrint(response.body);
         }),
       );
       // debugPrint("all_leads");
+      // debugPrint(controllers.storage.read("cos_id"));
       // debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();

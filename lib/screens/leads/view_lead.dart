@@ -105,14 +105,13 @@ class _ViewLeadState extends State<ViewLead> {
     }
   }
 void checkType(){
-  debugPrint("type... $type");
   for (var i=0;i<controllers.leadCategoryList.length;i++){
-    debugPrint("widget.leadIndex... ${widget.leadIndex}");
-    debugPrint("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].leadStatus}");
-    debugPrint("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].displayOrder}");
+    // debugPrint("widget.leadIndex... ${widget.leadIndex}");
+    // debugPrint("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].leadStatus}");
+    // debugPrint("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].displayOrder}");
     if(controllers.leadCategoryList[i].leadStatus==widget.leadIndex){
       type=controllers.leadCategoryList[i].displayOrder;
-      debugPrint("type... $type");
+      // debugPrint("type... $type");
       break;
     }
   }
@@ -141,8 +140,8 @@ void checkType(){
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("widget.id");
-    debugPrint(widget.id);
+    // debugPrint("widget.id");
+    // debugPrint(widget.id);
     double screenWidth = MediaQuery.of(context).size.width;
     return SelectionArea(
       child: Scaffold(

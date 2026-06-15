@@ -217,7 +217,6 @@ class _RatingPageState extends State<RatingPage> {
                         mailUtils.bulkEmail(_focusNode, list: controllers.ratingList);
                       },
                       onPromote: () {
-                        debugPrint("onTapppp");
                         showDialog(
                           context: context,
                           builder: (context) {
@@ -636,7 +635,7 @@ class _RatingPageState extends State<RatingPage> {
                         }).toList();
 
                         controllers.ratingList.value = suggestions;
-                        print("onchanged called");
+                        // print("onchanged called");
 
                         controllers.selectRadio(controllers.ratingList, controllers.ratingList2);
                       },
@@ -685,7 +684,7 @@ class _RatingPageState extends State<RatingPage> {
                                       }
                                     });
                                     setState(() {});
-                                    debugPrint("...${controllers.idList}");
+                                    // debugPrint("...${controllers.idList}");
                                   },
                                   onSortDate: () {
                                     setState(() {
@@ -743,7 +742,7 @@ class _RatingPageState extends State<RatingPage> {
                                                 controllers.idList.add(lead.userId);
                                               }
                                               setState(() {});
-                                              debugPrint("...${controllers.idList}");
+                                              // debugPrint("...${controllers.idList}");
                                             },
                                             visitType: data.visitType.toString(),
                                             detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
@@ -926,7 +925,7 @@ class _RatingPageState extends State<RatingPage> {
                                                   controllers.idList.add(lead.userId);
                                                 }
                                                 setState(() {});
-                                                debugPrint("...${controllers.idList}");
+                                                // debugPrint("...${controllers.idList}");
                                               },
                                               visitType: data.visitType.toString(),
                                               detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
@@ -1009,14 +1008,14 @@ class _RatingPageState extends State<RatingPage> {
                             _focusNode.requestFocus();
                             controllers.currentProspectPage.value--;
                             controllers.changePage(controllers.ratingList,controllers.ratingList2);
-                            print("controllers.currentProspectPage.value --- ${controllers.currentProspectPage.value}");
+                            // print("controllers.currentProspectPage.value --- ${controllers.currentProspectPage.value}");
                           }),
                           ...utils.buildPagination(totalPages, currentPage),
                           utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
                             controllers.currentProspectPage.value++;
                             _focusNode.requestFocus();
                             controllers.changePage(controllers.ratingList,controllers.ratingList2);
-                            print("controllers.currentProspectPage.value +++ ${controllers.currentProspectPage.value}");
+                            // print("controllers.currentProspectPage.value +++ ${controllers.currentProspectPage.value}");
                           }),
                         ],
                       );

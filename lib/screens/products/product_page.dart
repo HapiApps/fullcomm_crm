@@ -175,29 +175,67 @@ class _ProductPageState extends State<ProductPage> {
           children: [
             SideBar(),
             Obx(()=>Container(
-              width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+              width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 160:MediaQuery.of(context).size.width - 60,
               padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   CustomAppbar(
                     text:"Products",subText: "View all of your Products Details",
-                    actionsWidget: CustomLoadingButton(
-                      callback: (){
-                        showDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          builder: (_) => const AddProductDialog(),
-                        );
-                      },
-                      isLoading: false,
-                      height: 35,
-                      backgroundColor: colorsConst.primary,
-                      radius: 2,
-                      width: MediaQuery.of(context).size.width*0.07,
-                      isImage: false,
-                      text: "Add Product",
-                      textColor: Colors.white,
+                    actionsWidget: Row(
+                      children: [
+                        // CustomLoadingButton(
+                        //   callback: (){
+                        //     showDialog(
+                        //       context: context,
+                        //       barrierDismissible: true,
+                        //       builder: (_) => const AddCatDialog(),
+                        //     );
+                        //   },
+                        //   isLoading: false,
+                        //   height: 35,
+                        //   backgroundColor: colorsConst.primary,
+                        //   radius: 2,
+                        //   width: MediaQuery.of(context).size.width*0.07,
+                        //   isImage: false,
+                        //   text: "Add Category",
+                        //   textColor: Colors.white,
+                        // ),20.width,
+                        // CustomLoadingButton(
+                        //   callback: (){
+                        //     showDialog(
+                        //       context: context,
+                        //       barrierDismissible: true,
+                        //       builder: (_) => const AddSubCatDialog(),
+                        //     );
+                        //   },
+                        //   isLoading: false,
+                        //   height: 35,
+                        //   backgroundColor: colorsConst.primary,
+                        //   radius: 2,
+                        //   width: MediaQuery.of(context).size.width*0.07,
+                        //   isImage: false,
+                        //   text: "Add SubCategory",
+                        //   textColor: Colors.white,
+                        // ),20.width,
+                        CustomLoadingButton(
+                          callback: (){
+                            showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (_) => const AddProductDialog(),
+                            );
+                          },
+                          isLoading: false,
+                          height: 35,
+                          backgroundColor: colorsConst.primary,
+                          radius: 2,
+                          width: MediaQuery.of(context).size.width*0.07,
+                          isImage: false,
+                          text: "Add Product",
+                          textColor: Colors.white,
+                        )
+                      ],
                     ),
                   ),
                   // --- SEARCH & FILTERS ---
@@ -1060,7 +1098,71 @@ class _ProductPageState extends State<ProductPage> {
                                                             "assets/images/a_delete.svg",
                                                             width: 16,
                                                             height: 16,
-                                                          ))
+                                                          )),
+                                                      IconButton(
+                                                          tooltip: 'Show Google Sheet',
+                                                          onPressed: (){
+                                                            showDialog(
+                                                              context: context,
+                                                              builder: (BuildContext context) {
+                                                                return AlertDialog(
+                                                                  content: CustomText(
+                                                                    text: "Are you sure you want to ${p.isSheet.toString()=="1"?"Inactive":"Active"} this product in WhatsApp?",
+                                                                    size: 16,
+                                                                    isBold: true,
+                                                                    isCopy: true,
+                                                                    colors: colorsConst.textColor,
+                                                                  ),
+                                                                  actions: [
+                                                                    Row(
+                                                                      mainAxisAlignment: MainAxisAlignment.end,
+                                                                      children: [
+                                                                        Container(
+                                                                          decoration: BoxDecoration(
+                                                                              border: Border.all(color: colorsConst.primary),
+                                                                              color: Colors.white),
+                                                                          width: 80,
+                                                                          height: 25,
+                                                                          child: ElevatedButton(
+                                                                              style: ElevatedButton.styleFrom(
+                                                                                shape: const RoundedRectangleBorder(
+                                                                                  borderRadius: BorderRadius.zero,
+                                                                                ),
+                                                                                backgroundColor: Colors.white,
+                                                                              ),
+                                                                              onPressed: () {
+                                                                                Navigator.pop(context);
+                                                                              },
+                                                                              child: CustomText(
+                                                                                text: "Cancel",
+                                                                                isCopy: false,
+                                                                                colors: colorsConst.primary,
+                                                                                size: 14,
+                                                                              )),
+                                                                        ),
+                                                                        10.width,
+                                                                        CustomLoadingButton(
+                                                                          callback: (){
+                                                                            context.read<BillingProvider>().manageProduct(context,p.id,p.isSheet.toString()=="1"?"2":"1");
+                                                                          },
+                                                                          height: 35,
+                                                                          isLoading: true,
+                                                                          backgroundColor: colorsConst.primary,
+                                                                          radius: 2,
+                                                                          width: 80,
+                                                                          controller: controllers.productCtr,
+                                                                          isImage: false,
+                                                                          text: "Delete",
+                                                                          textColor: Colors.white,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                );
+                                                              },
+                                                            );
+                                                          },
+                                                          icon: Icon(Icons.remove_red_eye_outlined,color: p.isSheet.toString()=="1"?Colors.green:Colors.grey,))
                                                     ],
                                                   ),
                                                   _dataCell(1, p.skuId ?? "-"),

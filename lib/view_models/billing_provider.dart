@@ -193,7 +193,7 @@ class BillingProvider with ChangeNotifier{
         _productsList=[];
       }
 
-      debugPrint("Products List : ${_productsList.length}");
+      // debugPrint("Products List : ${_productsList.length}");
 
     }catch(e){
       Exception("getProducts Error : $e");
@@ -220,7 +220,7 @@ class BillingProvider with ChangeNotifier{
         _productsList=[];
       }
 
-      debugPrint("Products List : ${_productsList.length}");
+      // debugPrint("Products List : ${_productsList.length}");
 
     }catch(e){
       Exception("getProducts Error : $e");
@@ -1747,6 +1747,7 @@ class BillingProvider with ChangeNotifier{
       );
 
   /// controllers
+  final category = TextEditingController();
   final title = TextEditingController();
   final variations = TextEditingController();
   final units = TextEditingController();
@@ -1757,7 +1758,7 @@ class BillingProvider with ChangeNotifier{
   final outPrice = TextEditingController();
   final inPrice = TextEditingController();
 
-  Future<void> insert_product(BuildContext context) async {
+  Future<void> insertProduct(BuildContext context) async {
     final catProv = context.read<BillingProvider>();
 
     if (catProv.selectedCategory == null ||
@@ -1765,7 +1766,7 @@ class BillingProvider with ChangeNotifier{
       _toast(context, "Select Category & Sub Category");
       return;
     }
-    debugPrint("barcode: ${barcode.text.trim()}");
+    // debugPrint("barcode: ${barcode.text.trim()}");
     final int qtyVal = int.tryParse(qty.text.trim()) ?? 0;
     final double mrpVal = double.tryParse(mrp.text.trim()) ?? 0;
     final double outPriceVal = double.tryParse(outPrice.text.trim()) ?? 0;
@@ -1797,6 +1798,7 @@ class BillingProvider with ChangeNotifier{
       "mrp": mrpVal,
       "out_price": outPriceVal,
       "in_price": inPriceVal,
+      "cos_id": controllers.storage.read("cos_id").toString(),
     });
 
     loading = false;
@@ -1810,6 +1812,51 @@ class BillingProvider with ChangeNotifier{
       utils.snackBar(context: context, msg: "Product Added Failed", color: Colors.red);
     }
   }
+  Future<void> insertCat(BuildContext context) async {
+    final catProv = context.read<BillingProvider>();
+    loading = true;
+    notifyListeners();
+    Map<String, dynamic> data={};
+    if(catProv.selectedCategory==null){
+      data={
+        "action": "insert_categories",
+        "type": "1",
+        "title": category.text.trim(),
+        "cos_id": controllers.storage.read("cos_id").toString(),
+        "created_by": controllers.storage.read("id").toString(),
+      };
+    }else{
+      data={
+        "action": "insert_categories",
+        "type": "2",
+        "title": category.text.trim(),
+        "c_id": catProv.selectedCategory!.id.toString(),
+        "cos_id": controllers.storage.read("cos_id").toString(),
+        "created_by": controllers.storage.read("id").toString(),
+      };
+    }
+
+    final success = await PlaceOrderRepository.insertProduct(data);
+
+    loading = false;
+    notifyListeners();
+    if (success) {
+      Navigator.pop(context);
+      category.clear();
+      final p = context.read<BillingProvider>();
+      selectedCategoryId = null;
+      selectedSubCategoryId = null;
+      categories.clear();
+      fetchCategories();
+      notifyListeners();
+      // Navigator.pop(context);
+      // productCtr.getProducts();
+      utils.snackBar(context: context, msg: "Category Added Successfully", color: Colors.green);
+    } else {
+      utils.snackBar(context: context, msg: "Category Added Failed", color: Colors.red);
+    }
+  }
+
   Future<void> updateProduct(BuildContext context,String id) async {
     final catProv = context.read<BillingProvider>();
 
@@ -1818,7 +1865,7 @@ class BillingProvider with ChangeNotifier{
       _toast(context, "Select Category & Sub Category");
       return;
     }
-    debugPrint("barcode: ${barcode.text.trim()}");
+    // debugPrint("barcode: ${barcode.text.trim()}");
     final int qtyVal = int.tryParse(qty.text.trim()) ?? 0;
     final double mrpVal = double.tryParse(mrp.text.trim()) ?? 0;
     final double outPriceVal = double.tryParse(outPrice.text.trim()) ?? 0;
@@ -1878,6 +1925,25 @@ class BillingProvider with ChangeNotifier{
       utils.snackBar(context: context, msg: "Product Deleted Successfully", color: Colors.green);
     } else {
       utils.snackBar(context: context, msg: "Product Deleted Failed", color: Colors.red);
+      controllers.productCtr.reset();
+    }
+  }
+
+  Future<void> manageProduct(BuildContext context,String id,String active) async {
+    final success = await PlaceOrderRepository.insertProduct({
+      "action": "manage_products",
+      "product_id": id,
+      "active": active,
+      "updated_by": controllers.storage.read("id")});
+    if (success) {
+      Navigator.pop(context);
+      clearProductForm();
+      productCtr.getProducts();
+      controllers.productCtr.reset();
+      productCtr.selectedPrdIds.clear();
+      utils.snackBar(context: context, msg: "Product ${active=="1"?"Active":"Inactive"} Successfully", color: Colors.green);
+    } else {
+      utils.snackBar(context: context, msg: "Product ${active=="1"?"Active":"Inactive"} Failed", color: Colors.red);
       controllers.productCtr.reset();
     }
   }
@@ -1989,6 +2055,27 @@ class BillingProvider with ChangeNotifier{
 
     return true; // ✅ ALL OK
   }
+  bool validatePrices2(BillingProvider p, BuildContext context) {
+    // ---------- BASIC TEXT VALIDATION ----------
+    if (p.category.text.trim().isEmpty) {
+      utils.showToast("Enter Category Name",Colors.red);
+      return false;
+    }
+    return true; // ✅ ALL OK
+  }
+  bool validatePrices3(BillingProvider p, BuildContext context) {
+    // ---------- BASIC TEXT VALIDATION ----------
+    if (p.category.text.trim().isEmpty) {
+      utils.showToast("Enter Sub Category Name",Colors.red);
+      return false;
+    }
+    // ---------- CATEGORY ----------
+    if (p.selectedCategory == null) {
+      utils.showToast("Select Category",Colors.red);
+      return false;
+    }
+    return true; // ✅ ALL OK
+  }
 
   void showErrorSnackBar( String msg,BuildContext context,) {
     ScaffoldMessenger.of(context).clearSnackBars();
@@ -2061,12 +2148,12 @@ class BillingProvider with ChangeNotifier{
       final exists = await checkBarcodeExists(newBarcode);
 
       // 🔍 DEBUG PRINT
-      debugPrint("🔎 Checking barcode: $newBarcode");
-      debugPrint("📦 Exists in DB? : $exists");
+      // debugPrint("🔎 Checking barcode: $newBarcode");
+      // debugPrint("📦 Exists in DB? : $exists");
 
       if (!exists) {
         // ✅ NOT EXISTS → SAFE TO USE
-        debugPrint("✅ Barcode NOT found in table. Using this one.");
+        // debugPrint("✅ Barcode NOT found in table. Using this one.");
 
         prodProv.barcode.text = newBarcode;
         prodProv.barcode.selection = TextSelection.collapsed(

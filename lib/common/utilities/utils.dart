@@ -3950,7 +3950,7 @@ void appointmentStatus(context,String value){
       html.Url.revokeObjectUrl(url);
 
     } catch (e) {
-      print("Download Error: $e");
+      // print("Download Error: $e");
     }
   }
   Future<void> downloadProductSampleExcel() async {

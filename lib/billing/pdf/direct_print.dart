@@ -101,7 +101,7 @@ class WindowsRawPrinter {
     // calloc.free(phPrinter);
     // calloc.free(docInfo);
     //
-    print("✔ printRawData completed successfully");
+    // print("✔ printRawData completed successfully");
     return true;
   }
 

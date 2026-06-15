@@ -137,7 +137,6 @@
 //         "&am=${amount.toStringAsFixed(2)}"
 //         "&cu=INR";
 //
-//     debugPrint("UPI QR => $upiUrl");
 //
 //     setState(() {
 //       qrData = upiUrl;
@@ -532,7 +531,6 @@
 //                               final scanned = _lastScan;
 //                               _lastScan = '';
 //
-//                               debugPrint("📦 FINAL BARCODE => $scanned");
 //
 //                               try {
 //                                 final product = billingProvider.productsList.firstWhere(
@@ -1747,8 +1745,6 @@
 //                           try {
 //                             (cusDropdownKey.currentState as dynamic)?.openMenu();
 //                           } catch (e, st) {
-//                             debugPrint(
-//                                 'Failed to open customer dropdown: $e\n$st');
 //                           }
 //                         });
 //                         return null;

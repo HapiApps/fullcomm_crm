@@ -86,7 +86,7 @@ class _DashboardPageState extends State<DashboardPage>
         return DateFormat("dd-MM-yyyy").format(parsedDate);
       }
     } catch (e) {
-      debugPrint("Error parsing: $e");
+      // debugPrint("Error parsing: $e");
       return "";
     }
   }
@@ -274,10 +274,10 @@ void checkDate(){
             icon: "icons/Icon-192.png", // optional, must be in web/icons/
           );
         } catch (e) {
-          debugPrint("Error showing notification: $e");
+          // debugPrint("Error showing notification: $e");
         }
       } else {
-        debugPrint("Permission not granted for notifications");
+        // debugPrint("Permission not granted for notifications");
       }
     });
   }
@@ -324,7 +324,7 @@ void checkDate(){
               SideBar(),
               Obx((){
                 var width=controllers.isLeftOpen.value==true&&controllers.isLeftOpen.value==true?
-                screenWidth - 160:controllers.isLeftOpen.value==false&&controllers.isRightOpen.value==true?
+                screenWidth - 170:controllers.isLeftOpen.value==false&&controllers.isRightOpen.value==true?
                 screenWidth - 60:controllers.isLeftOpen.value==false&&controllers.isRightOpen.value==true?
                 screenWidth - 120:screenWidth - 60;
                 return controllers.isCrmData.value==false?Center(child: CircularProgressIndicator()):
@@ -435,8 +435,8 @@ void checkDate(){
                                               controllers.search.text = lead.name.toString();
                                               for (var i = 0; i < controllers.leadCategoryList.length; i++) {
                                                 if(controllers.leadCategoryList[i].value==lead.category.toString()){
-                                                  debugPrint(controllers.leadCategoryList[i].value);
-                                                  debugPrint(lead.category.toString());
+                                                  // debugPrint(controllers.leadCategoryList[i].value);
+                                                  // debugPrint(lead.category.toString());
 
                                                   controllers.selectedIndex.value =int.tryParse(lead.leadStatus.toString()) ?? 0;
                                                   Get.off(

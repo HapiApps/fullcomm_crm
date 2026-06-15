@@ -190,11 +190,11 @@ class EmployeeProvider with ChangeNotifier {
   void toggleSelectionCustomer(String id) {
     if (_selectedCustomerIds.contains(id)) {
       _selectedCustomerIds.remove(id);
-      debugPrint("Selected Product Id for deletion:$_selectedCustomerIds");
+      // debugPrint("Selected Product Id for deletion:$_selectedCustomerIds");
     } else {
       // Add ID if not in the list (selected)
       _selectedCustomerIds.add(id);
-      debugPrint("Selected Product Id for deletion:$_selectedCustomerIds");
+      // debugPrint("Selected Product Id for deletion:$_selectedCustomerIds");
     }
     notifyListeners();
   }
@@ -218,11 +218,11 @@ class EmployeeProvider with ChangeNotifier {
   void toggleSelectionEmployee(String id) {
     if (_selectedEmployeeIds.contains(id)) {
       _selectedEmployeeIds.remove(id);
-      debugPrint("Selected Product Id for deletion:$_selectedEmployeeIds");
+      // debugPrint("Selected Product Id for deletion:$_selectedEmployeeIds");
     } else {
       // Add ID if not in the list (selected)
       _selectedEmployeeIds.add(id);
-      debugPrint("Selected Product Id for deletion:$_selectedEmployeeIds");
+      // debugPrint("Selected Product Id for deletion:$_selectedEmployeeIds");
     }
     notifyListeners();
   }
@@ -263,11 +263,11 @@ class EmployeeProvider with ChangeNotifier {
   void toggleSelectionRole(String id) {
     if (_selectedRoleIds.contains(id)) {
       _selectedRoleIds.remove(id);
-      debugPrint("Selected Product Id for deletion:$_selectedRoleIds");
+      // debugPrint("Selected Product Id for deletion:$_selectedRoleIds");
     } else {
       // Add ID if not in the list (selected)
       _selectedRoleIds.add(id);
-      debugPrint("Selected Product Id for deletion:$_selectedRoleIds");
+      // debugPrint("Selected Product Id for deletion:$_selectedRoleIds");
     }
     notifyListeners();
   }
@@ -291,11 +291,11 @@ class EmployeeProvider with ChangeNotifier {
   void toggleSelectionDelivery(String id) {
     if (_selectedDeliveryIds.contains(id)) {
       _selectedDeliveryIds.remove(id);
-      debugPrint("Selected Product Id for deletion:$_selectedDeliveryIds");
+      // debugPrint("Selected Product Id for deletion:$_selectedDeliveryIds");
     } else {
       // Add ID if not in the list (selected)
       _selectedDeliveryIds.add(id);
-      debugPrint("Selected Product Id for deletion:$_selectedDeliveryIds");
+      // debugPrint("Selected Product Id for deletion:$_selectedDeliveryIds");
     }
     notifyListeners();
   }
@@ -466,10 +466,10 @@ class EmployeeProvider with ChangeNotifier {
         _staffRoleData = response.employees ?? [];
         _initializeStaff();
       } else {
-        debugPrint("Vendor Provider: Something Went Wrong");
+        // debugPrint("Vendor Provider: Something Went Wrong");
       }
     } catch (e) {
-      debugPrint("Vendor Provider: ${e}");
+      // debugPrint("Vendor Provider: ${e}");
       throw Exception(e);
     } finally {
       _isLoading = false;
@@ -551,10 +551,10 @@ class EmployeeProvider with ChangeNotifier {
         empWhatsapp:empWhatsapp ,
         active : active,
       );
-      debugPrint("response:$response");
+      // debugPrint("response:$response");
 
       if (response.responseCode == 200) {
-        debugPrint("response:$response");
+        // debugPrint("response:$response");
         staffRoleDetailsData(context: context);
         Navigator.pop(context);
         utils.snackBar(msg: "Employee Updated Successfully", color: Colors.green,context:context);
@@ -654,7 +654,7 @@ class EmployeeProvider with ChangeNotifier {
         employeeId: eId,
       );
 
-      debugPrint("${response.toJson()}");
+      // debugPrint("${response.toJson()}");
 
       if (response.responseCode == 200) {
         List<String> deletedIds = [];
@@ -815,7 +815,7 @@ class EmployeeProvider with ChangeNotifier {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      debugPrint("request ${request.body}");
+      // debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();

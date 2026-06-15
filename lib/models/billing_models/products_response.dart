@@ -65,6 +65,7 @@ class ProductData {
   String? isFree;
   String? category;
   String? subCategory;
+  String? isSheet;
 
   ProductData({
     this.id,
@@ -109,10 +110,12 @@ class ProductData {
     this.createdTs,
     this.category,
     this.subCategory,
+    this.isSheet,
   });
 
   factory ProductData.fromJson(Map<String, dynamic> json) => ProductData(
     id: json["id"]?.toString(),
+    isSheet: json["is_sheet"]?.toString(),
     skuId: json["sku_id"],
     hsnCode: json["hsn_code"],
     barcode: json["barcode"],
@@ -161,6 +164,7 @@ class ProductData {
 
   Map<String, dynamic> toJson() => {
     "id": id,
+    "is_sheet": isSheet,
     "sku_id": skuId,
     "hsn_code": hsnCode,
     "barcode": barcode,

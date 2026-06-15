@@ -250,7 +250,7 @@ class TableController extends GetxController {
         colWidth[h] = colWidth[h] ?? 150;
       }
 
-      debugPrint("Final Headings: ${tableHeadings.value}");
+      // debugPrint("Final Headings: ${tableHeadings.value}");
 
       await prefs.setString(
         'tableHeadings',

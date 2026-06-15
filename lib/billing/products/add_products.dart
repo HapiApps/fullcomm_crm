@@ -126,7 +126,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
     FocusScope.of(context).unfocus();
     if (p.loading) return;
     if (!p.validatePrices(p, context)) return;
-    p.insert_product(context);
+    p.insertProduct(context);
   }
 
   @override
@@ -228,6 +228,15 @@ class _AddProductDialogState extends State<AddProductDialog> {
                         decoration:
                         const InputDecoration(labelText: "Category"),
                         value: p.selectedCategory,
+                        icon: InkWell(
+                          onTap:(){
+                            showDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (_) => const AddCatDialog(),
+                            );
+                          },
+                            child: Icon(Icons.add)),
                         items: p.categories
                             .map((c) => DropdownMenuItem(
                           value: c,
@@ -257,6 +266,15 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           decoration: const InputDecoration(
                               labelText: "Sub Category"),
                           value: p.selectedSubCategory,
+                          icon: InkWell(
+                              onTap:(){
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (_) => const AddSubCatDialog(),
+                                );
+                              },
+                              child: Icon(Icons.add)),
                           items: p.selectedCategory!.subcategories
                               .map((s) => DropdownMenuItem(
                             value: s,
@@ -445,8 +463,6 @@ class _AddProductDialogState extends State<AddProductDialog> {
     );
   }
 }
-
-
 
 class EditProductDialog extends StatefulWidget {
   final String id;
@@ -874,6 +890,447 @@ class _EditProductDialogState extends State<EditProductDialog> {
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold)),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _field(String label, TextEditingController c, FocusNode fn,
+      FocusNode? next,
+      {bool numbers = false, bool cap = false})
+  {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextFormField(
+        controller: c,
+        focusNode: fn,
+        keyboardType: numbers ? TextInputType.number : TextInputType.text,
+        inputFormatters: numbers
+            ? [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(10),
+        ]
+            : null,
+        textInputAction:
+        next != null ? TextInputAction.next : TextInputAction.done,
+        onChanged: cap
+            ? (v) {
+          if (v.isEmpty) return;
+          final t = v[0].toUpperCase() + v.substring(1);
+          if (t != v) {
+            c.value = TextEditingValue(
+              text: t,
+              selection: TextSelection.collapsed(offset: t.length),
+            );
+          }
+        }
+            : null,
+        onFieldSubmitted: (_) {
+          if (next != null) next.requestFocus();
+        },
+        decoration: InputDecoration(labelText: label),
+      ),
+    );
+  }
+}
+
+
+class AddCatDialog extends StatefulWidget {
+  const AddCatDialog({super.key});
+
+  @override
+  State<AddCatDialog> createState() => _AddCatDialogState();
+}
+
+class _AddCatDialogState extends State<AddCatDialog> {
+  // ---------- FocusNodes ----------
+  late FocusNode nameFN,
+      skuFN,
+      barcodeFN,
+      generateFN,
+      categoryFN,
+      subCategoryFN,
+      variationFN,
+      unitFN,
+      mrpFN,
+      outPriceFN,
+      inPriceFN,
+      looseNoFN,
+      looseYesFN,
+      saveFN;
+  @override
+  void initState() {
+    super.initState();
+
+    nameFN = FocusNode();
+    skuFN = FocusNode();
+    barcodeFN = FocusNode();
+    generateFN = FocusNode();
+    categoryFN = FocusNode();
+    subCategoryFN = FocusNode();
+    variationFN = FocusNode();
+    unitFN = FocusNode();
+    mrpFN = FocusNode();
+    outPriceFN = FocusNode();
+    inPriceFN = FocusNode();
+    looseNoFN = FocusNode();
+    looseYesFN = FocusNode();
+    saveFN = FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final p = context.read<BillingProvider>();
+      p.selectedCategoryId = null;
+      p.selectedSubCategoryId = null;
+      if (p.categories.isEmpty) p.fetchCategories();
+      nameFN.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    for (final fn in [
+      nameFN,
+      skuFN,
+      barcodeFN,
+      generateFN,
+      categoryFN,
+      subCategoryFN,
+      variationFN,
+      unitFN,
+      mrpFN,
+      outPriceFN,
+      inPriceFN,
+      looseNoFN,
+      looseYesFN,
+      saveFN,
+    ]) {
+      fn.dispose();
+    }
+    super.dispose();
+  }
+
+  // ---------- Dropdown auto open ----------
+
+  // ---------- Barcode logic ----------
+
+  void _save(BillingProvider p) {
+    FocusScope.of(context).unfocus();
+    if (p.loading) return;
+    if (!p.validatePrices2(p, context)) return;
+    p.insertCat(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: (e) {
+        if (e is RawKeyDownEvent &&
+            e.logicalKey == LogicalKeyboardKey.escape) {
+          Navigator.pop(context);
+          final billing = Provider.of<BillingProvider>(context, listen: false);
+          billing.dropdownFocusNode.requestFocus();
+        }
+      },
+      child: Dialog(
+        insetPadding: const EdgeInsets.all(16),
+        child: ChangeNotifierProvider.value(
+          value: context.read<BillingProvider>(),
+          child: Consumer<BillingProvider>(
+            builder: (context, p, _) {
+              return SizedBox(
+                width: 500,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Add Category",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                          IconButton(onPressed: (){
+                            Navigator.pop(context);
+                          }, icon: Icon(Icons.clear))
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      _field("Category Name", p.category, nameFN, skuFN, cap: true),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: RawKeyboardListener(
+                          focusNode: saveFN,
+                          onKey: (e) {
+                            if (e is RawKeyDownEvent &&
+                                e.logicalKey == LogicalKeyboardKey.enter) {
+                              _save(p);
+                            }
+                          },
+                          child: SizedBox(
+                            width: 100,
+                            height: 48,
+                            child: ElevatedButton(
+                              onPressed: p.loading ? null : () => _save(p),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorsConst.primary),
+                              child: const Text("Save",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _field(String label, TextEditingController c, FocusNode fn,
+      FocusNode? next,
+      {bool numbers = false, bool cap = false})
+  {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: TextFormField(
+        controller: c,
+        focusNode: fn,
+        keyboardType: numbers ? TextInputType.number : TextInputType.text,
+        inputFormatters: numbers
+            ? [
+          FilteringTextInputFormatter.digitsOnly,
+          LengthLimitingTextInputFormatter(10),
+        ]
+            : null,
+        textInputAction:
+        next != null ? TextInputAction.next : TextInputAction.done,
+        onChanged: cap
+            ? (v) {
+          if (v.isEmpty) return;
+          final t = v[0].toUpperCase() + v.substring(1);
+          if (t != v) {
+            c.value = TextEditingValue(
+              text: t,
+              selection: TextSelection.collapsed(offset: t.length),
+            );
+          }
+        }
+            : null,
+        onFieldSubmitted: (_) {
+          if (next != null) next.requestFocus();
+        },
+        decoration: InputDecoration(labelText: label),
+      ),
+    );
+  }
+}
+
+
+class AddSubCatDialog extends StatefulWidget {
+  const AddSubCatDialog({super.key});
+
+  @override
+  State<AddSubCatDialog> createState() => _AddSubCatDialogState();
+}
+
+class _AddSubCatDialogState extends State<AddSubCatDialog> {
+  // ---------- FocusNodes ----------
+  late FocusNode nameFN,
+      skuFN,
+      barcodeFN,
+      generateFN,
+      categoryFN,
+      subCategoryFN,
+      variationFN,
+      unitFN,
+      mrpFN,
+      outPriceFN,
+      inPriceFN,
+      looseNoFN,
+      looseYesFN,
+      saveFN;
+
+  // ---------- Keys ----------
+  final GlobalKey _categoryKey = GlobalKey();
+  final GlobalKey _subCategoryKey = GlobalKey();
+
+  bool _generating = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    nameFN = FocusNode();
+    skuFN = FocusNode();
+    barcodeFN = FocusNode();
+    generateFN = FocusNode();
+    categoryFN = FocusNode();
+    subCategoryFN = FocusNode();
+    variationFN = FocusNode();
+    unitFN = FocusNode();
+    mrpFN = FocusNode();
+    outPriceFN = FocusNode();
+    inPriceFN = FocusNode();
+    looseNoFN = FocusNode();
+    looseYesFN = FocusNode();
+    saveFN = FocusNode();
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   final p = context.read<BillingProvider>();
+    //   p.selectedCategoryId = null;
+    //   p.selectedSubCategoryId = null;
+    //   if (p.categories.isEmpty) p.fetchCategories();
+    //   nameFN.requestFocus();
+    // });
+  }
+
+  @override
+  void dispose() {
+    for (final fn in [
+      nameFN,
+      skuFN,
+      barcodeFN,
+      generateFN,
+      categoryFN,
+      subCategoryFN,
+      variationFN,
+      unitFN,
+      mrpFN,
+      outPriceFN,
+      inPriceFN,
+      looseNoFN,
+      looseYesFN,
+      saveFN,
+    ]) {
+      fn.dispose();
+    }
+    super.dispose();
+  }
+
+  // ---------- Dropdown auto open ----------
+  void _openDropdown(GlobalKey key) {
+    final box = key.currentContext?.findRenderObject() as RenderBox?;
+    if (box == null) return;
+    final pos = box.localToGlobal(box.size.center(Offset.zero));
+    GestureBinding.instance.handlePointerEvent(PointerDownEvent(position: pos));
+    GestureBinding.instance.handlePointerEvent(PointerUpEvent(position: pos));
+  }
+
+  // ---------- Barcode logic ----------
+
+  void _save(BillingProvider p) {
+    FocusScope.of(context).unfocus();
+    if (p.loading) return;
+    if (!p.validatePrices3(p, context)) return;
+    p.insertCat(context);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return RawKeyboardListener(
+      autofocus: true,
+      focusNode: FocusNode(),
+      onKey: (e) {
+        if (e is RawKeyDownEvent &&
+            e.logicalKey == LogicalKeyboardKey.escape) {
+          Navigator.pop(context);
+          final billing = Provider.of<BillingProvider>(context, listen: false);
+          billing.dropdownFocusNode.requestFocus();
+        }
+      },
+      child: Dialog(
+        insetPadding: const EdgeInsets.all(16),
+        child: ChangeNotifierProvider.value(
+          value: context.read<BillingProvider>(),
+          child: Consumer<BillingProvider>(
+            builder: (context, p, _) {
+              return SizedBox(
+                width: 500,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text("Add Sub Category",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold)),
+                          IconButton(onPressed: (){
+                            Navigator.pop(context);
+                          }, icon: Icon(Icons.clear))
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      _field("Sub Category Name", p.category, nameFN, skuFN, cap: true),
+                      DropdownButtonFormField<Category>(
+                        key: _categoryKey,
+                        focusNode: categoryFN,
+                        decoration:
+                        const InputDecoration(labelText: "Category"),
+                        value: p.selectedCategory,
+                        items: p.categories
+                            .map((c) => DropdownMenuItem(
+                          value: c,
+                          child: Text(c.title),
+                        ))
+                            .toList(),
+                        onChanged: (v) {
+                          if (v != null) {
+                            p.setCategory(v.id);
+                            Future.delayed(
+                              const Duration(milliseconds: 80),
+                                  () {
+                                subCategoryFN.requestFocus();
+                                _openDropdown(_subCategoryKey);
+                              },
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: RawKeyboardListener(
+                          focusNode: saveFN,
+                          onKey: (e) {
+                            if (e is RawKeyDownEvent &&
+                                e.logicalKey == LogicalKeyboardKey.enter) {
+                              _save(p);
+                            }
+                          },
+                          child: SizedBox(
+                            width: 100,
+                            height: 48,
+                            child: ElevatedButton(
+                              onPressed: p.loading ? null : () => _save(p),
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorsConst.primary),
+                              child: const Text("Save",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                            ),
                           ),
                         ),
                       ),

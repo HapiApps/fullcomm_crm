@@ -209,7 +209,7 @@ class _RoleSettingState extends State<RoleSetting> {
         children: [
           SideBar(),
           Obx(()=> Container(
-            width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+            width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 160:MediaQuery.of(context).size.width - 60,
             height: MediaQuery.of(context).size.height,
             alignment: Alignment.center,
             padding: EdgeInsets.fromLTRB(16, 5, 16, 16),
@@ -1412,9 +1412,9 @@ class _RoleSettingState extends State<RoleSetting> {
 
                                     for (var data in pyrlCtr.settingList) {
                                       // Check if role or salary missing
-                                      debugPrint("data.role");
-                                      debugPrint(data.role.toString());
-                                      debugPrint(data.salary.text.trim());
+                                      // debugPrint("data.role");
+                                      // debugPrint(data.role.toString());
+                                      // debugPrint(data.salary.text.trim());
                                       if (data.roleName == "" && data.dName == "" || (data.salary.text.trim().isEmpty&& data.perDay.text.trim().isEmpty)) {
                                         hasInvalid = true;
                                         break;

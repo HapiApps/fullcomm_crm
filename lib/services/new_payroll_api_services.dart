@@ -42,9 +42,9 @@ class NewPayrollApiServices{
     );
 
     // json.decode(request.body);
-    print(data);
-    print("request.body");
-    debugPrint(response.body);
+    // print(data);
+    // print("request.body");
+    // debugPrint(response.body);
     // unitCtr.submitController.reset();
     if (response.statusCode == 401) {
       final refreshed = await controllers.refreshToken();
@@ -82,8 +82,8 @@ class NewPayrollApiServices{
     );
 
     // json.decode(request.body);
-    print("request.body");
-    debugPrint(response.body);
+    // print("request.body");
+    // debugPrint(response.body);
     // unitCtr.submitController.reset();
     if (response.statusCode == 401) {
       final refreshed = await controllers.refreshToken();
@@ -125,8 +125,8 @@ class NewPayrollApiServices{
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
       final List dataValue= json.decode(request.body);
-      debugPrint(data.toString());
-      debugPrint(request.body.toString());
+      // debugPrint(data.toString());
+      // debugPrint(request.body.toString());
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -142,11 +142,11 @@ class NewPayrollApiServices{
 
 
           Map<String, dynamic>? match2;
-            print("unitList[i].type ${unitList[i].type}");
+            // print("unitList[i].type ${unitList[i].type}");
           if(unitList[i].type=="2"){
             if (unitList[i].roleId != "null") {
               try {
-                debugPrint(Provider.of<EmployeeProvider>(context, listen: false).depList.toString());
+                // debugPrint(Provider.of<EmployeeProvider>(context, listen: false).depList.toString());
                 match2 = Provider.of<EmployeeProvider>(context, listen: false).depList
                     .firstWhere(
                       (item) => item['id'].toString() == unitList[i].roleId,
@@ -158,7 +158,7 @@ class NewPayrollApiServices{
           }else{
             if (unitList[i].roleId != "null") {
               try {
-                debugPrint(settingsController.roleList.toString());
+                // debugPrint(settingsController.roleList.toString());
                 match = settingsController.roleList
                     .firstWhere(
                       (item) => item.uId.toString() == unitList[i].roleId,
@@ -207,18 +207,18 @@ class NewPayrollApiServices{
         throw Exception('Failed to load album');
       }
     }catch(e){
-      debugPrint(e.toString());
+      // debugPrint(e.toString());
       pyrlCtr.getUnits.value=true;
       throw Exception('Failed to load album');
     }
   }
   Future<void> insertPayrollList(context,List<PayrollUserModel> dataList) async {
     try {
-      debugPrint("log");
-      debugPrint("print");
+      // debugPrint("log");
+      // debugPrint("print");
       final List<Map<String, dynamic>> empList =
       dataList.map((e) => e.toJson()).toList();
-      debugPrint(empList.toString());
+      // debugPrint(empList.toString());
 
       final Map<String, dynamic> sendData = {
         'action': "payroll_user_list",
@@ -228,7 +228,7 @@ class NewPayrollApiServices{
         "cos_id":controllers.storage.read("cos_id"),
         // "com_id":controllers.storage.read("com_id"),
       };
-      debugPrint(sendData.toString());
+      // debugPrint(sendData.toString());
 
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -263,8 +263,8 @@ class NewPayrollApiServices{
   }
   Future<void> updatePayrollList(context,List<PayrollUserModel> dataList,String slipId) async {
     try {
-      debugPrint("log");
-      debugPrint("print");
+      // debugPrint("log");
+      // debugPrint("print");
       final List<Map<String, dynamic>> empList =
       dataList.map((e) => e.toJson()).toList();
       final Map<String, dynamic> sendData = {

@@ -69,7 +69,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
           children: [
             SideBar(),
             Container(
-              width: MediaQuery.of(context).size.width - 150,
+              width: MediaQuery.of(context).size.width - 160,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
               padding: EdgeInsets.fromLTRB(16, 5, 16, 16),

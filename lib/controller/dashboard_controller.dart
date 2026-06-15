@@ -625,10 +625,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "lead_status": controllers.leadCategoryList.last.leadStatus,
       };
 
-      debugPrint("================================================");
-      debugPrint("REQUEST DATA");
-      debugPrint("================================================");
-      debugPrint(data.toString());
+      // debugPrint("================================================");
+      // debugPrint("REQUEST DATA");
+      // debugPrint("================================================");
+      // debugPrint(data.toString());
 
       final request = await http.post(
         Uri.parse(scriptApi),
@@ -639,9 +639,9 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      debugPrint("================================================");
-      debugPrint("RAW RESPONSE");
-      debugPrint("================================================");
+      // debugPrint("================================================");
+      // debugPrint("RAW RESPONSE");
+      // debugPrint("================================================");
       // debugPrint(request.body);
 
       if (request.statusCode == 401) {
@@ -854,10 +854,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
 
     } catch (e) {
 
-      debugPrint("================================================");
-      debugPrint("CATCH ERROR");
-      debugPrint("================================================");
-      debugPrint(e.toString());
+      // debugPrint("================================================");
+      // debugPrint("CATCH ERROR");
+      // debugPrint("================================================");
+      // debugPrint(e.toString());
 
       throw Exception(
           'Failed to load dashboard report $e');

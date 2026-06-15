@@ -3201,7 +3201,7 @@ var refreshValue=true.obs;
         // ✅ Store into RxList
         industriesList.assignAll(list);
         refreshValue.value=true;
-        debugPrint("Loaded Items: ${industriesList}");
+        // debugPrint("Loaded Items: ${industriesList}");
 
       } else {
         refreshValue.value=true;

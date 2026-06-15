@@ -196,7 +196,7 @@ class _OrderPageState extends State<OrderPage> {
           children: [
             SideBar(),
             Obx(()=>Container(
-              width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+              width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 160:MediaQuery.of(context).size.width - 60,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
               padding: EdgeInsets.fromLTRB(20, 5, 20, 16),

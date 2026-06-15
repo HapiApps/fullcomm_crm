@@ -144,7 +144,6 @@ class MailUtils {
   //                                 final mail = e["mail_id"];
   //                                 return mail != null && mail.trim().isNotEmpty && mail.trim() != "null";
   //                               }).toList();
-  //                               debugPrint("Mail $withMail");
   //                               // if(withMail.length>100){
   //                               //   Navigator.of(context).pop();
   //                               //   apiService.errorDialog(

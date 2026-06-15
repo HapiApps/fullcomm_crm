@@ -1109,7 +1109,6 @@ class ReminderUtils {
   //                             //   return;
   //                             // }
   //                             if (remController.titleController.text.trim().isEmpty) {
-  //                               debugPrint("❌ Validation Failed => Title Empty");
   //                               setState(() {
   //                                 titleError = "Please enter reminder title";
   //                               });
@@ -1118,7 +1117,6 @@ class ReminderUtils {
   //                             }
   //
   //                             if (remController.stDate.value.isEmpty) {
-  //                               debugPrint("❌ Validation Failed => Start Date Empty");
   //                               setState(() {
   //                                 startDError = "Please select start date";
   //                               });
@@ -1127,7 +1125,6 @@ class ReminderUtils {
   //                             }
   //
   //                             if (remController.stTime.value.isEmpty) {
-  //                               debugPrint("❌ Validation Failed => Start Time Empty");
   //                               setState(() {
   //                                 startTError = "Please select start time";
   //                               });
@@ -1136,7 +1133,6 @@ class ReminderUtils {
   //                             }
   //
   //                             // if (remController.enDate.value.isEmpty) {
-  //                             //   debugPrint("❌ Validation Failed => End Date Empty");
   //                             //   setState(() {
   //                             //     endDError = "Please select end date";
   //                             //   });
@@ -1145,7 +1141,6 @@ class ReminderUtils {
   //                             // }
   //                             //
   //                             // if (remController.enTime.value.isEmpty) {
-  //                             //   debugPrint("❌ Validation Failed => End Time Empty");
   //                             //   setState(() {
   //                             //     endTError = "Please select end time";
   //                             //   });
@@ -1154,7 +1149,6 @@ class ReminderUtils {
   //                             // }
   //
   //                             final selType = Provider.of<ReminderProvider>(context, listen: false).selectedNotification ?? "";
-  //                             debugPrint("Selected Type => $selType");
   //
   //                             final needEmployee = selType == "followup" || (selType != "followup" && selType != "meeting");
   //                             final needCustomer = selType == "meeting" || (selType != "followup" && selType != "meeting");

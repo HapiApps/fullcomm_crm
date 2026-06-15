@@ -48,7 +48,7 @@ class SideBar extends StatelessWidget {
       Obx(() =>
       controllers.isLeftOpen.value?
       Container(
-      width: 150,
+      width: 160,
       // width: 170,
       height: MediaQuery.of(context).size.height,
       decoration: BoxDecoration(
@@ -744,7 +744,7 @@ class SidebarItem extends StatelessWidget {
                       Image.asset(isSelected?selectedImage:isHovered.value?selectedImage:unSelectedImage,
                         width: 18,height: 18,
                       ),
-                      const SizedBox(width: 10),
+                      5.width,
                       Text(
                         label,
                         style: TextStyle(

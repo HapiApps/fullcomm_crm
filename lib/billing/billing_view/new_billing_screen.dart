@@ -145,7 +145,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
         "&am=${amount.toStringAsFixed(2)}"
         "&cu=INR";
 
-    debugPrint("UPI QR => $upiUrl");
 
     setState(() {
       qrData = upiUrl;
@@ -503,7 +502,6 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
                               final scanned = _lastScan;
                               _lastScan = '';
 
-                              debugPrint("📦 FINAL BARCODE => $scanned");
 
                               try {
                                 final product = billingProvider.productsList.firstWhere(
@@ -1073,7 +1071,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                       ),
                       AltOnlyIntent: CallbackAction<Intent>(
                         onInvoke: (intent) {
-                          print('Alt alone pressed!');
+                          // print('Alt alone pressed!');
                           return null;
                         },
                       ),
@@ -1113,7 +1111,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                               // =======================================
                               // if (billingProvider.billingItems.isNotEmpty) {
                               if (_isPrinting) {
-                                print("PRINT BLOCKED — ALREADY PRINTING");
+                                // print("PRINT BLOCKED — ALREADY PRINTING");
                                 return;
                               }
 
@@ -1132,8 +1130,8 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                   .selectBillMethod.toString();
                               final paymentId = paymentMap[selectedMethod] ?? '0';
 
-                              print(
-                                  "Payment Method: $selectedMethod, Payment ID: $paymentId");
+                              // print(
+                              //     "Payment Method: $selectedMethod, Payment ID: $paymentId");
 
                               final billStatus = selectedMethod == 'Credit'
                                   ? 0
@@ -1221,7 +1219,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                               // =======================================
                               // if (billingProvider.billingItems.isNotEmpty) {
                               if (_isPrinting) {
-                                print("PRINT BLOCKED — ALREADY PRINTING");
+                                // print("PRINT BLOCKED — ALREADY PRINTING");
                                 return;
                               }
 
@@ -1240,8 +1238,8 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                   .selectBillMethod.toString();
                               final paymentId = paymentMap[selectedMethod] ?? '0';
 
-                              print(
-                                  "Payment Method: $selectedMethod, Payment ID: $paymentId");
+                              // print(
+                              //     "Payment Method: $selectedMethod, Payment ID: $paymentId");
 
                               final billStatus = selectedMethod == 'Credit'
                                   ? 0
@@ -1418,7 +1416,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                       ),
                       F4Intent: CallbackAction<F4Intent>(
                         onInvoke: (intent) async {
-                          print("ðŸ‘‰ F2 Pressed");
+                          // print("ðŸ‘‰ F2 Pressed");
                           {
                             if (billingProvider.billingItems.isEmpty) {
                               billingProvider.printButtonController.reset();
@@ -5323,7 +5321,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
   }
 
   Future<pw.Document> generateInvoicePdf(BillingProvider billingPvr) async {
-    print(".......printInvoice");
+    // print(".......printInvoice");
     final pdf = pw.Document();
 
     pdf.addPage(

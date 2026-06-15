@@ -2267,7 +2267,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required DateTime? selectedMonth,
     required DateTimeRange? selectedRange,
   }) {
-    debugPrint("dataList length: ${dataList.length}");
+    // debugPrint("dataList length: ${dataList.length}");
 
     DateTime parseDate(String dateStr) {
       final formats = [
@@ -2530,7 +2530,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
     remController.callMailsDetailsList.assignAll(filtered);
 
-    debugPrint("FINAL COUNT: ${remController.callMailsDetailsList.length}");
+    // debugPrint("FINAL COUNT: ${remController.callMailsDetailsList.length}");
   }
   // void filterAndSortMeetings({
   //   required String searchText,
@@ -2793,7 +2793,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required String sortField,
     required String sortOrder,
   }) {
-    debugPrint("Calling dMeetings.......");
+    // debugPrint("Calling dMeetings.......");
 
     var filtered = [...controllers.meetingActivity];
 
@@ -2984,7 +2984,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     // controllers.allCancelled.value = cancelled.length.toString();
 
 
-    debugPrint("dMeetings ${dMeetings.length}");
+    // debugPrint("dMeetings ${dMeetings.length}");
   }
 
   void sortMeetings({
@@ -4292,9 +4292,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     filteredList.sort((a, b) => b.sentDate.compareTo(a.sentDate));
     mailFilteredList.assignAll(filteredList);
 
- debugPrint("remController.selectedMailSortBy.value ${remController.selectedMailSortBy.value}");
- debugPrint("controllers.mailActivity ${controllers.mailActivity}");
- debugPrint("mailFilteredList ${mailFilteredList.length}");
+ // debugPrint("remController.selectedMailSortBy.value ${remController.selectedMailSortBy.value}");
+ // debugPrint("controllers.mailActivity ${controllers.mailActivity}");
+ // debugPrint("mailFilteredList ${mailFilteredList.length}");
   }
 
   DateTime _parseMailDate(String? date, DateFormat dateFormatter) {
@@ -4459,7 +4459,7 @@ void unSelectAllAppointments() {
 
             // Skip empty dates
             if (dateStr.trim().isEmpty) {
-              debugPrint("Empty date skipped");
+              // debugPrint("Empty date skipped");
               continue;
             }
 

@@ -34,7 +34,6 @@ class PlaceOrderRepository {
   //       return PlacedOrderResponse.fromJson(data);
   //
   //     } else {
-  //       debugPrint("placeOrder Error : ${response.body} \n"
   //           "Reason:${response.reasonPhrase}");
   //
   //       throw "Error on billing";
@@ -137,14 +136,21 @@ class PlaceOrderRepository {
   static Future<List<Category>> getCategories() async {
     final body = jsonEncode({
       "action": "b_select_cat", // 👈 backend action
+      "cos_id": controllers.storage.read("cos_id"), // 👈 backend action
     });
 
     try {
       final response = await http.post(
-        Uri.parse(ApiUrl.script),
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+        Uri.parse(scriptApi),
         body: body,
       );
-
+    // print("get categories....");
+    // print(body);
+    // print(response.body);
       final decoded = jsonDecode(response.body);
 
       if (decoded['responseCode'] == 200) {
@@ -170,7 +176,8 @@ class PlaceOrderRepository {
         },
         body: body,
       );
-
+      print(body);
+      print(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

@@ -246,7 +246,7 @@ class EmployeeRepository {
         return CommonResponse.fromJson(data);
 
       }else{
-        log("Employee Insert Error");
+        // log("Employee Insert Error");
         throw Exception();
       }
     }
@@ -285,7 +285,7 @@ class EmployeeRepository {
         return CommonResponse.fromJson(data);
 
       }else{
-        log("employeeId Delete Error");
+        // log("employeeId Delete Error");
         throw Exception();
       }
     }

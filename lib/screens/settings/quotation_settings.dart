@@ -46,7 +46,7 @@ class _QuotationSettingsState extends State<QuotationSettings> {
         children: [
           SideBar(),
           Obx(()=> Container(
-            width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+            width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 160:MediaQuery.of(context).size.width - 60,
             height: MediaQuery.of(context).size.height,
             alignment: Alignment.center,
             padding: EdgeInsets.fromLTRB(16, 5, 16, 16),

@@ -39,50 +39,53 @@ class _VisitingCardPageState extends State<VisitingCardPage> {
   bool isLoading = false;
 
   /// IMAGE PICK + OCR
-  // Future<void> pickImageAndScan() async {
-  //   final uploadInput = html.FileUploadInputElement();
-  //   uploadInput.accept = 'image/*';
-  //   uploadInput.click();
-  //
-  //   uploadInput.onChange.listen((event) async {
-  //     final file = uploadInput.files!.first;
-  //
-  //     final reader = html.FileReader();
-  //     reader.readAsArrayBuffer(file);
-  //     await reader.onLoad.first;
-  //
-  //     imageBytes = reader.result as Uint8List;
-  //
-  //     // base64 convert
-  //     reader.readAsDataUrl(file);
-  //     await reader.onLoad.first;
-  //     final base64Image = reader.result as String;
-  //
-  //     setState(() => isLoading = true);
-  //
-  //     try {
-  //       /// OCR call
-  //       final ocrText = await readTextFromImage(base64Image);
-  //
-  //       print("OCR RESULT = $ocrText");
-  //
-  //       /// parse text → fields
-  //       final card = parseOCRText(ocrText);
-  //
-  //       nameController.text = card.name;
-  //       companyController.text = card.company;
-  //       jobController.text = card.jobTitle;
-  //       phoneController.text = card.phone;
-  //       emailController.text = card.email;
-  //       websiteController.text = card.website;
-  //       locationController.text = card.location;
-  //     } catch (e) {
-  //       print("OCR ERROR: $e");
-  //     }
-  //
-  //     setState(() => isLoading = false);
-  //   });
-  // }
+  Future<void> pickImageAndScan() async {
+    final uploadInput = html.FileUploadInputElement();
+    uploadInput.accept = 'image/*';
+    uploadInput.click();
+
+    uploadInput.onChange.listen((event) async {
+      final file = uploadInput.files!.first;
+
+      final reader = html.FileReader();
+      reader.readAsArrayBuffer(file);
+      await reader.onLoad.first;
+
+      imageBytes = reader.result as Uint8List;
+
+      reader.readAsDataUrl(file);
+      await reader.onLoad.first;
+      final base64Image = reader.result as String;
+
+      setState(() => isLoading = true);
+
+      try {
+        final ocrText = await readTextFromImage(base64Image);
+
+        print("OCR RESULT = $ocrText");
+
+        final card = parseOCRText(ocrText);
+
+        setState(() {
+          nameController.text = card.name;
+          companyController.text = card.company;
+          jobController.text = card.jobTitle;
+          phoneController.text = card.phone;
+          emailController.text = card.email;
+          websiteController.text = card.website;
+          locationController.text = card.location;
+        });
+      } catch (e) {
+        print("OCR ERROR : $e");
+        Get.snackbar(
+          "Error",
+          "Unable to read visiting card",
+        );
+      }
+
+      setState(() => isLoading = false);
+    });
+  }
 
   Widget buildField(
       String label,
@@ -158,7 +161,7 @@ class _VisitingCardPageState extends State<VisitingCardPage> {
           children: [
             SideBar(),
             Container(
-              width: screenWidth - 150,
+              width: screenWidth - 160,
               height: MediaQuery.of(context).size.height,
               // alignment: Alignment.center,
               padding: EdgeInsets.all(20),
@@ -213,10 +216,10 @@ class _VisitingCardPageState extends State<VisitingCardPage> {
                       ),
 
                     /// SCAN BUTTON
-                    // OutlinedButton(
-                    //   onPressed: pickImageAndScan,
-                    //   child: CustomText(text:"Scan Visiting Card",isCopy: false,isBold: true,size: 15,),
-                    // ),
+                    OutlinedButton(
+                      onPressed: pickImageAndScan,
+                      child: CustomText(text:"Scan Visiting Card",isCopy: false,isBold: true,size: 15,),
+                    ),
 
                     SizedBox(height: 20),
 
@@ -343,7 +346,7 @@ VisitingCardData parseOCRText(String text) {
   if (emailMatch != null) data.email = emailMatch.group(0)!;
 
   // PHONE
-  final phoneRegex = RegExp(r'\+?\d[\d\s]{8,}');
+  final phoneRegex =RegExp(r'(\+91[\s-]?)?[6-9]\d{9}');
   final phoneMatch = phoneRegex.firstMatch(text);
   if (phoneMatch != null) data.phone = phoneMatch.group(0)!;
 
@@ -357,7 +360,11 @@ VisitingCardData parseOCRText(String text) {
     r'\d{2,5}\s+[A-Za-z0-9\s]+,\s*[A-Za-z\s]+',
     caseSensitive: false,
   );
+  final lines = text.split('\n');
 
+  if (lines.isNotEmpty) {
+    data.name = lines.first.trim();
+  }
   final addressMatch = addressRegex.firstMatch(text);
 
   if (addressMatch != null &&

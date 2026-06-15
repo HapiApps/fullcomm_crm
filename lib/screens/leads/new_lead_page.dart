@@ -69,8 +69,8 @@ class _NewLeadPageState extends State<NewLeadPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    debugPrint("widget.list: ${widget.list}");
-    debugPrint("widget.list2: ${widget.list}");
+    // debugPrint("widget.list: ${widget.list}");
+    // debugPrint("widget.list2: ${widget.list}");
     // debugPrint("widget.list: ${widget.list.length}");
     // debugPrint("widget.list2: ${widget.list2.length}");
     _focusNode = FocusNode();
@@ -150,7 +150,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
           children: [
             SideBar(),
             Obx(() => Container(
-              width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+              width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 160:MediaQuery.of(context).size.width - 60,
                 height: MediaQuery.of(context).size.height,
                 alignment: Alignment.center,
                 padding: EdgeInsets.fromLTRB(20, 5, 20, 16),
@@ -247,7 +247,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
                         mailUtils.bulkEmail(_focusNode, list: widget.list);
                       },
                       onPromote: () {
-                        debugPrint("onTapppp");
                         // showDialog(
                         //   context: context,
                         //   builder: (context) {
@@ -796,7 +795,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                         }).toList();
 
                         widget.list.value = suggestions;
-                        print("onchanged called");
+                        // print("onchanged called");
 
                         controllers.selectRadio(widget.list, widget.list2);
                       },
