@@ -1134,7 +1134,7 @@ class _ProductPageState extends State<ProductPage> {
                                                                                 Navigator.pop(context);
                                                                               },
                                                                               child: CustomText(
-                                                                                text: "Cancel",
+                                                                                text: "No",
                                                                                 isCopy: false,
                                                                                 colors: colorsConst.primary,
                                                                                 size: 14,
@@ -1143,7 +1143,7 @@ class _ProductPageState extends State<ProductPage> {
                                                                         10.width,
                                                                         CustomLoadingButton(
                                                                           callback: (){
-                                                                            context.read<BillingProvider>().manageProduct(context,p.id,p.isSheet.toString()=="1"?"2":"1");
+                                                                            context.read<BillingProvider>().manageProduct(context,p.id,p.isSheet.toString()=="1"?"2":"1",p.pTitle.toString(),p.outPrice.toString());
                                                                           },
                                                                           height: 35,
                                                                           isLoading: true,
@@ -1152,7 +1152,7 @@ class _ProductPageState extends State<ProductPage> {
                                                                           width: 80,
                                                                           controller: controllers.productCtr,
                                                                           isImage: false,
-                                                                          text: "Delete",
+                                                                          text: "Yes",
                                                                           textColor: Colors.white,
                                                                         ),
                                                                       ],

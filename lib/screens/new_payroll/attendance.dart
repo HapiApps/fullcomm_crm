@@ -105,7 +105,9 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
       _focusNode.requestFocus();
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
       employeeData.staffRoleDetailsData(context: context);
-      services.getRoleSettings(context);
+      if(pyrlCtr.settingList.isEmpty){
+        services.getRoleSettings(context);
+      }
       pyrlCtr.unitName=null;
       pyrlCtr.empName=null;
       pyrlCtr.duty.clear();

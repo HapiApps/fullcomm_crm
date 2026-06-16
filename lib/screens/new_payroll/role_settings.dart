@@ -125,7 +125,9 @@ class _RoleSettingState extends State<RoleSetting> {
       FocusScope.of(context).requestFocus(f1);
       pyrlCtr.isAdd.value=false;
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
-      services.getRoleSettings(context);
+      if(pyrlCtr.settingList.isEmpty){
+        services.getRoleSettings(context);
+      }
       if(settingsController.roleList.isEmpty){
         settingsController.allRoles();
       }
@@ -1468,28 +1470,65 @@ class _RoleSettingState extends State<RoleSetting> {
                                   });
                                 }
 
+                                // void calculatePFandESI() {
+                                //   setState(() {
+                                //     double pfWages = double.tryParse(data.pfWages.text) ?? 0.0;
+                                //     double esiWages = double.tryParse(data.esiWages.text) ?? 0.0;
+                                //
+                                //     if(data.monthlyWages==true){
+                                //       double pf = (pfWages * 0.12).roundToDouble(); // 12% rounded
+                                //       double esi = (esiWages * 0.0075).roundToDouble(); // 0.75% rounded
+                                //
+                                //       data.pf.text = pf.toStringAsFixed(0);
+                                //       data.esi.text = esi.toStringAsFixed(0);
+                                //     }else{
+                                //       double pf = pfWages * 0.12; // 12% rounded
+                                //       double esi = esiWages * 0.0075; // 0.75% rounded
+                                //
+                                //       data.pf.text = pf.toString();
+                                //       data.esi.text = esi.toString();
+                                //     }
+                                //     calculateAmounts();
+                                //   });
+                                // }
                                 void calculatePFandESI() {
                                   setState(() {
-                                    double pfWages = double.tryParse(data.pfWages.text) ?? 0.0;
-                                    double esiWages = double.tryParse(data.esiWages.text) ?? 0.0;
+                                    double salary =
+                                        double.tryParse(data.monthlyWages == true
+                                            ? data.salary.text
+                                            : data.perDay.text) ??
+                                            0.0;
 
-                                    if(data.monthlyWages==true){
-                                      double pf = (pfWages * 0.12).roundToDouble(); // 12% rounded
-                                      double esi = (esiWages * 0.0075).roundToDouble(); // 0.75% rounded
+                                    double pfInput = double.tryParse(data.pfWages.text) ?? 0.0;
+                                    double esiInput = double.tryParse(data.esiWages.text) ?? 0.0;
 
-                                      data.pf.text = pf.toStringAsFixed(0);
-                                      data.esi.text = esi.toStringAsFixed(0);
-                                    }else{
-                                      double pf = pfWages * 0.12; // 12% rounded
-                                      double esi = esiWages * 0.0075; // 0.75% rounded
+                                    double pf;
+                                    double esi;
 
-                                      data.pf.text = pf.toString();
-                                      data.esi.text = esi.toString();
+                                    // If entered value is <= 100, consider it as percentage
+                                    if (pfInput <= 100) {
+                                      pf = salary * (pfInput / 100);
+                                    } else {
+                                      pf = pfInput * 0.12;
                                     }
+
+                                    if (esiInput <= 100) {
+                                      esi = salary * (esiInput / 100);
+                                    } else {
+                                      esi = esiInput * 0.0075;
+                                    }
+
+                                    if (data.monthlyWages == true) {
+                                      data.pf.text = pf.round().toString();
+                                      data.esi.text = esi.round().toString();
+                                    } else {
+                                      data.pf.text = pf.toStringAsFixed(2);
+                                      data.esi.text = esi.toStringAsFixed(2);
+                                    }
+
                                     calculateAmounts();
                                   });
                                 }
-
                                 return Column(
                                   children: [
                                     Row(
@@ -1643,9 +1682,9 @@ class _RoleSettingState extends State<RoleSetting> {
                                         ),
                                         CustomTextField(text: "PT",hintText: "PT",controller: data.pt,
                                           width: screenWidth/5,
-                                          focusNode: f12,
+                                          focusNode: f14,
                                           onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f13);
+                                            FocusScope.of(context).requestFocus(f15);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
@@ -1680,9 +1719,9 @@ class _RoleSettingState extends State<RoleSetting> {
                                         ),
                                         CustomTextField(text: "Others",hintText: "Others",controller: data.oH,
                                           width: screenWidth/5,
-                                          focusNode: f13,
+                                          focusNode: f15,
                                           onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f14);
+                                            FocusScope.of(context).requestFocus(f16);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
@@ -1717,9 +1756,9 @@ class _RoleSettingState extends State<RoleSetting> {
                                         ),
                                         CustomTextField(text: "Deduction",hintText: "Deduction",controller: data.deduction,
                                           width: screenWidth/5,
-                                          focusNode: f14,
+                                          focusNode: f16,
                                           onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f15);
+                                            FocusScope.of(context).requestFocus(f17);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
@@ -1754,9 +1793,9 @@ class _RoleSettingState extends State<RoleSetting> {
                                         ),
                                         CustomTextField(text: "Total Amount",hintText: "Total Amount",controller: data.totalAmt,
                                           width: screenWidth/5,
-                                          focusNode: f15,
+                                          focusNode: f17,
                                           onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f16);
+                                            FocusScope.of(context).requestFocus(f18);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
@@ -1789,10 +1828,10 @@ class _RoleSettingState extends State<RoleSetting> {
                                         ),
                                         CustomTextField(text: "Net Pay",hintText: "Net Pay",controller: data.netPay,
                                           width: screenWidth/5,
-                                          focusNode: f16,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f17);
-                                          },
+                                          focusNode: f18,
+                                          // onFieldSubmitted: (_){
+                                          //   FocusScope.of(context).requestFocus(f17);
+                                          // },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculateAmounts(),

@@ -1929,12 +1929,15 @@ class BillingProvider with ChangeNotifier{
     }
   }
 
-  Future<void> manageProduct(BuildContext context,String id,String active) async {
+  Future<void> manageProduct(BuildContext context,String id,String active,String name,String price) async {
     final success = await PlaceOrderRepository.insertProduct({
       "action": "manage_products",
       "product_id": id,
+      "name": name,
+      "price": price,
       "active": active,
-      "updated_by": controllers.storage.read("id")});
+      "updated_by": controllers.storage.read("id"),
+      "cos_id": controllers.storage.read("cos_id")});
     if (success) {
       Navigator.pop(context);
       clearProductForm();

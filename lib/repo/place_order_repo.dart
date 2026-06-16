@@ -176,8 +176,8 @@ class PlaceOrderRepository {
         },
         body: body,
       );
-      print(body);
-      print(response.body);
+      // print(body);
+      // print(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
