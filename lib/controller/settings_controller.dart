@@ -306,6 +306,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
+      debugPrint("request ${data}");
       debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {

@@ -94,6 +94,7 @@ class _RoleManagementState extends State<RoleManagement> {
                           fontSize: 17,
                         ),
                         onChanged: (value){
+                          controllers.firstCaps(value, settingsController.roleController);
                           if(settingsController.roleController.text.trim().isNotEmpty){
                             setState(() {
                               roleError = null;
@@ -138,6 +139,9 @@ class _RoleManagementState extends State<RoleManagement> {
                             color: Colors.black,
                             fontSize: 17,
                           ),
+                          onChanged: (value){
+                            controllers.firstCaps(value, settingsController.descriptionController);
+                          },
                           decoration: InputDecoration(
                             hintText: "Description",
                             errorText: descriptionError,
@@ -363,6 +367,7 @@ class _RoleManagementState extends State<RoleManagement> {
                           fontSize: 17,
                         ),
                         onChanged: (value){
+                          controllers.firstCaps(value, settingsController.updateRoleController);
                           if(settingsController.updateRoleController.text.trim().isNotEmpty){
                             setState(() {
                               roleError = null;
@@ -407,6 +412,9 @@ class _RoleManagementState extends State<RoleManagement> {
                             color: Colors.black,
                             fontSize: 17,
                           ),
+                          onChanged: (value){
+                            controllers.firstCaps(value, settingsController.upDescriptionController);
+                          },
                           decoration: InputDecoration(
                             hintText: "Description",
                             errorText: descriptionError,
@@ -823,7 +831,8 @@ class _RoleManagementState extends State<RoleManagement> {
                                                       isBold: true,
                                                       isCopy: true,
                                                       colors: colorsConst.textColor,
-                                                    ),                                                                  actions: [
+                                                    ),
+                                                    actions: [
                                                     Row(
                                                       mainAxisAlignment: MainAxisAlignment.end,
                                                       children: [

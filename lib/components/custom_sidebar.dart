@@ -199,7 +199,8 @@ class SideBar extends StatelessWidget {
                           child: isExpanded?
                           Container(
                             width: 110,alignment: Alignment.centerLeft,
-                            child: subItem(context, controllers.isLeadsExpanded,controllers.isSettingsExpanded,controllers.leadCategoryList[index].value, int.parse(controllers.leadCategoryList[index].leadStatus),
+                            child: subItem(context, controllers.isLeadsExpanded,controllers.isSettingsExpanded,controllers.leadCategoryList[index].value,
+                              int.parse(controllers.leadCategoryList[index].leadStatus),
                               NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
                               name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
                               list2: controllers.leadCategoryList[index].list2, listIndex: index,),

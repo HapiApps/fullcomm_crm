@@ -1875,130 +1875,130 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                                         ],
                                                                       ),
                                                                     ),
-                                                                    SizedBox(
-                                                                      width:480,
-                                                                      child: Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                        children: [
-
-                                                                          /// DATE
-                                                                          Column(
-                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              RichText(
-                                                                                text: const TextSpan(
-                                                                                  children: [
-                                                                                    TextSpan(
-                                                                                      text: "To Date",
-                                                                                      style: TextStyle(color: Colors.black, fontSize: 13),
-                                                                                    ),
-                                                                                    TextSpan(
-                                                                                      text: "*",
-                                                                                      style: TextStyle(color: Colors.red, fontSize: 13),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                              Obx(() => InkWell(
-                                                                                onTap: () {
-                                                                                  utils.datePicker(
-                                                                                    context: context,
-                                                                                    textEditingController: controllers.dateOfConCtr,
-                                                                                    pathVal: controllers.toDate,
-                                                                                  );
-                                                                                  setState(() => enDateError = null);
-                                                                                },
-                                                                                child: Container(
-                                                                                  height: 40,
-                                                                                  width:480/2.2,
-                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                                                  decoration: BoxDecoration(
-                                                                                    border: Border.all(color: Colors.grey.shade400),
-                                                                                    borderRadius: BorderRadius.circular(5),
-                                                                                  ),
-                                                                                  child: Row(
-                                                                                    children: [
-                                                                                      const Icon(Icons.calendar_month_outlined, size: 15),
-                                                                                      5.width,
-                                                                                      CustomText(
-                                                                                        text: controllers.toDate.value,
-                                                                                        isCopy: false,
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                              )),
-
-                                                                              if (enDateError.toString().isNotEmpty)
-                                                                                CustomText(
-                                                                                  text: enDateError.toString(),
-                                                                                  colors: Colors.red,
-                                                                                  size: 12,
-                                                                                  isCopy: false,
-                                                                                ),
-                                                                            ],
-                                                                          ),
-
-                                                                          /// TIME
-                                                                          Column(
-                                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                                            children: [
-                                                                              RichText(
-                                                                                text: const TextSpan(
-                                                                                  children: [
-                                                                                    TextSpan(
-                                                                                      text: "To Time",
-                                                                                      style: TextStyle(color: Colors.black, fontSize: 13),
-                                                                                    ),
-                                                                                    TextSpan(
-                                                                                      text: "*",
-                                                                                      style: TextStyle(color: Colors.red, fontSize: 13),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                              ),
-                                                                              Obx(() => InkWell(
-                                                                                onTap: () {
-                                                                                  utils.timePicker(
-                                                                                    context: context,
-                                                                                    textEditingController: controllers.timeOfConCtr,
-                                                                                    pathVal: controllers.toTime,
-                                                                                  );
-                                                                                  setState(() => enTimeError = null);
-                                                                                },
-                                                                                child: Container(
-                                                                                  height: 40,
-                                                                                  width:480/2.2,
-                                                                                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                                                                                  decoration: BoxDecoration(
-                                                                                    border: Border.all(color: Colors.grey.shade400),
-                                                                                    borderRadius: BorderRadius.circular(5),
-                                                                                  ),
-                                                                                  child: Row(
-                                                                                    children: [
-                                                                                      const Icon(Icons.access_time, size: 15),
-                                                                                      5.width,
-                                                                                      CustomText(
-                                                                                        text: controllers.toTime.value,
-                                                                                        isCopy: false,
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                ),
-                                                                              )),
-
-                                                                              if (enTimeError.toString().isNotEmpty)
-                                                                                CustomText(
-                                                                                  text: enTimeError.toString(),
-                                                                                  colors: Colors.red,
-                                                                                  size: 12,
-                                                                                  isCopy: false,
-                                                                                ),
-                                                                            ],
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ),
+                                                                    // SizedBox(
+                                                                    //   width:480,
+                                                                    //   child: Row(
+                                                                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                    //     children: [
+                                                                    //
+                                                                    //       /// DATE
+                                                                    //       Column(
+                                                                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    //         children: [
+                                                                    //           RichText(
+                                                                    //             text: const TextSpan(
+                                                                    //               children: [
+                                                                    //                 TextSpan(
+                                                                    //                   text: "To Date",
+                                                                    //                   style: TextStyle(color: Colors.black, fontSize: 13),
+                                                                    //                 ),
+                                                                    //                 TextSpan(
+                                                                    //                   text: "*",
+                                                                    //                   style: TextStyle(color: Colors.red, fontSize: 13),
+                                                                    //                 ),
+                                                                    //               ],
+                                                                    //             ),
+                                                                    //           ),
+                                                                    //           Obx(() => InkWell(
+                                                                    //             onTap: () {
+                                                                    //               utils.datePicker(
+                                                                    //                 context: context,
+                                                                    //                 textEditingController: controllers.dateOfConCtr,
+                                                                    //                 pathVal: controllers.toDate,
+                                                                    //               );
+                                                                    //               setState(() => enDateError = null);
+                                                                    //             },
+                                                                    //             child: Container(
+                                                                    //               height: 40,
+                                                                    //               width:480/2.2,
+                                                                    //               padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                    //               decoration: BoxDecoration(
+                                                                    //                 border: Border.all(color: Colors.grey.shade400),
+                                                                    //                 borderRadius: BorderRadius.circular(5),
+                                                                    //               ),
+                                                                    //               child: Row(
+                                                                    //                 children: [
+                                                                    //                   const Icon(Icons.calendar_month_outlined, size: 15),
+                                                                    //                   5.width,
+                                                                    //                   CustomText(
+                                                                    //                     text: controllers.toDate.value,
+                                                                    //                     isCopy: false,
+                                                                    //                   ),
+                                                                    //                 ],
+                                                                    //               ),
+                                                                    //             ),
+                                                                    //           )),
+                                                                    //
+                                                                    //           if (enDateError.toString().isNotEmpty)
+                                                                    //             CustomText(
+                                                                    //               text: enDateError.toString(),
+                                                                    //               colors: Colors.red,
+                                                                    //               size: 12,
+                                                                    //               isCopy: false,
+                                                                    //             ),
+                                                                    //         ],
+                                                                    //       ),
+                                                                    //
+                                                                    //       /// TIME
+                                                                    //       Column(
+                                                                    //         crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    //         children: [
+                                                                    //           RichText(
+                                                                    //             text: const TextSpan(
+                                                                    //               children: [
+                                                                    //                 TextSpan(
+                                                                    //                   text: "To Time",
+                                                                    //                   style: TextStyle(color: Colors.black, fontSize: 13),
+                                                                    //                 ),
+                                                                    //                 TextSpan(
+                                                                    //                   text: "*",
+                                                                    //                   style: TextStyle(color: Colors.red, fontSize: 13),
+                                                                    //                 ),
+                                                                    //               ],
+                                                                    //             ),
+                                                                    //           ),
+                                                                    //           Obx(() => InkWell(
+                                                                    //             onTap: () {
+                                                                    //               utils.timePicker(
+                                                                    //                 context: context,
+                                                                    //                 textEditingController: controllers.timeOfConCtr,
+                                                                    //                 pathVal: controllers.toTime,
+                                                                    //               );
+                                                                    //               setState(() => enTimeError = null);
+                                                                    //             },
+                                                                    //             child: Container(
+                                                                    //               height: 40,
+                                                                    //               width:480/2.2,
+                                                                    //               padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                                    //               decoration: BoxDecoration(
+                                                                    //                 border: Border.all(color: Colors.grey.shade400),
+                                                                    //                 borderRadius: BorderRadius.circular(5),
+                                                                    //               ),
+                                                                    //               child: Row(
+                                                                    //                 children: [
+                                                                    //                   const Icon(Icons.access_time, size: 15),
+                                                                    //                   5.width,
+                                                                    //                   CustomText(
+                                                                    //                     text: controllers.toTime.value,
+                                                                    //                     isCopy: false,
+                                                                    //                   ),
+                                                                    //                 ],
+                                                                    //               ),
+                                                                    //             ),
+                                                                    //           )),
+                                                                    //
+                                                                    //           if (enTimeError.toString().isNotEmpty)
+                                                                    //             CustomText(
+                                                                    //               text: enTimeError.toString(),
+                                                                    //               colors: Colors.red,
+                                                                    //               size: 12,
+                                                                    //               isCopy: false,
+                                                                    //             ),
+                                                                    //         ],
+                                                                    //       ),
+                                                                    //     ],
+                                                                    //   ),
+                                                                    // ),
                                                                     /// CUSTOMER DROPDOWN
                                                                     Column(
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -2169,24 +2169,25 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                                         return;
                                                                       }
 
-                                                                      if (controllers.toDate.value.isEmpty) {
-                                                                        setState(() => enDateError = "Select end date");
-                                                                        controllers.productCtr.reset();
-                                                                        return;
-                                                                      }
-
-                                                                      if (controllers.toTime.value.isEmpty) {
-                                                                        setState(() => enTimeError = "Select to time");
-                                                                        controllers.productCtr.reset();
-                                                                        return;
-                                                                      }
+                                                                      // if (controllers.toDate.value.isEmpty) {
+                                                                      //   setState(() => enDateError = "Select end date");
+                                                                      //   controllers.productCtr.reset();
+                                                                      //   return;
+                                                                      // }
+                                                                      //
+                                                                      // if (controllers.toTime.value.isEmpty) {
+                                                                      //   setState(() => enTimeError = "Select to time");
+                                                                      //   controllers.productCtr.reset();
+                                                                      //   return;
+                                                                      // }
 
                                                                       if (controllers.selectedCustomerId.value.isEmpty) {
                                                                         setState(() => customerError = "Select lead name");
                                                                         controllers.productCtr.reset();
                                                                         return;
                                                                       }
-
+                                                                      controllers.toDate.value = DateFormat('dd-MM-yyyy').format(DateTime.parse(controllers.fDate.value));
+                                                                      controllers.toTime.value = DateFormat('hh.mm a').format(DateTime.parse(controllers.fTime.value).add(const Duration(minutes: 30)));
                                                                       apiService.updateMeetingDetailsAPI(context,data.id);
                                                                     }, isLoading: true, backgroundColor: colorsConst.primary, radius: 5, width: 100,
                                                                   ),

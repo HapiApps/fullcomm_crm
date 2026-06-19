@@ -367,6 +367,13 @@ void checkDate(){
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
+                                                  if(controllers.comName.text.isNotEmpty)
+                                                  Padding(
+                                                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                    child: CustomText(
+                                                        text:controllers.comName.text,size:18,isBold: true,isCopy: false,colors:Colors.white
+                                                    ),
+                                                  ),
                                                   CustomText(
                                                       text:"ARUU's EasyCRM",size:18,isBold: true,isCopy: false,colors:Colors.white
                                                   ),5.height,
@@ -2873,145 +2880,122 @@ void checkDate(){
               for (int i = 0; i < controllers.leadCategoryList.length; i++)
                 _animatedLeadItem(
                   index: 0,
-                  // child: Column(
-                  //   crossAxisAlignment: CrossAxisAlignment.start,
-                  //   mainAxisAlignment: MainAxisAlignment.start,
-                  //   children: [
-                  //     Row(
-                  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //       children: [
-                  //         Row(
-                  //           children: [
-                  //             Container(
-                  //               height: 30,
-                  //               width: 30,
-                  //               alignment: Alignment.center,
-                  //               decoration: BoxDecoration(
-                  //                 color: controllers.leadColors[i].withOpacity(0.10),
-                  //                 shape: BoxShape.circle,
-                  //               ),
-                  //               child: Container(
-                  //                 height: 12,
-                  //                 width: 12,
-                  //                 decoration: BoxDecoration(
-                  //                   color: controllers.leadColors[i],
-                  //                   shape: BoxShape.circle,
-                  //                 ),
-                  //               ),
-                  //             ),10.width,
-                  //             CustomText(
-                  //               text:  controllers.leadCategoryList[i].value.toUpperCase(),
-                  //               isCopy: false,
-                  //               size: 11,
-                  //               isBold: true,
-                  //               colors: controllers.leadColors[i],
-                  //             ),
-                  //           ],
-                  //         ),
-                  //         CustomText(
-                  //           text: controllers.leadCategoryList[i].list.length.toString(),
-                  //           isCopy: false,
-                  //           size: 14,
-                  //           isBold: true,
-                  //           colors: controllers.leadColors[i],
-                  //         ),
-                  //       ],
-                  //     ),
-                  //     if(i!=controllers.leadCategoryList.length-1)
-                  //     Padding(
-                  //       padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                  //       child: Container(
-                  //         height: 25,color: Colors.grey.shade300,width: 2,
-                  //       ),
-                  //     ),
-                  //   ],
-                  // ),
-                  child: MouseRegion(
-                    onEnter: (_) {
-                      setState(() {
-                        hoverIndex = i;
-                      });
+                  child: InkWell(
+                    onTap: (){
+                      for (var i = 0; i < controllers.leadCategoryList.length - 1; i++) {
+                        if (controllers.selectedIndex.value ==
+                            int.parse(controllers.leadCategoryList[i]
+                                .leadStatus)) {
+                          break;
+                        }
+                      }
+                      controllers.oldIndex.value = controllers.selectedIndex.value;
+                      // controllers.selectedIndex.value = 7;
+                      controllers.selectedIndex.value = 500;
+                      controllers.isLeadsExpanded.toggle();
+                      if(controllers.selectedQualifiedSortBy.value==""){
+                        controllers.selectedQualifiedSortBy.value="All";
+                      }
+                      controllers.isSettingsExpanded.value=false;
+                      controllers.isPayrollExpanded.value=false;
+                      Navigator.push(
+                        context,
+                        PageRouteBuilder(
+                          pageBuilder: (context, animation1, animation2) => NewLeadPage(index: controllers.leadCategoryList[i].leadStatus,
+                            name: controllers.leadCategoryList[i].value,list: controllers.leadCategoryList[i].list,
+                            list2: controllers.leadCategoryList[i].list2, listIndex: i,),
+                          transitionDuration: Duration.zero,
+                          reverseTransitionDuration: Duration.zero,
+                        ),
+                      );
                     },
-                    onExit: (_) {
-                      setState(() {
-                        hoverIndex = -1;
-                      });
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Container(
-                              height: 40,
-                              width: 40,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: controllers.leadColors[i].withOpacity(0.10),
-                                shape: BoxShape.circle,
-                              ),
-                              child: Container(
-                                height: 20,
-                                width: 20,
+                    child: MouseRegion(
+                      onEnter: (_) {
+                        setState(() {
+                          hoverIndex = i;
+                        });
+                      },
+                      onExit: (_) {
+                        setState(() {
+                          hoverIndex = -1;
+                        });
+                      },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                height: 40,
+                                width: 40,
+                                alignment: Alignment.center,
                                 decoration: BoxDecoration(
-                                  color: controllers.leadColors[i],
+                                  color: controllers.leadColors[i].withOpacity(0.10),
                                   shape: BoxShape.circle,
                                 ),
-                                child: Center(
-                                  child: CustomText(text: controllers.leadCategoryList[i].displayOrder.toString(),
-                                    isCopy: false,isBold: true,colors: Colors.white,textAlign: TextAlign.center,),
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    color: controllers.leadColors[i],
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Center(
+                                    child: CustomText(text: controllers.leadCategoryList[i].displayOrder.toString(),
+                                      isCopy: false,isBold: true,colors: Colors.white,textAlign: TextAlign.center,),
+                                  ),
                                 ),
                               ),
-                            ),
-                            10.width,
-                            Container(
-                              height: 40,
-                              decoration: BoxDecoration(
-                                color: hoverIndex == i
-                                    ? controllers.leadColors[i].withOpacity(0.08) // 🔥 hover color
-                                    : Colors.transparent,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(5),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    SizedBox(
-                                      // color:Colors.cyanAccent,
-                                      width: MediaQuery.of(context).size.width*0.05,
-                                      child: CustomText(
-                                        text: controllers.leadCategoryList[i].value.toUpperCase(),
+                              10.width,
+                              Container(
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: hoverIndex == i
+                                      ? controllers.leadColors[i].withOpacity(0.08) // 🔥 hover color
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(5),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      SizedBox(
+                                        // color:Colors.cyanAccent,
+                                        width: MediaQuery.of(context).size.width*0.05,
+                                        child: CustomText(
+                                          text: controllers.leadCategoryList[i].value.toUpperCase(),
+                                          isCopy: false,
+                                          textAlign: TextAlign.start,
+                                          size: 11,
+                                          isBold: true,
+                                          colors: controllers.leadColors[i],
+                                        ),
+                                      ),
+                                      CustomText(
+                                        text: controllers.leadCategoryList[i].list.length.toString(),
                                         isCopy: false,
-                                        textAlign: TextAlign.start,
-                                        size: 11,
+                                        size: 14,
                                         isBold: true,
                                         colors: controllers.leadColors[i],
                                       ),
-                                    ),
-                                    CustomText(
-                                      text: controllers.leadCategoryList[i].list.length.toString(),
-                                      isCopy: false,
-                                      size: 14,
-                                      isBold: true,
-                                      colors: controllers.leadColors[i],
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        if (i != controllers.leadCategoryList.length - 1)
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
-                            child: Container(
-                              height: 20,
-                              color: Colors.grey.shade300,
-                              width: 2,
-                            ),
+                            ],
                           ),
-                      ],
+                          if (i != controllers.leadCategoryList.length - 1)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 0, 0, 0),
+                              child: Container(
+                                height: 20,
+                                color: Colors.grey.shade300,
+                                width: 2,
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
                 ),

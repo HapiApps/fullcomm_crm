@@ -1772,12 +1772,12 @@ class BillingProvider with ChangeNotifier{
     final double outPriceVal = double.tryParse(outPrice.text.trim()) ?? 0;
     final double inPriceVal = double.tryParse(inPrice.text.trim()) ?? 0;
 
-    if (
-    mrpVal <= outPriceVal ||
-        inPriceVal >= outPriceVal) {
-      _toast(context, "Check price values");
-      return;
-    }
+    // if (
+    // mrpVal <= outPriceVal ||
+    //     inPriceVal >= outPriceVal) {
+    //   _toast(context, "Check price values");
+    //   return;
+    // }
 
     loading = true;
     notifyListeners();
@@ -1871,12 +1871,12 @@ class BillingProvider with ChangeNotifier{
     final double outPriceVal = double.tryParse(outPrice.text.trim()) ?? 0;
     final double inPriceVal = double.tryParse(inPrice.text.trim()) ?? 0;
 
-    if (
-    mrpVal <= outPriceVal ||
-        inPriceVal >= outPriceVal) {
-      _toast(context, "Check price values");
-      return;
-    }
+    // if (
+    // mrpVal <= outPriceVal ||
+    //     inPriceVal >= outPriceVal) {
+    //   _toast(context, "Check price values");
+    //   return;
+    // }
 
     loading = true;
     notifyListeners();
@@ -1898,6 +1898,7 @@ class BillingProvider with ChangeNotifier{
       "mrp": mrpVal,
       "out_price": outPriceVal,
       "in_price": inPriceVal,
+      "cos_id": controllers.storage.read("cos_id").toString(),
     });
 
     loading = false;
@@ -2039,14 +2040,22 @@ class BillingProvider with ChangeNotifier{
     }
 
     // MRP > Out Price
-    if (mrp <= outPrice) {
-      utils.showToast("MRP must be greater than Out Price",Colors.red);
+    // if (mrp <= outPrice) {
+    //   utils.showToast("MRP must be greater than Out Price",Colors.red);
+    //   return false;
+    // }
+    if (inPrice >= mrp) {
+      utils.showToast("In Price must be less than MRP",Colors.red);
       return false;
     }
-
     // In Price < Out Price
     if (inPrice >= outPrice) {
       utils.showToast("In Price must be less than Out Price",Colors.red);
+      return false;
+    }
+
+    if (outPrice != mrp&&outPrice >= mrp) {
+      utils.showToast("Out Price must be less than MRP",Colors.red);
       return false;
     }
 
