@@ -865,7 +865,7 @@ void checkDate(){
                                       title: "Orders",
                                       numericValue: int.parse(dashController.totalOrders.value.toString()),
                                       maxValue: maxValue,
-                                      iconPath: DashboardAssets.cart,amt: productCtr.formatAmount(dashController.totalAmt.value),
+                                      iconPath: DashboardAssets.cart,amt: productCtr.formatAmount2(dashController.totalAmt.value),
                                       valueColor: Colors.pink,
                                     ),
                                     WaveStatCard(

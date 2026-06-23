@@ -442,6 +442,19 @@ var isSelectAll=false.obs;
       return "₹0";
     }
   }
+  String formatAmount2(dynamic amount) {
+    try {
+      final formatted = NumberFormat.currency(
+        locale: 'en_IN',
+        symbol: '₹',
+        decimalDigits: 0,
+      ).format(double.parse(amount));
+
+      return formatted;
+    } catch (e) {
+      return "₹0";
+    }
+  }
   var selectedPrdIds = <String>[].obs;
   void selectAllCalls() {
     selectedPrdIds.assignAll(products.map((e) => e.id.toString()).toList());
@@ -1891,6 +1904,9 @@ var isSelectAll=false.obs;
     quotationsList.assignAll(filtered);
   }
   late TabController productTab;
+  void changeTab(int index) {
+    productCtr.productTab.index=index;
+  }
   @override
   void onInit() {
     productTab = TabController(length: 2, vsync: this);
@@ -1899,9 +1915,7 @@ var isSelectAll=false.obs;
     super.onInit();
   }
 
-  void changeTab(int index) {
-    productTab.animateTo(index);
-  }
+
 
   String showCrtDate(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return "";

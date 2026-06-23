@@ -3806,113 +3806,129 @@ void appointmentStatus(context,String value){
 
 
   void parseExcelFile(Uint8List bytes, BuildContext context, String leadStatus) async {
-    //debugPrint("Bites $bytes");
+    // debugPrint("Bites $bytes");
+    print(bytes.length);
+    print(bytes.take(20).toList());
     customerData = [];
     controllers.customerCtr.start();
-    var excelD = excel.Excel.decodeBytes(bytes);
+    // var excelD = excel.Excel.decodeBytes(bytes);
+    try {
+      var excelD = excel.Excel.decodeBytes(bytes);
+      for (var table in excelD.tables.keys) {
+        debugPrint("rows ${excelD.tables[table]!.rows}");
+        var rows = excelD.tables[table]!.rows;
 
-    for (var table in excelD.tables.keys) {
-      debugPrint("rows ${excelD.tables[table]!.rows}");
-      var rows = excelD.tables[table]!.rows;
-
-      if (rows.length < 6) {
-        Navigator.of(context).pop();
-        apiService.errorDialog(context, "Excel format is invalid. Needs min 6 rows (3 empty, system, display, billing_data).");
-        return;
-      }
-      const expectedKeys = [
-        "name", "phone_no", "email", "city", "owner", "designation", "department",
-        "company_name", "source", "source_details", "lead_status", "prospect_enrollment_date",
-        "expected_convertion_date", "details_of_service_required", "discussion_point",
-        "product_discussion", "rating", "status_update", "status",
-        "num_of_headcount", "expected_billing_value", "arpu_value", "expected_billing_value",
-      ];
-      // ✅ Row 4 = system keys
-      List<String> systemKeys = rows[3]
-          .map((c) => (c?.value?.toString().trim() ?? ""))
-          .toList();
-
-      if (systemKeys.every((e) => e.isEmpty)) {
-        Navigator.of(context).pop();
-        apiService.errorDialog(context, "Excel format invalid. Row 4 (system fields) cannot be empty.");
-        return;
-      }
-      final missing = expectedKeys.where((key) => !systemKeys.contains(key)).toList();
-      if (missing.isNotEmpty) {
-        Navigator.of(context).pop();
-        apiService.errorDialog(
-          context,
-          "Please enter correct system fields. Missing or incorrect: ${missing.join(', ')}",
-        );
-        return;
-      }
-      // ✅ Row 5 = display names
-      List<String> displayNames = rows[4]
-          .map((c) => (c?.value?.toString().trim() ?? ""))
-          .toList();
-
-      if (displayNames.every((e) => e.isEmpty)) {
-        Navigator.of(context).pop();
-        apiService.errorDialog(context, "Excel format invalid. Row 5 (display headings) cannot be empty.");
-        return;
-      }
-
-      // 🔽 Build field mappings
-      List<Map<String, String>> fieldMappings = [];
-      for (int i = 0; i < systemKeys.length; i++) {
-        if (systemKeys[i].isNotEmpty) {
-          fieldMappings.add({
-            "cos_id": controllers.storage.read("cos_id").toString(),
-            "system_field": systemKeys[i],
-            "display_name": (i < displayNames.length && displayNames[i].isNotEmpty)
-                ? displayNames[i]
-                : systemKeys[i],
-            "created_by": controllers.storage.read("id").toString(),
-          });
+        if (rows.length < 6) {
+          Navigator.of(context).pop();
+          apiService.errorDialog(context, "Excel format is invalid. Needs min 6 rows (3 empty, system, display, billing_data).");
+          return;
         }
-      }
+        const expectedKeys = [
+          "name", "phone_no", "email", "city", "owner", "designation", "department",
+          "company_name", "source", "source_details", "lead_status", "prospect_enrollment_date",
+          "expected_convertion_date", "details_of_service_required", "discussion_point",
+          "product_discussion", "rating", "status_update", "status",
+          "num_of_headcount", "expected_billing_value", "arpu_value", "expected_billing_value",
+        ];
+        // ✅ Row 4 = system keys
+        List<String> systemKeys = rows[3]
+            .map((c) => (c?.value?.toString().trim() ?? ""))
+            .toList();
 
-      // 🔽 Parse billing_data rows (from row 6 → index 5 onwards)
-      for (var i = 5; i < rows.length; i++) {
-        var row = rows[i];
-        bool isRowEmpty = row.every((cell) =>
-        cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
-        if (isRowEmpty) continue;
+        if (systemKeys.every((e) => e.isEmpty)) {
+          Navigator.of(context).pop();
+          apiService.errorDialog(context, "Excel format invalid. Row 4 (system fields) cannot be empty.");
+          return;
+        }
+        final missing = expectedKeys.where((key) => !systemKeys.contains(key)).toList();
+        if (missing.isNotEmpty) {
+          Navigator.of(context).pop();
+          apiService.errorDialog(
+            context,
+            "Please enter correct system fields. Missing or incorrect: ${missing.join(', ')}",
+          );
+          return;
+        }
+        // ✅ Row 5 = display names
+        List<String> displayNames = rows[4]
+            .map((c) => (c?.value?.toString().trim() ?? ""))
+            .toList();
 
-        Map<String, dynamic> formattedData = {};
-        List<Map<String, String>> additionalFields = [];
+        if (displayNames.every((e) => e.isEmpty)) {
+          Navigator.of(context).pop();
+          apiService.errorDialog(context, "Excel format invalid. Row 5 (display headings) cannot be empty.");
+          return;
+        }
 
-        for (int j = 0; j < systemKeys.length; j++) {
-          String key = systemKeys[j];
-          var value = row[j]?.value?.toString().trim() ?? "";
-
-          if (key.isNotEmpty) {
-            formattedData[key] = value;
-          } else {
-            additionalFields.add({
-              "field_name": (j < displayNames.length) ? displayNames[j] : "",
-              "field_value": value,
+        // 🔽 Build field mappings
+        List<Map<String, String>> fieldMappings = [];
+        for (int i = 0; i < systemKeys.length; i++) {
+          if (systemKeys[i].isNotEmpty) {
+            fieldMappings.add({
+              "cos_id": controllers.storage.read("cos_id").toString(),
+              "system_field": systemKeys[i],
+              "display_name": (i < displayNames.length && displayNames[i].isNotEmpty)
+                  ? displayNames[i]
+                  : systemKeys[i],
+              "created_by": controllers.storage.read("id").toString(),
             });
           }
         }
 
-        formattedData["user_id"] = controllers.storage.read("id");
-        formattedData["cos_id"] = controllers.storage.read("cos_id");
-        formattedData["lead_status"] = leadStatus=="0"?"0":formattedData["lead_status"] ?? leadStatus;
-        formattedData["additional_fields"] = additionalFields;
+        // 🔽 Parse billing_data rows (from row 6 → index 5 onwards)
+        for (var i = 5; i < rows.length; i++) {
+          var row = rows[i];
+          bool isRowEmpty = row.every((cell) =>
+          cell == null || cell.value == null || cell.value.toString().trim().isEmpty);
+          if (isRowEmpty) continue;
 
-        customerData.add(formattedData);
+          Map<String, dynamic> formattedData = {};
+          List<Map<String, String>> additionalFields = [];
+
+          for (int j = 0; j < systemKeys.length; j++) {
+            String key = systemKeys[j];
+            var value = row[j]?.value?.toString().trim() ?? "";
+
+            if (key.isNotEmpty) {
+              formattedData[key] = value;
+            } else {
+              additionalFields.add({
+                "field_name": (j < displayNames.length) ? displayNames[j] : "",
+                "field_value": value,
+              });
+            }
+          }
+
+          formattedData["user_id"] = controllers.storage.read("id");
+          formattedData["cos_id"] = controllers.storage.read("cos_id");
+          formattedData["lead_status"] = leadStatus=="0"?"0":formattedData["lead_status"] ?? leadStatus;
+          formattedData["additional_fields"] = additionalFields;
+
+          customerData.add(formattedData);
+        }
+
+        // 🔽 Final Payload
+        Map<String, dynamic> finalPayload = {
+          "field_mappings": fieldMappings,
+          "cusList": customerData,
+        };
+
+        debugPrint("Payload: ${jsonEncode(finalPayload)}");
+
+        await apiService.insertCustomersAPI(context, customerData, fieldMappings, bytes, "CRMSheet");
       }
 
-      // 🔽 Final Payload
-      Map<String, dynamic> finalPayload = {
-        "field_mappings": fieldMappings,
-        "cusList": customerData,
-      };
+    } catch (e, s) {
+      debugPrint("Excel Decode Error: $e");
+      debugPrint("$s");
 
-      debugPrint("Payload: ${jsonEncode(finalPayload)}");
+      Navigator.of(context).pop();
 
-      await apiService.insertCustomersAPI(context, customerData, fieldMappings, bytes, "CRMSheet");
+      apiService.errorDialog(
+        context,
+        "Invalid Excel file. Please upload a valid .xlsx file.",
+      );
+      return;
     }
   }
 

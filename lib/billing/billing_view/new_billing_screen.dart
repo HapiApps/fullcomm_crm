@@ -5376,7 +5376,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
                           // rowText("Quotation No:", (10000 + Random().nextInt(90000)).toString()),
-                          rowText("Quotation No:", getNextQuotationNo(productCtr.quotationsList2.first.quotationNo)),
+                          rowText("Quotation No:", productCtr.quotationsList2.isEmpty?controllers.qNo.text:getNextQuotationNo(productCtr.quotationsList2.first.quotationNo)),
                           rowText("Quotation Date:", DateFormat("dd-MM-yyyy").format(DateTime.now())),
                           // rowText("OrderNo:", data.id),
                         ],

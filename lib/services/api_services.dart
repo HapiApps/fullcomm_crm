@@ -40,6 +40,7 @@ import '../models/meeting_obj.dart';
 import '../models/month_report_obj.dart';
 import '../screens/DashboardPage.dart';
 import '../screens/order/order_page.dart';
+import '../screens/quotation/quotation_page.dart';
 
 final ApiService apiService = ApiService._();
 
@@ -1207,6 +1208,57 @@ class ApiService {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
           return updateMeetingDetailsAPI(context,id);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200 && response["message"] == "OK") {
+        getAllMeetingActivity("");
+        controllers.clearSelectedCustomer();
+        controllers.meetingTitleCrt.text = "";
+        controllers.meetingVenueCrt.text = "";
+        controllers.fDate.value = "";
+        controllers.toDate.value = "";
+        controllers.fTime.value = "";
+        controllers.toTime.value = "";
+        controllers.callCommentCont.text = "";
+        Navigator.pop(context);
+        controllers.productCtr.reset();
+      } else {
+        errorDialog(Get.context!, request.body);
+        controllers.productCtr.reset();
+      }
+    } on SocketException {
+      controllers.productCtr.reset();
+      errorDialog(Get.context!, 'No internet connection');
+    } on HttpException catch (e) {
+      controllers.productCtr.reset();
+      errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
+    } catch (e) {
+      errorDialog(Get.context!, e.toString());
+      controllers.productCtr.reset();
+    }
+  }
+  Future test(BuildContext context) async {
+    try {
+      Map data = {
+        "action": "list_products",
+        "cos_id": controllers.storage.read("cos_id"),
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      debugPrint("request.body");
+      debugPrint(data.toString());
+      debugPrint(request.body);
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return test(context);
         } else {
           controllers.setLogOut();
         }
@@ -3507,7 +3559,7 @@ class ApiService {
         Provider.of<BillingProvider>(context, listen: false).billingItems.clear();
         productCtr.getQuotationDetails();
         Navigator.pop(Get.context!);
-        controllers.changeTab(0);
+        productCtr.changeTab(0);
         controllers.emailCtr.reset();
       } else {
         controllers.emailCtr.reset();
@@ -3519,7 +3571,8 @@ class ApiService {
     }
   }
   Future insertInvoiceAPI(BuildContext context,pw.Document pdf,String productListJson) async {
-    try {
+    // try {
+    print("insertInvoiceAPI");
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
       request.fields['clientMail'] = controllers.selectedCustomerEmail.value;
       request.fields['subject'] = controllers.emailSubjectCtr.text;
@@ -3584,10 +3637,10 @@ class ApiService {
         controllers.emailCtr.reset();
         errorDialog(Get.context!, "Mail has been not sent");
       }
-    } catch (e) {
-      errorDialog(Get.context!, e.toString());
-      controllers.emailCtr.reset();
-    }
+    // } catch (e) {
+    //   errorDialog(Get.context!, e.toString());
+    //   controllers.emailCtr.reset();
+    // }
   }
   Future insertPOAPI(BuildContext context,String email,String cId,String qId,String cName) async {
     try {
