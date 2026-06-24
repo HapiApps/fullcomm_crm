@@ -1162,7 +1162,7 @@ class _ProductPageState extends State<ProductPage> {
                                                               },
                                                             );
                                                           },
-                                                          icon: Icon(Icons.check_circle_outlined,color: p.isSheet.toString()=="1"?Colors.green:Colors.grey,))
+                                                          icon: Icon(Icons.sell,color: p.isSheet.toString()=="1"?Colors.green:Colors.grey,))
                                                     ],
                                                   ),
                                                   _dataCell(1, p.skuId ?? "-"),
