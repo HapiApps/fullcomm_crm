@@ -266,7 +266,7 @@ class _UnitSlipState extends State<UnitSlip> {
                     pyrlCtr.unitPayrollList.isEmpty ?
                     Center(
                       child: SizedBox(
-                        height: 500,width: 300,
+                          height: 500,width: 500,
                           child: const CustomNoData()),
                     ):
                     Expanded(

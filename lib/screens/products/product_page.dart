@@ -1100,7 +1100,7 @@ class _ProductPageState extends State<ProductPage> {
                                                             height: 16,
                                                           )),
                                                       IconButton(
-                                                          tooltip: 'Show Google Sheet',
+                                                          tooltip: 'Manage Whatsapp Product',
                                                           onPressed: (){
                                                             showDialog(
                                                               context: context,
@@ -1162,7 +1162,7 @@ class _ProductPageState extends State<ProductPage> {
                                                               },
                                                             );
                                                           },
-                                                          icon: Icon(Icons.remove_red_eye_outlined,color: p.isSheet.toString()=="1"?Colors.green:Colors.grey,))
+                                                          icon: Icon(Icons.check_circle_outlined,color: p.isSheet.toString()=="1"?Colors.green:Colors.grey,))
                                                     ],
                                                   ),
                                                   _dataCell(1, p.skuId ?? "-"),

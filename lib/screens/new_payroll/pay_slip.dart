@@ -213,7 +213,11 @@ class _PaySlipState extends State<PaySlip> {
                       child: CircularProgressIndicator(),
                     ):
                     empId=="" ?
-                    Center(child: const CustomText(text: "\n\n\n\n\n\nSelect Employee Name", isCopy: true,isBold: true,size: 18,)) :
+                    Center(
+                      child: SizedBox(
+                          height: 500,width: 500,
+                          child: const CustomNoData()),
+                    ):
                     pyrlCtr.unitPayrollList.isEmpty ?
                     Center(
                       child: SizedBox(

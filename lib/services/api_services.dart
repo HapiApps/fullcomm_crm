@@ -5070,8 +5070,8 @@ debugPrint(response.body);
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      // print("request.body");
-      // print(request.body);
+      print("request.body");
+      print(data.toString());
       controllers.versionActive.value = false;
       controllers.updateAvailable.value = false;
       if (request.statusCode == 401) {
