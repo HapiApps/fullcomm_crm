@@ -33,6 +33,7 @@ import '../controller/product_controller.dart';
 import '../controller/reminder_controller.dart';
 import '../controller/settings_controller.dart';
 import '../models/customer_activity.dart';
+import '../models/customer_chat_obj.dart';
 import '../models/customer_full_obj.dart';
 import '../models/employee_obj.dart';
 import '../models/mail_receive_obj.dart';
@@ -5548,6 +5549,62 @@ debugPrint(response.body);
       throw Exception('Unexpected error employee: ${e.toString()}');
     }
   }
+
+  Future<void> getCustomerChats(String id) async {
+    controllers.chatLoading.value = false;
+    controllers.customerChatDetails.clear();
+    final url = Uri.parse(scriptApi);
+    try {
+      Map data={
+        "search_type": "customer_chats",
+        "cos_id": controllers.storage.read("cos_id"),
+        "id": id,
+        "action": "get_data"
+      };
+      final response = await http.post(
+        url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+
+        body: jsonEncode(data),
+      );
+      debugPrint("customer_chats");
+      debugPrint(data.toString());
+      debugPrint(response.body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getCustomerChats(id);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List;
+        controllers.customerChatDetails.value = data.map((json) => ChatModel.fromJson(json)).toList();
+        controllers.chatLoading.value=true;
+      } else {
+        controllers.customerChatDetails.clear();
+        controllers.chatLoading.value=true;
+        throw Exception('Failed to load leads: Status code ${response.body}');
+      }
+    } on SocketException {
+      controllers.customerChatDetails.clear();
+      controllers.chatLoading.value=true;
+      throw Exception('No internet connection');
+    } on HttpException catch (e) {
+      controllers.customerChatDetails.clear();
+      controllers.chatLoading.value=true;
+      throw Exception('Server error: ${e.toString()}');
+    } catch (e) {
+      controllers.customerChatDetails.clear();
+      controllers.chatLoading.value=true;
+      throw Exception('Unexpected error: ${e.toString()}');
+    }
+  }
+
   /// New Leads -santhiya
   List<Map<String, String>> newLeadList = [];
 
@@ -5557,23 +5614,25 @@ debugPrint(response.body);
     controllers.allLeadList.clear();
     final url = Uri.parse(scriptApi);
     try {
+      Map data={
+        "search_type": "all_leads",
+        "cos_id": controllers.storage.read("cos_id"),
+        "role": controllers.storage.read("role"),
+        "id": controllers.storage.read("id"),
+        "lead_id": "",
+        "action": "get_data"
+      };
       final response = await http.post(
         url,
         headers: {
           'X-API-TOKEN': "${TokenStorage().readToken()}",
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          "search_type": "all_leads",
-          "cos_id": controllers.storage.read("cos_id"),
-          "role": controllers.storage.read("role"),
-          "id": controllers.storage.read("id"),
-          "lead_id": "",
-          "action": "get_data"
-        }),
+
+        body: jsonEncode(data),
       );
       // debugPrint("all_leads");
-      // debugPrint(controllers.storage.read("cos_id"));
+      // debugPrint(data.toString());
       // debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();

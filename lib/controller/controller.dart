@@ -19,6 +19,7 @@ import '../common/utilities/utils.dart';
 import '../common/widgets/log_in.dart';
 import '../models/comments_obj.dart';
 import '../models/customer_activity.dart';
+import '../models/customer_chat_obj.dart';
 import '../models/customer_full_obj.dart';
 import '../models/employee_obj.dart';
 import '../models/mail_receive_obj.dart';
@@ -3344,7 +3345,7 @@ var otp = "".obs,sentOtp = "".obs;
   RxString radioSortBy = "All".obs;
   var idList = [].obs,dateList = [].obs,
       isMainPersonList = [].obs,
-      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,allLeadList=<NewLeadObj>[].obs,ratingList=<NewLeadObj>[].obs,ratingList2=<NewLeadObj>[].obs,
+      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,customerChatDetails=<ChatModel>[].obs,allLeadList=<NewLeadObj>[].obs,ratingList=<NewLeadObj>[].obs,ratingList2=<NewLeadObj>[].obs,
       newLeadList=<NewLeadObj>[].obs,searchNewLeadList=<NewLeadObj>[].obs,
       isLeadsList = [].obs,
       isGoodLeadList = [].obs,
@@ -3382,6 +3383,7 @@ var otp = "".obs,sentOtp = "".obs;
       light = false.obs,
       isImageLoaded = false.obs,
       isLead = true.obs,
+      chatLoading = true.obs,
       isCrmData = true.obs,
       isCustomer = true.obs,
       isProduct = true.obs,

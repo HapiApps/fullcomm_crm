@@ -93,6 +93,7 @@ dependencies:
   oktoast: ^3.4.0
   dotted_line:
   spreadsheet_decoder:
+  emoji_picker_flutter:
 dev_dependencies:
   flutter_test:
     sdk: flutter

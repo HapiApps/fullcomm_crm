@@ -14,6 +14,7 @@ import '../controller/new_payroll_controller.dart';
 import '../controller/product_controller.dart';
 import '../controller/reminder_controller.dart';
 import '../screens/DashboardPage.dart';
+import '../screens/chat/chat_dashboard.dart';
 import '../screens/leads/new_lead_page.dart';
 import '../screens/employee/employee_screen.dart';
 import '../screens/employee/role_management.dart';
@@ -500,6 +501,17 @@ class SideBar extends StatelessWidget {
             }),
 
             // Logout item (special because it shows dialog)
+            SidebarItem(
+              context: context,
+              controllers: controllers,
+              colorsConst: colorsConst,
+              selectedImage: "assets/images/s_logout.png",
+              unSelectedImage: "assets/images/u_logout.png",
+              index: 109,
+              icon: Icons.logout,
+              label: "Chat",
+              page: const ChatDashboard(),
+            ),
             SidebarItem(
               context: context,
               controllers: controllers,

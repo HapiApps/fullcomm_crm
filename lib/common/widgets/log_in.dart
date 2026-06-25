@@ -44,8 +44,8 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
       controllers.loginNumber.text = mobileNumber.toString();
       controllers.loginPassword.text = password.toString();
       if (kDebugMode) {
-        controllers.loginNumber.text = isRelease==false?"9900000000":"9585245494";
-        controllers.loginPassword.text = isRelease==false?"a1b2CC###":"";//hU#yB$7E%5
+        controllers.loginNumber.text = isRelease==false?"9585245494":"9585245494";
+        controllers.loginPassword.text = isRelease==false?"Ansp@ce#2":"";//hU#yB$7E%5
       }
     });
   }

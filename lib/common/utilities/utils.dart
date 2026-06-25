@@ -3664,7 +3664,20 @@ void appointmentStatus(context,String value){
       context: context!,
       initialDate: dateTime,
       firstDate: DateTime(DateTime.now().year - 1, 1, 1),
-      lastDate: DateTime(2030),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: Theme.of(context).colorScheme.copyWith(
+              primary: Colors.blue,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+            disabledColor: Colors.grey.shade100,
+          ),
+          child: child!,
+        );
+      },
     );
 
     debugPrint("Selected Date From Picker : $value");
