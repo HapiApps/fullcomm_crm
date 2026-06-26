@@ -3,7 +3,16 @@ import 'package:get/get.dart';
 import 'new_lead_obj.dart';
 
 class AllCustomersObj {
-  final String id, name, companyName, phoneNo, email, leadStatus, category;
+  final String id;
+  final String name;
+  final String companyName;
+  final String phoneNo;
+  final String email;
+  final String category;
+  final String leadStatus;
+  String? message;
+  String? createdTs;
+  String? type;
 
   AllCustomersObj({
     required this.id,
@@ -13,6 +22,9 @@ class AllCustomersObj {
     required this.email,
     required this.leadStatus,
     required this.category,
+    this.message,
+    this.createdTs,
+    this.type,
   });
 
   factory AllCustomersObj.fromJson(Map<String, dynamic> json) {
@@ -29,6 +41,9 @@ class AllCustomersObj {
       email: (json['email'] == 'null' || json['email'] == null)
           ? ''
           : json['email'].toString(),
+      message: json['message']?.toString() ?? '',
+      createdTs: json['created_ts']?.toString() ?? '',
+      type: json['type']?.toString() ?? '',
     );
   }
 
@@ -42,7 +57,36 @@ class AllCustomersObj {
       'email': email,
       'lead_status': leadStatus,
       'category': category,
+      'message': message,
+      'created_ts': createdTs,
+      'type': type,
     };
+  }
+
+  AllCustomersObj copyWith({
+    String? id,
+    String? name,
+    String? companyName,
+    String? phoneNo,
+    String? email,
+    String? category,
+    String? leadStatus,
+    String? message,
+    String? createdTs,
+    String? type,
+  }) {
+    return AllCustomersObj(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      companyName: companyName ?? this.companyName,
+      phoneNo: phoneNo ?? this.phoneNo,
+      email: email ?? this.email,
+      category: category ?? this.category,
+      leadStatus: leadStatus ?? this.leadStatus,
+      message: message ?? this.message,
+      createdTs: createdTs ?? this.createdTs,
+      type: type ?? this.type,
+    );
   }
 }
 

@@ -3324,8 +3324,13 @@ class Utils {
                       //   controllers.productCtr.reset();
                       //   return;
                       // }
-                      controllers.toDate.value = DateFormat('dd-MM-yyyy').format(DateTime.parse(controllers.fDate.value));
-                      controllers.toTime.value = DateFormat('hh.mm a').format(DateTime.parse(controllers.fTime.value).add(const Duration(minutes: 30)));
+                      controllers.toDate.value = controllers.fDate.value;
+                      final time = DateFormat('hh.mm a').parse(controllers.fTime.value);
+
+                      controllers.toTime.value =
+                          DateFormat('hh.mm a').format(
+                            time.add(const Duration(minutes: 30)),
+                          );
                       apiService.insertMeetingDetailsAPI(context);
                     }, isLoading: true, backgroundColor: colorsConst.primary, radius: 5, width: 100,
                   ),

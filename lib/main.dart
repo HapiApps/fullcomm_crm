@@ -99,6 +99,7 @@ class _MyAppState extends State<MyApp> {
       apiService.getRoles();
       apiService.getSheet();
       apiService.getAllCustomers();
+      apiService.getAllChatCustomers();
       apiService.getOpenedMailActivity(true);
       apiService.getReplyMailActivity(true);
       apiService.getAllCallActivity("");

@@ -5,6 +5,7 @@ import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
+import '../common/constant/assets_constant.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/constant/dashboard_assets.dart';
 import '../common/constant/default_constant.dart';
@@ -505,8 +506,8 @@ class SideBar extends StatelessWidget {
               context: context,
               controllers: controllers,
               colorsConst: colorsConst,
-              selectedImage: "assets/images/s_logout.png",
-              unSelectedImage: "assets/images/u_logout.png",
+              selectedImage: assets.whatsapp,
+              unSelectedImage: assets.whatsapp,
               index: 109,
               icon: Icons.logout,
               label: "Chat",

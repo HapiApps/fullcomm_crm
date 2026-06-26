@@ -10,6 +10,7 @@ import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import '../../components/Customtext.dart';
 import '../../controller/controller.dart';
+import '../../models/customer_chat_obj.dart';
 
 class ChatScreen extends StatefulWidget {
   final String id;
@@ -41,13 +42,20 @@ class _ChatScreenState extends State<ChatScreen> {
     messageController.text.trim();
 
     if (text.isEmpty) return;
-
     setState(() {
-      // messages.add({
-      //   "message": text,
-      //   "type": "text",
-      // });
+      controllers.customerChatDetails.add(ChatModel(id: '', type: '0', message: text, isRead: '0', createdTs: DateTime.now().toString()));
+      for (int i = 0; i < controllers.chatCustomers.length; i++) {
+        if (controllers.chatCustomers[i].id == widget.id) {
+          controllers.chatCustomers[i] = controllers.chatCustomers[i].copyWith(
+            message: text,
+            createdTs: DateTime.now().toString(),
+            type: "0",
+          );
+          break;
+        }
+      }
     });
+    apiService.sendWhatAppMessage(context,text,widget.number,widget.id);
 
     messageController.clear();
 
@@ -230,6 +238,22 @@ class _ChatScreenState extends State<ChatScreen> {
                   }
 
                   bool isSender = msg.type.toString() == "0";
+
+
+                  Map<String, dynamic>? data;
+
+                  if (msg.message.trim().startsWith("{")) {
+                    try {
+                      data = jsonDecode(msg.message);
+
+                      if (data?["type"] != "interactive") {
+                        data = null;
+                      }
+                    } catch (e) {
+                      data = null;
+                    }
+                  }
+
                   return Column(
                     children: [
 
@@ -303,7 +327,12 @@ class _ChatScreenState extends State<ChatScreen> {
                                 ),
                               ),
                             ),
-                            child:Column(
+                            child:data!=null?
+                            interactiveBubble(
+                              msg,
+                              isSender,
+                            ):
+                            Column(
                               crossAxisAlignment:CrossAxisAlignment.start,
                               children: [
                                 CustomText(
@@ -533,7 +562,8 @@ class _ChatScreenState extends State<ChatScreen> {
             child: TextField(
               controller:
               messageController,
-              onChanged: (_) {
+              onChanged: (value) {
+                controllers.firstCaps(value, messageController);
                 setState(() {});
               },
               onSubmitted: (_) {
@@ -660,6 +690,77 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         child: Center(
           child: Text(text),
+        ),
+      ),
+    );
+  }
+  Widget interactiveBubble(dynamic msg, bool isSender) {
+
+    final data = jsonDecode(msg.message);
+
+    final interactive = data["interactive"];
+
+    final body = interactive["body"]["text"];
+
+    final List buttons =
+    interactive["action"]["buttons"];
+
+    return Align(
+      alignment: isSender
+          ? Alignment.centerRight
+          : Alignment.centerLeft,
+      child: Container(
+        width: 320,
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: isSender
+              ? const Color(0xffDCF8C6)
+              : Colors.white,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment:
+          CrossAxisAlignment.start,
+          children: [
+
+            Text(
+              body,
+              style: const TextStyle(
+                fontSize: 15,
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            ...buttons.map((button) {
+
+              return Container(
+                margin:
+                const EdgeInsets.only(
+                  bottom: 8,
+                ),
+                height: 42,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius:
+                  BorderRadius.circular(
+                      8),
+                  border: Border.all(
+                    color: Colors.grey.shade300,
+                  ),
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  button["reply"]["title"],
+                  style: const TextStyle(
+                    fontWeight:
+                    FontWeight.w500,
+                  ),
+                ),
+              );
+
+            }).toList(),
+          ],
         ),
       ),
     );

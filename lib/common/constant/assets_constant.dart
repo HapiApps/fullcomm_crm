@@ -3,6 +3,7 @@ final Assets assets = Assets._();
 class Assets {
   Assets._();
 
+  final String whatsapp = "assets/images/whatsapp.png";
   final String add = "assets/images/add.svg";
   final String a = "assets/images/A.svg";
   final String b = "assets/images/B.svg";

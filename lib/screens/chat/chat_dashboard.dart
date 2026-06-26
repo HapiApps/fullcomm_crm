@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../components/Customtext.dart';
 import '../../components/custom_sidebar.dart';
 import '../../controller/controller.dart';
 import 'chat_list.dart';
@@ -31,7 +32,7 @@ class _ChatDashboardState extends State<ChatDashboard> {
               child: Row(
                 children: [
                   ChatList(
-                    chats: controllers.customers,
+                    chats: controllers.chatCustomers,
                     selectedIndex: selectedIndex,
                     onSelect: (index) {
                       setState(() {
@@ -43,9 +44,14 @@ class _ChatDashboardState extends State<ChatDashboard> {
                   const VerticalDivider(width: 1),
 
                   Expanded(
-                    child: ChatScreen(
-                      key: ValueKey(controllers.customers[selectedIndex].id),
-                      customerName: controllers.customers[selectedIndex].name, number: controllers.customers[selectedIndex].phoneNo, id: controllers.customers[selectedIndex].id,
+                    child: controllers.chatCustomers.isEmpty
+                        ? Center(
+                          child: CustomText(text: "No Customers Found", isCopy: false,),
+                        ): ChatScreen(
+                      key: ValueKey(controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].id),
+                      customerName: controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].name,
+                      number: controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].phoneNo,
+                      id: controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].id,
                     ),
                   ),
                 ],

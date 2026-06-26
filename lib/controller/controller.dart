@@ -2680,6 +2680,8 @@ debugPrint("sortField ${sortField}");
   var roleNameList    = [];
   var callNameList    = ["Visit","Call","Email","Appointment","Note"];
   var customers       = <AllCustomersObj>[].obs;
+  var chatCustomers       = <AllCustomersObj>[].obs;
+  var chatCustomers2       = <AllCustomersObj>[].obs;
   var employees       = <AllEmployeesObj>[].obs;
   var callActivity    = <CustomerActivity>[].obs;
   var mailActivity    = <CustomerActivity>[].obs;

@@ -15,6 +15,7 @@ import 'package:fullcomm_crm/screens/leads/new_lead_page.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -1142,6 +1143,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
+      print(data);
+      log(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -2721,6 +2724,7 @@ class ApiService {
         getRoles();
         getSheet();
         getAllCustomers();
+        getAllChatCustomers();
         getOpenedMailActivity(true);
         getReplyMailActivity(true);
         remController.allReminders("2");
@@ -2984,6 +2988,49 @@ class ApiService {
         throw Exception('Failed to load album');
       }
     } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+  Future getAllChatCustomers() async {
+    try {
+      controllers.chatCustomers.clear();
+      controllers.chatCustomers2.clear();
+      Map data = {
+        "search_type": "chat_clients",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      debugPrint("chat_clients");
+      debugPrint(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getAllChatCustomers();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.chatCustomers.clear();
+        controllers.chatCustomers2.clear();
+        controllers.chatCustomers.value = response.map((e) => AllCustomersObj.fromJson(e)).toList();
+        controllers.chatCustomers2.value = response.map((e) => AllCustomersObj.fromJson(e)).toList();
+      } else {
+        controllers.chatCustomers.clear();
+        controllers.chatCustomers2.clear();
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      controllers.chatCustomers.clear();
+      controllers.chatCustomers2.clear();
       throw Exception('Failed to load album');
     }
   }
@@ -5332,6 +5379,7 @@ debugPrint(response.body);
         getRoles();
         getSheet();
         getAllCustomers();
+        getAllChatCustomers();
         getOpenedMailActivity(true);
         getReplyMailActivity(true);
         remController.allReminders("2");
@@ -5456,6 +5504,43 @@ debugPrint(response.body);
       throw Exception('Unexpected error lead: ${e.toString()}');
     }
   }
+  Future sendWhatAppMessage(BuildContext context,String message,String phone,String companyId) async {
+    try{
+      Map data = {
+        "action": "send_whatsapp_message",
+        "message": message,
+        "phone": phone,
+        "company_id": companyId,
+        "cos_id": controllers.storage.read("cos_id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      debugPrint("request ${data}");
+      debugPrint("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return sendWhatAppMessage(context,message,phone,companyId);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200 && response["message"]=="Message sent successfully"){
+
+      } else {
+      }
+    }catch(e){
+      // apiService.errorDialog(Get.context!,e.toString());
+      // controllers.productCtr.reset();
+    }
+  }
 
   Future<void> allTargetLeadsDetails() async {
     controllers.isLead.value = false;
@@ -5550,6 +5635,61 @@ debugPrint(response.body);
     }
   }
 
+  final GoogleSignIn googleSignIn = GoogleSignIn(
+    clientId:
+    "391888204695-389lcv491p2shrd8dtds1u6mdid8cb90.apps.googleusercontent.com",
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/calendar',
+    ],
+  );
+  Future<void> connectGoogleCalendar() async {
+
+    try {
+
+      final GoogleSignInAccount? user =
+      await googleSignIn.signIn();
+
+      if (user != null) {
+        final auth = await user.authentication;
+
+        print("auth.accessToken"); // 👈 Access Token
+        print(auth.accessToken); // 👈 Access Token
+      }
+
+    } catch (e) {
+
+      print(e);
+
+    }
+
+  }
+
+  Future<void> connectCalendar() async {
+    try {
+      var uri="https://aruu.celwiz.com/google_callback.php?iss=https://accounts.google.com&code=4/0AdkVLPwD-G-lie8m4bFJ65RN-EGGiFlWX0GaVpTpUHCk3VdXyA8Hub_Q-F6l1YbTFZ5Mxg&scope=https://www.googleapis.com/auth/calendar";
+      final response = await http.post(
+        Uri.parse(uri),
+      );
+      print("connectCalendar");
+      print(response.body);
+      // if (response.statusCode == 200) {
+      //   final data = jsonDecode(response.body) as List;
+      //   controllers.allEmployeeLength.value = data.length;
+      //   return data.map((json) => EmployeeObj.fromJson(json)).toList();
+      // } else {
+      //   throw Exception(
+      //       'Failed to load employee: Status code ${response.statusCode}');
+      // }
+    } on SocketException {
+      throw Exception('No internet connection');
+    } on HttpException catch (e) {
+      throw Exception('Server error employee: ${e.toString()}');
+    } catch (e) {
+      throw Exception('Unexpected error employee: ${e.toString()}');
+    }
+
+  }
   Future<void> getCustomerChats(String id) async {
     controllers.chatLoading.value = false;
     controllers.customerChatDetails.clear();
@@ -5570,9 +5710,9 @@ debugPrint(response.body);
 
         body: jsonEncode(data),
       );
-      debugPrint("customer_chats");
-      debugPrint(data.toString());
-      debugPrint(response.body);
+      // debugPrint("customer_chats");
+      // debugPrint(data.toString());
+      // debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5631,9 +5771,9 @@ debugPrint(response.body);
 
         body: jsonEncode(data),
       );
-      // debugPrint("all_leads");
-      // debugPrint(data.toString());
-      // debugPrint(response.body);
+      debugPrint("all_leads");
+      debugPrint(data.toString());
+      debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

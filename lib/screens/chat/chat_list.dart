@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/billing_utils/sized_box.dart';
+import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
+import 'package:intl/intl.dart';
 
+import '../../common/constant/assets_constant.dart';
 import '../../controller/controller.dart';
 
 class ChatList extends StatelessWidget {
@@ -53,8 +56,19 @@ class ChatList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(10),
             child: TextField(
+              onChanged: (value){
+                final input = value.toString().toLowerCase().trim();
+                controllers.chatCustomers.value = controllers.chatCustomers2.where((user) {
+                  return user.name.toString().toLowerCase().contains(input) ||
+                      user.phoneNo.toString().toLowerCase().contains(input) ||
+                      user.companyName.toString().toLowerCase().contains(input);
+                }).toList();
+                if (controllers.chatCustomers.isNotEmpty) {
+                  onSelect(0);
+                }
+              },
               decoration: InputDecoration(
-                hintText: "Search",
+                hintText: "Search Name Or Number",
                 prefixIcon:
                 const Icon(Icons.search),
                 border: OutlineInputBorder(
@@ -67,10 +81,10 @@ class ChatList extends StatelessWidget {
 
           Expanded(
             child: ListView.builder(
-              itemCount: controllers.customers.length,
+              itemCount: controllers.chatCustomers.length,
               itemBuilder: (_, index) {
 
-                final item = controllers.customers[index];
+                final item = controllers.chatCustomers[index];
 
                 return InkWell(
                   onTap: () {
@@ -93,13 +107,47 @@ class ChatList extends StatelessWidget {
                               ),10.width,
                               Column(
                                 children: [
-                                  CustomText(text: item.name.trim(), isCopy: true,isBold: true,),10.height,
-                                  CustomText(text: item.companyName.trim(), isCopy: true,),
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: MediaQuery.of(context).size.width*0.12,
+                                          child: CustomText(text: item.name.trim(), isCopy: true,isBold: true,textAlign: TextAlign.start,)),
+                                      Container(
+                                        decoration: customDecoration.baseBackgroundDecoration(
+                                          color: Colors.grey.shade200,radius: 5
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(3),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                            children: [
+                                              CustomText(text: "WA", isCopy: true,size: 10,),
+                                              Image.asset(assets.whatsapp,width: 13,height: 13,)
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),10.height,
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                          width: MediaQuery.of(context).size.width*0.11,
+                                          child: Tooltip(
+                                            message:item.message.toString().contains("Choose an option")?"Product Details":item.message.toString(),
+                                            child: CustomText(text: "${item.type=="0"?"You: ":""}${item.message.toString().contains("Choose an option")?"Product Details":item.message.toString().trim().length > 10
+                                                ? "${item.message.toString().trim().substring(0, 10)}..."
+                                                : item.message.toString().trim()}", isCopy: true,textAlign: TextAlign.start,size: 13,colors: Colors.grey),
+                                          )),
+                                      CustomText(text: item.createdTs.toString()!=""&&item.createdTs.toString()!="null"?DateFormat('hh:mm a').format(
+                                        DateTime.parse(item.createdTs.toString()),
+                                      ):"", isCopy: true,size: 13,colors: Colors.grey,)
+                                    ],
+                                  ),
                                 ],
                               ),
                             ],
                           ),
-                          CustomText(text: item.id, isCopy: true,)
                         ],
                       ),
                     )
