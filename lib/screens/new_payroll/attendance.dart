@@ -912,7 +912,7 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
 
       double salary = 0.0, perSalary = 0.0;
       double basicCalc = 0.0, daCalc = 0.0, hraCalc = 0.0;
-      double adCalc = 0.0, bonusCalc = 0.0, oPCalc = 0.0;
+      double adCalc = 0.0, bonusCalc = 0.0, oPCalc = 0.0, pfCalc = 0.0, esiCalc = 0.0;
 
       int workingDay = 0;
       bool monthlyWage = true;
@@ -937,6 +937,8 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
           adCalc = safeDouble(pyrlCtr.settingList[i].adminCharges.text);
           bonusCalc = safeDouble(pyrlCtr.settingList[i].bonus.text);
           oPCalc = safeDouble(pyrlCtr.settingList[i].optionSalary.text);
+          pfCalc = safeDouble(pyrlCtr.settingList[i].pf.text);
+          esiCalc = safeDouble(pyrlCtr.settingList[i].esi.text);
 
           print("Salary: $salary");
           print("Per Salary: $perSalary");
@@ -1096,8 +1098,8 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
 
         earnedBasic = earned;
 
-        totalPf = 0;
-        totalEsi = 0;
+        totalPf = pfCalc*dutyDays;
+        totalEsi = esiCalc*dutyDays;
 
         totalPfW = 0;
         totalEsiW = 0;
@@ -1116,6 +1118,8 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
       print("Uniform: $uniform");
       print("Penalty: $penalty");
       print("Food: $food");
+      print("PF: $totalPf");
+      print("ESI: $totalEsi");
 
       double deduction =
           totalEsi + totalPf + advance + uniform + penalty + totalad + food;

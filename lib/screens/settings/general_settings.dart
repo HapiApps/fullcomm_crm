@@ -758,12 +758,12 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                           ),
                         ),
                       ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          await apiService.connectCalendar();
-                        },
-                        child: const Text("Connect Google Calendar"),
-                      )
+                      // ElevatedButton(
+                      //   onPressed: () async {
+                      //     await apiService.connectCalendar();
+                      //   },
+                      //   child: const Text("Connect Google Calendar"),
+                      // )
                   ],
                 ),
                 Divider(color: Colors.grey.shade200,),

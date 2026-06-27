@@ -612,9 +612,82 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
   //     throw Exception('Failed to load dashboard report $e');
   //   }
   // }
+
+  final ranges = [
+    "0-1 Lakh",
+    "1-5 Lakhs",
+    "5-10 Lakhs",
+    "Above 10 Lakhs",
+  ];
+
+  // Weekly
+  late DateTime lastWeekStart;
+  late DateTime lastWeekEnd;
+  late DateTime thisWeekStart;
+  late DateTime thisWeekEnd;
+
+  late String lastWeekTitle;
+  late String thisWeekTitle;
+
+  // Monthly
+  late DateTime lastMonthStart;
+  late DateTime lastMonthEnd;
+  late DateTime thisMonthStart;
+  late DateTime thisMonthEnd;
+
+  late String lastMonthTitle;
+  late String thisMonthTitle;
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    final now = DateTime.now();
+
+    // ---------- This Week ----------
+    thisWeekStart = DateTime(
+      now.year,
+      now.month,
+      now.day - (now.weekday - 1),
+    );
+
+    thisWeekEnd = thisWeekStart.add(const Duration(days: 6));
+
+    // ---------- Last Week ----------
+    lastWeekStart = thisWeekStart.subtract(const Duration(days: 7));
+    lastWeekEnd = thisWeekStart.subtract(const Duration(days: 1));
+
+    lastWeekTitle =
+    "${DateFormat('dd MMM').format(lastWeekStart)} - ${DateFormat('dd MMM yyyy').format(lastWeekEnd)}";
+
+    thisWeekTitle =
+    "${DateFormat('dd MMM').format(thisWeekStart)} - ${DateFormat('dd MMM yyyy').format(thisWeekEnd)}";
+
+    // ---------- This Month ----------
+    thisMonthStart = DateTime(now.year, now.month, 1);
+    thisMonthEnd = DateTime(now.year, now.month + 1, 0);
+
+    // ---------- Last Month ----------
+    lastMonthStart = DateTime(now.year, now.month - 1, 1);
+    lastMonthEnd = DateTime(now.year, now.month, 0);
+
+    lastMonthTitle = DateFormat('MMMM yyyy').format(lastMonthStart);
+    thisMonthTitle = DateFormat('MMMM yyyy').format(thisMonthStart);
+  }
+
   Future getWholeReport() async {
     try {
+      String lastWeekFrom = DateFormat('yyyy-MM-dd').format(lastWeekStart);
+      String lastWeekTo   = DateFormat('yyyy-MM-dd').format(lastWeekEnd);
 
+      String thisWeekFrom = DateFormat('yyyy-MM-dd').format(thisWeekStart);
+      String thisWeekTo   = DateFormat('yyyy-MM-dd').format(thisWeekEnd);
+
+      String lastMonthFrom = DateFormat('yyyy-MM-dd').format(lastMonthStart);
+      String lastMonthTo   = DateFormat('yyyy-MM-dd').format(lastMonthEnd);
+
+      String thisMonthFrom = DateFormat('yyyy-MM-dd').format(thisMonthStart);
+      String thisMonthTo   = DateFormat('yyyy-MM-dd').format(thisMonthEnd);
       Map data = {
         "cos_id": controllers.storage.read("cos_id"),
         "role": controllers.storage.read("role"),
@@ -623,12 +696,22 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "stDate": dashController.date1.value,
         "enDate": dashController.date2.value,
         "lead_status": controllers.leadCategoryList.last.leadStatus,
+
+        "lastWeekFrom": lastWeekFrom,
+        "lastWeekTo": lastWeekTo,
+        "thisWeekFrom": thisWeekFrom,
+        "thisWeekTo": thisWeekTo,
+
+        "lastMonthFrom": lastMonthFrom,
+        "lastMonthTo": lastMonthTo,
+        "thisMonthFrom": thisMonthFrom,
+        "thisMonthTo": thisMonthTo,
       };
 
-      // debugPrint("================================================");
-      // debugPrint("REQUEST DATA");
-      // debugPrint("================================================");
-      // debugPrint(data.toString());
+      debugPrint("================================================");
+      debugPrint("REQUEST DATA");
+      debugPrint("================================================");
+      debugPrint(data.toString());
 
       final request = await http.post(
         Uri.parse(scriptApi),
@@ -642,7 +725,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
       // debugPrint("================================================");
       // debugPrint("RAW RESPONSE");
       // debugPrint("================================================");
-      // debugPrint(request.body);
+      log(request.body);
 
       if (request.statusCode == 401) {
 
@@ -708,7 +791,15 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
 
         List<dynamic> activityReport = List<dynamic>.from(response['data']['activity_customer_report']);
         customerStatusReport.value=activityReport;
-        // debugPrint("Activity Customer REPORT ${customerStatusReport.value}");
+
+        List<dynamic> quotationReport = List<dynamic>.from(response['data']['quotation_customers_report']);
+        groupedData.clear();
+        for (var item in quotationReport) {
+          groupedData.putIfAbsent(item['amount_range'], () => []);
+          groupedData[item['amount_range']]!.add(item);
+        }
+
+        debugPrint("groupedData ${groupedData}");
         // =====================================================
         /// RANGE REPORT
         /// =====================================================
@@ -937,6 +1028,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
   RxList visitStatusReport=[].obs;
   double total = 0;
   RxList customerStatusReport=[].obs;
+  RxMap<dynamic, dynamic> groupedData ={}.obs;
   // Future<void> getCustomerStatus() async {
   //   try {
   //

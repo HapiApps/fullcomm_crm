@@ -702,67 +702,67 @@ void checkDate(){
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    WaveStatCard(
-                                        title: "Mails",
-                                        numericValue: int.parse(dashController
-                                            .totalMails.value
-                                            .toString()),
-                                        maxValue: maxValue,
-                                        iconPath: DashboardAssets.mail,
-                                        valueColor: const Color(0xff2457C5),
-                                        callback:(){
-                                          remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
-                                          controllers.changeTab(1);
-                                          Navigator.push(
-                                            context,
-                                            PageRouteBuilder(
-                                              pageBuilder: (context,
-                                                  animation1,
-                                                  animation2) =>
-                                              const Records(
-                                                isReload: "true",
-                                              ),
-                                              transitionDuration:
-                                              Duration.zero,
-                                              reverseTransitionDuration:
-                                              Duration.zero,
-                                            ),
-                                          );
-                                          controllers.oldIndex.value =
-                                              controllers.selectedIndex.value;
-                                          controllers.selectedIndex.value = 101;
-                                          // apiService.crmReminder(context);
-                                        }
-                                    ),
-                                    WaveStatCard(
-                                        title: "Calls",
-                                        numericValue: int.parse(dashController.totalCalls.value.toString()),
-                                        // numericValue: remController.callFilteredList.length,
-                                        maxValue: maxValue,
-                                        iconPath: DashboardAssets.phone,
-                                        valueColor: const Color(0xff53922A),
-                                        callback:(){
-                                          remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
-                                          controllers.changeTab(0);
-                                          Navigator.push(
-                                            context,
-                                            PageRouteBuilder(
-                                              pageBuilder: (context,
-                                                  animation1,
-                                                  animation2) =>
-                                              const Records(
-                                                isReload: "true",
-                                              ),
-                                              transitionDuration:
-                                              Duration.zero,
-                                              reverseTransitionDuration:
-                                              Duration.zero,
-                                            ),
-                                          );
-                                          controllers.oldIndex.value = controllers.selectedIndex.value;
-                                          controllers.selectedIndex.value = 101;
-                                        }
-                                    ),
+                                    // WaveStatCard(
+                                    //     title: "Mails",
+                                    //     numericValue: int.parse(dashController
+                                    //         .totalMails.value
+                                    //         .toString()),
+                                    //     maxValue: maxValue,
+                                    //     iconPath: DashboardAssets.mail,
+                                    //     valueColor: const Color(0xff2457C5),
+                                    //     callback:(){
+                                    //       remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
+                                    //       controllers.changeTab(1);
+                                    //       Navigator.push(
+                                    //         context,
+                                    //         PageRouteBuilder(
+                                    //           pageBuilder: (context,
+                                    //               animation1,
+                                    //               animation2) =>
+                                    //           const Records(
+                                    //             isReload: "true",
+                                    //           ),
+                                    //           transitionDuration:
+                                    //           Duration.zero,
+                                    //           reverseTransitionDuration:
+                                    //           Duration.zero,
+                                    //         ),
+                                    //       );
+                                    //       controllers.oldIndex.value =
+                                    //           controllers.selectedIndex.value;
+                                    //       controllers.selectedIndex.value = 101;
+                                    //       // apiService.crmReminder(context);
+                                    //     }
+                                    // ),
+                                    // WaveStatCard(
+                                    //     title: "Calls",
+                                    //     numericValue: int.parse(dashController.totalCalls.value.toString()),
+                                    //     // numericValue: remController.callFilteredList.length,
+                                    //     maxValue: maxValue,
+                                    //     iconPath: DashboardAssets.phone,
+                                    //     valueColor: const Color(0xff53922A),
+                                    //     callback:(){
+                                    //       remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                                    //       controllers.changeTab(0);
+                                    //       Navigator.push(
+                                    //         context,
+                                    //         PageRouteBuilder(
+                                    //           pageBuilder: (context,
+                                    //               animation1,
+                                    //               animation2) =>
+                                    //           const Records(
+                                    //             isReload: "true",
+                                    //           ),
+                                    //           transitionDuration:
+                                    //           Duration.zero,
+                                    //           reverseTransitionDuration:
+                                    //           Duration.zero,
+                                    //         ),
+                                    //       );
+                                    //       controllers.oldIndex.value = controllers.selectedIndex.value;
+                                    //       controllers.selectedIndex.value = 101;
+                                    //     }
+                                    // ),
                                     WaveStatCard(
                                       callback: () {
                                         remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
@@ -1938,6 +1938,7 @@ void checkDate(){
                                           ]
                                       ),
                                     ),15.width,
+                                    if(dashController.customerStatusReport.isNotEmpty)
                                     CustomerActivityCard(width: width/3,),15.width,
                                     Container(
                                       height: 300,
@@ -2686,10 +2687,8 @@ void checkDate(){
                                 Row(
                                   children: [
                                     ActivityOverTimeChart(
-                                      width: width/1.05,
-
+                                      width: width/1.8,
                                       xLabels: controllers.xLabels.toList(),
-
                                       lines: [
 
                                         ActivityLineData(
@@ -2711,6 +2710,119 @@ void checkDate(){
                                         ),
 
                                       ],
+                                    ),
+                                    15.width,
+                                    InkWell(
+                                      onTap: (){
+                                        productCtr.selectedCallSortBy.value = dashController.selectedSortBy.value;
+                                        Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            pageBuilder: (context,
+                                                animation1,
+                                                animation2) =>
+                                            const QuotationPage(),
+                                            transitionDuration:
+                                            Duration.zero,
+                                            reverseTransitionDuration:
+                                            Duration.zero,
+                                          ),
+                                        );
+                                        controllers.oldIndex.value =controllers.selectedIndex.value;
+                                        controllers.selectedIndex.value =107;
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(16),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(14),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                              color: Color(0x14000000),
+                                              blurRadius: 10,
+                                              offset: Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
+                                        width: width/2.6,
+                                        height:400,
+                                        // color: Colors.yellowAccent,
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            CustomText(
+                                              text: "High-Value Customer",
+                                              isCopy: false,
+                                              size: 15,
+                                              isBold: true,
+                                              colors: Colors.black,
+                                            ),
+                                            4.height,
+                                            CustomText(
+                                              text: "Based on Quotation Amount",
+                                              isCopy: false,
+                                              size: 13,
+                                              isBold: false,
+                                              colors: const Color(0xff666666),
+                                            ),
+                                            12.height,
+                                            const Divider(
+                                              height: 1,
+                                              thickness: 1,
+                                              color: Color(0xffE5E7EB),
+                                            ),
+                                            16.height,
+                                            Expanded(
+                                              child: ListView.builder(
+                                                shrinkWrap: true,
+                                                reverse: true,
+                                                itemCount: dashController.ranges.length,
+                                                itemBuilder: (context, index) {
+                                                  final range = dashController.ranges[index];
+                                                  final items = dashController.groupedData[range] ?? [];
+
+                                                  return Card(
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.all(12),
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          CustomText(text:'$range (${items.length})',isCopy: false,
+                                                            size: 16,isBold: true,
+                                                          ),
+                                                          const Divider(thickness: 0.5,),
+
+                                                          if (items.isEmpty)
+                                                            const CustomText(text:'No quotations found',isCopy: false,)
+                                                          else
+                                                            ...items.map(
+                                                                  (e) => Padding(
+                                                                padding: const EdgeInsets.only(bottom: 10),
+                                                                child: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    Row(
+                                                                      children: [
+                                                                        CustomText(text:e['q_no'],isCopy: false),5.width,
+                                                                        CustomText(text:e['company_name'],isCopy: false,isBold: true,),5.width,
+                                                                        CustomText(text:" - ${e['category']}",isCopy: false,isBold: true,colors: Colors.grey,),
+                                                                      ],
+                                                                    ),
+                                                                    CustomText(text:productCtr.formatAmount(e['total_amt']),isCopy: false,isBold: true,colors: Colors.red,),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                     SizedBox(
                                       width: width/70,

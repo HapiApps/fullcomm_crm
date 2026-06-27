@@ -96,6 +96,7 @@ dependencies:
   emoji_picker_flutter:
   google_sign_in: ^6.3.0
   googleapis: ^14.0.0
+  syncfusion_flutter_charts: ^30.2.6+1
 dev_dependencies:
   flutter_test:
     sdk: flutter

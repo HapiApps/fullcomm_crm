@@ -412,26 +412,26 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
 
-              const SizedBox(width: 20),
-
-              InkWell(
-                onTap: () {
-                  setState(() {
-                    selectedTab = 1;
-                  });
-                },
-                child: Text(
-                  "Notes",
-                  style: TextStyle(
-                    fontWeight:
-                    selectedTab == 1
-                        ? FontWeight
-                        .bold
-                        : FontWeight
-                        .normal,
-                  ),
-                ),
-              ),
+              // const SizedBox(width: 20),
+              //
+              // InkWell(
+              //   onTap: () {
+              //     setState(() {
+              //       selectedTab = 1;
+              //     });
+              //   },
+              //   child: Text(
+              //     "Notes",
+              //     style: TextStyle(
+              //       fontWeight:
+              //       selectedTab == 1
+              //           ? FontWeight
+              //           .bold
+              //           : FontWeight
+              //           .normal,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -496,33 +496,33 @@ class _ChatScreenState extends State<ChatScreen> {
       child: Row(
         children: [
 
-          /// FILE
-          IconButton(
-            icon: const Icon(
-              Icons.attach_file,
-            ),
-            onPressed: () async {
-              FilePickerResult?
-              result =
-              await FilePicker
-                  .platform
-                  .pickFiles();
-
-              if (result != null) {
-                String file =
-                    result.files.single
-                        .name;
-
-                setState(() {
-                  // messages.add({
-                  //   "message":
-                  //   "📎 $file",
-                  //   "type": "text"
-                  // });
-                });
-              }
-            },
-          ),
+          // /// FILE
+          // IconButton(
+          //   icon: const Icon(
+          //     Icons.attach_file,
+          //   ),
+          //   onPressed: () async {
+          //     FilePickerResult?
+          //     result =
+          //     await FilePicker
+          //         .platform
+          //         .pickFiles();
+          //
+          //     if (result != null) {
+          //       String file =
+          //           result.files.single
+          //               .name;
+          //
+          //       setState(() {
+          //         // messages.add({
+          //         //   "message":
+          //         //   "📎 $file",
+          //         //   "type": "text"
+          //         // });
+          //       });
+          //     }
+          //   },
+          // ),
 
           /// EMOJI
           IconButton(
@@ -581,24 +581,24 @@ class _ChatScreenState extends State<ChatScreen> {
 
           const SizedBox(width: 10),
 
-          CircleAvatar(
-            radius: 22,
-            backgroundColor:
-            Colors.blue,
-            child: IconButton(
-              onPressed: () {
-                sendMessage();
-              },
-              icon: Icon(
-                messageController.text
-                    .trim()
-                    .isEmpty
-                    ? Icons.mic
-                    : Icons.send,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          // CircleAvatar(
+          //   radius: 22,
+          //   backgroundColor:
+          //   Colors.blue,
+          //   child: IconButton(
+          //     onPressed: () {
+          //       sendMessage();
+          //     },
+          //     icon: Icon(
+          //       messageController.text
+          //           .trim()
+          //           .isEmpty
+          //           ? Icons.mic
+          //           : Icons.send,
+          //       color: Colors.white,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );

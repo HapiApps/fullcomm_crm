@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/billing_utils/sized_box.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import '../../common/constant/assets_constant.dart';
@@ -34,21 +35,24 @@ class ChatList extends StatelessWidget {
   }
   @override
   Widget build(BuildContext context) {
-
     return Container(
       width: 340,
       color: Colors.white,
       child: Column(
         children: [
-
           Container(
             height: 60,
             padding: const EdgeInsets.symmetric(
               horizontal: 15,
             ),
-            child: const Row(
+            child: Row(
               children: [
-                CustomText(text: "All", isCopy: false,size: 22,isBold: true,)
+                InkWell(
+                  onTap:(){
+                    Get.back();
+                  },
+                    child: const Icon(Icons.arrow_back_rounded,size: 22,)),10.width,
+                const CustomText(text: "All", isCopy: false,size: 22,isBold: true,)
               ],
             ),
           ),
@@ -68,7 +72,7 @@ class ChatList extends StatelessWidget {
                 }
               },
               decoration: InputDecoration(
-                hintText: "Search Name Or Number",
+                hintText: "Search Name Or Phone Number",
                 prefixIcon:
                 const Icon(Icons.search),
                 border: OutlineInputBorder(
@@ -103,30 +107,29 @@ class ChatList extends StatelessWidget {
                             children: [
                               CircleAvatar(
                                   backgroundColor: getAvatarColor(item.name),
-                                  child: CustomText(text: item.name[0].trim(), isCopy: true,isBold: true,colors: Colors.white,)
+                                  child: CustomText(text: item.name[0].trim(), isCopy: false,isBold: true,colors: Colors.white,)
                               ),10.width,
                               Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
                                     children: [
-                                      SizedBox(
-                                        width: MediaQuery.of(context).size.width*0.12,
-                                          child: CustomText(text: item.name.trim(), isCopy: true,isBold: true,textAlign: TextAlign.start,)),
-                                      Container(
-                                        decoration: customDecoration.baseBackgroundDecoration(
-                                          color: Colors.grey.shade200,radius: 5
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(3),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                            children: [
-                                              CustomText(text: "WA", isCopy: true,size: 10,),
-                                              Image.asset(assets.whatsapp,width: 13,height: 13,)
-                                            ],
-                                          ),
-                                        ),
-                                      )
+                                      CustomText(text: item.name.trim(), isCopy: false,isBold: true,textAlign: TextAlign.start,),
+                                      // Container(
+                                      //   decoration: customDecoration.baseBackgroundDecoration(
+                                      //     color: Colors.grey.shade200,radius: 5
+                                      //   ),
+                                      //   child: Padding(
+                                      //     padding: const EdgeInsets.all(3),
+                                      //     child: Row(
+                                      //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      //       children: [
+                                      //         CustomText(text: "WA", isCopy: false,size: 10,),
+                                      //         Image.asset(assets.whatsapp,width: 13,height: 13,)
+                                      //       ],
+                                      //     ),
+                                      //   ),
+                                      // )
                                     ],
                                   ),10.height,
                                   Row(
@@ -137,11 +140,11 @@ class ChatList extends StatelessWidget {
                                             message:item.message.toString().contains("Choose an option")?"Product Details":item.message.toString(),
                                             child: CustomText(text: "${item.type=="0"?"You: ":""}${item.message.toString().contains("Choose an option")?"Product Details":item.message.toString().trim().length > 10
                                                 ? "${item.message.toString().trim().substring(0, 10)}..."
-                                                : item.message.toString().trim()}", isCopy: true,textAlign: TextAlign.start,size: 13,colors: Colors.grey),
+                                                : item.message.toString().trim()}", isCopy: false,textAlign: TextAlign.start,size: 13,colors: Colors.grey),
                                           )),
                                       CustomText(text: item.createdTs.toString()!=""&&item.createdTs.toString()!="null"?DateFormat('hh:mm a').format(
                                         DateTime.parse(item.createdTs.toString()),
-                                      ):"", isCopy: true,size: 13,colors: Colors.grey,)
+                                      ):"", isCopy: false,size: 13,colors: Colors.grey,)
                                     ],
                                   ),
                                 ],

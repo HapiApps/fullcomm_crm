@@ -1207,7 +1207,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                         ),
                                                       ],
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.left,
@@ -1237,7 +1238,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
@@ -1246,7 +1248,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
@@ -1255,7 +1258,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
@@ -1264,7 +1268,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
@@ -1273,7 +1278,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
@@ -1282,7 +1288,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.left,
@@ -1301,7 +1308,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.left,
@@ -1310,7 +1318,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.left,
@@ -1319,7 +1328,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
@@ -1328,25 +1338,28 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
-                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].pfWages.text),
+                                                      text: pyrlCtr.settingList[index].pfWages.text,
                                                       size: 14,
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
-                                                      text: productCtr.formatAmount(pyrlCtr.settingList[index].esiWages.text),
+                                                      text: pyrlCtr.settingList[index].esiWages.text,
                                                       size: 14,
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
@@ -1355,7 +1368,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
@@ -1364,7 +1378,8 @@ class _RoleSettingState extends State<RoleSetting> {
                                                       isCopy: true,
                                                       colors:colorsConst.textColor,
                                                     ),
-                                                  ),Padding(
+                                                  ),
+                                                  Padding(
                                                     padding: const EdgeInsets.all(10.0),
                                                     child: CustomText(
                                                       textAlign: TextAlign.right,
@@ -1816,7 +1831,7 @@ class _RoleSettingState extends State<RoleSetting> {
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculatePFandESI(),
                                         ),
-                                        CustomTextField(text: "PF wages",hintText: "PF wages",controller: data.pfWages,
+                                        CustomTextField(text: "PF wages (Amount / %)",hintText: "PF wages (Amount / %)",controller: data.pfWages,
                                           width: screenWidth/5,
                                           focusNode: f12,
                                           onFieldSubmitted: (_){
@@ -1851,7 +1866,7 @@ class _RoleSettingState extends State<RoleSetting> {
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculatePFandESI(),
                                         ),
-                                        CustomTextField(text: "ESI wages",hintText: "ESI wages",controller: data.esiWages,
+                                        CustomTextField(text: "ESI wages (Amount / %)",hintText: "ESI wages (Amount / %)",controller: data.esiWages,
                                           width: screenWidth/5,
                                           focusNode: f13,
                                           onFieldSubmitted: (_){
