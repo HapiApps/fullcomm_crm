@@ -286,7 +286,18 @@ class SideBar extends StatelessWidget {
               label: constValue.products,
               page: const ProductPage(),
             ),
-
+            SidebarItem(
+              context: context,
+              controllers: controllers,
+              colorsConst: colorsConst,
+              selectedImage: assets.whatsapp,
+              unSelectedImage: assets.whatsapp,
+              index: 109,
+              icon: Icons.logout,
+              label: "Chat",
+              page: const ChatDashboard(),
+            ),
+            if(isRelease==true&&controllers.storage.read("cos_id")!="202629")
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()
                 : Obx(() {
@@ -502,17 +513,6 @@ class SideBar extends StatelessWidget {
             }),
 
             // Logout item (special because it shows dialog)
-            SidebarItem(
-              context: context,
-              controllers: controllers,
-              colorsConst: colorsConst,
-              selectedImage: assets.whatsapp,
-              unSelectedImage: assets.whatsapp,
-              index: 109,
-              icon: Icons.logout,
-              label: "Chat",
-              page: const ChatDashboard(),
-            ),
             SidebarItem(
               context: context,
               controllers: controllers,

@@ -3562,8 +3562,8 @@ void appointmentStatus(context,String value){
     final value = await showDatePicker(
       context: context!,
       initialDate: dateTime,
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2030),
+      firstDate: pathVal==controllers.exDate||pathVal==remController.stDate||pathVal==controllers.fDate?DateTime.now():DateTime(2026),
+      lastDate: pathVal==controllers.exDate||pathVal==remController.stDate||pathVal==controllers.fDate?DateTime(2050):DateTime.now(),
     );
 
     debugPrint("Selected Date From Picker : $value");
@@ -3603,7 +3603,7 @@ void appointmentStatus(context,String value){
     } else {
       debugPrint("User Cancelled Date Picker ❌");
     }
-
+    controllers.prospectDate.value=controllers.empDOB.value;
     debugPrint("---- DATE PICKER END ----");
   }
   Future<void> callDatePicker({

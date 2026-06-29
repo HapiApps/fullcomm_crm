@@ -708,10 +708,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "thisMonthTo": thisMonthTo,
       };
 
-      debugPrint("================================================");
-      debugPrint("REQUEST DATA");
-      debugPrint("================================================");
-      debugPrint(data.toString());
+      // debugPrint("================================================");
+      // debugPrint("REQUEST DATA");
+      // debugPrint("================================================");
+      // debugPrint(data.toString());
 
       final request = await http.post(
         Uri.parse(scriptApi),
@@ -725,7 +725,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
       // debugPrint("================================================");
       // debugPrint("RAW RESPONSE");
       // debugPrint("================================================");
-      log(request.body);
+      // log(request.body);
 
       if (request.statusCode == 401) {
 
@@ -791,6 +791,12 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
 
         List<dynamic> activityReport = List<dynamic>.from(response['data']['activity_customer_report']);
         customerStatusReport.value=activityReport;
+
+        List<dynamic> comReport = List<dynamic>.from(response['data']['comparison_report']);
+        comparisonReport.value=comReport;
+
+        List<dynamic> comReport2 = List<dynamic>.from(response['data']['comparison_month_report']);
+        comparisonReport2.value=comReport2;
 
         List<dynamic> quotationReport = List<dynamic>.from(response['data']['quotation_customers_report']);
         groupedData.clear();
@@ -1028,6 +1034,8 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
   RxList visitStatusReport=[].obs;
   double total = 0;
   RxList customerStatusReport=[].obs;
+  RxList comparisonReport=[].obs;
+  RxList comparisonReport2=[].obs;
   RxMap<dynamic, dynamic> groupedData ={}.obs;
   // Future<void> getCustomerStatus() async {
   //   try {

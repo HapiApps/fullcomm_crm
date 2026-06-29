@@ -28,4 +28,13 @@ class CustomerField {
       "is_required": isRequired,
     };
   }
+  @override
+  String toString() {
+    return 'CustomerField('
+        'id: $id, '
+        'systemField: $systemField, '
+        'userHeading: $userHeading, '
+        'isRequired: $isRequired'
+        ')';
+  }
 }

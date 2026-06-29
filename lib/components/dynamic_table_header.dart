@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:get/get.dart';
@@ -40,6 +41,8 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
   }
   @override
   Widget build(BuildContext context) {
+    // debugPrint("FINAL HEADING ${tableController.headingFields.value}");
+    // debugPrint("controllers.fields ${controllers.fields.toJson()}");
     return Obx(() {
       final headings = tableController.tableHeadings;
 
@@ -222,25 +225,24 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
                           id: '',
                           isRequired: ''),
                     );
-
-                    controllers.sortField.value = selected.systemField;
-
-                    controllers.sortOrderN.value =
-                    controllers.sortOrderN.value == 'asc'
-                        ? 'desc'
-                        : 'asc';
-                    if(selected.systemField=="mobile_number"){
-                      widget.onSortDate();
-                    }else{
+                    controllers.sortField.value = selected.userHeading;
+                    controllers.sortOrder.value =
+                    controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
+                    // controllers.sortOrderN.value =
+                    // controllers.sortOrderN.value == 'asc'
+                    //     ? 'desc'
+                    //     : 'asc';
+                    // if(selected.systemField=="mobile_number"){
+                    //   widget.onSortDate();
+                    // }else{
                       widget.onSortName();
-                    }
+                    // }
                 },
                 // onTap: widget.onSortDate,
                 child: Obx(() => Image.asset(
                   controllers.sortField.value.isEmpty
                       ? "assets/images/arrow.png"
-                      : controllers.sortOrder.value == 'asc' ||
-                      controllers.sortOrderN.value == 'asc'
+                      : controllers.sortOrder.value == 'asc'
                       ? "assets/images/arrow_up.png"
                       : "assets/images/arrow_down.png",
                   width: 15,

@@ -848,17 +848,12 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                   },
                                   onSortDate: () {
                                     setState(() {
-                                      controllers.sortField.value = 'name';
+                                      // controllers.sortField.value = 'name';
+                                      controllers.sortField.value = tableController.headingFields.first;
                                       controllers.sortOrder.value =
                                       controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
-                                      controllers.changePage(widget.list,widget.list2);
-                                      if(controllers.sortOrder.value=="asc"){
-                                        widget.list.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                        widget.list2.sort((a, b) => a.firstname.toString().toLowerCase().compareTo(b.firstname.toString().toLowerCase()));
-                                      }else{
-                                        widget.list.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                        widget.list2.sort((a, b) => b.firstname.toString().toLowerCase().compareTo(a.firstname.toString().toLowerCase()));
-                                      }
+                                      controllers.sortLeads(widget.list,widget.list2);
+                                      // controllers.changePage(widget.list,widget.list2);
                                     });
                                   },
                                 ),

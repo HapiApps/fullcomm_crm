@@ -793,34 +793,169 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
 
     return filteredLeads.sublist(start, end);
   }
-  void sortLeads(List list1,List list2) {
-    if (sortField.isNotEmpty) {
-      list2.sort((a, b) {
-        dynamic getFieldValue(NewLeadObj lead, String field) {
-          switch (field) {
-            default:
-              final value = lead.asMap()[field];
-              return value.toString().toLowerCase();
-          }
-        }
+  // void sortLeads(List list1,List list2) {
+  //   debugPrint("sortField ${sortField}");
+  //   if (sortField.isNotEmpty) {
+  //     list2.sort((a, b) {
+  //       dynamic getFieldValue(NewLeadObj lead, String field) {
+  //         switch (field) {
+  //           default:
+  //             final value = lead.asMap()[field];
+  //             return value.toString().toLowerCase();
+  //         }
+  //       }
+  //
+  //       final valA = getFieldValue(a, sortField.value);
+  //       final valB = getFieldValue(b, sortField.value);
+  //
+  //       if (valA is DateTime && valB is DateTime) {
+  //         return sortOrder.value == 'asc'
+  //             ? valA.compareTo(valB)
+  //             : valB.compareTo(valA);
+  //       } else {
+  //         return sortOrderN.value == 'asc'
+  //             ? valA.compareTo(valB)
+  //             : valB.compareTo(valA);
+  //       }
+  //     });
+  //   }
+  //   return list1.assignAll(list2);
+  // }
+  /// wrking code
+  // void sortLeads(List list1, List<NewLeadObj> list2) {
+  //   debugPrint("========== SORT LEADS ==========");
+  //   debugPrint("sortField : ${sortField.value}");
+  //   debugPrint("sortOrder : ${sortOrder.value}");
+  //   debugPrint("sortOrderN: ${sortOrderN.value}");
+  //   debugPrint("Before Sort Count : ${list2.length}");
+  //   if (sortField.value.isEmpty) return;
+  //
+  //   final field = controllers.fields.firstWhere(
+  //         (e) =>
+  //     e.userHeading.trim().toLowerCase() ==
+  //         sortField.value.trim().toLowerCase(),
+  //   );
+  //
+  //   final systemField = field.systemField;
+  //
+  //   list2.sort((a, b) {
+  //     final valA = (a.asMap()[systemField] ?? "").toString().toLowerCase();
+  //     final valB = (b.asMap()[systemField] ?? "").toString().toLowerCase();
+  //
+  //     return sortOrder.value == "asc"
+  //         ? valA.compareTo(valB)
+  //         : valB.compareTo(valA);
+  //   });
+  //
+  //   list1.assignAll(list2);
+  // }
+  void sortLeads(List list1, List<NewLeadObj> list2) {
+    debugPrint("========== SORT LEADS ==========");
 
-        final valA = getFieldValue(a, sortField.value);
-        final valB = getFieldValue(b, sortField.value);
+    if (sortField.value.isEmpty) return;
 
-        if (valA is DateTime && valB is DateTime) {
-          return sortOrder.value == 'asc'
-              ? valA.compareTo(valB)
-              : valB.compareTo(valA);
-        } else {
-          return sortOrderN.value == 'asc'
-              ? valA.compareTo(valB)
-              : valB.compareTo(valA);
-        }
-      });
-    }
-    return list1.assignAll(list2);
+    final field = controllers.fields.firstWhere(
+          (e) =>
+      e.userHeading.trim().toLowerCase() ==
+          sortField.value.trim().toLowerCase(),
+    );
+
+    final systemField = field.systemField;
+
+    debugPrint("Header      : ${field.userHeading}");
+    debugPrint("SystemField : $systemField");
+
+    debugPrint("Map Keys : ${list2.first.asMap().keys}");
+
+    debugPrint("Value A : ${list2.first.asMap()[systemField]}");
+    debugPrint("Value B : ${list2.length > 1 ? list2[1].asMap()[systemField] : ""}");
+
+    // list2.sort((a, b) {
+    //   final valA = (a.asMap()[systemField] ?? "").toString().toLowerCase();
+    //   final valB = (b.asMap()[systemField] ?? "").toString().toLowerCase();
+    //
+    //   debugPrint("$valA  <=>  $valB");
+    //
+    //   return sortOrder.value == "asc"
+    //       ? valA.compareTo(valB)
+    //       : valB.compareTo(valA);
+    // });
+///
+//     list2.sort((a, b) {
+//       final valueA = a.asMap()[systemField];
+//       final valueB = b.asMap()[systemField];
+//
+//       // Numeric sorting
+//       final numA = num.tryParse(valueA?.toString() ?? "");
+//       final numB = num.tryParse(valueB?.toString() ?? "");
+//
+//       if (numA != null && numB != null) {
+//         return sortOrder.value == "asc"
+//             ? numA.compareTo(numB)
+//             : numB.compareTo(numA);
+//       }
+//
+//       // String sorting
+//       final strA = (valueA ?? "").toString().trim().toLowerCase();
+//       final strB = (valueB ?? "").toString().trim().toLowerCase();
+//
+//       return sortOrder.value == "asc"
+//           ? strA.compareTo(strB)
+//           : strB.compareTo(strA);
+//     });
+    list2.sort((a, b) {
+      final valueA = a.asMap()[systemField];
+      final valueB = b.asMap()[systemField];
+
+      // Number
+      final numA = num.tryParse(valueA?.toString() ?? "");
+      final numB = num.tryParse(valueB?.toString() ?? "");
+      if (numA != null && numB != null) {
+        return sortOrder.value == "asc"
+            ? numA.compareTo(numB)
+            : numB.compareTo(numA);
+      }
+
+      // Date
+      DateTime? dateA;
+      DateTime? dateB;
+
+      try {
+        dateA = DateFormat("dd.MM.yyyy").parse(valueA.toString());
+        dateB = DateFormat("dd.MM.yyyy").parse(valueB.toString());
+      } catch (_) {}
+
+      if (dateA != null && dateB != null) {
+        return sortOrder.value == "asc"
+            ? dateA.compareTo(dateB)
+            : dateB.compareTo(dateA);
+      }
+
+      // Date & Time
+      try {
+        dateA = DateFormat("dd.MM.yyyy hh:mm a").parse(valueA.toString());
+        dateB = DateFormat("dd.MM.yyyy hh:mm a").parse(valueB.toString());
+      } catch (_) {}
+
+      if (dateA != null && dateB != null) {
+        return sortOrder.value == "asc"
+            ? dateA.compareTo(dateB)
+            : dateB.compareTo(dateA);
+      }
+
+      // String
+      final strA = (valueA ?? "").toString().trim().toLowerCase();
+      final strB = (valueB ?? "").toString().trim().toLowerCase();
+
+      return sortOrder.value == "asc"
+          ? strA.compareTo(strB)
+          : strB.compareTo(strA);
+    });
+    list1.assignAll(list2);
   }
+///
   void sortLeadsInt(List list1, List list2) {
+    debugPrint("sortField ${sortField}");
     if (sortField.isNotEmpty) {
       list2.sort((a, b) {
 
@@ -2678,7 +2813,7 @@ debugPrint("sortField ${sortField}");
       shortBy = "All".obs,
       isCommentsLoading = true.obs,isSent = false.obs,isOpened= false.obs,isReplied = false.obs,isMailLoading = false.obs,isIncoming = false.obs,isOutgoing= false.obs,isMissed = false.obs,isCallLoading = false.obs;
   var roleNameList    = [];
-  var callNameList    = ["Visit","Call","Email","Appointment","Note"];
+  var callNameList    = ["Visit","Call","Email","Appointment","Note","WhatsApp","Facebook", "Instagram", "LinkedIn", "Telegram", "X (Twitter)"];
   var customers       = <AllCustomersObj>[].obs;
   var chatCustomers       = <AllCustomersObj>[].obs;
   var chatCustomers2       = <AllCustomersObj>[].obs;

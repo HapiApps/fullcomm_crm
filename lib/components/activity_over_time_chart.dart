@@ -289,7 +289,6 @@ class _ActivityOverTimeChartState
             //     ),
             //   ),
             // ),
-            ///
             Expanded(
               child: SizedBox(
                 width: widget.width/1,
@@ -408,79 +407,79 @@ class _ActivityOverTimeChartState
 
                     }).toList(),
 
-                    // /// TOUCH
-                    // lineTouchData: LineTouchData(
-                    //   enabled: true,
-                    //   handleBuiltInTouches: false,
-                    //
-                    //   getTouchedSpotIndicator:
-                    //       (barData, spotIndexes) {
-                    //
-                    //     return spotIndexes.map((index) {
-                    //
-                    //       return TouchedSpotIndicatorData(
-                    //
-                    //         const FlLine(
-                    //           color: Color(0xffE5E7EB),
-                    //           strokeWidth: 1,
-                    //           dashArray: [4, 4],
-                    //         ),
-                    //
-                    //         FlDotData(
-                    //           show: true,
-                    //
-                    //           getDotPainter:
-                    //               (spot, percent, bar, i) {
-                    //
-                    //             return FlDotCirclePainter(
-                    //               radius: 5,
-                    //               color: bar.color!,
-                    //               strokeWidth: 2,
-                    //               strokeColor: Colors.white,
-                    //             );
-                    //           },
-                    //         ),
-                    //       );
-                    //
-                    //     }).toList();
-                    //   },
-                    //
-                    //   touchCallback: (event, response) {
-                    //
-                    //     if (!event.isInterestedForInteractions ||
-                    //         response == null ||
-                    //         response.lineBarSpots == null) {
-                    //
-                    //       _removeTooltip();
-                    //       return;
-                    //     }
-                    //
-                    //     final spots = response.lineBarSpots!;
-                    //     final index = spots.first.x.toInt();
-                    //
-                    //     _showTooltip(
-                    //       event.localPosition!,
-                    //       index,
-                    //       spots,
-                    //     );
-                    //   },
-                    //
-                    //   touchTooltipData: LineTouchTooltipData(
-                    //     getTooltipItems: (spots) {
-                    //
-                    //       return spots.map((_) {
-                    //
-                    //         return LineTooltipItem(
-                    //           '',
-                    //           const TextStyle(
-                    //             color: Colors.transparent,
-                    //           ),
-                    //         );
-                    //
-                    //       }).toList();
-                    //     },
-                    //   ),
-                    // ),
+                    /// TOUCH
+                    lineTouchData: LineTouchData(
+                      enabled: true,
+                      handleBuiltInTouches: false,
+
+                      getTouchedSpotIndicator:
+                          (barData, spotIndexes) {
+
+                        return spotIndexes.map((index) {
+
+                          return TouchedSpotIndicatorData(
+
+                            const FlLine(
+                              color: Color(0xffE5E7EB),
+                              strokeWidth: 1,
+                              dashArray: [4, 4],
+                            ),
+
+                            FlDotData(
+                              show: true,
+
+                              getDotPainter:
+                                  (spot, percent, bar, i) {
+
+                                return FlDotCirclePainter(
+                                  radius: 5,
+                                  color: bar.color!,
+                                  strokeWidth: 2,
+                                  strokeColor: Colors.white,
+                                );
+                              },
+                            ),
+                          );
+
+                        }).toList();
+                      },
+
+                      touchCallback: (event, response) {
+
+                        if (!event.isInterestedForInteractions ||
+                            response == null ||
+                            response.lineBarSpots == null) {
+
+                          _removeTooltip();
+                          return;
+                        }
+
+                        final spots = response.lineBarSpots!;
+                        final index = spots.first.x.toInt();
+
+                        _showTooltip(
+                          event.localPosition!,
+                          index,
+                          spots,
+                        );
+                      },
+
+                      touchTooltipData: LineTouchTooltipData(
+                        getTooltipItems: (spots) {
+
+                          return spots.map((_) {
+
+                            return LineTooltipItem(
+                              '',
+                              const TextStyle(
+                                color: Colors.transparent,
+                              ),
+                            );
+
+                          }).toList();
+                        },
+                      ),
+                    ),
                   ),
                 ),
               ),

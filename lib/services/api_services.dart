@@ -2730,11 +2730,11 @@ class ApiService {
         remController.allReminders("2");
         settingsController.allRoles();
         settingsController.allOfficeHours();
-        utils.snackBar(
-          context: Get.context!,
-          msg: "Login Successfully",
-          color: Colors.green,
-        );
+        // utils.snackBar(
+        //   context: Get.context!,
+        //   msg: "Login Successfully",
+        //   color: Colors.green,
+        // );
         Get.to(const DashboardPage(), duration: Duration.zero);
         controllers.loginCtr.reset();
       }
@@ -5710,9 +5710,9 @@ debugPrint(response.body);
 
         body: jsonEncode(data),
       );
-      // debugPrint("customer_chats");
-      // debugPrint(data.toString());
-      // debugPrint(response.body);
+      debugPrint("customer_chats");
+      debugPrint(data.toString());
+      debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
