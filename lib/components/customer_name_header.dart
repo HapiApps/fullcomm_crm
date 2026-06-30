@@ -39,6 +39,7 @@ class _CustomerNameHeaderState extends State<CustomerNameHeader> {
       headings.isNotEmpty ? headings.first ?? "" : "";
 
       final headerChildren = <Widget>[
+        _headerCell("S.No", screenWidth, textAlign: TextAlign.center),
         if (widget.showCheckbox)
           Container(
             height: 40,
@@ -61,15 +62,16 @@ class _CustomerNameHeaderState extends State<CustomerNameHeader> {
       ];
 
       final Map<int, TableColumnWidth> columnWidths = {
-        0: widget.showCheckbox
+        0:const FlexColumnWidth(0.6),
+        1: widget.showCheckbox
             ? const FlexColumnWidth(0.6)
             : const FlexColumnWidth(1.5),
 
-        1: widget.showCheckbox
+        2: widget.showCheckbox
             ? const FlexColumnWidth(2)
             : const FlexColumnWidth(2.3),
 
-        2: FixedColumnWidth(
+        3: FixedColumnWidth(
             tableController.colWidth[heading] ?? 150),
       };
 

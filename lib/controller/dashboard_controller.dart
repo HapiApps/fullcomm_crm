@@ -19,6 +19,7 @@ final dashController = Get.put(DashboardController());
 
 class DashboardController extends GetxController {
   var totalMails       = "0".obs;
+  var selectFilter = "Weekly".obs;
   // var totalReminders   = "0".obs;
   // var totalEmployees   = "0".obs;
   // var totalMeetings    = "0".obs;
@@ -61,6 +62,10 @@ class DashboardController extends GetxController {
     "All",
     "Mine",
     "Team"
+  ];
+  final List<String> repType = [
+    "Weekly",
+    "Monthly"
   ];
 var selectedSortBy = "${controllers.storage.read("selectedSortBy") ?? "Today"}".obs;
 var selectedRange = Rxn<DateTimeRange>(); // null-safe observable

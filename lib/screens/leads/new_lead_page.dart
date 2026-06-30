@@ -820,7 +820,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           SizedBox(
-                            width: 300,
+                            width: 400,
                             child: Column(
                               children: [
                                 CustomerNameHeader(

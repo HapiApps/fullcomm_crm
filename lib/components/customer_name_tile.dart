@@ -269,8 +269,9 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
     // final int totalColumns = tableController.tableHeadings.length + 1 + (widget.showCheckbox ? 1 : 0);
     final Map<int, TableColumnWidth> columnWidths = {
       0: FlexColumnWidth(0.6),//santhiya
-      1: const FlexColumnWidth(2),
-      2: FixedColumnWidth(tableController.colWidth[headings.first] ?? 150),
+      1: FlexColumnWidth(0.6),//santhiya
+      2: const FlexColumnWidth(2),
+      3: FixedColumnWidth(tableController.colWidth[headings.first] ?? 150),
     };
     //  final Map<int, TableColumnWidth> columnWidths = {};
     // int colIndex = 2;
@@ -335,6 +336,10 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                     : colorsConst.backgroundColor,
               ),
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: CustomText(text: "${int.parse(widget.index.toString())+1}", isCopy: false),
+                ),
                 if (widget.showCheckbox)
                   Container(
                     height: 45,
@@ -1346,7 +1351,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                         //     contentPadding: EdgeInsets.zero,
                         //   ),
                         // ),
-                        child: CustomText(text: value.toString() == "null" ? "" : value.toString(), isCopy: false),
+                        child: CustomText(text: value.toString() == "null" ? "" : value.toString(), isCopy: false,textAlign: TextAlign.start,),
                       ),
                     ),
                   );

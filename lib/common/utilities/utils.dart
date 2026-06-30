@@ -3325,10 +3325,10 @@ class Utils {
                       //   return;
                       // }
                       controllers.toDate.value = controllers.fDate.value;
-                      final time = DateFormat('hh.mm a').parse(controllers.fTime.value);
+                      final time = DateFormat('h:mm a').parse(controllers.fTime.value);
 
                       controllers.toTime.value =
-                          DateFormat('hh.mm a').format(
+                          DateFormat('h:mm a').format(
                             time.add(const Duration(minutes: 30)),
                           );
                       apiService.insertMeetingDetailsAPI(context);
@@ -4877,13 +4877,13 @@ void appointmentStatus(context,String value){
                               borderRadius: BorderRadius.circular(5),
                               side: BorderSide(color: colorsConst.third))),
                       onPressed: () {
-                       if(controllers.serverSheet.value.isEmpty){
+                       // if(controllers.serverSheet.value.isEmpty){
                           debugPrint("Local Download");
                           downloadSampleExcel();
-                        }else{
-                          debugPrint("Network Download");
-                          downloadSheetFromNetwork(controllers.serverSheet.value, "easycrm_data_upload_template.xlsx");
-                        }
+                       //  }else{
+                       //    debugPrint("Network Download");
+                       //    downloadSheetFromNetwork(controllers.serverSheet.value, "easycrm_data_upload_template.xlsx");
+                        // }
                       },
                       child: const CustomText(
                         text: "Download Sample Excel Sheet",

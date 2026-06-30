@@ -792,8 +792,8 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: CustomText(
-                          textAlign: TextAlign.left,
-                          text: formatDate(widget.updatedTs.toString()),
+                        textAlign: TextAlign.start,
+                        text: formatDate(widget.updatedTs.toString()),
                           size: 14,
                           colors: colorsConst.textColor,
                           isCopy: false,
@@ -856,7 +856,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                           //
                           //   },
                           // ),
-                          child: CustomText(text: controller?.text.trim() ?? "", isCopy: false),
+                          child: CustomText(text: controller?.text.trim() ?? "", isCopy: false,textAlign: TextAlign.start,),
                         ),
                       );
                     }

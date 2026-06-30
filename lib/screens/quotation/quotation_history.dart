@@ -2083,10 +2083,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                 .all(10.0),
                                                             child: InkWell(
                                                               onTap: () {
-                                                                String url = "$getImage?path=${Uri
-                                                                    .encodeComponent(
-                                                                    data
-                                                                        .invoicePdf)}";
+                                                                String url = "$getImage?path=${Uri.encodeComponent(data.invoicePdf)}";
                                                                 showPdfDialog(
                                                                     context, url);
                                                               },
