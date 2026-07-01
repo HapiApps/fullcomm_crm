@@ -37,6 +37,7 @@ import 'dashboard_controller.dart';
 final controllers = Get.put(Controller());
 
 class Controller extends GetxController with GetSingleTickerProviderStateMixin {
+  RxList<AdditionalInfo> addList=<AdditionalInfo>[].obs;
   late TabController tabController;
   var tabCurrentIndex = 0.obs;
   bool isDialogOpen = false;

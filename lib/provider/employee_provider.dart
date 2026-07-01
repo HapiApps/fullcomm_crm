@@ -22,6 +22,11 @@ class EmployeeProvider with ChangeNotifier {
   final EmployeeRepository _employeeRepository = EmployeeRepository();
   bool _isLoading = false;
   bool _isError = false;
+  late TabController empTab;
+  void changeTab(int index) {
+    empTab.index=index;
+    notifyListeners();
+  }
 
   bool get isLoading => _isLoading;
 

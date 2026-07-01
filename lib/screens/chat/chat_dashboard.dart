@@ -16,7 +16,7 @@ class ChatDashboard extends StatefulWidget {
 
 class _ChatDashboardState extends State<ChatDashboard> {
 
-  int selectedIndex = 3;
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {

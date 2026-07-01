@@ -256,7 +256,7 @@ class _HeaderSectionState extends State<HeaderSection> {
               radius: 2,
               width: 150,
               isImage: false,
-              text: "Reorder Columns",
+              text: "Manage Columns",
               textColor: colorsConst.primary,
             ),
           ],
@@ -273,7 +273,7 @@ class _HeaderSectionState extends State<HeaderSection> {
         return StatefulBuilder(builder: (context,setState){
           return AlertDialog(
             title: CustomText(
-              text:'Add column name',
+              text:'Add Column Name',
               colors: colorsConst.primary,
               isBold: true,
               isCopy: true,
@@ -302,6 +302,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                     errorText: errorText,
                     onPressed: (){}),
                 onChanged: (value){
+                  controllers.firstCaps(value, columnNameController);
                   setState(() {
                     errorText = null;
                   });
@@ -348,11 +349,11 @@ class _HeaderSectionState extends State<HeaderSection> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("Reorder Columns", style: TextStyle(fontSize: 18)),
+                  Text("Manage Columns", style: TextStyle(fontSize: 18)),
                   IconButton(
                     tooltip: "Add Column",
                       onPressed: (){
-                      Navigator.of(context).pop();
+                      // Navigator.of(context).pop();
                       showAddColumnDialog(context);
                       },
                       icon: Icon(Icons.add))
@@ -364,6 +365,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                   return Stack(
                     children: [
                       ReorderableListView(
+                        scrollController: tableController.scrollController,
                         onReorder: tableController.reorderWords,
                         children: [
                           for (int i = 0; i < tableController.headingFields.length; i++)

@@ -2135,7 +2135,7 @@ class Utils {
     );
   }
 
-  List<Widget> buildPagination(int totalPages, int currentPage) {
+  List<Widget> buildPagination(int totalPages, int currentPage,VoidCallback onPressed) {
     const maxVisiblePages = 5;
     List<Widget> pageButtons = [];
 
@@ -2143,27 +2143,27 @@ class Utils {
     int endPage = (startPage + maxVisiblePages - 1).clamp(1, totalPages);
 
     if (startPage > 1) {
-      pageButtons.add(pageButton(1, currentPage));
+      pageButtons.add(pageButton(1, currentPage,onPressed));
       if (startPage > 2) {
         pageButtons.add(ellipsis());
       }
     }
 
     for (int i = startPage; i <= endPage; i++) {
-      pageButtons.add(pageButton(i, currentPage));
+      pageButtons.add(pageButton(i, currentPage,onPressed));
     }
 
     if (endPage < totalPages) {
       if (endPage < totalPages - 1) {
         pageButtons.add(ellipsis());
       }
-      pageButtons.add(pageButton(totalPages, currentPage));
+      pageButtons.add(pageButton(totalPages, currentPage,onPressed));
     }
 
     return pageButtons;
   }
 
-  Widget pageButton(int pageNum, int currentPage) {
+  Widget pageButton(int pageNum, int currentPage,VoidCallback onPressed) {
     bool isCurrent = pageNum == currentPage;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -2173,7 +2173,8 @@ class Utils {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onTap: () {
-          controllers.currentPage.value = pageNum;
+          controllers.currentProspectPage.value = pageNum;
+          onPressed();
         },
         onLongPress: (){
         },
@@ -3598,7 +3599,7 @@ void appointmentStatus(context,String value){
           return;
         }
       }
-      debugPrint("Controller Updated Successfully ✅");
+      // debugPrint("Controller Updated Successfully ✅");
 
     } else {
       debugPrint("User Cancelled Date Picker ❌");
@@ -3702,7 +3703,7 @@ void appointmentStatus(context,String value){
       textEditingController?.text = formattedDate;
       pathVal.value = formattedDate;
 
-      debugPrint("Controller Updated Successfully ✅");
+      // debugPrint("Controller Updated Successfully ✅");
 
     } else {
       debugPrint("User Cancelled Date Picker ❌");

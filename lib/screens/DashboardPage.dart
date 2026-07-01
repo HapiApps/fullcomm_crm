@@ -889,6 +889,7 @@ void checkDate(){
                                       },
                                       title: "Quotations",
                                       numericValue: int.parse(dashController.totalQuotations.value.toString()),
+                                      amt: productCtr.formatAmount2(dashController.totalQuotationsAmt.value),
                                       maxValue: maxValue,
                                       iconPath: DashboardAssets.quo,
                                       valueColor: Colors.brown,
@@ -2742,7 +2743,7 @@ void checkDate(){
                                                           dashController.selectFilter.value = filter;
                                                         },
                                                         child: Container(
-                                                          width: width/30,
+                                                          width: width/25,
                                                           decoration: BoxDecoration(
                                                             color: isSelected
                                                                 ? Colors.white
@@ -2826,6 +2827,7 @@ void checkDate(){
                                                       ),
                                                     ),
                                                   ),
+                                                  5.height,
                                                   ...dashController.selectFilter.value =="Weekly"?
                                                   dashController.comparisonReport.map((e) {
 
@@ -2834,7 +2836,7 @@ void checkDate(){
                                                     int diff = current - last;
 
                                                     return Padding(
-                                                      padding: const EdgeInsets.all(8.0),
+                                                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                                                       child: Column(
                                                         children: [
                                                           Row(
@@ -2860,7 +2862,7 @@ void checkDate(){
                                                                 ),
                                                               ),
                                                               Container(
-                                                                width: screenWidth/25,
+                                                                width: screenWidth/25,height: 20,
                                                                 decoration: customDecoration.baseBackgroundDecoration(
                                                                   color: diff > 0
                                                                       ? Colors.green.shade50
@@ -2868,30 +2870,18 @@ void checkDate(){
                                                                       ? Colors.red.shade50
                                                                       : Colors.grey.shade50,radius: 20
                                                                 ),
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                  children: [
-                                                                    if(diff > 0||diff < 0)
-                                                                    Icon(diff > 0?Icons.arrow_drop_up:Icons.arrow_drop_down,
-                                                                      color: diff > 0
+                                                                child: CustomText(
+                                                                    text:diff > 0
+                                                                        ? "▲ ${diff.toString().padLeft(2,"0")}"
+                                                                        : diff < 0
+                                                                        ? "▼ ${diff.abs().toString().padLeft(2,"0")}"
+                                                                        : "-",
+                                                                    colors: diff > 0
                                                                         ? Colors.green
-                                                                            : diff < 0
-                                                                          ? Colors.red
-                                                                          : Colors.grey,),5.width,
-                                                                    CustomText(
-                                                                        text:diff > 0
-                                                                            ? diff.toString().padLeft(2,"0")
-                                                                            : diff < 0
-                                                                            ? diff.abs().toString().padLeft(2,"0")
-                                                                            : "-",
-                                                                        colors: diff > 0
-                                                                            ? Colors.green
-                                                                            : diff < 0
-                                                                            ? Colors.red
-                                                                            : Colors.grey,isBold: true,
-                                                                        isCopy: true,textAlign: TextAlign.center),
-                                                                  ],
-                                                                ),
+                                                                        : diff < 0
+                                                                        ? Colors.red
+                                                                        : Colors.grey,isBold: true,
+                                                                    isCopy: true,textAlign: TextAlign.center),
                                                               ),
                                                             ],
                                                           ),
@@ -2907,7 +2897,7 @@ void checkDate(){
                                                     int diff = current - last;
 
                                                     return Padding(
-                                                      padding: const EdgeInsets.all(8.0),
+                                                      padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
                                                       child: Column(
                                                         children: [
                                                           Row(
@@ -2921,19 +2911,19 @@ void checkDate(){
                                                                 ),
                                                               ),
                                                               SizedBox(
-                                                                width: dashController.selectFilter.value =="Weekly"?screenWidth/25:screenWidth/20,
+                                                                width: screenWidth/25,
                                                                 child: CustomText(
                                                                   text:"$last",isCopy: true,textAlign: TextAlign.start,isBold: true,
                                                                 ),
                                                               ),
                                                               SizedBox(
-                                                                width: dashController.selectFilter.value =="Weekly"?screenWidth/25:screenWidth/20,
+                                                                width: screenWidth/25,
                                                                 child: CustomText(
                                                                     text:"$current",isCopy: true,textAlign: TextAlign.start,isBold: true,
                                                                 ),
                                                               ),
                                                               Container(
-                                                                width: screenWidth/25,
+                                                                width: screenWidth/25,height: 20,
                                                                 decoration: customDecoration.baseBackgroundDecoration(
                                                                   color: diff > 0
                                                                       ? Colors.green.shade50
@@ -2941,30 +2931,18 @@ void checkDate(){
                                                                       ? Colors.red.shade50
                                                                       : Colors.grey.shade50,radius: 20
                                                                 ),
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                                  children: [
-                                                                    if(diff > 0||diff < 0)
-                                                                    Icon(diff > 0?Icons.arrow_drop_up:Icons.arrow_drop_down,
-                                                                      color: diff > 0
+                                                                child: CustomText(
+                                                                    text:diff > 0
+                                                                        ? "▲ ${diff.toString().padLeft(2,"0")}"
+                                                                        : diff < 0
+                                                                        ? "▼ ${diff.abs().toString().padLeft(2,"0")}"
+                                                                        : "-",
+                                                                    colors: diff > 0
                                                                         ? Colors.green
-                                                                            : diff < 0
-                                                                          ? Colors.red
-                                                                          : Colors.grey,),5.width,
-                                                                    CustomText(
-                                                                        text:diff > 0
-                                                                            ? diff.toString().padLeft(2,"0")
-                                                                            : diff < 0
-                                                                            ? diff.abs().toString().padLeft(2,"0")
-                                                                            : "-",
-                                                                        colors: diff > 0
-                                                                            ? Colors.green
-                                                                            : diff < 0
-                                                                            ? Colors.red
-                                                                            : Colors.grey,isBold: true,
-                                                                        isCopy: true,textAlign: TextAlign.center),
-                                                                  ],
-                                                                ),
+                                                                        : diff < 0
+                                                                        ? Colors.red
+                                                                        : Colors.grey,isBold: true,
+                                                                    isCopy: true,textAlign: TextAlign.center),
                                                               ),
                                                             ],
                                                           ),
@@ -3252,48 +3230,53 @@ void checkDate(){
               ),
               10.height,
               Container(
-                height: 50,
+                height: 35,
                 width: MediaQuery.of(context).size.width*0.1,
                 decoration: customDecoration.baseBackgroundDecoration(
                   color: colorsConst.primary,
                   radius: 10,
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomText(
-                              text: "${controllers.leadCategoryList.isEmpty?0:controllers.leadCategoryList.fold(0, (sum, item) => sum + (item.list2.length ?? 0))-controllers.leadCategoryList.value.last.list2.length}",
-                              size: 16,
-                              isCopy: false,colors: Colors.white,isBold: true,
-                            ),5.height,
-                            CustomText(
-                              text: "${controllers.leadCategoryList.isEmpty?0:controllers.leadCategoryList.value.last.list2.length}",size: 16,
-                              isCopy: false,colors: Colors.white,isBold: true,
-                            )
-                          ],
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            CustomText(
-                              text: "total leads",
-                              isCopy: false,colors: Colors.white,
-                            ),5.height,
-                            CustomText(
-                              text: "total customers",
-                              isCopy: false,colors: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ],
-                    )
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        text: "${controllers.leadCategoryList.isEmpty?0:controllers.leadCategoryList.fold(0, (sum, item) => sum + (item.list2.length ?? 0))-controllers.leadCategoryList.value.last.list2.length}",
+                        size: 16,
+                        isCopy: false,colors: Colors.white,isBold: true,
+                      ),
+                      CustomText(
+                        text: "total leads",
+                        isCopy: false,colors: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              10.height,
+              Container(
+                height: 35,
+                width: MediaQuery.of(context).size.width*0.1,
+                decoration: customDecoration.baseBackgroundDecoration(
+                  color: colorsConst.primary,
+                  radius: 10,
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomText(
+                        text: "${controllers.leadCategoryList.isEmpty?0:controllers.leadCategoryList.value.last.list2.length}",size: 16,
+                        isCopy: false,colors: Colors.white,isBold: true,
+                      ),
+                      CustomText(
+                        text: "total customers",
+                        isCopy: false,colors: Colors.white,
+                      ),
+                    ],
+                  ),
                 ),
               ),
               10.height,

@@ -581,24 +581,24 @@ class _ChatScreenState extends State<ChatScreen> {
 
           const SizedBox(width: 10),
 
-          // CircleAvatar(
-          //   radius: 22,
-          //   backgroundColor:
-          //   Colors.blue,
-          //   child: IconButton(
-          //     onPressed: () {
-          //       sendMessage();
-          //     },
-          //     icon: Icon(
-          //       messageController.text
-          //           .trim()
-          //           .isEmpty
-          //           ? Icons.mic
-          //           : Icons.send,
-          //       color: Colors.white,
-          //     ),
-          //   ),
-          // ),
+          CircleAvatar(
+            radius: 22,
+            backgroundColor:
+            Colors.blue,
+            child: IconButton(
+              onPressed: () {
+                sendMessage();
+              },
+              icon: Icon(
+                messageController.text
+                    .trim()
+                    .isEmpty
+                    ? Icons.mic
+                    : Icons.send,
+                color: Colors.white,
+              ),
+            ),
+          ),
         ],
       ),
     );

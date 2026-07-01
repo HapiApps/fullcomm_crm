@@ -13,6 +13,7 @@ import 'package:fullcomm_crm/models/new_lead_obj.dart';
 import 'package:fullcomm_crm/models/user_heading_obj.dart';
 import 'package:fullcomm_crm/screens/leads/new_lead_page.dart';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/screens/quotation/quotation_history.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -1768,15 +1769,6 @@ class ApiService {
           ? "3"
           : "4";
 
-      // Visit Type
-      String callListId = "";
-      for (var role in controllers.callList) {
-        if (role['value'] == controllers.visitType) {
-          callListId = role['id'].toString();
-          break;
-        }
-      }
-
       /// ✅ CUSTOMER LIST (DO NOT use Map<String,String>)
       List<Map<String, dynamic>> customersList = [
         {
@@ -1799,6 +1791,7 @@ class ApiService {
       /// ✅ MAIN REQUEST BODY
       Map<String, dynamic> data = {
         "action": "single_customer",
+        "additional_list": controllers.addList,
         "user_id": controllers.storage.read("id").toString(),
         "cos_id": controllers.storage.read("cos_id").toString(),
 
@@ -1837,7 +1830,7 @@ class ApiService {
         "lead_status": leadId,
         "status": controllers.status,
         "quotation_required": "1",
-        "visit_type": callListId,
+        "visit_type": controllers.visitType,
 
         "prospect_enrollment_date": controllers.prospectDate.value.isEmpty
             ? DateFormat("dd.MM.yyyy").format(DateTime.now())
@@ -1875,6 +1868,7 @@ class ApiService {
       );
 
       final body = response.body.toString();
+      debugPrint(data.toString());
       debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -2083,7 +2077,7 @@ class ApiService {
 
               leadStatus: leadId.toString(),
               status: controllers.status.toString(),
-              visitType: callListId.toString(),
+              visitType: controllers.visitType.toString(),
 
               prospectEnrollmentDate:
               controllers.prospectDate.value.isEmpty
@@ -2154,7 +2148,7 @@ class ApiService {
 
               leadStatus: leadId.toString(),
               status: controllers.status.toString(),
-              visitType: callListId.toString(),
+              visitType: controllers.visitType.toString(),
 
               prospectEnrollmentDate:
               controllers.prospectDate.value.isEmpty
@@ -2225,7 +2219,7 @@ class ApiService {
 
               leadStatus: leadId.toString(),
               status: controllers.status.toString(),
-              visitType: callListId.toString(),
+              visitType: controllers.visitType.toString(),
 
               prospectEnrollmentDate:
               controllers.prospectDate.value.isEmpty
@@ -3606,8 +3600,10 @@ class ApiService {
         controllers.emailSubjectCtr.clear();
         Provider.of<BillingProvider>(context, listen: false).billingItems.clear();
         productCtr.getQuotationDetails();
-        Navigator.pop(Get.context!);
-        productCtr.changeTab(0);
+        Get.to(QuotationHistory());
+        // Navigator.pop(Get.context!);
+        // Navigator.pop(Get.context!);
+        // productCtr.changeTab(0);
         controllers.emailCtr.reset();
       } else {
         controllers.emailCtr.reset();
@@ -3622,7 +3618,8 @@ class ApiService {
     // try {
     print("insertInvoiceAPI");
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
-      request.fields['clientMail'] = controllers.selectedCustomerEmail.value;
+      request.fields['clientMail'] = controllers.emailToCtr.text;
+      // request.fields['clientMail'] = controllers.selectedCustomerEmail.value;
       request.fields['subject'] = controllers.emailSubjectCtr.text;
       request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
       request.fields['count'] = '${controllers.emailCount.value + 1}';
@@ -3658,6 +3655,7 @@ class ApiService {
       var response = await request.send();
       var body = await response.stream.bytesToString();
       debugPrint("body");
+      debugPrint(request.fields.toString());
       debugPrint(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -3677,9 +3675,10 @@ class ApiService {
         controllers.emailSubjectCtr.clear();
         Provider.of<BillingProvider>(context, listen: false).billingItems.clear();
         productCtr.getQuotationDetails();
-        Navigator.pop(Get.context!);
-        Navigator.pop(Get.context!);
-        controllers.changeTab(0);
+        Get.to(QuotationHistory());
+        // Navigator.pop(Get.context!);
+        // Navigator.pop(Get.context!);
+        // controllers.changeTab(0);
         controllers.emailCtr.reset();
       } else {
         controllers.emailCtr.reset();
@@ -4578,7 +4577,7 @@ class ApiService {
         },
         body: jsonEncode(data),
       );
-debugPrint(response.body);
+      debugPrint(response.body);
       controllers.isLeadLoading.value = false;
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -5155,6 +5154,42 @@ debugPrint(response.body);
       }
     } catch (e) {
       controllers.versionActive.value = false;
+    }
+  }
+  Future getCustomFields() async {
+    try {
+      controllers.addList.clear();
+      Map data = {
+        "search_type": "custom_fields",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action":"get_data"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      print("getCustomFields.body");
+      print(data.toString());
+      print(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getCustomFields();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200) {
+        final List<dynamic> response = jsonDecode(request.body);
+        controllers.addList.value = response.map<AdditionalInfo>((e) => AdditionalInfo.fromJson(e)).toList();
+
+      } else {
+      }
+    } catch (e) {
+      // controllers.versionActive.value = false;
     }
   }
 

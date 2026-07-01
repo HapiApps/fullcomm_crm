@@ -83,6 +83,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
       apiService.changeList(widget.index);
       controllers.selectRadio(widget.list,widget.list2);
       apiService.currentVersion();
+      apiService.getCustomFields();
       controllers.groupController.selectIndex(0);
       setState(() {
         // controllers.search.clear();
@@ -1152,7 +1153,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                       ),
                     ),
 
-                    widget.list.isNotEmpty&&widget.list.length>=20? Obx(() {
+                    widget.list2.isNotEmpty&&widget.list2.length>=20? Obx(() {
                       int totalPages = controllers.totalProspectPages.value == 0 ? 1 : controllers.totalProspectPages.value;
                       final currentPage = controllers.currentProspectPage.value;
                       return Row(
@@ -1163,7 +1164,10 @@ class _NewLeadPageState extends State<NewLeadPage> {
                             controllers.currentProspectPage.value--;
                             controllers.changePage(widget.list,widget.list2);
                           }),
-                          ...utils.buildPagination(totalPages, currentPage),
+                          ...utils.buildPagination(totalPages, currentPage, () {
+                           _focusNode.requestFocus();
+                            controllers.changePage(widget.list,widget.list2);
+                            }),
                           utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
                             controllers.currentProspectPage.value++;
                             _focusNode.requestFocus();

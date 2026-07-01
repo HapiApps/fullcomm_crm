@@ -2431,6 +2431,41 @@ class _AddLeadState extends State<AddLead> {
                         ),
                       ],
                     ),
+                    20.height,
+                    Row(
+                      children: [
+                        CustomText(
+                          text: "Additional Information",
+                          colors: colorsConst.textColor,
+                          size: 20,
+                          isCopy: false,
+                        ),
+                      ],
+                    ), ////Todo:Address details
+                    10.height,
+                    Divider(
+                      color: Colors.grey.shade400,
+                      thickness: 1,
+                    ),
+                    20.height,
+                    GridView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: controllers.addList.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, // 2 items per row
+                        crossAxisSpacing: 50,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 3,
+                      ),
+                      itemBuilder: (context, index) {
+                        final info = controllers.addList[index];
+                        return CustomTextField(
+                            hintText:info.fieldName.toString(),
+                            text:info.fieldName.toString(),width: textFieldSize,
+                            controller: info.controller!);
+                      },
+                    ),
                     15.height,
                   ]),
                 ),

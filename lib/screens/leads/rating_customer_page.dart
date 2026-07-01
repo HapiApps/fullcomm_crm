@@ -1010,7 +1010,10 @@ class _RatingPageState extends State<RatingPage> {
                             controllers.changePage(controllers.ratingList,controllers.ratingList2);
                             // print("controllers.currentProspectPage.value --- ${controllers.currentProspectPage.value}");
                           }),
-                          ...utils.buildPagination(totalPages, currentPage),
+                          ...utils.buildPagination(totalPages, currentPage, () {
+                          _focusNode.requestFocus();
+                          controllers.changePage(controllers.ratingList,controllers.ratingList2);
+                          }),
                           utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
                             controllers.currentProspectPage.value++;
                             _focusNode.requestFocus();

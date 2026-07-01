@@ -18,6 +18,14 @@ import '../../controller/settings_controller.dart';
 import '../../provider/employee_provider.dart';
 import 'add_employee.dart';
 
+import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/common/constant/colors_constant.dart';
+import 'package:fullcomm_crm/controller/product_controller.dart';
+import 'package:fullcomm_crm/screens/quotation/quotation_history.dart';
+import 'package:get/get.dart';
+import '../../billing/billing_view/new_billing_screen.dart';
+import '../../components/custom_sidebar.dart';
+import '../../controller/controller.dart';
 class EmployeeScreen extends StatefulWidget {
   const EmployeeScreen({super.key});
 
@@ -872,7 +880,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                   ),
                 ],
               ),
-            ),)
+            ),),
           ],
         ),
     );

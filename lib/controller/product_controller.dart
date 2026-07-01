@@ -1904,9 +1904,9 @@ var isSelectAll=false.obs;
     quotationsList.assignAll(filtered);
   }
   late TabController productTab;
-  void changeTab(int index) {
-    productCtr.productTab.index=index;
-  }
+  // void changeTab(int index) {
+  //   productCtr.productTab.index=index;
+  // }
   @override
   void onInit() {
     productTab = TabController(length: 2, vsync: this);

@@ -30,6 +30,7 @@ class CustomerFullDetails {
   final List reminders;
   final List orders;
   final List quotations;
+  final List history;
   final String? totalOrderAmount;
   // final List<CallRecord> callRecords;
   // final List<MailRecord> mailRecords;
@@ -47,7 +48,7 @@ class CustomerFullDetails {
     required this.reminders,
     required this.orders,
     required this.quotations,
-    this.totalOrderAmount,
+    this.totalOrderAmount, required this.history,
   });
 
   factory CustomerFullDetails.fromJson(Map<String, dynamic> json) {
@@ -76,7 +77,7 @@ class CustomerFullDetails {
       reminders:json['reminders'],
       orders:json['orders'],
       quotations:json['quotations'],
-      totalOrderAmount: s(json['total_order_amount']),
+      totalOrderAmount: s(json['total_order_amount']), history: json['history'],
     );
   }
 
@@ -91,6 +92,7 @@ class CustomerFullDetails {
     // 'reminders': reminders.map((e) => e.toJson()).toList(),
     'call_records': callRecords,
     'mail_records': mailRecords,
+    'history': history,
     'meetings': meetings,
     'reminders': reminders,
     'quotations': quotations,
@@ -311,7 +313,6 @@ class AdditionalInfo {
     this.controller,
     this.focusNode,
   }) {
-    // controller இல்லனா create ஆகும்
     controller ??= TextEditingController(text: fieldValue ?? "");
   }
 
@@ -330,7 +331,6 @@ class AdditionalInfo {
     'field_value': controller?.text ?? fieldValue ?? "",
   };
 }
-
 /// Call record (mail_receive with call_visit_type = 7)
 class CallRecord {
   final int? id;

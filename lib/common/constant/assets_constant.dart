@@ -4,6 +4,10 @@ class Assets {
   Assets._();
 
   final String whatsapp = "assets/images/whatsapp.png";
+  final String whatsapp2 = "assets/images/whatsapp2.png";
+  final String whatsapp3 = "assets/images/whatsapp3.png";
+  final String emp1 = "assets/images/emp1.png";
+  final String emp2 = "assets/images/emp2.png";
   final String add = "assets/images/add.svg";
   final String a = "assets/images/A.svg";
   final String b = "assets/images/B.svg";

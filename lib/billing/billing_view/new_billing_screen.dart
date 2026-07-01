@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fullcomm_crm/components/custom_sidebar.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:fullcomm_crm/res/components/bottom_widgets.dart';
@@ -25,6 +26,7 @@ import '../../common/constant/colors_constant.dart';
 import '../../common/styles/decoration.dart';
 import '../../common/utilities/utils.dart';
 import '../../components/Customtext.dart';
+import '../../components/custom_appbar.dart';
 import '../../components/custom_loading_button.dart';
 import '../../controller/controller.dart';
 import '../../controller/product_controller.dart';
@@ -682,8 +684,7 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
   void _applyDefaultQtyIfNeeded(
       BillingProvider billingProvider,
       int index,
-      )
-  {
+      ){
     final controller = billingProvider.quantityControllers[index]!;
 
     int qty = int.tryParse(controller.text) ?? 0;
@@ -984,3935 +985,3877 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
         builder: (context, customerProvider, billingProvider,
             _) {
           return Scaffold(
-            body: Focus(
-              autofocus: true,
-              focusNode: _focusNode,
-              child: Shortcuts(
-                  shortcuts: <LogicalKeySet, Intent>{
-                    // LogicalKeySet(LogicalKeyboardKey.alt,
-                    //     LogicalKeyboardKey.keyP): const ActivateIntent(),
-                    // //alt +P  (Current Bill)
-                    LogicalKeySet(LogicalKeyboardKey.control,
-                        LogicalKeyboardKey.keyP): const ActivateIntent(),
-                    //stop
-                    LogicalKeySet(LogicalKeyboardKey.alt,
-                        LogicalKeyboardKey.keyS): const NextPageIntent(),
-                    //alt + S  (search bill)
-                    LogicalKeySet(LogicalKeyboardKey.alt,
-                        LogicalKeyboardKey.keyR): const LastBillIntent(),
-                    //alt+ R (Last bill)
-                    LogicalKeySet(LogicalKeyboardKey.f1): const F1Intent(),
-                    //F1 (Current Bill)
-                    LogicalKeySet(LogicalKeyboardKey.f2): const F2Intent(),
-                    //F2 (Hold Bill)
-                    LogicalKeySet(LogicalKeyboardKey.f4): const F4Intent(),
-                    //F4 (Hold Bill)
-                    LogicalKeySet(LogicalKeyboardKey.f6): const F6Intent(),
-                    //F6  (Last bill)
-                    LogicalKeySet(LogicalKeyboardKey.alt,
-                        LogicalKeyboardKey.keyC): const AddCustomerIntent(),
-                    // Alt + C  (Add Customer)
-                    LogicalKeySet(LogicalKeyboardKey.alt,
-                        LogicalKeyboardKey.keyL): const RefreshIntent(),
-                    LogicalKeySet(LogicalKeyboardKey.tab): const TabIntent(),
-                    // Alt + L  (Refresh Page)
-                    LogicalKeySet(LogicalKeyboardKey.alt,
-                        LogicalKeyboardKey.keyK): const HelpIntent(),
-                    // Alt + K (Shortcut key List)
-                    LogicalKeySet(LogicalKeyboardKey.alt,
-                        LogicalKeyboardKey.keyR): const ReturnIntent(),
-                    // Alt + R (Return Quantity)
-                    LogicalKeySet(LogicalKeyboardKey.alt,
-                        LogicalKeyboardKey.keyH): const HoldIntent(),
-                    // Alt + H  (Search Hold bills)
-                    LogicalKeySet(LogicalKeyboardKey.alt,
-                        LogicalKeyboardKey.keyO): const LogoutIntent(),
-                    // Alt + O (Log out Screen)
-                    LogicalKeySet(
-                      LogicalKeyboardKey.shift,
-                      LogicalKeyboardKey.tab,
-                    ): const ResetIntent(),
+            body: Row(
+              children: [
+                SideBar(),
+                Obx(()=>Container(
+                  width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 160:MediaQuery.of(context).size.width - 60,
+                  padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
+                  child: Focus(
+                    autofocus: true,
+                    focusNode: _focusNode,
+                    child: Shortcuts(
+                        shortcuts: <LogicalKeySet, Intent>{
+                          // LogicalKeySet(LogicalKeyboardKey.alt,
+                          //     LogicalKeyboardKey.keyP): const ActivateIntent(),
+                          // //alt +P  (Current Bill)
+                          LogicalKeySet(LogicalKeyboardKey.control,
+                              LogicalKeyboardKey.keyP): const ActivateIntent(),
+                          //stop
+                          LogicalKeySet(LogicalKeyboardKey.alt,
+                              LogicalKeyboardKey.keyS): const NextPageIntent(),
+                          //alt + S  (search bill)
+                          LogicalKeySet(LogicalKeyboardKey.alt,
+                              LogicalKeyboardKey.keyR): const LastBillIntent(),
+                          //alt+ R (Last bill)
+                          LogicalKeySet(LogicalKeyboardKey.f1): const F1Intent(),
+                          //F1 (Current Bill)
+                          LogicalKeySet(LogicalKeyboardKey.f2): const F2Intent(),
+                          //F2 (Hold Bill)
+                          LogicalKeySet(LogicalKeyboardKey.f4): const F4Intent(),
+                          //F4 (Hold Bill)
+                          LogicalKeySet(LogicalKeyboardKey.f6): const F6Intent(),
+                          //F6  (Last bill)
+                          LogicalKeySet(LogicalKeyboardKey.alt,
+                              LogicalKeyboardKey.keyC): const AddCustomerIntent(),
+                          // Alt + C  (Add Customer)
+                          LogicalKeySet(LogicalKeyboardKey.alt,
+                              LogicalKeyboardKey.keyL): const RefreshIntent(),
+                          LogicalKeySet(LogicalKeyboardKey.tab): const TabIntent(),
+                          // Alt + L  (Refresh Page)
+                          LogicalKeySet(LogicalKeyboardKey.alt,
+                              LogicalKeyboardKey.keyK): const HelpIntent(),
+                          // Alt + K (Shortcut key List)
+                          LogicalKeySet(LogicalKeyboardKey.alt,
+                              LogicalKeyboardKey.keyR): const ReturnIntent(),
+                          // Alt + R (Return Quantity)
+                          LogicalKeySet(LogicalKeyboardKey.alt,
+                              LogicalKeyboardKey.keyH): const HoldIntent(),
+                          // Alt + H  (Search Hold bills)
+                          LogicalKeySet(LogicalKeyboardKey.alt,
+                              LogicalKeyboardKey.keyO): const LogoutIntent(),
+                          // Alt + O (Log out Screen)
+                          LogicalKeySet(
+                            LogicalKeyboardKey.shift,
+                            LogicalKeyboardKey.tab,
+                          ): const ResetIntent(),
 
-                    // Alt + O (Log out Screen)
-                    LogicalKeySet(LogicalKeyboardKey.alt): const AltOnlyIntent(),
-                    LogicalKeySet(LogicalKeyboardKey.alt,
-                        LogicalKeyboardKey.keyP): const OpenProductIntent(),
-                    // Alt + P ( Product Search Field)
-                    LogicalKeySet(LogicalKeyboardKey.alt, LogicalKeyboardKey
-                        .keyA): const OpenCustomerDropdownIntent(),
-                    LogicalKeySet(LogicalKeyboardKey.alt, LogicalKeyboardKey
-                        .keyN): const AddNewProduct(),
-                    LogicalKeySet(LogicalKeyboardKey.alt, LogicalKeyboardKey
-                        .keyD): const ProductDelete(),
+                          // Alt + O (Log out Screen)
+                          LogicalKeySet(LogicalKeyboardKey.alt): const AltOnlyIntent(),
+                          LogicalKeySet(LogicalKeyboardKey.alt,
+                              LogicalKeyboardKey.keyP): const OpenProductIntent(),
+                          // Alt + P ( Product Search Field)
+                          LogicalKeySet(LogicalKeyboardKey.alt, LogicalKeyboardKey
+                              .keyA): const OpenCustomerDropdownIntent(),
+                          LogicalKeySet(LogicalKeyboardKey.alt, LogicalKeyboardKey
+                              .keyN): const AddNewProduct(),
+                          LogicalKeySet(LogicalKeyboardKey.alt, LogicalKeyboardKey
+                              .keyD): const ProductDelete(),
 
-                  },
-                  child: Actions(
-                    actions: {
-                      NextPageIntent: CallbackAction<NextPageIntent>(
-                        onInvoke: (intent) {
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => const OrderDetailPage(),
-                          //   ),
-                          // ).then((_) {
-                          //   // 🔥 Search Bill screen-la irundhu thirumba vandha udane
-                          //   billingProvider.dropdownFocusNode.requestFocus();
-                          // });
-
-                          return null;
                         },
-                      ),
-                      LastBillIntent: CallbackAction<LastBillIntent>(
-                        onInvoke: (intent) {
-                          billingProvider.getLastOrderDetails(context);
-                          return null;
-                        },
-                      ),
-                      AltOnlyIntent: CallbackAction<Intent>(
-                        onInvoke: (intent) {
-                          // print('Alt alone pressed!');
-                          return null;
-                        },
-                      ),
-                      F1Intent: CallbackAction<F1Intent>(
-                        onInvoke: (intent) {
-                          final billingProvider = Provider.of<BillingProvider>(context, listen: false);
-                          final customerProvider = Provider.of<CustomersProvider>(context, listen: false);
+                        child: Actions(
+                          actions: {
+                            NextPageIntent: CallbackAction<NextPageIntent>(
+                              onInvoke: (intent) {
+                                // Navigator.push(
+                                //   context,
+                                //   MaterialPageRoute(
+                                //     builder: (context) => const OrderDetailPage(),
+                                //   ),
+                                // ).then((_) {
+                                //   // 🔥 Search Bill screen-la irundhu thirumba vandha udane
+                                //   billingProvider.dropdownFocusNode.requestFocus();
+                                // });
 
-
-                          // 🔹 CLOSE DIALOG IF ALREADY OPEN
-                          if (_isPaymentDialogOpen) {
-                            Navigator.pop(context); // ONLY ONE POP
-                            setState(() => _isPaymentDialogOpen = false);
-                            return;
-                          }
-
-                          // 🔹 PREVENT OPENING WHEN NO ITEMS
-                          if (billingProvider.billingItems.isEmpty) {
-                            billingProvider.printButtonController.reset();
-                            Toasts.showToastBar(
-                              context: context,
-                              text: 'Bill List is empty',
-                              color: Colors.red,
-                            );
-                            return;
-                          }
-
-                          // 🔹 OPEN PAYMENT DIALOG
-                          setState(() => _isPaymentDialogOpen = true);
-
-                          showPaymentBalanceDialog(
-                            context,
-
-                            onPressPrint: () async {
-                              // =======================================
-                              // 🔥 PREVENT MULTIPLE CALLS
-                              // =======================================
-                              // if (billingProvider.billingItems.isNotEmpty) {
-                              if (_isPrinting) {
-                                // print("PRINT BLOCKED — ALREADY PRINTING");
-                                return;
-                              }
-
-                              _isPrinting = true; // lock
-
-                              final paymentMap = {
-                                'UPI': '1',
-                                'Paytm': '1',
-                                'Split Payment': '5',
-                                'Credit Card': '4',
-                                'Cash': '2',
-                                'Credit': '3',
-                              };
-
-                              final selectedMethod = billingProvider
-                                  .selectBillMethod.toString();
-                              final paymentId = paymentMap[selectedMethod] ?? '0';
-
-                              // print(
-                              //     "Payment Method: $selectedMethod, Payment ID: $paymentId");
-
-                              final billStatus = selectedMethod == 'Credit'
-                                  ? 0
-                                  : 1;
-
-                              // Assign default customer if empty
-                              if (customerProvider.selectedCustomerId.isEmpty) {
-                                customerProvider.setCustomerDetails(
-                                  customerId: ProjectData.cash,
-                                  customerName: ProjectData.name,
-                                  customerMobile: ProjectData.mobile,
-                                  customerAddress: ProjectData.address,
-                                );
-                              }
-
-                              // =======================================
-                              // 🔥 REAL PRINT — ONLY ONCE
-                              // =======================================
-                              await billingProvider.placeOrderAndPrintBill(
-                                context,
-                                order: Order(
-                                  split_pay: selectedMethod == "Split Payment"
-                                      ? (billingProvider.upiPayment.text.isEmpty
-                                      ? "0"
-                                      : billingProvider.upiPayment.text)
-                                      : "0",
-
-                                  customerMobile: customerProvider
-                                      .selectedCustomerMobile,
-                                  customerId: customerProvider.selectedCustomerId,
-                                  customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
-                                  customerAddress: customerProvider
-                                      .customerAddressController.text,
-                                  cashier: controllers.storage.read("id"),
-                                  paymentMethod: selectedMethod,
-                                  paymentId: paymentId,
-                                  creditDays:
-                                  selectedMethod == "Credit" ? (billingProvider
-                                      .creditDays ?? 0) : 0,
-                                  products: billingProvider.billingItems,
-                                  orderGrandTotal:
-                                  billingProvider
-                                      .calculatedGrandTotal()
-                                      .toString(),
-                                  orderSubTotal:
-                                  billingProvider
-                                      .calculatedGrandTotal()
-                                      .toString(),
-                                  receivedAmt: billingProvider.paymentReceived
-                                      .text.isEmpty
-                                      ? "0.0"
-                                      : double.parse(
-                                      billingProvider.paymentReceived.text)
-                                      .toStringAsFixed(0),
-                                  payBackAmt: selectedMethod == "Cash"
-                                      ? ((billingProvider.paymentReceived.text
-                                      .isEmpty
-                                      ? 0.0
-                                      : double.parse(
-                                      billingProvider.paymentReceived.text)) -
-                                      billingProvider.calculatedGrandTotal())
-                                      .abs()
-                                      .toStringAsFixed(2)
-                                      : "0.00",
-                                  savings:
-                                  '${billingProvider.billingItems.fold(
-                                      0.0, (total, item) =>
-                                  total + item.calculateDiscount())}',
-                                  billStatus: billStatus,
-                                  salesmanId: controllers.storage.read("id").toString(),
-                                  version: "0.0",
-                                ),
-                              );
-
-                              // Unlock print after attempt
-                              _isPrinting = false;
-                            },
-                            // },
-
-
-                            onPressPrintHold: () {},
-                            onPressPrintSave: () async {
-                              // =======================================
-                              // 🔥 PREVENT MULTIPLE CALLS
-                              // =======================================
-                              // if (billingProvider.billingItems.isNotEmpty) {
-                              if (_isPrinting) {
-                                // print("PRINT BLOCKED — ALREADY PRINTING");
-                                return;
-                              }
-
-                              _isPrinting = true; // lock
-
-                              final paymentMap = {
-                                'UPI': '1',
-                                'Paytm': '1',
-                                'Split Payment': '5',
-                                'Credit Card': '4',
-                                'Cash': '2',
-                                'Credit': '3',
-                              };
-
-                              final selectedMethod = billingProvider
-                                  .selectBillMethod.toString();
-                              final paymentId = paymentMap[selectedMethod] ?? '0';
-
-                              // print(
-                              //     "Payment Method: $selectedMethod, Payment ID: $paymentId");
-
-                              final billStatus = selectedMethod == 'Credit'
-                                  ? 0
-                                  : 1;
-
-                              // Assign default customer if empty
-                              if (customerProvider.selectedCustomerId.isEmpty) {
-                                customerProvider.setCustomerDetails(
-                                  customerId: ProjectData.cash,
-                                  customerName: ProjectData.name,
-                                  customerMobile: ProjectData.mobile,
-                                  customerAddress: ProjectData.address,
-                                );
-                              }
-
-                              // =======================================
-                              // 🔥 REAL PRINT — ONLY ONCE
-                              // =======================================
-                              await billingProvider.placeOrderAndSaveBill(
-                                context,
-                                order: Order(
-                                  split_pay: selectedMethod == "Split Payment"
-                                      ? (billingProvider.upiPayment.text.isEmpty
-                                      ? "0"
-                                      : billingProvider.upiPayment.text)
-                                      : "0",
-
-                                  customerMobile: customerProvider
-                                      .selectedCustomerMobile,
-                                  customerId: customerProvider.selectedCustomerId,
-                                  customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
-                                  customerAddress: customerProvider
-                                      .customerAddressController.text,
-                                  cashier: controllers.storage.read("id"),
-                                  paymentMethod: selectedMethod,
-                                  paymentId: paymentId,
-                                  creditDays:
-                                  selectedMethod == "Credit" ? (billingProvider
-                                      .creditDays ?? 0) : 0,
-                                  products: billingProvider.billingItems,
-                                  orderGrandTotal:
-                                  billingProvider
-                                      .calculatedGrandTotal()
-                                      .toString(),
-                                  orderSubTotal:
-                                  billingProvider
-                                      .calculatedGrandTotal()
-                                      .toString(),
-                                  receivedAmt: billingProvider.paymentReceived
-                                      .text.isEmpty
-                                      ? "0.0"
-                                      : double.parse(
-                                      billingProvider.paymentReceived.text)
-                                      .toStringAsFixed(0),
-                                  payBackAmt: selectedMethod == "Cash"
-                                      ? ((billingProvider.paymentReceived.text
-                                      .isEmpty
-                                      ? 0.0
-                                      : double.parse(
-                                      billingProvider.paymentReceived.text)) -
-                                      billingProvider.calculatedGrandTotal())
-                                      .abs()
-                                      .toStringAsFixed(2)
-                                      : "0.00",
-                                  savings:
-                                  '${billingProvider.billingItems.fold(
-                                      0.0, (total, item) =>
-                                  total + item.calculateDiscount())}',
-                                  billStatus: billStatus,
-                                  salesmanId: controllers.storage.read("id").toString(),
-                                  version: "0.0",
-                                ),
-                              );
-
-                              // Unlock print after attempt
-                              _isPrinting = false;
-                            },
-                          ).whenComplete(() {
-                            setState(() => _isPaymentDialogOpen = false);
-                          });
-
-                          return;
-                        },
-                      ),
-                      TabIntent: CallbackAction<TabIntent>(
-                        onInvoke: (intent) async {
-                          final billingProvider = Provider.of<BillingProvider>(context, listen: false);
-                          final customerProvider = Provider.of<CustomersProvider>(context, listen: false);
-
-
-                          // 🔹 CLOSE DIALOG IF ALREADY OPEN
-                          if (_isPaymentDialogOpen) {
-                            Navigator.pop(context); // ONLY ONE POP
-                            setState(() => _isPaymentDialogOpen = false);
-                            return;
-                          }
-
-                          // 🔹 PREVENT OPENING WHEN NO ITEMS
-                          if (billingProvider.billingItems.isEmpty) {
-                            billingProvider.printButtonController.reset();
-                            Toasts.showToastBar(
-                              context: context,
-                              text: 'Bill List is empty',
-                              color: Colors.red,
-                            );
-                            return;
-                          }
-
-                          // 🔹 OPEN PAYMENT DIALOG
-                          setState(() => _isPaymentDialogOpen = true);
-                          // 🔹 Directly save the bill
-                          final selectedMethod = billingProvider.selectBillMethod.toString();
-                          final paymentMap = {
-                            'UPI': '1',
-                            'Paytm': '1',
-                            'Split Payment': '5',
-                            'Credit Card': '4',
-                            'Cash': '2',
-                            'Credit': '3',
-                          };
-                          final paymentId = paymentMap[selectedMethod] ?? '0';
-                          final billStatus = selectedMethod == 'Credit' ? 0 : 1;
-
-                          // Assign default customer if none selected
-                          if (customerProvider.selectedCustomerId.isEmpty) {
-                            customerProvider.setCustomerDetails(
-                              customerId: ProjectData.cash,
-                              customerName: ProjectData.name,
-                              customerMobile: ProjectData.mobile,
-                              customerAddress: ProjectData.address,
-                            );
-                          }
-
-                          await billingProvider.placeOrderAndSaveBill(
-                            context,
-                            order: Order(
-                              split_pay: selectedMethod == "Split Payment"
-                                  ? (billingProvider.upiPayment.text.isEmpty
-                                  ? "0"
-                                  : billingProvider.upiPayment.text)
-                                  : "0",
-                              customerMobile: customerProvider.selectedCustomerMobile,
-                              customerId: customerProvider.selectedCustomerId,
-                              customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
-                              customerAddress: customerProvider.customerAddressController.text,
-                              cashier: controllers.storage.read("id"),
-                              paymentMethod: selectedMethod,
-                              paymentId: paymentId,
-                              creditDays: selectedMethod == "Credit" ? (billingProvider.creditDays ?? 0) : 0,
-                              products: billingProvider.billingItems,
-                              orderGrandTotal: billingProvider.calculatedGrandTotal().toString(),
-                              orderSubTotal: billingProvider.calculatedGrandTotal().toString(),
-                              receivedAmt: billingProvider.paymentReceived.text.isEmpty
-                                  ? "0.0"
-                                  : double.parse(billingProvider.paymentReceived.text).toStringAsFixed(0),
-                              payBackAmt: selectedMethod == "Cash"
-                                  ? ((billingProvider.paymentReceived.text.isEmpty
-                                  ? 0.0
-                                  : double.parse(billingProvider.paymentReceived.text)) -
-                                  billingProvider.calculatedGrandTotal())
-                                  .abs()
-                                  .toStringAsFixed(2)
-                                  : "0.00",
-                              savings:
-                              '${billingProvider.billingItems.fold(0.0, (total, item) => total + item.calculateDiscount())}',
-                              billStatus: billStatus,
-                              salesmanId: controllers.storage.read("id").toString(),
-                              version: "0.0",
+                                return null;
+                              },
                             ),
-                          );
+                            LastBillIntent: CallbackAction<LastBillIntent>(
+                              onInvoke: (intent) {
+                                billingProvider.getLastOrderDetails(context);
+                                return null;
+                              },
+                            ),
+                            AltOnlyIntent: CallbackAction<Intent>(
+                              onInvoke: (intent) {
+                                // print('Alt alone pressed!');
+                                return null;
+                              },
+                            ),
+                            F1Intent: CallbackAction<F1Intent>(
+                              onInvoke: (intent) {
+                                final billingProvider = Provider.of<BillingProvider>(context, listen: false);
+                                final customerProvider = Provider.of<CustomersProvider>(context, listen: false);
 
-                          return;
-                        },
-                      ),
-                      F4Intent: CallbackAction<F4Intent>(
-                        onInvoke: (intent) async {
-                          // print("ðŸ‘‰ F2 Pressed");
-                          {
-                            if (billingProvider.billingItems.isEmpty) {
-                              billingProvider.printButtonController.reset();
-                              Toasts.showToastBar(
-                                context: context,
-                                text: 'Bill List is empty',
-                                color: Colors.red,
-                              );
-                              return;
-                            }
 
-                            // âœ… Directly hold the bill without payment dialog
-                            final paymentMap = {
-                              'UPI': '1',
-                              'Paytm': '1',
-                              'Split Payment': '5',
-                              'Credit Card': '4',
-                              'Cash': '2',
-                              'Credit': '3',
-                            };
-                            final selectedMethod = billingProvider
-                                .selectBillMethod ?? "Cash"; // default Cash
-                            final paymentId = paymentMap[selectedMethod] ?? '0';
+                                // 🔹 CLOSE DIALOG IF ALREADY OPEN
+                                if (_isPaymentDialogOpen) {
+                                  Navigator.pop(context); // ONLY ONE POP
+                                  setState(() => _isPaymentDialogOpen = false);
+                                  return;
+                                }
 
-                            if (customerProvider.selectedCustomerId.isEmpty) {
-                              customerProvider.setCustomerDetails(
-                                  customerId: ProjectData.cash,
-                                  customerName: ProjectData.name,
-                                  customerMobile: ProjectData.mobile,
-                                  customerAddress: ProjectData.address);
-                            }
+                                // 🔹 PREVENT OPENING WHEN NO ITEMS
+                                if (billingProvider.billingItems.isEmpty) {
+                                  billingProvider.printButtonController.reset();
+                                  Toasts.showToastBar(
+                                    context: context,
+                                    text: 'Bill List is empty',
+                                    color: Colors.red,
+                                  );
+                                  return;
+                                }
 
-                            final now = DateTime.now();
-                            final billNo = 'BILL${now.millisecondsSinceEpoch %
-                                10000}';
-                            final formattedDate = '${now.day}/${now.month}/${now
-                                .year} ${now.hour}:${now.minute}';
+                                // 🔹 OPEN PAYMENT DIALOG
+                                setState(() => _isPaymentDialogOpen = true);
 
-                            await billingProvider.saveHoldBillDetails(context: context,
-                              order: Order(
-                                split_pay: billingProvider.selectBillMethod ==
-                                    "Split Payment"
-                                    ? (billingProvider.upiPayment.text.isEmpty
-                                    ? "0"
-                                    : billingProvider.upiPayment.text)
-                                    : "0",
+                                showPaymentBalanceDialog(
+                                  context,
 
-                                id: billNo,
-                                // âœ… Bill No
-                                createdTs: formattedDate,
-                                // âœ… Date
-                                customerMobile: customerProvider
-                                    .selectedCustomerMobile,
-                                customerId: customerProvider.selectedCustomerId,
-                                customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
-                                customerAddress: customerProvider
-                                    .customerAddressController.text,
-                                // cashier: billingProvider.cashierNameController.text
-                                //     .trim(),
-                                cashier: controllers.storage.read("id"),
-                                paymentMethod: billingProvider.selectBillMethod
-                                    .toString(),
-                                paymentId: paymentId,
-                                creditDays: billingProvider.selectBillMethod
-                                    .toString() == "Credit"
-                                    ? (billingProvider.creditDays ?? 0)
-                                    : 0,
-                                products: billingProvider.billingItems,
-                                orderGrandTotal: billingProvider
-                                    .calculatedGrandTotal().toStringAsFixed(2),
-                                orderSubTotal: billingProvider
-                                    .calculatedGrandTotal().toStringAsFixed(2),
-                                receivedAmt: billingProvider.paymentReceived.text
-                                    .isEmpty
-                                    ? "0.0"
-                                    : double
-                                    .parse(
-                                    billingProvider.paymentReceived.text)
-                                    .toStringAsFixed(1),
-                                payBackAmt: (
-                                    billingProvider.selectBillMethod == "Cash"
-                                        ? ((billingProvider.paymentReceived.text
-                                        .isEmpty
+                                  onPressPrint: () async {
+                                    // =======================================
+                                    // 🔥 PREVENT MULTIPLE CALLS
+                                    // =======================================
+                                    // if (billingProvider.billingItems.isNotEmpty) {
+                                    if (_isPrinting) {
+                                      // print("PRINT BLOCKED — ALREADY PRINTING");
+                                      return;
+                                    }
+
+                                    _isPrinting = true; // lock
+
+                                    final paymentMap = {
+                                      'UPI': '1',
+                                      'Paytm': '1',
+                                      'Split Payment': '5',
+                                      'Credit Card': '4',
+                                      'Cash': '2',
+                                      'Credit': '3',
+                                    };
+
+                                    final selectedMethod = billingProvider
+                                        .selectBillMethod.toString();
+                                    final paymentId = paymentMap[selectedMethod] ?? '0';
+
+                                    // print(
+                                    //     "Payment Method: $selectedMethod, Payment ID: $paymentId");
+
+                                    final billStatus = selectedMethod == 'Credit'
+                                        ? 0
+                                        : 1;
+
+                                    // Assign default customer if empty
+                                    if (customerProvider.selectedCustomerId.isEmpty) {
+                                      customerProvider.setCustomerDetails(
+                                        customerId: ProjectData.cash,
+                                        customerName: ProjectData.name,
+                                        customerMobile: ProjectData.mobile,
+                                        customerAddress: ProjectData.address,
+                                      );
+                                    }
+
+                                    // =======================================
+                                    // 🔥 REAL PRINT — ONLY ONCE
+                                    // =======================================
+                                    await billingProvider.placeOrderAndPrintBill(
+                                      context,
+                                      order: Order(
+                                        split_pay: selectedMethod == "Split Payment"
+                                            ? (billingProvider.upiPayment.text.isEmpty
+                                            ? "0"
+                                            : billingProvider.upiPayment.text)
+                                            : "0",
+
+                                        customerMobile: customerProvider
+                                            .selectedCustomerMobile,
+                                        customerId: customerProvider.selectedCustomerId,
+                                        customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
+                                        customerAddress: customerProvider
+                                            .customerAddressController.text,
+                                        cashier: controllers.storage.read("id"),
+                                        paymentMethod: selectedMethod,
+                                        paymentId: paymentId,
+                                        creditDays:
+                                        selectedMethod == "Credit" ? (billingProvider
+                                            .creditDays ?? 0) : 0,
+                                        products: billingProvider.billingItems,
+                                        orderGrandTotal:
+                                        billingProvider
+                                            .calculatedGrandTotal()
+                                            .toString(),
+                                        orderSubTotal:
+                                        billingProvider
+                                            .calculatedGrandTotal()
+                                            .toString(),
+                                        receivedAmt: billingProvider.paymentReceived
+                                            .text.isEmpty
+                                            ? "0.0"
+                                            : double.parse(
+                                            billingProvider.paymentReceived.text)
+                                            .toStringAsFixed(0),
+                                        payBackAmt: selectedMethod == "Cash"
+                                            ? ((billingProvider.paymentReceived.text
+                                            .isEmpty
+                                            ? 0.0
+                                            : double.parse(
+                                            billingProvider.paymentReceived.text)) -
+                                            billingProvider.calculatedGrandTotal())
+                                            .abs()
+                                            .toStringAsFixed(2)
+                                            : "0.00",
+                                        savings:
+                                        '${billingProvider.billingItems.fold(
+                                            0.0, (total, item) =>
+                                        total + item.calculateDiscount())}',
+                                        billStatus: billStatus,
+                                        salesmanId: controllers.storage.read("id").toString(),
+                                        version: "0.0",
+                                      ),
+                                    );
+
+                                    // Unlock print after attempt
+                                    _isPrinting = false;
+                                  },
+                                  // },
+
+
+                                  onPressPrintHold: () {},
+                                  onPressPrintSave: () async {
+                                    // =======================================
+                                    // 🔥 PREVENT MULTIPLE CALLS
+                                    // =======================================
+                                    // if (billingProvider.billingItems.isNotEmpty) {
+                                    if (_isPrinting) {
+                                      // print("PRINT BLOCKED — ALREADY PRINTING");
+                                      return;
+                                    }
+
+                                    _isPrinting = true; // lock
+
+                                    final paymentMap = {
+                                      'UPI': '1',
+                                      'Paytm': '1',
+                                      'Split Payment': '5',
+                                      'Credit Card': '4',
+                                      'Cash': '2',
+                                      'Credit': '3',
+                                    };
+
+                                    final selectedMethod = billingProvider
+                                        .selectBillMethod.toString();
+                                    final paymentId = paymentMap[selectedMethod] ?? '0';
+
+                                    // print(
+                                    //     "Payment Method: $selectedMethod, Payment ID: $paymentId");
+
+                                    final billStatus = selectedMethod == 'Credit'
+                                        ? 0
+                                        : 1;
+
+                                    // Assign default customer if empty
+                                    if (customerProvider.selectedCustomerId.isEmpty) {
+                                      customerProvider.setCustomerDetails(
+                                        customerId: ProjectData.cash,
+                                        customerName: ProjectData.name,
+                                        customerMobile: ProjectData.mobile,
+                                        customerAddress: ProjectData.address,
+                                      );
+                                    }
+
+                                    // =======================================
+                                    // 🔥 REAL PRINT — ONLY ONCE
+                                    // =======================================
+                                    await billingProvider.placeOrderAndSaveBill(
+                                      context,
+                                      order: Order(
+                                        split_pay: selectedMethod == "Split Payment"
+                                            ? (billingProvider.upiPayment.text.isEmpty
+                                            ? "0"
+                                            : billingProvider.upiPayment.text)
+                                            : "0",
+
+                                        customerMobile: customerProvider
+                                            .selectedCustomerMobile,
+                                        customerId: customerProvider.selectedCustomerId,
+                                        customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
+                                        customerAddress: customerProvider
+                                            .customerAddressController.text,
+                                        cashier: controllers.storage.read("id"),
+                                        paymentMethod: selectedMethod,
+                                        paymentId: paymentId,
+                                        creditDays:
+                                        selectedMethod == "Credit" ? (billingProvider
+                                            .creditDays ?? 0) : 0,
+                                        products: billingProvider.billingItems,
+                                        orderGrandTotal:
+                                        billingProvider
+                                            .calculatedGrandTotal()
+                                            .toString(),
+                                        orderSubTotal:
+                                        billingProvider
+                                            .calculatedGrandTotal()
+                                            .toString(),
+                                        receivedAmt: billingProvider.paymentReceived
+                                            .text.isEmpty
+                                            ? "0.0"
+                                            : double.parse(
+                                            billingProvider.paymentReceived.text)
+                                            .toStringAsFixed(0),
+                                        payBackAmt: selectedMethod == "Cash"
+                                            ? ((billingProvider.paymentReceived.text
+                                            .isEmpty
+                                            ? 0.0
+                                            : double.parse(
+                                            billingProvider.paymentReceived.text)) -
+                                            billingProvider.calculatedGrandTotal())
+                                            .abs()
+                                            .toStringAsFixed(2)
+                                            : "0.00",
+                                        savings:
+                                        '${billingProvider.billingItems.fold(
+                                            0.0, (total, item) =>
+                                        total + item.calculateDiscount())}',
+                                        billStatus: billStatus,
+                                        salesmanId: controllers.storage.read("id").toString(),
+                                        version: "0.0",
+                                      ),
+                                    );
+
+                                    // Unlock print after attempt
+                                    _isPrinting = false;
+                                  },
+                                ).whenComplete(() {
+                                  setState(() => _isPaymentDialogOpen = false);
+                                });
+
+                                return;
+                              },
+                            ),
+                            TabIntent: CallbackAction<TabIntent>(
+                              onInvoke: (intent) async {
+                                final billingProvider = Provider.of<BillingProvider>(context, listen: false);
+                                final customerProvider = Provider.of<CustomersProvider>(context, listen: false);
+
+
+                                // 🔹 CLOSE DIALOG IF ALREADY OPEN
+                                if (_isPaymentDialogOpen) {
+                                  Navigator.pop(context); // ONLY ONE POP
+                                  setState(() => _isPaymentDialogOpen = false);
+                                  return;
+                                }
+
+                                // 🔹 PREVENT OPENING WHEN NO ITEMS
+                                if (billingProvider.billingItems.isEmpty) {
+                                  billingProvider.printButtonController.reset();
+                                  Toasts.showToastBar(
+                                    context: context,
+                                    text: 'Bill List is empty',
+                                    color: Colors.red,
+                                  );
+                                  return;
+                                }
+
+                                // 🔹 OPEN PAYMENT DIALOG
+                                setState(() => _isPaymentDialogOpen = true);
+                                // 🔹 Directly save the bill
+                                final selectedMethod = billingProvider.selectBillMethod.toString();
+                                final paymentMap = {
+                                  'UPI': '1',
+                                  'Paytm': '1',
+                                  'Split Payment': '5',
+                                  'Credit Card': '4',
+                                  'Cash': '2',
+                                  'Credit': '3',
+                                };
+                                final paymentId = paymentMap[selectedMethod] ?? '0';
+                                final billStatus = selectedMethod == 'Credit' ? 0 : 1;
+
+                                // Assign default customer if none selected
+                                if (customerProvider.selectedCustomerId.isEmpty) {
+                                  customerProvider.setCustomerDetails(
+                                    customerId: ProjectData.cash,
+                                    customerName: ProjectData.name,
+                                    customerMobile: ProjectData.mobile,
+                                    customerAddress: ProjectData.address,
+                                  );
+                                }
+
+                                await billingProvider.placeOrderAndSaveBill(
+                                  context,
+                                  order: Order(
+                                    split_pay: selectedMethod == "Split Payment"
+                                        ? (billingProvider.upiPayment.text.isEmpty
+                                        ? "0"
+                                        : billingProvider.upiPayment.text)
+                                        : "0",
+                                    customerMobile: customerProvider.selectedCustomerMobile,
+                                    customerId: customerProvider.selectedCustomerId,
+                                    customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
+                                    customerAddress: customerProvider.customerAddressController.text,
+                                    cashier: controllers.storage.read("id"),
+                                    paymentMethod: selectedMethod,
+                                    paymentId: paymentId,
+                                    creditDays: selectedMethod == "Credit" ? (billingProvider.creditDays ?? 0) : 0,
+                                    products: billingProvider.billingItems,
+                                    orderGrandTotal: billingProvider.calculatedGrandTotal().toString(),
+                                    orderSubTotal: billingProvider.calculatedGrandTotal().toString(),
+                                    receivedAmt: billingProvider.paymentReceived.text.isEmpty
+                                        ? "0.0"
+                                        : double.parse(billingProvider.paymentReceived.text).toStringAsFixed(0),
+                                    payBackAmt: selectedMethod == "Cash"
+                                        ? ((billingProvider.paymentReceived.text.isEmpty
                                         ? 0.0
-                                        : double.parse(
-                                        billingProvider.paymentReceived.text))
-                                        - billingProvider.calculatedGrandTotal())
+                                        : double.parse(billingProvider.paymentReceived.text)) -
+                                        billingProvider.calculatedGrandTotal())
                                         .abs()
                                         .toStringAsFixed(2)
-                                        : "0.00"
-                                ),
-                                savings: '${billingProvider.billingItems.fold(
-                                    0.0, (t, i) => t + i.calculateDiscount())}',
-                                billStatus: 0,
-                                version: "0.0",
-                                salesmanId: controllers.storage.read("id").toString(),
-                              ),
-                            );
+                                        : "0.00",
+                                    savings:
+                                    '${billingProvider.billingItems.fold(0.0, (total, item) => total + item.calculateDiscount())}',
+                                    billStatus: billStatus,
+                                    salesmanId: controllers.storage.read("id").toString(),
+                                    version: "0.0",
+                                  ),
+                                );
+
+                                return;
+                              },
+                            ),
+                            F4Intent: CallbackAction<F4Intent>(
+                              onInvoke: (intent) async {
+                                // print("ðŸ‘‰ F2 Pressed");
+                                {
+                                  if (billingProvider.billingItems.isEmpty) {
+                                    billingProvider.printButtonController.reset();
+                                    Toasts.showToastBar(
+                                      context: context,
+                                      text: 'Bill List is empty',
+                                      color: Colors.red,
+                                    );
+                                    return;
+                                  }
+
+                                  // âœ… Directly hold the bill without payment dialog
+                                  final paymentMap = {
+                                    'UPI': '1',
+                                    'Paytm': '1',
+                                    'Split Payment': '5',
+                                    'Credit Card': '4',
+                                    'Cash': '2',
+                                    'Credit': '3',
+                                  };
+                                  final selectedMethod = billingProvider
+                                      .selectBillMethod ?? "Cash"; // default Cash
+                                  final paymentId = paymentMap[selectedMethod] ?? '0';
+
+                                  if (customerProvider.selectedCustomerId.isEmpty) {
+                                    customerProvider.setCustomerDetails(
+                                        customerId: ProjectData.cash,
+                                        customerName: ProjectData.name,
+                                        customerMobile: ProjectData.mobile,
+                                        customerAddress: ProjectData.address);
+                                  }
+
+                                  final now = DateTime.now();
+                                  final billNo = 'BILL${now.millisecondsSinceEpoch %
+                                      10000}';
+                                  final formattedDate = '${now.day}/${now.month}/${now
+                                      .year} ${now.hour}:${now.minute}';
+
+                                  await billingProvider.saveHoldBillDetails(context: context,
+                                    order: Order(
+                                      split_pay: billingProvider.selectBillMethod ==
+                                          "Split Payment"
+                                          ? (billingProvider.upiPayment.text.isEmpty
+                                          ? "0"
+                                          : billingProvider.upiPayment.text)
+                                          : "0",
+
+                                      id: billNo,
+                                      // âœ… Bill No
+                                      createdTs: formattedDate,
+                                      // âœ… Date
+                                      customerMobile: customerProvider
+                                          .selectedCustomerMobile,
+                                      customerId: customerProvider.selectedCustomerId,
+                                      customerName: customerProvider.selectedCustomerName.isEmpty ? "Cash Customer" : customerProvider.selectedCustomerName,
+                                      customerAddress: customerProvider
+                                          .customerAddressController.text,
+                                      // cashier: billingProvider.cashierNameController.text
+                                      //     .trim(),
+                                      cashier: controllers.storage.read("id"),
+                                      paymentMethod: billingProvider.selectBillMethod
+                                          .toString(),
+                                      paymentId: paymentId,
+                                      creditDays: billingProvider.selectBillMethod
+                                          .toString() == "Credit"
+                                          ? (billingProvider.creditDays ?? 0)
+                                          : 0,
+                                      products: billingProvider.billingItems,
+                                      orderGrandTotal: billingProvider
+                                          .calculatedGrandTotal().toStringAsFixed(2),
+                                      orderSubTotal: billingProvider
+                                          .calculatedGrandTotal().toStringAsFixed(2),
+                                      receivedAmt: billingProvider.paymentReceived.text
+                                          .isEmpty
+                                          ? "0.0"
+                                          : double
+                                          .parse(
+                                          billingProvider.paymentReceived.text)
+                                          .toStringAsFixed(1),
+                                      payBackAmt: (
+                                          billingProvider.selectBillMethod == "Cash"
+                                              ? ((billingProvider.paymentReceived.text
+                                              .isEmpty
+                                              ? 0.0
+                                              : double.parse(
+                                              billingProvider.paymentReceived.text))
+                                              - billingProvider.calculatedGrandTotal())
+                                              .abs()
+                                              .toStringAsFixed(2)
+                                              : "0.00"
+                                      ),
+                                      savings: '${billingProvider.billingItems.fold(
+                                          0.0, (t, i) => t + i.calculateDiscount())}',
+                                      billStatus: 0,
+                                      version: "0.0",
+                                      salesmanId: controllers.storage.read("id").toString(),
+                                    ),
+                                  );
 
 
-                            Toasts.showToastBar(
-                              context: context,
-                              text: 'Bill saved to Hold successfully',
-                              color: Colors.green,
-                            );
+                                  Toasts.showToastBar(
+                                    context: context,
+                                    text: 'Bill saved to Hold successfully',
+                                    color: Colors.green,
+                                  );
 
-                            billingProvider.printAfterChangeButtonControllerHold
-                                .reset();
+                                  billingProvider.printAfterChangeButtonControllerHold
+                                      .reset();
 
-                            // âœ… Optionally, clear current billing items after hold
-                            billingProvider.billingItems.clear();
-                            billingProvider.quantityControllers.clear();
-                            billingProvider.notifyListeners();
-                          }
-                          return null;
-                        }, //F6 last bill
-                      ),
-                      OpenProductIntent: CallbackAction<OpenProductIntent>(
-                        onInvoke: (intent) {
-                          dropdownController.text = '';
-                          billingProvider.dropdownFocusNode.requestFocus();
-                          Future.delayed(const Duration(milliseconds: 10), () {
-                            dropdownController.selection = TextSelection.collapsed(
-                                offset: dropdownController.text.length);
-                          });
-
-                          return null;
-                        },
-                      ),
-                      AddCustomerIntent: CallbackAction<AddCustomerIntent>(
-                        onInvoke: (intent) {
-                          // Open AddCustomerDialog on Alt + C
-                          // showDialog(
-                          //   context: context,
-                          //   builder: (context) => AddCustomerDialog(),
-                          // );
-                          // return null;
-                          customerProvider.addCustomerDialog(context);
-                          return null;
-                        },
-                      ),
-                      RefreshIntent: CallbackAction<RefreshIntent>(
-                        onInvoke: (intent) {
-                          // Call getProducts() on Alt + L
-                          if (billingProvider.isWChecked) {
-                            billingProvider.getWholeSaleProducts();
-                          } else {
-                            billingProvider.getProducts();
-                          }
-                          return null;
-                        },
-                      ),
-                      HelpIntent: CallbackAction<HelpIntent>(
-                        onInvoke: (intent) {
-                          ShortcutHelpDialog.show(context); // Help dialog open
-                          return null;
-                        },
-                      ),
-                      ReturnIntent: CallbackAction<ReturnIntent>(
-                        onInvoke: (intent) {
-                          if (localData.secretCode.trim().isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text(
-                                  "Don't Have The Access to Return Product ",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
-                                backgroundColor: colorsConst.primary,
-                                duration: const Duration(seconds: 2),
-                              ),
-                            );
-
-                            return null; // âŒ stop dialog
-                          }
-
-                          // âœ… access iruntha open
-                          showReturnQuantityDialog();
-                          return null;
-                        },
-                      ),
-                      HoldIntent: CallbackAction<HoldIntent>(
-                          onInvoke: (intent) async {
-                            // âœ… Wait for result from HoldBillsScreen
-                            final result = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => HoldBill()),
-                            );
-
-                            // âœ… If user released a bill, rebuild the screen
-                            if (result == true) {
-                              setState(() {}); // refreshes UI to show restored products
-                            }
-                            return null;
-                          }
-
-                      ),
-                      LogoutIntent: CallbackAction<LogoutIntent>(
-                        onInvoke: (intent) {
-                          // Show logout confirm dialog
-                          customerProvider.showCashierPopupAndLogout(context,billingProvider);
-                          return null;
-                        },
-                      ),
-                      ResetIntent: CallbackAction<ResetIntent>(
-                        onInvoke: (intent) {
-                          // Show logout confirm dialog
-                          billingProvider.clearBillingData(context);
-                          billingProvider.dropdownFocusNode.requestFocus();
-                          return null;
-                        },
-                      ),
-                      OpenCustomerDropdownIntent: CallbackAction<
-                          OpenCustomerDropdownIntent>(
-                        onInvoke: (intent) {
-                          cusFocusNode.requestFocus();
-                          Future.delayed(const Duration(milliseconds: 80), () {
-                            try {
-                              (cusDropdownKey.currentState as dynamic)?.openMenu();
-                            } catch (e, st) {
-                              debugPrint(
-                                  'Failed to open customer dropdown: $e\n$st');
-                            }
-                          });
-                          return null;
-                        },
-                      ),
-                      AddNewProduct: CallbackAction<AddNewProduct>(
-                        onInvoke: (intent) async {
-
-                          // ❌ DO NOT unfocus (this kills shortcuts)
-                          // FocusScope.of(context).unfocus();
-
-                          // ✅ Ensure keyboard focus before dialog
-                          _keyboardFocusNode.requestFocus();
-
-                          final result = await showDialog(
-                            context: context,
-                            barrierDismissible: true,
-                            builder: (_) => const AddProductDialog(),
-                          );
-
-                          // ✅ Dialog close aana apram focus MUST be restored
-                          if (result == true) {
-                            Future.delayed(const Duration(milliseconds: 100), () {
-                              _keyboardFocusNode.requestFocus();
-                              billingProvider.dropdownFocusNode.requestFocus();
-                            });
-                          }
-
-                          return null;
-                        },
-                      ),
-                      ProductDelete: CallbackAction<ProductDelete>(
-                          onInvoke: (intent) async {
-                            billingProvider
-                                .selectedProduct = null;
-                            billingProvider
-                                .updateTemporaryFields(
-                                quantity: 0,
-                                variation: 0.0);
-                            safeClear(dropdownController);
-                            safeClear(quantityVariationController);
-                            Future.microtask(() {
-                              billingProvider.dropdownFocusNode.requestFocus();
-                            });
-                            return null;
-
-                          }    ),
-                    },
-                    child: Scaffold(
-                      body: RawKeyboardListener(
-                        focusNode: FocusNode(),
-                        onKey: (RawKeyEvent event) {
-                          if (event is RawKeyDownEvent) {
-                            // ☑️ If dropdown is focused → DO NOT HANDLE ARROWS
-                            if (dropdownController.text.isEmpty) {
-                              // ▼▼ DOWN ARROW ▼▼
-                              if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-                                _handleArrowDown();
-                              }
-                              // ▲▲ UP ARROW ▲▲
-                              if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                                _handleArrowUp();
-                              }// stop table navigation
-                            }
-                            // ❌ BACKSPACE key → also remove selected row
-                            if (event.logicalKey == LogicalKeyboardKey.delete) {
-                              if (selectedRowIndex >= 0 &&
-                                  selectedRowIndex < billingProvider.billingItems.length) {
-                                billingProvider.removeBillingItem(index: selectedRowIndex);
+                                  // âœ… Optionally, clear current billing items after hold
+                                  billingProvider.billingItems.clear();
+                                  billingProvider.quantityControllers.clear();
+                                  billingProvider.notifyListeners();
+                                }
+                                return null;
+                              }, //F6 last bill
+                            ),
+                            OpenProductIntent: CallbackAction<OpenProductIntent>(
+                              onInvoke: (intent) {
+                                dropdownController.text = '';
                                 billingProvider.dropdownFocusNode.requestFocus();
-                              }
-                            }
-                            // if (event.logicalKey == LogicalKeyboardKey.enter) {
-                            //   dropdownFocusNode.requestFocus();
-                            //
-                            // }
-                          }
-                        },
-                        child: GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: () {
-                              // 🔥 mouse click ஆனாலும் focus return
-                              _focusNode.requestFocus();
-                            },
-                            child: billingProvider.isLoading ? LoadingWidgets
-                                .circleLoading()
-                                : Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                GestureDetector(
+                                Future.delayed(const Duration(milliseconds: 10), () {
+                                  dropdownController.selection = TextSelection.collapsed(
+                                      offset: dropdownController.text.length);
+                                });
+
+                                return null;
+                              },
+                            ),
+                            AddCustomerIntent: CallbackAction<AddCustomerIntent>(
+                              onInvoke: (intent) {
+                                // Open AddCustomerDialog on Alt + C
+                                // showDialog(
+                                //   context: context,
+                                //   builder: (context) => AddCustomerDialog(),
+                                // );
+                                // return null;
+                                customerProvider.addCustomerDialog(context);
+                                return null;
+                              },
+                            ),
+                            RefreshIntent: CallbackAction<RefreshIntent>(
+                              onInvoke: (intent) {
+                                // Call getProducts() on Alt + L
+                                if (billingProvider.isWChecked) {
+                                  billingProvider.getWholeSaleProducts();
+                                } else {
+                                  billingProvider.getProducts();
+                                }
+                                return null;
+                              },
+                            ),
+                            HelpIntent: CallbackAction<HelpIntent>(
+                              onInvoke: (intent) {
+                                ShortcutHelpDialog.show(context); // Help dialog open
+                                return null;
+                              },
+                            ),
+                            ReturnIntent: CallbackAction<ReturnIntent>(
+                              onInvoke: (intent) {
+                                if (localData.secretCode.trim().isEmpty) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: const Text(
+                                        "Don't Have The Access to Return Product ",style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold,fontSize: 18),),
+                                      backgroundColor: colorsConst.primary,
+                                      duration: const Duration(seconds: 2),
+                                    ),
+                                  );
+
+                                  return null; // âŒ stop dialog
+                                }
+
+                                // âœ… access iruntha open
+                                showReturnQuantityDialog();
+                                return null;
+                              },
+                            ),
+                            HoldIntent: CallbackAction<HoldIntent>(
+                                onInvoke: (intent) async {
+                                  // âœ… Wait for result from HoldBillsScreen
+                                  final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HoldBill()),
+                                  );
+
+                                  // âœ… If user released a bill, rebuild the screen
+                                  if (result == true) {
+                                    setState(() {}); // refreshes UI to show restored products
+                                  }
+                                  return null;
+                                }
+
+                            ),
+                            LogoutIntent: CallbackAction<LogoutIntent>(
+                              onInvoke: (intent) {
+                                // Show logout confirm dialog
+                                customerProvider.showCashierPopupAndLogout(context,billingProvider);
+                                return null;
+                              },
+                            ),
+                            ResetIntent: CallbackAction<ResetIntent>(
+                              onInvoke: (intent) {
+                                // Show logout confirm dialog
+                                billingProvider.clearBillingData(context);
+                                billingProvider.dropdownFocusNode.requestFocus();
+                                return null;
+                              },
+                            ),
+                            OpenCustomerDropdownIntent: CallbackAction<
+                                OpenCustomerDropdownIntent>(
+                              onInvoke: (intent) {
+                                cusFocusNode.requestFocus();
+                                Future.delayed(const Duration(milliseconds: 80), () {
+                                  try {
+                                    (cusDropdownKey.currentState as dynamic)?.openMenu();
+                                  } catch (e, st) {
+                                    debugPrint(
+                                        'Failed to open customer dropdown: $e\n$st');
+                                  }
+                                });
+                                return null;
+                              },
+                            ),
+                            AddNewProduct: CallbackAction<AddNewProduct>(
+                              onInvoke: (intent) async {
+
+                                // ❌ DO NOT unfocus (this kills shortcuts)
+                                // FocusScope.of(context).unfocus();
+
+                                // ✅ Ensure keyboard focus before dialog
+                                _keyboardFocusNode.requestFocus();
+
+                                final result = await showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (_) => const AddProductDialog(),
+                                );
+
+                                // ✅ Dialog close aana apram focus MUST be restored
+                                if (result == true) {
+                                  Future.delayed(const Duration(milliseconds: 100), () {
+                                    _keyboardFocusNode.requestFocus();
+                                    billingProvider.dropdownFocusNode.requestFocus();
+                                  });
+                                }
+
+                                return null;
+                              },
+                            ),
+                            ProductDelete: CallbackAction<ProductDelete>(
+                                onInvoke: (intent) async {
+                                  billingProvider
+                                      .selectedProduct = null;
+                                  billingProvider
+                                      .updateTemporaryFields(
+                                      quantity: 0,
+                                      variation: 0.0);
+                                  safeClear(dropdownController);
+                                  safeClear(quantityVariationController);
+                                  Future.microtask(() {
+                                    billingProvider.dropdownFocusNode.requestFocus();
+                                  });
+                                  return null;
+
+                                }    ),
+                          },
+                          child: Scaffold(
+                            body: RawKeyboardListener(
+                              focusNode: FocusNode(),
+                              onKey: (RawKeyEvent event) {
+                                if (event is RawKeyDownEvent) {
+                                  // ☑️ If dropdown is focused → DO NOT HANDLE ARROWS
+                                  if (dropdownController.text.isEmpty) {
+                                    // ▼▼ DOWN ARROW ▼▼
+                                    if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+                                      _handleArrowDown();
+                                    }
+                                    // ▲▲ UP ARROW ▲▲
+                                    if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                                      _handleArrowUp();
+                                    }// stop table navigation
+                                  }
+                                  // ❌ BACKSPACE key → also remove selected row
+                                  if (event.logicalKey == LogicalKeyboardKey.delete) {
+                                    if (selectedRowIndex >= 0 &&
+                                        selectedRowIndex < billingProvider.billingItems.length) {
+                                      billingProvider.removeBillingItem(index: selectedRowIndex);
+                                      billingProvider.dropdownFocusNode.requestFocus();
+                                    }
+                                  }
+                                  // if (event.logicalKey == LogicalKeyboardKey.enter) {
+                                  //   dropdownFocusNode.requestFocus();
+                                  //
+                                  // }
+                                }
+                              },
+                              child: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
                                   onTap: () {
+                                    // 🔥 mouse click ஆனாலும் focus return
                                     _focusNode.requestFocus();
                                   },
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
+                                  child: billingProvider.isLoading ? LoadingWidgets
+                                      .circleLoading()
+                                      : Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      20.height,
-                                      if(controllers.directNavigate.value==false)
+                                      CustomAppbar(
+                                        text:"Create Quotation",subText: "",
+                                        actionsWidget: controllers.directNavigate.value==false?Row(
+                                          children: [
+                                            CustomLoadingButton(
+                                              callback: ()async{
+                                                if (billingProvider.billingItems
+                                                    .isEmpty) {
+                                                  billingProvider.printButtonController
+                                                      .reset();
+                                                  Toasts.showToastBar(
+                                                    context: context,
+                                                    text: 'Bill List is empty',
+                                                    color: Colors.red,
+                                                  );
+                                                  return;
+                                                }
+
+                                                final paymentMap = {
+                                                  'UPI': '1',
+                                                  'Paytm': '1',
+                                                  'Split Payment': '5',
+                                                  'Credit Card': '4',
+                                                  'Cash': '2',
+                                                  'Credit': '3',
+                                                };
+
+                                                final selectedMethod = billingProvider
+                                                    .selectBillMethod ?? "Cash";
+                                                final paymentId = paymentMap[selectedMethod] ??
+                                                    '0';
+                                                final now = DateTime.now();
+                                                final billNo = 'BILL${now
+                                                    .millisecondsSinceEpoch % 10000}';
+                                                final formattedDate =
+                                                    '${now.day}/${now.month}/${now
+                                                    .year} ${now.hour}:${now.minute}';
+                                                await billingProvider.saveHoldBillDetails(context: context,
+                                                  order: Order(
+                                                    split_pay: billingProvider.selectBillMethod =="Split Payment"?
+                                                    (billingProvider.upiPayment.text.isEmpty ? "0" : billingProvider.upiPayment .text): "0",
+                                                    id: billNo,
+                                                    createdTs: formattedDate,
+                                                    customerMobile: controllers.selectedCustomerMobile.value,
+                                                    cashier: "${controllers.storage.read("id")}",
+                                                    salesmanId: "${controllers.storage.read("id")}",
+                                                    customerId: controllers.selectedCustomerId.value,
+                                                    customerName: controllers.selectedCustomerName.value,
+                                                    customerAddress:"",
+                                                    paymentMethod: selectedMethod,
+                                                    paymentId: paymentId,
+                                                    creditDays: selectedMethod =="Credit"? (billingProvider.creditDays ??0): 0,
+                                                    products: billingProvider.billingItems,
+                                                    orderGrandTotal:billingProvider.calculatedGrandTotal().toStringAsFixed(2),
+                                                    orderSubTotal:billingProvider.calculatedGrandTotal().toStringAsFixed(2),
+                                                    receivedAmt: billingProvider.paymentReceived.text.isEmpty? "0.0": double.parse(billingProvider.paymentReceived.text).toStringAsFixed(2),
+                                                    payBackAmt:(selectedMethod == "Cash" ? ((billingProvider .paymentReceived.text .isEmpty ? 0.0
+                                                        : double.parse( billingProvider .paymentReceived .text)) -
+                                                        billingProvider .calculatedGrandTotal()) .abs() .toStringAsFixed(2) : "0.00"
+                                                    ),
+                                                    version: "0.0",
+                                                    savings: '${billingProvider.billingItems .fold(0.0, (t, i) => t + i.calculateDiscount())}',
+                                                    billStatus: 0,
+                                                  ),
+                                                );
+
+                                                Toasts.showToastBar(
+                                                  context: context,
+                                                  text: 'Bill saved to Hold successfully',
+                                                  color: Colors.green,
+                                                );
+
+                                                billingProvider.printAfterChangeButtonControllerHold.reset();
+                                                billingProvider.billingItems.clear();
+                                                billingProvider.quantityControllers.clear();
+                                                billingProvider.notifyListeners();
+                                              },
+                                              isLoading: false,
+                                              height: 35,
+                                              backgroundColor: Colors.white,
+                                              radius: 2,
+                                              width: MediaQuery.of(context).size.width*0.08,
+                                              isImage: false,
+                                              text: "Save Draft",
+                                              textColor: colorsConst.primary,
+                                            ),10.width,
+                                            CustomLoadingButton(
+                                              callback: (){
+                                                billingProvider.clearBillingData(context);
+                                              },
+                                              isLoading: false,
+                                              height: 35,
+                                              backgroundColor: Colors.white,
+                                              radius: 2,
+                                              width: MediaQuery.of(context).size.width*0.08,
+                                              isImage: false,
+                                              text: "Clear Draft",
+                                              textColor: colorsConst.primary,
+                                            ),10.width,
+                                            CustomLoadingButton(
+                                              callback: ()async{
+                                                // âœ… Wait for result from HoldBillsScreen
+                                                final result = await Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(builder: (
+                                                      context) => HoldBill()
+                                                  ),
+                                                );
+
+                                                // âœ… If user released a bill, rebuild the screen
+                                                if (result == true) {
+                                                  setState(() {}); // refreshes UI to show restored products
+                                                }
+                                              },
+                                              isLoading: false,
+                                              height: 35,
+                                              backgroundColor: Colors.white,
+                                              radius: 2,
+                                              width: MediaQuery.of(context).size.width*0.08,
+                                              isImage: false,
+                                              text: "Load Draft",
+                                              textColor: colorsConst.primary,
+                                            ),10.width,
+                                            CustomLoadingButton(
+                                              callback: (){
+                                                showDialog(
+                                                  context: context,
+                                                  barrierDismissible: true,
+                                                  builder: (_) => const AddProductDialog(),
+                                                );
+                                              },
+                                              isLoading: false,
+                                              height: 35,
+                                              backgroundColor: colorsConst.primary,
+                                              radius: 2,
+                                              width: MediaQuery.of(context).size.width*0.09,
+                                              isImage: false,
+                                              text: "Add Product",
+                                              textColor: Colors.white,
+                                            ),
+                                            10.width,
+                                          ],
+                                        ):null,
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          _focusNode.requestFocus();
+                                        },
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            if(controllers.directNavigate.value==false)
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  CustomerDropdown(
+                                                    width: screenWidth / 2.6,
+                                                    custList: controllers.customers,
+                                                    onChanged: (AllCustomersObj? customer) {
+                                                      setState(() {
+                                                        controllers.selectCustomer(customer!);
+                                                      });
+                                                    },),
+                                                ],
+                                              ),20.height,
+                                          ],
+                                        ),
+                                      ),
+                                      /// Fixed Header:
+                                      if(controllers.directNavigate.value==true)
+                                        Padding(
+                                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                          child: Row(
+                                            children: [
+                                              CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                              if(controllers.selectedCompanyName.value!="")
+                                                CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                              CustomText(text: " - ${controllers.selectedCustomerMobile.value.toString().split("||").where((e) => e.isNotEmpty).join(", ")}", isCopy: false,size: 16,),
+                                            ],
+                                          ),
+                                        ),
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
-                                          CustomerDropdown(
-                                            width: screenWidth / 2.6,
-                                            custList: controllers.customers,
-                                            onChanged: (AllCustomersObj? customer) {
-                                              setState(() {
-                                                controllers.selectCustomer(customer!);
-                                              });
-                                            },),
-                                          Row(
-                                            children: [
-                                              CustomLoadingButton(
-                                                callback: ()async{
-                                                  if (billingProvider.billingItems
-                                                      .isEmpty) {
-                                                    billingProvider.printButtonController
-                                                        .reset();
+                                          Container(
+                                            width: screenWidth/2.6,
+                                            decoration: BoxDecoration(
+                                              color: Colors.transparent, // outer
+                                              borderRadius: BorderRadius.circular(5),
+                                              border: Border.all(color: Colors.grey.shade300, width: 0),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(horizontal: 0),
+                                            child:Focus(
+                                              onKeyEvent: (node, event) {
+                                                // 🚫 block ONLY arrow keys (these cause editable.dart crash)
+                                                if (event.logicalKey == LogicalKeyboardKey.arrowDown ||
+                                                    event.logicalKey == LogicalKeyboardKey.arrowUp) {
+                                                  return KeyEventResult.handled;
+                                                }
+
+                                                // ✅ allow everything else (numbers, enter, tab, etc)
+                                                return KeyEventResult.ignored;
+                                              },
+                                              onFocusChange: (hasFocus) {
+                                                if (!hasFocus) {
+
+                                                  final billing = billingProvider;
+                                                  final text = dropdownController.text.trim();
+
+                                                  // 🔒 Skip validation during scan / programmatic update
+                                                  if (_isProgrammaticChange) return;
+
+                                                  // ❌ Manual typing but no product selected
+                                                  if (billing.selectedProduct == null && text.isNotEmpty) {
+                                                    // ScaffoldMessenger.of(context).showSnackBar(
+                                                    //   const SnackBar(
+                                                    //     content: Text("❌ Product not found"),
+                                                    //     backgroundColor: Colors.red,
+                                                    //   ),
+                                                    // );
+
+                                                    Future.microtask(() {
+                                                      billing.dropdownFocusNode.requestFocus();
+
+                                                      dropdownController.value = TextEditingValue(
+                                                        text: dropdownController.text,
+                                                        selection: TextSelection.collapsed(
+                                                          offset: dropdownController.text.length,
+                                                        ),
+                                                      );
+                                                    });
+                                                  }
+                                                }
+                                              },
+                                              child: Theme(
+                                                data: Theme.of(context).copyWith(
+                                                  inputDecorationTheme: InputDecorationTheme(
+                                                    filled: true,
+                                                    fillColor: Colors.white, // 👈 change here
+                                                    enabledBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(5),
+                                                      borderSide: BorderSide(color: Colors.grey.shade300, width: 0),
+                                                    ),
+                                                    focusedBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(5),
+                                                      borderSide: BorderSide(color: Colors.blue, width: 0),
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: KeyboardDropdownField<ProductData>(
+                                                  focusNode: billingProvider.dropdownFocusNode,
+                                                  items: billingProvider.productsList
+                                                      .where((p) {
+                                                    final price = double.tryParse(p.outPrice?.toString() ?? "0") ?? 0;
+
+                                                    // Apply price > 0 condition to BOTH loose and normal products
+                                                    if (price > 0) return true;
+
+                                                    return false;
+                                                  })
+                                                      .toList()
+                                                    ..sort((a, b) {
+                                                      String titleA = a.pTitle?.toLowerCase().trim() ?? "";
+                                                      String titleB = b.pTitle?.toLowerCase().trim() ?? "";
+                                                      titleA = titleA.replaceAll(RegExp(r'\s+'), '');
+                                                      titleB = titleB.replaceAll(RegExp(r'\s+'), '');
+
+                                                      bool aStartsNum = RegExp(r'^\d').hasMatch(titleA);
+                                                      bool bStartsNum = RegExp(r'^\d').hasMatch(titleB);
+
+                                                      if (!aStartsNum && bStartsNum) return -1;
+                                                      if (aStartsNum && !bStartsNum) return 1;
+                                                      return titleA.compareTo(titleB);
+                                                    }),
+                                                  hintText: "Product...",
+                                                  hintStyle: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15,
+                                                  ),
+                                                  linkStyle: const TextStyle(
+                                                    fontSize: 15,
+                                                    color: Colors.black,
+                                                  ),
+
+                                                  labelText: "Product",
+                                                  textEditingController: dropdownController,
+
+                                                  labelBuilder: (product) {
+                                                    return product.isLoose == '0'
+                                                        ? '${product.pTitle ?? ""}'
+                                                        '${product.pVariation != null ? " ${product.pVariation}" : ""}'
+                                                        '${product.unit != null ? product.unit : ""}'
+                                                        : '${product.pTitle ?? ""}'
+                                                        '${product.pVariation != null ? " (${product.pVariation})" : ""}';
+
+                                                  },
+
+                                                  itemBuilder: (product)
+                                                  {
+                                                    final double qty =
+                                                        double.tryParse(product.qtyLeft?.toString() ?? "0") ?? 0;
+
+                                                    bool isLowStock = qty > 0 && qty <= 20; // 🔥 low stock limit
+
+
+                                                    bool isOutOfStock = qty <= 0;
+                                                    return Container(
+                                                      padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+                                                      child:
+                                                      Row(
+                                                        children: [
+                                                          SizedBox(
+                                                            width: 230,
+                                                            child: Text(
+                                                              product.qtyLeft! == "0"
+                                                                  ? product.isLoose == '0'
+                                                                  ? '${product.pTitle} ${product.pVariation}${product.unit} (Out of Stock)'
+                                                                  : '${product.pTitle} (${product.pVariation}) (Out of Stock)'
+                                                                  : product.isLoose == '0'
+                                                                  ? '${product.pTitle} ${product.pVariation}${product.unit}'
+                                                                  : '${product.pTitle} (${product.pVariation})',
+                                                              style: TextStyle(
+                                                                color: isOutOfStock ? Colors.green
+                                                                    : Colors.black, // ✅ out of stock red
+                                                                fontSize: 15,
+                                                              ),
+                                                              maxLines: 2,
+                                                              overflow: TextOverflow.ellipsis,
+                                                            ),
+                                                          ),
+
+                                                          SizedBox(width: 10),
+                                                          buildInfoBlock(
+                                                            label: product.qtyLeft! == "0"
+                                                                ? ""
+                                                                : "MRP:",
+                                                            value: product.qtyLeft! == "0"
+                                                                ? ""
+                                                                : product.isLoose == "1"
+                                                                ? ((double.tryParse(
+                                                                product.mrp?.toString() ?? "") ?? 0))
+                                                                .toStringAsFixed(1)
+                                                                : (double.tryParse(
+                                                                product.mrp?.toString() ?? "") ?? 0)
+                                                                .toStringAsFixed(1),
+                                                            color: Colors.blue, color1: Colors.black,
+                                                          ),
+
+                                                          buildInfoBlock(
+                                                            label: product.qtyLeft! == "0"
+                                                                ? ""
+                                                                : "Sell:",
+                                                            value: product.qtyLeft! == "0"
+                                                                ? ""
+                                                                : product.isLoose == "1"
+                                                                ? ((double.tryParse(
+                                                                product.pricePerG?.toString() ?? "") ?? 0) * 1000)
+                                                                .toStringAsFixed(1)
+                                                                : (double.tryParse(
+                                                                product.outPrice?.toString() ?? "") ?? 0)
+                                                                .toStringAsFixed(1),
+                                                            color: Colors.green, color1: Colors.black,
+                                                          ),
+
+                                                          buildInfoBlock(
+                                                            label: product.qtyLeft! == "0"
+                                                                ? ""
+                                                                : "Stk:",
+                                                            value: product.qtyLeft! == "0"
+                                                                ? ""
+                                                                : product.isLoose == "1"
+                                                                ? "${((double.tryParse(
+                                                                product.qtyLeft?.toString() ?? "") ?? 0) / 1000)
+                                                                .toStringAsFixed(2)} Kg"
+                                                                : (int.tryParse(
+                                                                product.qtyLeft?.toString() ?? "") ?? 0)
+                                                                .toString(),
+                                                            color: Colors.purple,
+                                                            color1: isLowStock ? Colors.lightBlueAccent.shade700 : Colors.black,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    );
+
+                                                  },
+                                                  onScan: (code) {
+                                                    final billingProvider =
+                                                    Provider.of<BillingProvider>(context, listen: false);
+
+                                                    String onlyDigits(String s) =>
+                                                        s.replaceAll(RegExp(r'[^0-9]'), '');
+
+                                                    final digits = onlyDigits(code.trim());
+
+                                                    if (digits.length < 6) return;
+
+                                                    _scanDebounce?.cancel();
+
+                                                    _scanDebounce = Timer(const Duration(milliseconds: 120), () {
+
+                                                      try {
+                                                        final match = billingProvider.productsList.firstWhere(
+                                                              (p) => p.barcode == digits,
+                                                        );
+
+                                                        final double qty =
+                                                            double.tryParse(match.qtyLeft?.toString() ?? "0") ?? 0;
+
+                                                        if (qty <= 0) {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            const SnackBar(
+                                                              content: Text("❌ Out of Stock"),
+                                                              backgroundColor: Colors.red,
+                                                            ),
+                                                          );
+                                                          return;
+                                                        }
+
+                                                        _isProgrammaticChange = true;
+
+                                                        dropdownController.value = TextEditingValue(
+                                                          text: digits,
+                                                          selection: TextSelection.collapsed(offset: digits.length),
+                                                        );
+
+                                                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                          _setScannedProduct(match);
+                                                          scrollDown();
+                                                          _isProgrammaticChange = false;
+                                                        });
+
+                                                        // reset error memory on success
+                                                        _lastScannedCode = null;
+                                                        _lastErrorTime = null;
+
+                                                      } catch (_) {
+
+                                                        final now = DateTime.now();
+
+                                                        // 🔒 Prevent repeat error within 1 second for same barcode
+                                                        if (_lastScannedCode == digits &&
+                                                            _lastErrorTime != null &&
+                                                            now.difference(_lastErrorTime!) < const Duration(seconds: 1)) {
+                                                          return;
+                                                        }
+
+                                                        _lastScannedCode = digits;
+                                                        _lastErrorTime = now;
+
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          const SnackBar(
+                                                            content: Text("❌ Product not found"),
+                                                            backgroundColor: Colors.red,
+                                                          ),
+                                                        );
+                                                      }
+                                                    });
+                                                  },
+                                                  onSelected: (product) async {
+                                                    bool isOutOfStock(ProductData p) {
+                                                      final double qty =
+                                                          double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
+                                                      return qty <= 0;
+                                                    }
+
+                                                    // 🚫 BLOCK OUT OF STOCK SELECTION
+                                                    if (isOutOfStock(product)) {
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        const SnackBar(
+                                                          content: Text("❌ Out of Stock"),
+                                                          backgroundColor: Colors.red,
+                                                        ),
+                                                      );
+
+                                                      safeClear(dropdownController);
+                                                      billingProvider.selectedProduct = null;
+
+                                                      Future.microtask(() {
+                                                        billingProvider.dropdownFocusNode.requestFocus();
+                                                        scrollDown();
+                                                      });
+
+                                                      return;
+                                                    }
+
+                                                    // ✅ ALLOW ONLY IF STOCK AVAILABLE
+                                                    billingProvider.selectedProduct = product;
+
+                                                    billingProvider.updateTemporaryFields(
+                                                      variation: product.isLoose == '1' ? 1.0 : null,
+                                                      quantity: product.isLoose == '0' ? 1 : null,
+                                                    );
+
+                                                    final displayText = product.isLoose == '0'
+                                                        ? '${product.pTitle} ${product.pVariation}${product.unit}'
+                                                        : '${product.pTitle} (${product.pVariation})';
+
+                                                    // ✅ SAFE text + caret placement
+                                                    dropdownController.value = TextEditingValue(
+                                                      text: displayText,
+                                                      selection: TextSelection.collapsed(offset: displayText.length),
+                                                    );
+
+                                                    // ✅ Delay focus change (prevents caret crash)
+                                                    Future.microtask(() {
+                                                      fieldFocusNode.requestFocus();
+                                                      scrollDown();
+                                                    });
+                                                  },
+                                                  onClear: () {
+                                                    billingProvider
+                                                        .selectedProduct = null;
+                                                    billingProvider
+                                                        .updateTemporaryFields(
+                                                        quantity: 0,
+                                                        variation: 0.0);
+                                                    safeClear(dropdownController);
+                                                    safeClear(quantityVariationController);
+
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          if(controllers.directNavigate.value==true)
+                                            10.width,
+                                          Container(
+                                            width: screenWidth*0.09,
+                                            alignment: Alignment.center,
+                                            child: MyTextField(
+                                              focusNode: fieldFocusNode,
+                                              height: 50,
+                                              controller: quantityVariationController,
+                                              callback: () {
+                                                final billing = billingProvider;
+
+                                                // 1) Selected product must exist
+                                                final product = billing.selectedProduct;
+                                                bool isOutOfStock(ProductData p) {
+                                                  final double qty =
+                                                      double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
+                                                  return qty <= 0;
+                                                }
+                                                if (product == null) {
+                                                  Toasts.showToastBar(
+                                                    context: context,
+                                                    text: "Please add product",
+                                                    color: Colors.red,
+                                                  );
+                                                  return;
+                                                }
+                                                if (isOutOfStock(product)) {
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text("❌ Out of Stock"),
+                                                      backgroundColor: Colors.red,
+                                                    ),
+                                                  );
+                                                  return;
+                                                }
+
+                                                // 2) Entered value cleanup
+                                                final enteredText = quantityVariationController.text.trim().isEmpty ? "1" : quantityVariationController.text.trim();
+
+                                                // 3) Safe parsing
+                                                final double parsedDouble = safeDouble(enteredText);
+                                                final int parsedInt = safeInt(enteredText);
+
+                                                // 4) Safe product values
+                                                final double stockQty = safeDouble(product.qtyLeft);
+
+                                                // ---------------------------------------------------
+                                                // PRODUCT EXISTS → UPDATE IT
+                                                // ---------------------------------------------------
+                                                final alreadyExists = billing.billingItems.any(
+                                                      (item) => item.id == product.id.toString(),
+                                                );
+
+                                                if (alreadyExists) {
+                                                  final existingItem = billing.billingItems.firstWhere(
+                                                        (item) => item.id == product.id.toString(),
+                                                  );
+
+                                                  final double currentQty = product.isLoose == '1'
+                                                      ? existingItem.variation / 1000
+                                                      : existingItem.quantity.toDouble();
+
+                                                  final double newQty = product.isLoose == '1'
+                                                      ? parsedDouble
+                                                      : parsedInt.toDouble();
+
+                                                  final double totalQty = currentQty + newQty;
+                                                  if (stockQty <= 0) {
                                                     Toasts.showToastBar(
                                                       context: context,
-                                                      text: 'Bill List is empty',
+                                                      text: "Out of Stock",
                                                       color: Colors.red,
                                                     );
                                                     return;
                                                   }
 
-                                                  final paymentMap = {
-                                                    'UPI': '1',
-                                                    'Paytm': '1',
-                                                    'Split Payment': '5',
-                                                    'Credit Card': '4',
-                                                    'Cash': '2',
-                                                    'Credit': '3',
-                                                  };
+                                                  // STOCK CHECK
+                                                  if (totalQty > stockQty) {
+                                                    Toasts.showToastBar(
+                                                      context: context,
+                                                      text: "Stock limit reached! Available: $stockQty",
+                                                      color: Colors.red,
+                                                    );
 
-                                                  final selectedMethod = billingProvider
-                                                      .selectBillMethod ?? "Cash";
-                                                  final paymentId = paymentMap[selectedMethod] ??
-                                                      '0';
-                                                  final now = DateTime.now();
-                                                  final billNo = 'BILL${now
-                                                      .millisecondsSinceEpoch % 10000}';
-                                                  final formattedDate =
-                                                      '${now.day}/${now.month}/${now
-                                                      .year} ${now.hour}:${now.minute}';
-                                                  await billingProvider.saveHoldBillDetails(context: context,
-                                                    order: Order(
-                                                      split_pay: billingProvider.selectBillMethod =="Split Payment"?
-                                                      (billingProvider.upiPayment.text.isEmpty ? "0" : billingProvider.upiPayment .text): "0",
-                                                      id: billNo,
-                                                      createdTs: formattedDate,
-                                                      customerMobile: controllers.selectedCustomerMobile.value,
-                                                      cashier: "${controllers.storage.read("id")}",
-                                                      salesmanId: "${controllers.storage.read("id")}",
-                                                      customerId: controllers.selectedCustomerId.value,
-                                                      customerName: controllers.selectedCustomerName.value,
-                                                      customerAddress:"",
-                                                      paymentMethod: selectedMethod,
-                                                      paymentId: paymentId,
-                                                      creditDays: selectedMethod =="Credit"? (billingProvider.creditDays ??0): 0,
-                                                      products: billingProvider.billingItems,
-                                                      orderGrandTotal:billingProvider.calculatedGrandTotal().toStringAsFixed(2),
-                                                      orderSubTotal:billingProvider.calculatedGrandTotal().toStringAsFixed(2),
-                                                      receivedAmt: billingProvider.paymentReceived.text.isEmpty? "0.0": double.parse(billingProvider.paymentReceived.text).toStringAsFixed(2),
-                                                      payBackAmt:(selectedMethod == "Cash" ? ((billingProvider .paymentReceived.text .isEmpty ? 0.0
-                                                          : double.parse( billingProvider .paymentReceived .text)) -
-                                                          billingProvider .calculatedGrandTotal()) .abs() .toStringAsFixed(2) : "0.00"
-                                                      ),
-                                                      version: "0.0",
-                                                      savings: '${billingProvider.billingItems .fold(0.0, (t, i) => t + i.calculateDiscount())}',
-                                                      billStatus: 0,
-                                                    ),
-                                                  );
+                                                    // 🔥 CLEAR EVERYTHING RELATED TO THIS PRODUCT
+                                                    safeClear(quantityVariationController);
+                                                    safeClear(dropdownController);
 
-                                                  Toasts.showToastBar(
-                                                    context: context,
-                                                    text: 'Bill saved to Hold successfully',
-                                                    color: Colors.green,
-                                                  );
+                                                    billing.selectedProduct = null;
 
-                                                  billingProvider.printAfterChangeButtonControllerHold.reset();
-                                                  billingProvider.billingItems.clear();
-                                                  billingProvider.quantityControllers.clear();
-                                                  billingProvider.notifyListeners();
-                                                },
-                                                isLoading: false,
-                                                height: 35,
-                                                backgroundColor: Colors.white,
-                                                radius: 2,
-                                                width: MediaQuery.of(context).size.width*0.08,
-                                                isImage: false,
-                                                text: "Save Draft",
-                                                textColor: colorsConst.primary,
-                                              ),10.width,
-                                              CustomLoadingButton(
-                                                callback: (){
-                                                  billingProvider.clearBillingData(context);
-                                                },
-                                                isLoading: false,
-                                                height: 35,
-                                                backgroundColor: Colors.white,
-                                                radius: 2,
-                                                width: MediaQuery.of(context).size.width*0.08,
-                                                isImage: false,
-                                                text: "Clear Draft",
-                                                textColor: colorsConst.primary,
-                                              ),10.width,
-                                              CustomLoadingButton(
-                                                callback: ()async{
-                                                  // âœ… Wait for result from HoldBillsScreen
-                                                  final result = await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(builder: (
-                                                        context) => HoldBill()
-                                                    ),
-                                                  );
+                                                    // 🔥 MOVE FOCUS BACK TO PRODUCT FIELD
+                                                    Future.microtask(() {
+                                                      billing.dropdownFocusNode.requestFocus();
+                                                    });
 
-                                                  // âœ… If user released a bill, rebuild the screen
-                                                  if (result == true) {
-                                                    setState(() {}); // refreshes UI to show restored products
+                                                    return;
                                                   }
-                                                },
-                                                isLoading: false,
-                                                height: 35,
-                                                backgroundColor: Colors.white,
-                                                radius: 2,
-                                                width: MediaQuery.of(context).size.width*0.08,
-                                                isImage: false,
-                                                text: "Load Draft",
-                                                textColor: colorsConst.primary,
-                                              ),10.width,
-                                              CustomLoadingButton(
-                                                callback: (){
-                                                  showDialog(
-                                                    context: context,
-                                                    barrierDismissible: true,
-                                                    builder: (_) => const AddProductDialog(),
-                                                  );
-                                                },
-                                                isLoading: false,
-                                                height: 35,
-                                                backgroundColor: colorsConst.primary,
-                                                radius: 2,
-                                                width: MediaQuery.of(context).size.width*0.09,
-                                                isImage: false,
-                                                text: "Add Product",
-                                                textColor: Colors.white,
-                                              ),
-                                              10.width,
-                                            ],
-                                          )
-                                        ],
-                                      ),20.height,
-                                    ],
-                                  ),
-                                ),
-                                /// Fixed Header:
-                                if(controllers.directNavigate.value==true)
-                                Padding(
-                                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                  child: Row(
-                                    children: [
-                                      CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
-                                      if(controllers.selectedCompanyName.value!="")
-                                        CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
-                                      CustomText(text: " - ${controllers.selectedCustomerMobile.value.toString().split("||").where((e) => e.isNotEmpty).join(", ")}", isCopy: false,size: 16,),
-                                    ],
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      width: screenWidth/2.6,
-                                      decoration: BoxDecoration(
-                                        color: Colors.transparent, // outer
-                                        borderRadius: BorderRadius.circular(5),
-                                        border: Border.all(color: Colors.grey.shade300, width: 0),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(horizontal: 0),
-                                      child:Focus(
-                                        onKeyEvent: (node, event) {
-                                          // 🚫 block ONLY arrow keys (these cause editable.dart crash)
-                                          if (event.logicalKey == LogicalKeyboardKey.arrowDown ||
-                                              event.logicalKey == LogicalKeyboardKey.arrowUp) {
-                                            return KeyEventResult.handled;
-                                          }
+                                                  // UPDATE EXISTING ITEM
+                                                  final index = billing.billingItems.indexOf(existingItem);
 
-                                          // ✅ allow everything else (numbers, enter, tab, etc)
-                                          return KeyEventResult.ignored;
-                                        },
-                                        onFocusChange: (hasFocus) {
-                                          if (!hasFocus) {
+                                                  if (product.isLoose == '1') {
+                                                    final double addQty = parsedDouble * 1000;
+                                                    existingItem.variation += addQty;
 
-                                            final billing = billingProvider;
-                                            final text = dropdownController.text.trim();
+                                                    billing.quantityControllers[index]!.text =
+                                                        (existingItem.variation / 1000).toStringAsFixed(3);
 
-                                            // 🔒 Skip validation during scan / programmatic update
-                                            if (_isProgrammaticChange) return;
+                                                  } else
+                                                  {
+                                                    existingItem.quantity += parsedInt;
 
-                                            // ❌ Manual typing but no product selected
-                                            if (billing.selectedProduct == null && text.isNotEmpty) {
-                                              // ScaffoldMessenger.of(context).showSnackBar(
-                                              //   const SnackBar(
-                                              //     content: Text("❌ Product not found"),
-                                              //     backgroundColor: Colors.red,
-                                              //   ),
-                                              // );
+                                                    billing.quantityControllers[index]!.text =
+                                                        existingItem.quantity.toString();
+                                                  }
 
-                                              Future.microtask(() {
-                                                billing.dropdownFocusNode.requestFocus();
+                                                  billing.updateExistingBillingItem(existingItem);
+                                                  billing.notifyListeners();
 
-                                                dropdownController.value = TextEditingValue(
-                                                  text: dropdownController.text,
-                                                  selection: TextSelection.collapsed(
-                                                    offset: dropdownController.text.length,
-                                                  ),
-                                                );
-                                              });
-                                            }
-                                          }
-                                        },
-                                        child: Theme(
-                                          data: Theme.of(context).copyWith(
-                                            inputDecorationTheme: InputDecorationTheme(
-                                              filled: true,
-                                              fillColor: Colors.white, // 👈 change here
-                                              enabledBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(5),
-                                                borderSide: BorderSide(color: Colors.grey.shade300, width: 0),
-                                              ),
-                                              focusedBorder: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(5),
-                                                borderSide: BorderSide(color: Colors.blue, width: 0),
-                                              ),
-                                            ),
-                                          ),
-                                          child: KeyboardDropdownField<ProductData>(
-                                            focusNode: billingProvider.dropdownFocusNode,
-                                            items: billingProvider.productsList
-                                                .where((p) {
-                                              final price = double.tryParse(p.outPrice?.toString() ?? "0") ?? 0;
+                                                  // RESET
+                                                  safeClear(quantityVariationController);
+                                                  safeClear(dropdownController);
+                                                  billing.selectedProduct = null;
+                                                  Future.microtask(() {
+                                                    billing.dropdownFocusNode.requestFocus();
+                                                  });
 
-                                              // Apply price > 0 condition to BOTH loose and normal products
-                                              if (price > 0) return true;
+                                                  return;
+                                                }
 
-                                              return false;
-                                            })
-                                                .toList()
-                                              ..sort((a, b) {
-                                                String titleA = a.pTitle?.toLowerCase().trim() ?? "";
-                                                String titleB = b.pTitle?.toLowerCase().trim() ?? "";
-                                                titleA = titleA.replaceAll(RegExp(r'\s+'), '');
-                                                titleB = titleB.replaceAll(RegExp(r'\s+'), '');
+                                                // ---------------------------------------------------
+                                                // ADD NEW PRODUCT
+                                                // ---------------------------------------------------
+                                                if (product.isLoose == '1') {
+                                                  final double enteredKg = parsedDouble <= 0 ? 1.0 : parsedDouble;
+                                                  final double enteredQty = enteredKg * 1000;
+                                                  if (enteredQty > stockQty) {
+                                                    Toasts.showToastBar(
+                                                      context: context,
+                                                      text: "Entered weight exceeds stock ($stockQty g).",
+                                                      color: Colors.red,
+                                                    );
+                                                    Future.microtask(() {
+                                                      fieldFocusNode.requestFocus();
+                                                    });
 
-                                                bool aStartsNum = RegExp(r'^\d').hasMatch(titleA);
-                                                bool bStartsNum = RegExp(r'^\d').hasMatch(titleB);
+                                                    return;
+                                                  }
 
-                                                if (!aStartsNum && bStartsNum) return -1;
-                                                if (aStartsNum && !bStartsNum) return 1;
-                                                return titleA.compareTo(titleB);
-                                              }),
-                                            hintText: "Product...",
-                                            hintStyle: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 15,
-                                            ),
-                                            linkStyle: const TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black,
-                                            ),
-
-                                            labelText: "Product",
-                                            textEditingController: dropdownController,
-
-                                            labelBuilder: (product) {
-                                              return product.isLoose == '0'
-                                                  ? '${product.pTitle ?? ""}'
-                                                  '${product.pVariation != null ? " ${product.pVariation}" : ""}'
-                                                  '${product.unit != null ? product.unit : ""}'
-                                                  : '${product.pTitle ?? ""}'
-                                                  '${product.pVariation != null ? " (${product.pVariation})" : ""}';
-
-                                            },
-
-                                            itemBuilder: (product)
-                                            {
-                                              final double qty =
-                                                  double.tryParse(product.qtyLeft?.toString() ?? "0") ?? 0;
-
-                                              bool isLowStock = qty > 0 && qty <= 20; // 🔥 low stock limit
-
-
-                                              bool isOutOfStock = qty <= 0;
-                                              return Container(
-                                                padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
-                                                child:
-                                                Row(
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 230,
-                                                      child: Text(
-                                                        product.qtyLeft! == "0"
-                                                            ? product.isLoose == '0'
-                                                            ? '${product.pTitle} ${product.pVariation}${product.unit} (Out of Stock)'
-                                                            : '${product.pTitle} (${product.pVariation}) (Out of Stock)'
-                                                            : product.isLoose == '0'
-                                                            ? '${product.pTitle} ${product.pVariation}${product.unit}'
-                                                            : '${product.pTitle} (${product.pVariation})',
-                                                        style: TextStyle(
-                                                          color: isOutOfStock ? Colors.green
-                                                              : Colors.black, // ✅ out of stock red
-                                                          fontSize: 15,
-                                                        ),
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow.ellipsis,
-                                                      ),
+                                                  billing.addBillingItem(
+                                                    BillingItem(
+                                                      id: product.id.toString(),
+                                                      product: product,
+                                                      productTitle: "${product.pTitle}",
+                                                      variation: enteredQty,
+                                                      variationUnit: "${product.pVariation}${product.unit}",
+                                                      quantity: 1,
+                                                      p_out_price: product.outPrice.toString(),
+                                                      p_mrp:product.mrp.toString(),
                                                     ),
-
-                                                    SizedBox(width: 10),
-                                                    buildInfoBlock(
-                                                      label: product.qtyLeft! == "0"
-                                                          ? ""
-                                                          : "MRP:",
-                                                      value: product.qtyLeft! == "0"
-                                                          ? ""
-                                                          : product.isLoose == "1"
-                                                          ? ((double.tryParse(
-                                                          product.mrp?.toString() ?? "") ?? 0))
-                                                          .toStringAsFixed(1)
-                                                          : (double.tryParse(
-                                                          product.mrp?.toString() ?? "") ?? 0)
-                                                          .toStringAsFixed(1),
-                                                      color: Colors.blue, color1: Colors.black,
-                                                    ),
-
-                                                    buildInfoBlock(
-                                                      label: product.qtyLeft! == "0"
-                                                          ? ""
-                                                          : "Sell:",
-                                                      value: product.qtyLeft! == "0"
-                                                          ? ""
-                                                          : product.isLoose == "1"
-                                                          ? ((double.tryParse(
-                                                          product.pricePerG?.toString() ?? "") ?? 0) * 1000)
-                                                          .toStringAsFixed(1)
-                                                          : (double.tryParse(
-                                                          product.outPrice?.toString() ?? "") ?? 0)
-                                                          .toStringAsFixed(1),
-                                                      color: Colors.green, color1: Colors.black,
-                                                    ),
-
-                                                    buildInfoBlock(
-                                                      label: product.qtyLeft! == "0"
-                                                          ? ""
-                                                          : "Stk:",
-                                                      value: product.qtyLeft! == "0"
-                                                          ? ""
-                                                          : product.isLoose == "1"
-                                                          ? "${((double.tryParse(
-                                                          product.qtyLeft?.toString() ?? "") ?? 0) / 1000)
-                                                          .toStringAsFixed(2)} Kg"
-                                                          : (int.tryParse(
-                                                          product.qtyLeft?.toString() ?? "") ?? 0)
-                                                          .toString(),
-                                                      color: Colors.purple,
-                                                      color1: isLowStock ? Colors.lightBlueAccent.shade700 : Colors.black,
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-
-                                            },
-                                            onScan: (code) {
-                                              final billingProvider =
-                                              Provider.of<BillingProvider>(context, listen: false);
-
-                                              String onlyDigits(String s) =>
-                                                  s.replaceAll(RegExp(r'[^0-9]'), '');
-
-                                              final digits = onlyDigits(code.trim());
-
-                                              if (digits.length < 6) return;
-
-                                              _scanDebounce?.cancel();
-
-                                              _scanDebounce = Timer(const Duration(milliseconds: 120), () {
-
-                                                try {
-                                                  final match = billingProvider.productsList.firstWhere(
-                                                        (p) => p.barcode == digits,
                                                   );
 
-                                                  final double qty =
-                                                      double.tryParse(match.qtyLeft?.toString() ?? "0") ?? 0;
+                                                  final index = billing.billingItems.indexWhere(
+                                                          (item) => item.product.id == product.id.toString());
 
-                                                  if (qty <= 0) {
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      const SnackBar(
-                                                        content: Text("❌ Out of Stock"),
-                                                        backgroundColor: Colors.red,
-                                                      ),
+                                                  billing.quantityControllers[index]!.text =
+                                                      enteredKg.toStringAsFixed(3);
+
+                                                } else {
+                                                  final int finalQty = parsedInt <= 0 ? 1 : parsedInt;
+                                                  if (stockQty <= 0) {
+                                                    Toasts.showToastBar(
+                                                      context: context,
+                                                      text: "Out of Stock",
+                                                      color: Colors.red,
                                                     );
                                                     return;
                                                   }
 
-                                                  _isProgrammaticChange = true;
+                                                  if (finalQty > stockQty) {
+                                                    Toasts.showToastBar(
+                                                      context: context,
+                                                      text: "Entered quantity exceeds stock ($stockQty).",
+                                                      color: Colors.red,
+                                                    );
+                                                    Future.microtask(() {
+                                                      fieldFocusNode.requestFocus();
+                                                    });
 
-                                                  dropdownController.value = TextEditingValue(
-                                                    text: digits,
-                                                    selection: TextSelection.collapsed(offset: digits.length),
-                                                  );
-
-                                                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                    _setScannedProduct(match);
-                                                    scrollDown();
-                                                    _isProgrammaticChange = false;
-                                                  });
-
-                                                  // reset error memory on success
-                                                  _lastScannedCode = null;
-                                                  _lastErrorTime = null;
-
-                                                } catch (_) {
-
-                                                  final now = DateTime.now();
-
-                                                  // 🔒 Prevent repeat error within 1 second for same barcode
-                                                  if (_lastScannedCode == digits &&
-                                                      _lastErrorTime != null &&
-                                                      now.difference(_lastErrorTime!) < const Duration(seconds: 1)) {
                                                     return;
                                                   }
 
-                                                  _lastScannedCode = digits;
-                                                  _lastErrorTime = now;
-
-                                                  ScaffoldMessenger.of(context).showSnackBar(
-                                                    const SnackBar(
-                                                      content: Text("❌ Product not found"),
-                                                      backgroundColor: Colors.red,
+                                                  billing.addBillingItem(
+                                                    BillingItem(
+                                                      id: product.id.toString(),
+                                                      product: product,
+                                                      variation: 1,
+                                                      variationUnit: "${product.pVariation}${product.unit}",
+                                                      quantity: finalQty,
+                                                      productTitle: product.pTitle ?? "",
+                                                      p_out_price: product.outPrice.toString(),
+                                                      p_mrp:product.mrp.toString(),
                                                     ),
                                                   );
                                                 }
-                                              });
-                                            },
-                                            onSelected: (product) async {
-                                              bool isOutOfStock(ProductData p) {
-                                                final double qty =
-                                                    double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
-                                                return qty <= 0;
-                                              }
 
-                                              // 🚫 BLOCK OUT OF STOCK SELECTION
-                                              if (isOutOfStock(product)) {
-                                                ScaffoldMessenger.of(context).showSnackBar(
-                                                  const SnackBar(
-                                                    content: Text("❌ Out of Stock"),
-                                                    backgroundColor: Colors.red,
-                                                  ),
-                                                );
+                                                // ---------------------------------------------------
+                                                // FINAL RESET
+                                                // ---------------------------------------------------
+                                                safeClear(billing.barcodeScanner);
+                                                billing.selectedProduct = null;
 
-                                                safeClear(dropdownController);
-                                                billingProvider.selectedProduct = null;
-
-                                                Future.microtask(() {
-                                                  billingProvider.dropdownFocusNode.requestFocus();
-                                                  scrollDown();
+                                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                    scrollDown();
+                                                  });
                                                 });
 
-                                                return;
-                                              }
-
-                                              // ✅ ALLOW ONLY IF STOCK AVAILABLE
-                                              billingProvider.selectedProduct = product;
-
-                                              billingProvider.updateTemporaryFields(
-                                                variation: product.isLoose == '1' ? 1.0 : null,
-                                                quantity: product.isLoose == '0' ? 1 : null,
-                                              );
-
-                                              final displayText = product.isLoose == '0'
-                                                  ? '${product.pTitle} ${product.pVariation}${product.unit}'
-                                                  : '${product.pTitle} (${product.pVariation})';
-
-                                              // ✅ SAFE text + caret placement
-                                              dropdownController.value = TextEditingValue(
-                                                text: displayText,
-                                                selection: TextSelection.collapsed(offset: displayText.length),
-                                              );
-
-                                              // ✅ Delay focus change (prevents caret crash)
-                                              Future.microtask(() {
-                                                fieldFocusNode.requestFocus();
-                                                scrollDown();
-                                              });
-                                            },
-                                            onClear: () {
-                                              billingProvider
-                                                  .selectedProduct = null;
-                                              billingProvider
-                                                  .updateTemporaryFields(
-                                                  quantity: 0,
-                                                  variation: 0.0);
-                                              safeClear(dropdownController);
-                                              safeClear(quantityVariationController);
-
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    if(controllers.directNavigate.value==true)
-                                    10.width,
-                                    Container(
-                                      width: screenWidth*0.09,
-                                      alignment: Alignment.center,
-                                      child: MyTextField(
-                                        focusNode: fieldFocusNode,
-                                        height: 50,
-                                        controller: quantityVariationController,
-                                        callback: () {
-                                          final billing = billingProvider;
-
-                                          // 1) Selected product must exist
-                                          final product = billing.selectedProduct;
-                                          bool isOutOfStock(ProductData p) {
-                                            final double qty =
-                                                double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
-                                            return qty <= 0;
-                                          }
-                                          if (product == null) {
-                                            Toasts.showToastBar(
-                                              context: context,
-                                              text: "Please add product",
-                                              color: Colors.red,
-                                            );
-                                            return;
-                                          }
-                                          if (isOutOfStock(product)) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                content: Text("❌ Out of Stock"),
-                                                backgroundColor: Colors.red,
-                                              ),
-                                            );
-                                            return;
-                                          }
-
-                                          // 2) Entered value cleanup
-                                          final enteredText = quantityVariationController.text.trim().isEmpty ? "1" : quantityVariationController.text.trim();
-
-                                          // 3) Safe parsing
-                                          final double parsedDouble = safeDouble(enteredText);
-                                          final int parsedInt = safeInt(enteredText);
-
-                                          // 4) Safe product values
-                                          final double stockQty = safeDouble(product.qtyLeft);
-
-                                          // ---------------------------------------------------
-                                          // PRODUCT EXISTS → UPDATE IT
-                                          // ---------------------------------------------------
-                                          final alreadyExists = billing.billingItems.any(
-                                                (item) => item.id == product.id.toString(),
-                                          );
-
-                                          if (alreadyExists) {
-                                            final existingItem = billing.billingItems.firstWhere(
-                                                  (item) => item.id == product.id.toString(),
-                                            );
-
-                                            final double currentQty = product.isLoose == '1'
-                                                ? existingItem.variation / 1000
-                                                : existingItem.quantity.toDouble();
-
-                                            final double newQty = product.isLoose == '1'
-                                                ? parsedDouble
-                                                : parsedInt.toDouble();
-
-                                            final double totalQty = currentQty + newQty;
-                                            if (stockQty <= 0) {
-                                              Toasts.showToastBar(
-                                                context: context,
-                                                text: "Out of Stock",
-                                                color: Colors.red,
-                                              );
-                                              return;
-                                            }
-
-                                            // STOCK CHECK
-                                            if (totalQty > stockQty) {
-                                              Toasts.showToastBar(
-                                                context: context,
-                                                text: "Stock limit reached! Available: $stockQty",
-                                                color: Colors.red,
-                                              );
-
-                                              // 🔥 CLEAR EVERYTHING RELATED TO THIS PRODUCT
-                                              safeClear(quantityVariationController);
-                                              safeClear(dropdownController);
-
-                                              billing.selectedProduct = null;
-
-                                              // 🔥 MOVE FOCUS BACK TO PRODUCT FIELD
-                                              Future.microtask(() {
-                                                billing.dropdownFocusNode.requestFocus();
-                                              });
-
-                                              return;
-                                            }
-                                            // UPDATE EXISTING ITEM
-                                            final index = billing.billingItems.indexOf(existingItem);
-
-                                            if (product.isLoose == '1') {
-                                              final double addQty = parsedDouble * 1000;
-                                              existingItem.variation += addQty;
-
-                                              billing.quantityControllers[index]!.text =
-                                                  (existingItem.variation / 1000).toStringAsFixed(3);
-
-                                            } else
-                                            {
-                                              existingItem.quantity += parsedInt;
-
-                                              billing.quantityControllers[index]!.text =
-                                                  existingItem.quantity.toString();
-                                            }
-
-                                            billing.updateExistingBillingItem(existingItem);
-                                            billing.notifyListeners();
-
-                                            // RESET
-                                            safeClear(quantityVariationController);
-                                            safeClear(dropdownController);
-                                            billing.selectedProduct = null;
-                                            Future.microtask(() {
-                                              billing.dropdownFocusNode.requestFocus();
-                                            });
-
-                                            return;
-                                          }
-
-                                          // ---------------------------------------------------
-                                          // ADD NEW PRODUCT
-                                          // ---------------------------------------------------
-                                          if (product.isLoose == '1') {
-                                            final double enteredKg = parsedDouble <= 0 ? 1.0 : parsedDouble;
-                                            final double enteredQty = enteredKg * 1000;
-                                            if (enteredQty > stockQty) {
-                                              Toasts.showToastBar(
-                                                context: context,
-                                                text: "Entered weight exceeds stock ($stockQty g).",
-                                                color: Colors.red,
-                                              );
-                                              Future.microtask(() {
-                                                fieldFocusNode.requestFocus();
-                                              });
-
-                                              return;
-                                            }
-
-                                            billing.addBillingItem(
-                                              BillingItem(
-                                                id: product.id.toString(),
-                                                product: product,
-                                                productTitle: "${product.pTitle}",
-                                                variation: enteredQty,
-                                                variationUnit: "${product.pVariation}${product.unit}",
-                                                quantity: 1,
-                                                p_out_price: product.outPrice.toString(),
-                                                p_mrp:product.mrp.toString(),
-                                              ),
-                                            );
-
-                                            final index = billing.billingItems.indexWhere(
-                                                    (item) => item.product.id == product.id.toString());
-
-                                            billing.quantityControllers[index]!.text =
-                                                enteredKg.toStringAsFixed(3);
-
-                                          } else {
-                                            final int finalQty = parsedInt <= 0 ? 1 : parsedInt;
-                                            if (stockQty <= 0) {
-                                              Toasts.showToastBar(
-                                                context: context,
-                                                text: "Out of Stock",
-                                                color: Colors.red,
-                                              );
-                                              return;
-                                            }
-
-                                            if (finalQty > stockQty) {
-                                              Toasts.showToastBar(
-                                                context: context,
-                                                text: "Entered quantity exceeds stock ($stockQty).",
-                                                color: Colors.red,
-                                              );
-                                              Future.microtask(() {
-                                                fieldFocusNode.requestFocus();
-                                              });
-
-                                              return;
-                                            }
-
-                                            billing.addBillingItem(
-                                              BillingItem(
-                                                id: product.id.toString(),
-                                                product: product,
-                                                variation: 1,
-                                                variationUnit: "${product.pVariation}${product.unit}",
-                                                quantity: finalQty,
-                                                productTitle: product.pTitle ?? "",
-                                                p_out_price: product.outPrice.toString(),
-                                                p_mrp:product.mrp.toString(),
-                                              ),
-                                            );
-                                          }
-
-                                          // ---------------------------------------------------
-                                          // FINAL RESET
-                                          // ---------------------------------------------------
-                                          safeClear(billing.barcodeScanner);
-                                          billing.selectedProduct = null;
-
-                                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                                              scrollDown();
-                                            });
-                                          });
-
-                                          safeClear(quantityVariationController);
-                                          safeClear(dropdownController);
-
-                                          Future.microtask(() {
-                                            billing.dropdownFocusNode.requestFocus();
-                                          });
-                                        },
-                                        suffixIcon: Icon(Icons.check_box_rounded,color: colorsConst.primary,size: 30),
-                                        hintText: billingProvider
-                                            .selectedProduct
-                                            ?.isLoose == '1'
-                                            ? "1.000"
-                                            : "1",
-                                        labelText: billingProvider
-                                            .selectedProduct
-                                            ?.isLoose == '1'
-                                            ? "variation"
-                                            : "Quantity",
-
-                                        keyboardType: TextInputType
-                                            .number,
-                                        inputFormatters: billingProvider
-                                            .selectedProduct
-                                            ?.isLoose == '1'
-                                            ? InputFormatters
-                                            .variationInput
-                                            : InputFormatters
-                                            .quantityInput,
-                                        onFieldSubmitted: (value) {
-                                          final billing = billingProvider;
-
-                                          // 1) Selected product must exist
-                                          final product = billing.selectedProduct;
-                                          bool isOutOfStock(ProductData p) {
-                                            final double qty =
-                                                double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
-                                            return qty <= 0;
-                                          }
-                                          if (product == null) {
-                                            Toasts.showToastBar(
-                                              context: context,
-                                              text: "Please add product",
-                                              color: Colors.red,
-                                            );
-                                            return;
-                                          }
-                                          if (isOutOfStock(product)) {
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(
-                                                content: Text("❌ Out of Stock"),
-                                                backgroundColor: Colors.red,
-                                              ),
-                                            );
-                                            return;
-                                          }
-
-                                          // 2) Entered value cleanup
-                                          final enteredText = value.trim().isEmpty ? "1" : value.trim();
-
-                                          // 3) Safe parsing
-                                          final double parsedDouble = safeDouble(enteredText);
-                                          final int parsedInt = safeInt(enteredText);
-
-                                          // 4) Safe product values
-                                          final double stockQty = safeDouble(product.qtyLeft);
-
-                                          // ---------------------------------------------------
-                                          // PRODUCT EXISTS → UPDATE IT
-                                          // ---------------------------------------------------
-                                          final alreadyExists = billing.billingItems.any(
-                                                (item) => item.id == product.id.toString(),
-                                          );
-
-                                          if (alreadyExists) {
-                                            final existingItem = billing.billingItems.firstWhere(
-                                                  (item) => item.id == product.id.toString(),
-                                            );
-
-                                            final double currentQty = product.isLoose == '1'
-                                                ? existingItem.variation / 1000
-                                                : existingItem.quantity.toDouble();
-
-                                            final double newQty = product.isLoose == '1'
-                                                ? parsedDouble
-                                                : parsedInt.toDouble();
-
-                                            final double totalQty = currentQty + newQty;
-                                            if (stockQty <= 0) {
-                                              Toasts.showToastBar(
-                                                context: context,
-                                                text: "Out of Stock",
-                                                color: Colors.red,
-                                              );
-                                              return;
-                                            }
-
-                                            // STOCK CHECK
-                                            if (totalQty > stockQty) {
-                                              Toasts.showToastBar(
-                                                context: context,
-                                                text: "Stock limit reached! Available: $stockQty",
-                                                color: Colors.red,
-                                              );
-
-                                              // 🔥 CLEAR EVERYTHING RELATED TO THIS PRODUCT
-                                              safeClear(quantityVariationController);
-                                              safeClear(dropdownController);
-
-                                              billing.selectedProduct = null;
-
-                                              // 🔥 MOVE FOCUS BACK TO PRODUCT FIELD
-                                              Future.microtask(() {
-                                                billing.dropdownFocusNode.requestFocus();
-                                              });
-
-                                              return;
-                                            }
-                                            // UPDATE EXISTING ITEM
-                                            final index = billing.billingItems.indexOf(existingItem);
-
-                                            if (product.isLoose == '1') {
-                                              final double addQty = parsedDouble * 1000;
-                                              existingItem.variation += addQty;
-
-                                              billing.quantityControllers[index]!.text =
-                                                  (existingItem.variation / 1000).toStringAsFixed(3);
-
-                                            } else
-                                            {
-                                              existingItem.quantity += parsedInt;
-
-                                              billing.quantityControllers[index]!.text =
-                                                  existingItem.quantity.toString();
-                                            }
-
-                                            billing.updateExistingBillingItem(existingItem);
-                                            billing.notifyListeners();
-
-                                            // RESET
-                                            safeClear(quantityVariationController);
-                                            safeClear(dropdownController);
-                                            billing.selectedProduct = null;
-                                            Future.microtask(() {
-                                              billing.dropdownFocusNode.requestFocus();
-                                            });
-
-                                            return;
-                                          }
-
-                                          // ---------------------------------------------------
-                                          // ADD NEW PRODUCT
-                                          // ---------------------------------------------------
-                                          if (product.isLoose == '1') {
-                                            final double enteredKg = parsedDouble <= 0 ? 1.0 : parsedDouble;
-                                            final double enteredQty = enteredKg * 1000;
-                                            if (enteredQty > stockQty) {
-                                              Toasts.showToastBar(
-                                                context: context,
-                                                text: "Entered weight exceeds stock ($stockQty g).",
-                                                color: Colors.red,
-                                              );
-                                              Future.microtask(() {
-                                                fieldFocusNode.requestFocus();
-                                              });
-
-                                              return;
-                                            }
-
-                                            billing.addBillingItem(
-                                              BillingItem(
-                                                id: product.id.toString(),
-                                                product: product,
-                                                productTitle: "${product.pTitle}",
-                                                variation: enteredQty,
-                                                variationUnit: "${product.pVariation}${product.unit}",
-                                                quantity: 1,
-                                                p_out_price: product.outPrice.toString(),
-                                                p_mrp:product.mrp.toString(),
-                                              ),
-                                            );
-
-                                            final index = billing.billingItems.indexWhere(
-                                                    (item) => item.product.id == product.id.toString());
-
-                                            billing.quantityControllers[index]!.text =
-                                                enteredKg.toStringAsFixed(3);
-
-                                          } else {
-                                            final int finalQty = parsedInt <= 0 ? 1 : parsedInt;
-                                            if (stockQty <= 0) {
-                                              Toasts.showToastBar(
-                                                context: context,
-                                                text: "Out of Stock",
-                                                color: Colors.red,
-                                              );
-                                              return;
-                                            }
-
-                                            if (finalQty > stockQty) {
-                                              Toasts.showToastBar(
-                                                context: context,
-                                                text: "Entered quantity exceeds stock ($stockQty).",
-                                                color: Colors.red,
-                                              );
-                                              Future.microtask(() {
-                                                fieldFocusNode.requestFocus();
-                                              });
-
-                                              return;
-                                            }
-
-                                            billing.addBillingItem(
-                                              BillingItem(
-                                                id: product.id.toString(),
-                                                product: product,
-                                                variation: 1,
-                                                variationUnit: "${product.pVariation}${product.unit}",
-                                                quantity: finalQty,
-                                                productTitle: product.pTitle ?? "",
-                                                p_out_price: product.outPrice.toString(),
-                                                p_mrp:product.mrp.toString(),
-                                              ),
-                                            );
-                                          }
-
-                                          // ---------------------------------------------------
-                                          // FINAL RESET
-                                          // ---------------------------------------------------
-                                          safeClear(billing.barcodeScanner);
-                                          billing.selectedProduct = null;
-
-                                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                                              scrollDown();
-                                            });
-                                          });
-
-                                          safeClear(quantityVariationController);
-                                          safeClear(dropdownController);
-
-                                          Future.microtask(() {
-                                            billing.dropdownFocusNode.requestFocus();
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                    if(controllers.directNavigate.value==false)
-                                    CustomLoadingButton(
-                                      callback: () {
-                                        if(controllers.selectedCustomerId.value==""){
-                                          utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
-                                        }else if(billingProvider.billingItems.isEmpty){
-                                          utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
-                                        }else{
-                                          printInvoice(billingProvider);
-                                        }
-                                      },
-                                      isLoading: false,
-                                      height: 45,
-                                      backgroundColor: colorsConst.primary,
-                                      radius: 2,
-                                      width: screenWidth*0.1,
-                                      isImage: false,
-                                      text: "View This Draft",
-                                      textColor: Colors.white,
-                                    ),
-                                    if(controllers.directNavigate.value==false)
-                                    Container(
-                                      height:45,
-                                      width:screenWidth*0.1,
-                                      decoration: BoxDecoration(
-                                        color: Colors.green,
-                                        borderRadius: BorderRadius.circular(5),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: DropdownButtonHideUnderline(
-                                          child: DropdownButton<String>(
-                                            dropdownColor: Colors.green,
-                                            value: dropValue,
-                                            hint: CustomText(text: "Select Status",isCopy: false,colors: Colors.white,),
-                                            isExpanded: true,
-                                            icon: const Icon(Icons.keyboard_arrow_down,color: Colors.white,),
-                                            items: statusList.map((status) {
-                                              return DropdownMenuItem(
-                                                value: status,
-                                                child: CustomText(text: status,isCopy: false,colors: Colors.white,),
-                                              );
-                                            }).toList(),
-                                            onChanged: (value) {
-                                              setState(() {
-                                                dropValue = value.toString();
-                                                if(dropValue=="Send Quotation"){
-                                                  if(controllers.selectedCustomerId.value==""){
-                                                    utils.showToast("Please select customer",Colors.red);
-                                                  }else if(billingProvider.billingItems.isEmpty){
-                                                    utils.showToast("Please select products",Colors.red);
-                                                  }else{
-                                                    setState(() {
-                                                      controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
-                                                      controllers.notesCtr.text="The quotation is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
-                                                      controllers.isTemplate.value=false;
-                                                      controllers.emailSubjectCtr.text="Quotation";
-                                                      controllers.emailMessageCtr.clear();
-                                                    });
-                                                    showDialog(
-                                                        context: context,
-                                                        barrierDismissible: false,
-                                                        builder: (context) {
-                                                          return AlertDialog(
-                                                            actions: [
-                                                              Column(
-                                                                children: [
-                                                                  Divider(
-                                                                    color: Colors.grey.shade300,
-                                                                    thickness: 1,
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: [
-                                                                      SizedBox(
-                                                                        child: Row(
-                                                                          children: [
-                                                                            TextButton(
-                                                                                onPressed: () {
-                                                                                  // Navigator.of(context).pop();
-                                                                                  settingsController.showAddTemplateDialog(context);
-                                                                                },
-                                                                                child: CustomText(
-                                                                                  text: "Create Template",
-                                                                                  isCopy: false,
-                                                                                  colors: colorsConst.third,
-                                                                                  size: 18,
-                                                                                  isBold: true,
-                                                                                )),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      CustomLoadingButton(
-                                                                        callback: () {
-                                                                          if(controllers.emailToCtr.text.trim().isEmpty){
-                                                                            utils.showToast("To is empty!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
-                                                                            utils.showToast("Invalid mail!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          if(controllers.emailSubjectCtr.text.trim().isEmpty){
-                                                                            utils.showToast("Subject is empty!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          if(controllers.emailMessageCtr.text.trim().isEmpty){
-                                                                            utils.showToast("Message is empty!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          sendInvoice(billingProvider);
-                                                                        },
-                                                                        controller: controllers.emailCtr,
-                                                                        isImage: false,
-                                                                        isLoading: true,
-                                                                        backgroundColor: colorsConst.primary,
-                                                                        radius: 5,
-                                                                        width: 200,
-                                                                        height: 50,
-                                                                        text: "Send Quotation",
-                                                                        textColor: Colors.white,
-                                                                      ),
-                                                                    ],
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ],
-                                                            content: SizedBox(
-                                                                width: 600,
-                                                                height: 400,
-                                                                child: SingleChildScrollView(
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                        children: [
-                                                                          CustomText(text: "Send Quotation", isCopy: false,isBold: true,size: 18,),
-                                                                          Row(
-                                                                            children: [
-                                                                              TextButton(
-                                                                                  onPressed: () {
-                                                                                    controllers.isTemplate.value = !controllers.isTemplate.value;
-                                                                                  },
-                                                                                  child: CustomText(
-                                                                                    text: "Get From Template",
-                                                                                    colors: colorsConst.third,
-                                                                                    size: 18,
-                                                                                    isCopy: false,
-                                                                                    isBold: true,
-                                                                                  )),
-                                                                              10.width,
-                                                                              InkWell(
-                                                                                  hoverColor: Colors.transparent,
-                                                                                  splashColor: Colors.transparent,
-                                                                                  highlightColor: Colors.transparent,
-                                                                                  focusColor: Colors.transparent,
-                                                                                  overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                                                                  onTap: () {
-                                                                                    Navigator.pop(context);
-                                                                                  },
-                                                                                  child: Icon(
-                                                                                    Icons.clear,
-                                                                                    size: 18,
-                                                                                    color: colorsConst.textColor,
-                                                                                  )),
-                                                                            ],
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                      10.height,
-                                                                      Padding(
-                                                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                                                        child: Row(
-                                                                          children: [
-                                                                            CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
-                                                                            if(controllers.selectedCompanyName.value!="")
-                                                                              CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
-                                                                            CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      Row(
-                                                                        children: [
-                                                                          CustomText(
-                                                                            textAlign: TextAlign.center,
-                                                                            text: "To",
-                                                                            colors: colorsConst.textColor,
-                                                                            size: 15,
-                                                                            isCopy: false,
-                                                                          ),
-                                                                          50.width,
-                                                                          SizedBox(
-                                                                            width: 500,
-                                                                            child: TextField(
-                                                                              controller: controllers.emailToCtr,
-                                                                              style: TextStyle(
-                                                                                  fontSize: 15, color: colorsConst.textColor),
-                                                                              decoration: const InputDecoration(
-                                                                                border: InputBorder.none,
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                      SizedBox(
-                                                                          width: 600,
-                                                                          child: SingleChildScrollView(
-                                                                            child: Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Divider(
-                                                                                  color: Colors.grey.shade300,
-                                                                                  thickness: 1,
-                                                                                ),
-                                                                                Row(
-                                                                                  children: [
-                                                                                    15.height,
-                                                                                    CustomText(
-                                                                                      text: "Subject",
-                                                                                      colors: colorsConst.textColor,
-                                                                                      size: 14,
-                                                                                      isCopy: false,
-                                                                                    ),
-                                                                                    20.width,
-                                                                                    SizedBox(
-                                                                                      width: 500,
-                                                                                      height: 50,
-                                                                                      child: TextField(
-                                                                                        controller: controllers.emailSubjectCtr,
-                                                                                        onChanged: (value){
-                                                                                          if (value.toString().isNotEmpty) {
-                                                                                            String newValue = value
-                                                                                                .toString()[0]
-                                                                                                .toUpperCase() +
-                                                                                                value.toString().substring(1);
-                                                                                            if (newValue != value) {
-                                                                                              controllers.emailSubjectCtr.value =
-                                                                                                  controllers.emailSubjectCtr.value
-                                                                                                      .copyWith(
-                                                                                                    text: newValue,
-                                                                                                    selection:
-                                                                                                    TextSelection.collapsed(
-                                                                                                        offset:
-                                                                                                        newValue.length),
-                                                                                                  );
-                                                                                            }
-                                                                                          }
-                                                                                        },
-                                                                                        maxLines: null,
-                                                                                        minLines: 1,
-                                                                                        style: TextStyle(
-                                                                                          color: colorsConst.textColor,
-                                                                                        ),
-                                                                                        decoration: const InputDecoration(
-                                                                                          border: InputBorder.none,
-                                                                                        ),
-                                                                                      ),
-                                                                                    )
-                                                                                  ],
-                                                                                ),
-                                                                                Divider(
-                                                                                  color: Colors.grey.shade300,
-                                                                                  thickness: 1,
-                                                                                ),
-                                                                                Obx(() => controllers.isTemplate.value == false
-                                                                                    ? SingleChildScrollView(
-                                                                                  child: Column(
-                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                    children: [
-                                                                                      SizedBox(
-                                                                                        width: 600,
-                                                                                        height: 70,
-                                                                                        child: TextField(
-                                                                                          textInputAction: TextInputAction.newline,
-                                                                                          controller: controllers.emailMessageCtr,
-                                                                                          onChanged: (value){
-                                                                                            if (value.toString().isNotEmpty) {
-                                                                                              String newValue = value
-                                                                                                  .toString()[0]
-                                                                                                  .toUpperCase() +
-                                                                                                  value.toString().substring(1);
-                                                                                              if (newValue != value) {
-                                                                                                controllers.emailMessageCtr.value =
-                                                                                                    controllers.emailMessageCtr.value
-                                                                                                        .copyWith(
-                                                                                                      text: newValue,
-                                                                                                      selection:
-                                                                                                      TextSelection.collapsed(
-                                                                                                          offset:
-                                                                                                          newValue.length),
-                                                                                                    );
-                                                                                              }
-                                                                                            }
-                                                                                          },
-                                                                                          keyboardType: TextInputType.multiline,
-                                                                                          maxLines: 21,
-                                                                                          expands: false,
-                                                                                          style: TextStyle(
-                                                                                            color: colorsConst.textColor,
-                                                                                          ),
-                                                                                          decoration: InputDecoration(
-                                                                                            hintText: "Message",
-                                                                                            hintStyle: TextStyle(
-                                                                                                color: colorsConst.textColor,
-                                                                                                fontSize: 14,
-                                                                                                fontFamily: "Lato"),
-                                                                                            border: InputBorder.none,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                )
-                                                                                    :Obx(() => UnconstrainedBox(
-                                                                                  child: Container(
-                                                                                    width: 500,
-                                                                                    height: 300,
-                                                                                    alignment: Alignment.center,
-                                                                                    decoration: BoxDecoration(
-                                                                                      color: colorsConst.secondary,
-                                                                                      borderRadius: BorderRadius.circular(10),
-                                                                                    ),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                      child: SizedBox(
-                                                                                        width: 500,
-                                                                                        child: Table(
-                                                                                          defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                                          border: TableBorder.all(
-                                                                                            color: Colors.grey.shade300,
-                                                                                            style: BorderStyle.solid,
-                                                                                            borderRadius: BorderRadius.circular(10),
-                                                                                            width: 1,
-                                                                                          ),
-                                                                                          children: [
-                                                                                            // Header Row
-                                                                                            TableRow(
-                                                                                              children: [
-                                                                                                CustomText(
-                                                                                                  textAlign: TextAlign.center,
-                                                                                                  text: "\nTemplate Name\n",
-                                                                                                  colors: colorsConst.textColor,
-                                                                                                  size: 15,
-                                                                                                  isBold: true,
-                                                                                                  isCopy: false,
-                                                                                                ),
-                                                                                                CustomText(
-                                                                                                  textAlign: TextAlign.center,
-                                                                                                  text: "\nSubject\n",
-                                                                                                  colors: colorsConst.textColor,
-                                                                                                  size: 15,
-                                                                                                  isBold: true,
-                                                                                                  isCopy: false,
-                                                                                                ),
-                                                                                              ],
-                                                                                            ),
-                                                                                            // Dynamic Rows
-                                                                                            for (var item in settingsController.templateList)
-                                                                                              utils.emailRow(
-                                                                                                  context,
-                                                                                                  isCheck: controllers.isAdd,
-                                                                                                  templateName: item.templateName,
-                                                                                                  msg: item.message,
-                                                                                                  subject: item.subject,
-                                                                                                  id: item.id
-                                                                                              ),
-                                                                                          ],
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ))),
-                                                                                10.height,
-                                                                                SizedBox(
-                                                                                  width: 600,
-                                                                                  height: 50,
-                                                                                  child: TextField(
-                                                                                    textInputAction: TextInputAction.newline,
-                                                                                    controller: controllers.notesCtr,
-                                                                                    keyboardType: TextInputType.multiline,
-                                                                                    maxLines: null,
-                                                                                    minLines: 3,
-                                                                                    style: TextStyle(
-                                                                                      color: colorsConst.textColor,
-                                                                                    ),
-                                                                                    decoration: InputDecoration(
-                                                                                      hintText: "",
-                                                                                      hintStyle: TextStyle(
-                                                                                          color: colorsConst.textColor,
-                                                                                          fontSize: 14,
-                                                                                          fontFamily: "Lato"),
-                                                                                      border: InputBorder.none,
-                                                                                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                InkWell(
-                                                                                  onTap:(){
-                                                                                    printInvoice(billingProvider);
-                                                                                  },
-                                                                                  child: Container(
-                                                                                    width: MediaQuery.of(context).size.width*0.6,
-                                                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                                                      color: Colors.grey.shade50,radius: 5,
-                                                                                    ),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                      child: CustomText(
-                                                                                        textAlign: TextAlign.start,
-                                                                                        text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
-                                                                                        isCopy: false,colors: colorsConst.primary,isBold: true,),
-                                                                                    ),
-                                                                                  ),
-                                                                                )
-                                                                              ],
-                                                                            ),
-                                                                          )),
-                                                                    ],
-                                                                  ),
-                                                                )),
-                                                          );
-                                                        });
-                                                  }
+                                                safeClear(quantityVariationController);
+                                                safeClear(dropdownController);
+
+                                                Future.microtask(() {
+                                                  billing.dropdownFocusNode.requestFocus();
+                                                });
+                                              },
+                                              suffixIcon: Icon(Icons.check_box_rounded,color: colorsConst.primary,size: 30),
+                                              hintText: billingProvider
+                                                  .selectedProduct
+                                                  ?.isLoose == '1'
+                                                  ? "1.000"
+                                                  : "1",
+                                              labelText: billingProvider
+                                                  .selectedProduct
+                                                  ?.isLoose == '1'
+                                                  ? "variation"
+                                                  : "Quantity",
+
+                                              keyboardType: TextInputType
+                                                  .number,
+                                              inputFormatters: billingProvider
+                                                  .selectedProduct
+                                                  ?.isLoose == '1'
+                                                  ? InputFormatters
+                                                  .variationInput
+                                                  : InputFormatters
+                                                  .quantityInput,
+                                              onFieldSubmitted: (value) {
+                                                final billing = billingProvider;
+
+                                                // 1) Selected product must exist
+                                                final product = billing.selectedProduct;
+                                                bool isOutOfStock(ProductData p) {
+                                                  final double qty =
+                                                      double.tryParse(p.qtyLeft?.toString() ?? "0") ?? 0;
+                                                  return qty <= 0;
                                                 }
-                                                else if(dropValue=="Create Invoice"){
-                                                  if(controllers.selectedCustomerId.value==""){
-                                                    utils.showToast("Please select customer",Colors.red);
-                                                  }else if(billingProvider.billingItems.isEmpty){
-                                                    utils.showToast("Please select products",Colors.red);
-                                                  }else{
-                                                    setState(() {
-                                                      controllers.type.value="1";
-                                                      controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
-                                                      controllers.notesCtr.text="The invoice is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
-                                                      controllers.isTemplate.value=false;
-                                                      controllers.emailSubjectCtr.text="Invoice";
-                                                      controllers.emailMessageCtr.clear();
-                                                    });
-                                                    showDialog(
-                                                        context: context,
-                                                        barrierDismissible: false,
-                                                        builder: (context) {
-                                                          return AlertDialog(
-                                                            actions: [
-                                                              Column(
-                                                                children: [
-                                                                  Divider(
-                                                                    color: Colors.grey.shade300,
-                                                                    thickness: 1,
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: [
-                                                                      SizedBox(
-                                                                        child: Row(
-                                                                          children: [
-                                                                            TextButton(
-                                                                                onPressed: () {
-                                                                                  // Navigator.of(context).pop();
-                                                                                  settingsController.showAddTemplateDialog(context);
-                                                                                },
-                                                                                child: CustomText(
-                                                                                  text: "Create Template",
-                                                                                  isCopy: false,
-                                                                                  colors: colorsConst.third,
-                                                                                  size: 18,
-                                                                                  isBold: true,
-                                                                                )),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      CustomLoadingButton(
-                                                                        callback: () {
-                                                                          if(controllers.emailToCtr.text.trim().isEmpty){
-                                                                            utils.showToast("To is empty!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
-                                                                            utils.showToast("Invalid mail!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          if(controllers.emailSubjectCtr.text.trim().isEmpty){
-                                                                            utils.showToast("Subject is empty!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          if(controllers.emailMessageCtr.text.trim().isEmpty){
-                                                                            utils.showToast("Message is empty!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          sendInvoice(billingProvider);
-                                                                        },
-                                                                        controller: controllers.emailCtr,
-                                                                        isImage: false,
-                                                                        isLoading: true,
-                                                                        backgroundColor: colorsConst.primary,
-                                                                        radius: 5,
-                                                                        width: 200,
-                                                                        height: 50,
-                                                                        text: "Send Invoice",
-                                                                        textColor: Colors.white,
-                                                                      ),
-                                                                    ],
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ],
-                                                            content: SizedBox(
-                                                                width: 600,
-                                                                height: 400,
-                                                                child: SingleChildScrollView(
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                        children: [
-                                                                          CustomText(text: "Create Invoice", isCopy: false,isBold: true,size: 18,),
-                                                                          Row(
-                                                                            children: [
-                                                                              TextButton(
-                                                                                  onPressed: () {
-                                                                                    controllers.isTemplate.value = !controllers.isTemplate.value;
-                                                                                  },
-                                                                                  child: CustomText(
-                                                                                    text: "Get From Template",
-                                                                                    colors: colorsConst.third,
-                                                                                    size: 18,
-                                                                                    isCopy: false,
-                                                                                    isBold: true,
-                                                                                  )),
-                                                                              10.width,
-                                                                              InkWell(
-                                                                                  hoverColor: Colors.transparent,
-                                                                                  splashColor: Colors.transparent,
-                                                                                  highlightColor: Colors.transparent,
-                                                                                  focusColor: Colors.transparent,
-                                                                                  overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                                                                  onTap: () {
-                                                                                    Navigator.pop(context);
-                                                                                  },
-                                                                                  child: Icon(
-                                                                                    Icons.clear,
-                                                                                    size: 18,
-                                                                                    color: colorsConst.textColor,
-                                                                                  )),
-                                                                            ],
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                      10.height,
-                                                                      Padding(
-                                                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                                                        child: Row(
-                                                                          children: [
-                                                                            CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
-                                                                            if(controllers.selectedCompanyName.value!="")
-                                                                              CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
-                                                                            CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      Row(
-                                                                        children: [
-                                                                          CustomText(
-                                                                            textAlign: TextAlign.center,
-                                                                            text: "To",
-                                                                            colors: colorsConst.textColor,
-                                                                            size: 15,
-                                                                            isCopy: false,
-                                                                          ),
-                                                                          50.width,
-                                                                          SizedBox(
-                                                                            width: 500,
-                                                                            child: TextField(
-                                                                              controller: controllers.emailToCtr,
-                                                                              style: TextStyle(
-                                                                                  fontSize: 15, color: colorsConst.textColor),
-                                                                              decoration: const InputDecoration(
-                                                                                border: InputBorder.none,
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                      SizedBox(
-                                                                          width: 600,
-                                                                          child: SingleChildScrollView(
-                                                                            child: Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Divider(
-                                                                                  color: Colors.grey.shade300,
-                                                                                  thickness: 1,
-                                                                                ),
-                                                                                Row(
-                                                                                  children: [
-                                                                                    15.height,
-                                                                                    CustomText(
-                                                                                      text: "Subject",
-                                                                                      colors: colorsConst.textColor,
-                                                                                      size: 14,
-                                                                                      isCopy: false,
-                                                                                    ),
-                                                                                    20.width,
-                                                                                    SizedBox(
-                                                                                      width: 500,
-                                                                                      height: 50,
-                                                                                      child: TextField(
-                                                                                        controller: controllers.emailSubjectCtr,
-                                                                                        onChanged: (value){
-                                                                                          if (value.toString().isNotEmpty) {
-                                                                                            String newValue = value
-                                                                                                .toString()[0]
-                                                                                                .toUpperCase() +
-                                                                                                value.toString().substring(1);
-                                                                                            if (newValue != value) {
-                                                                                              controllers.emailSubjectCtr.value =
-                                                                                                  controllers.emailSubjectCtr.value
-                                                                                                      .copyWith(
-                                                                                                    text: newValue,
-                                                                                                    selection:
-                                                                                                    TextSelection.collapsed(
-                                                                                                        offset:
-                                                                                                        newValue.length),
-                                                                                                  );
-                                                                                            }
-                                                                                          }
-                                                                                        },
-                                                                                        maxLines: null,
-                                                                                        minLines: 1,
-                                                                                        style: TextStyle(
-                                                                                          color: colorsConst.textColor,
-                                                                                        ),
-                                                                                        decoration: const InputDecoration(
-                                                                                          border: InputBorder.none,
-                                                                                        ),
-                                                                                      ),
-                                                                                    )
-                                                                                  ],
-                                                                                ),
-                                                                                Divider(
-                                                                                  color: Colors.grey.shade300,
-                                                                                  thickness: 1,
-                                                                                ),
-                                                                                Obx(() => controllers.isTemplate.value == false
-                                                                                    ? SingleChildScrollView(
-                                                                                  child: Column(
-                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                    children: [
-                                                                                      SizedBox(
-                                                                                        width: 600,
-                                                                                        height: 70,
-                                                                                        child: TextField(
-                                                                                          textInputAction: TextInputAction.newline,
-                                                                                          controller: controllers.emailMessageCtr,
-                                                                                          onChanged: (value){
-                                                                                            if (value.toString().isNotEmpty) {
-                                                                                              String newValue = value
-                                                                                                  .toString()[0]
-                                                                                                  .toUpperCase() +
-                                                                                                  value.toString().substring(1);
-                                                                                              if (newValue != value) {
-                                                                                                controllers.emailMessageCtr.value =
-                                                                                                    controllers.emailMessageCtr.value
-                                                                                                        .copyWith(
-                                                                                                      text: newValue,
-                                                                                                      selection:
-                                                                                                      TextSelection.collapsed(
-                                                                                                          offset:
-                                                                                                          newValue.length),
-                                                                                                    );
-                                                                                              }
-                                                                                            }
-                                                                                          },
-                                                                                          keyboardType: TextInputType.multiline,
-                                                                                          maxLines: 21,
-                                                                                          expands: false,
-                                                                                          style: TextStyle(
-                                                                                            color: colorsConst.textColor,
-                                                                                          ),
-                                                                                          decoration: InputDecoration(
-                                                                                            hintText: "Message",
-                                                                                            hintStyle: TextStyle(
-                                                                                                color: colorsConst.textColor,
-                                                                                                fontSize: 14,
-                                                                                                fontFamily: "Lato"),
-                                                                                            border: InputBorder.none,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                )
-                                                                                    :Obx(() => UnconstrainedBox(
-                                                                                  child: Container(
-                                                                                    width: 500,
-                                                                                    alignment: Alignment.center,
-                                                                                    decoration: BoxDecoration(
-                                                                                      color: colorsConst.secondary,
-                                                                                      borderRadius: BorderRadius.circular(10),
-                                                                                    ),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                      child: SizedBox(
-                                                                                        width: 500,
-                                                                                        child: Table(
-                                                                                          defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                                          border: TableBorder.all(
-                                                                                            color: Colors.grey.shade300,
-                                                                                            style: BorderStyle.solid,
-                                                                                            borderRadius: BorderRadius.circular(10),
-                                                                                            width: 1,
-                                                                                          ),
-                                                                                          children: [
-                                                                                            // Header Row
-                                                                                            TableRow(
-                                                                                              children: [
-                                                                                                CustomText(
-                                                                                                  textAlign: TextAlign.center,
-                                                                                                  text: "\nTemplate Name\n",
-                                                                                                  colors: colorsConst.textColor,
-                                                                                                  size: 15,
-                                                                                                  isBold: true,
-                                                                                                  isCopy: false,
-                                                                                                ),
-                                                                                                CustomText(
-                                                                                                  textAlign: TextAlign.center,
-                                                                                                  text: "\nSubject\n",
-                                                                                                  colors: colorsConst.textColor,
-                                                                                                  size: 15,
-                                                                                                  isBold: true,
-                                                                                                  isCopy: false,
-                                                                                                ),
-                                                                                              ],
-                                                                                            ),
-                                                                                            // Dynamic Rows
-                                                                                            for (var item in settingsController.templateList)
-                                                                                              utils.emailRow(
-                                                                                                  context,
-                                                                                                  isCheck: controllers.isAdd,
-                                                                                                  templateName: item.templateName,
-                                                                                                  msg: item.message,
-                                                                                                  subject: item.subject,
-                                                                                                  id: item.id
-                                                                                              ),
-                                                                                          ],
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ))),
-                                                                                10.height,
-                                                                                SizedBox(
-                                                                                  width: 600,
-                                                                                  height: 50,
-                                                                                  child: TextField(
-                                                                                    textInputAction: TextInputAction.newline,
-                                                                                    controller: controllers.notesCtr,
-                                                                                    onChanged: (value){
-                                                                                      if (value.toString().isNotEmpty) {
-                                                                                        String newValue = value
-                                                                                            .toString()[0]
-                                                                                            .toUpperCase() +
-                                                                                            value.toString().substring(1);
-                                                                                        if (newValue != value) {
-                                                                                          controllers.notesCtr.value =
-                                                                                              controllers.notesCtr.value
-                                                                                                  .copyWith(
-                                                                                                text: newValue,
-                                                                                                selection:
-                                                                                                TextSelection.collapsed(
-                                                                                                    offset:
-                                                                                                    newValue.length),
-                                                                                              );
-                                                                                        }
-                                                                                      }
-                                                                                    },
-                                                                                    keyboardType: TextInputType.multiline,
-                                                                                    maxLines: null,
-                                                                                    minLines: 3,
-                                                                                    style: TextStyle(
-                                                                                      color: colorsConst.textColor,
-                                                                                    ),
-                                                                                    decoration: InputDecoration(
-                                                                                      hintText: "",
-                                                                                      hintStyle: TextStyle(
-                                                                                          color: colorsConst.textColor,
-                                                                                          fontSize: 14,
-                                                                                          fontFamily: "Lato"),
-                                                                                      border: InputBorder.none,
-                                                                                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                InkWell(
-                                                                                  onTap:(){
-                                                                                    printInvoice(billingProvider);
-                                                                                  },
-                                                                                  child: Container(
-                                                                                    width: MediaQuery.of(context).size.width*0.6,
-                                                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                                                      color: Colors.grey.shade50,radius: 5,
-                                                                                    ),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                      child: CustomText(
-                                                                                        textAlign: TextAlign.start,
-                                                                                        text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
-                                                                                        isCopy: false,colors: colorsConst.primary,isBold: true,),
-                                                                                    ),
-                                                                                  ),
-                                                                                )
-                                                                              ],
-                                                                            ),
-                                                                          )),
-                                                                    ],
-                                                                  ),
-                                                                )),
-                                                          );
-                                                        });
-                                                  }
+                                                if (product == null) {
+                                                  Toasts.showToastBar(
+                                                    context: context,
+                                                    text: "Please add product",
+                                                    color: Colors.red,
+                                                  );
+                                                  return;
                                                 }
-                                                else if(dropValue=="Proforma Invoice"){
-                                                  if(controllers.selectedCustomerId.value==""){
-                                                    utils.showToast("Please select customer",Colors.red);
-                                                  }else if(billingProvider.billingItems.isEmpty){
-                                                    utils.showToast("Please select products",Colors.red);
-                                                  }else{
-                                                    setState(() {
-                                                      controllers.type.value="0";
-                                                      controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
-                                                      controllers.notesCtr.text="The proforma invoice is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
-                                                      controllers.isTemplate.value=false;
-                                                      controllers.emailSubjectCtr.text="Proforma Invoice";
-                                                      controllers.emailMessageCtr.clear();
-                                                    });
-                                                    showDialog(
-                                                        context: context,
-                                                        barrierDismissible: false,
-                                                        builder: (context) {
-                                                          return AlertDialog(
-                                                            actions: [
-                                                              Column(
-                                                                children: [
-                                                                  Divider(
-                                                                    color: Colors.grey.shade300,
-                                                                    thickness: 1,
-                                                                  ),
-                                                                  Row(
-                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                    children: [
-                                                                      SizedBox(
-                                                                        child: Row(
-                                                                          children: [
-                                                                            TextButton(
-                                                                                onPressed: () {
-                                                                                  // Navigator.of(context).pop();
-                                                                                  settingsController.showAddTemplateDialog(context);
-                                                                                },
-                                                                                child: CustomText(
-                                                                                  text: "Create Template",
-                                                                                  isCopy: false,
-                                                                                  colors: colorsConst.third,
-                                                                                  size: 18,
-                                                                                  isBold: true,
-                                                                                )),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      CustomLoadingButton(
-                                                                        callback: () {
-                                                                          if(controllers.emailToCtr.text.trim().isEmpty){
-                                                                            utils.showToast("To is empty!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
-                                                                            utils.showToast("Invalid mail!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          if(controllers.emailSubjectCtr.text.trim().isEmpty){
-                                                                            utils.showToast("Subject is empty!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          if(controllers.emailMessageCtr.text.trim().isEmpty){
-                                                                            utils.showToast("Message is empty!",Colors.red);
-                                                                            controllers.emailCtr.reset();
-                                                                            return;
-                                                                          }
-                                                                          sendInvoice(billingProvider);
-                                                                        },
-                                                                        controller: controllers.emailCtr,
-                                                                        isImage: false,
-                                                                        isLoading: true,
-                                                                        backgroundColor: colorsConst.primary,
-                                                                        radius: 5,
-                                                                        width: 200,
-                                                                        height: 50,
-                                                                        text: "Send Proforma Invoice",
-                                                                        textColor: Colors.white,
-                                                                      ),
-                                                                    ],
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ],
-                                                            content: SizedBox(
-                                                                width: 600,
-                                                                height: 400,
-                                                                child: SingleChildScrollView(
-                                                                  child: Column(
-                                                                    children: [
-                                                                      Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                        children: [
-                                                                          CustomText(text: "Proforma Invoice", isCopy: false,isBold: true,size: 18,),
-                                                                          Row(
-                                                                            children: [
-                                                                              TextButton(
-                                                                                  onPressed: () {
-                                                                                    controllers.isTemplate.value = !controllers.isTemplate.value;
-                                                                                  },
-                                                                                  child: CustomText(
-                                                                                    text: "Get From Template",
-                                                                                    colors: colorsConst.third,
-                                                                                    size: 18,
-                                                                                    isCopy: false,
-                                                                                    isBold: true,
-                                                                                  )),
-                                                                              10.width,
-                                                                              InkWell(
-                                                                                  hoverColor: Colors.transparent,
-                                                                                  splashColor: Colors.transparent,
-                                                                                  highlightColor: Colors.transparent,
-                                                                                  focusColor: Colors.transparent,
-                                                                                  overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                                                                  onTap: () {
-                                                                                    Navigator.pop(context);
-                                                                                  },
-                                                                                  child: Icon(
-                                                                                    Icons.clear,
-                                                                                    size: 18,
-                                                                                    color: colorsConst.textColor,
-                                                                                  )),
-                                                                            ],
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                      10.height,
-                                                                      Padding(
-                                                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                                                        child: Row(
-                                                                          children: [
-                                                                            CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
-                                                                            if(controllers.selectedCompanyName.value!="")
-                                                                              CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
-                                                                            CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
-                                                                          ],
-                                                                        ),
-                                                                      ),
-                                                                      Row(
-                                                                        children: [
-                                                                          CustomText(
-                                                                            textAlign: TextAlign.center,
-                                                                            text: "To",
-                                                                            colors: colorsConst.textColor,
-                                                                            size: 15,
-                                                                            isCopy: false,
-                                                                          ),
-                                                                          50.width,
-                                                                          SizedBox(
-                                                                            width: 500,
-                                                                            child: TextField(
-                                                                              controller: controllers.emailToCtr,
-                                                                              style: TextStyle(
-                                                                                  fontSize: 15, color: colorsConst.textColor),
-                                                                              decoration: const InputDecoration(
-                                                                                border: InputBorder.none,
-                                                                              ),
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                      SizedBox(
-                                                                          width: 600,
-                                                                          child: SingleChildScrollView(
-                                                                            child: Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Divider(
-                                                                                  color: Colors.grey.shade300,
-                                                                                  thickness: 1,
-                                                                                ),
-                                                                                Row(
-                                                                                  children: [
-                                                                                    15.height,
-                                                                                    CustomText(
-                                                                                      text: "Subject",
-                                                                                      colors: colorsConst.textColor,
-                                                                                      size: 14,
-                                                                                      isCopy: false,
-                                                                                    ),
-                                                                                    20.width,
-                                                                                    SizedBox(
-                                                                                      width: 500,
-                                                                                      height: 50,
-                                                                                      child: TextField(
-                                                                                        controller: controllers.emailSubjectCtr,
-                                                                                        onChanged: (value){
-                                                                                          if (value.toString().isNotEmpty) {
-                                                                                            String newValue = value
-                                                                                                .toString()[0]
-                                                                                                .toUpperCase() +
-                                                                                                value.toString().substring(1);
-                                                                                            if (newValue != value) {
-                                                                                              controllers.emailSubjectCtr.value =
-                                                                                                  controllers.emailSubjectCtr.value
-                                                                                                      .copyWith(
-                                                                                                    text: newValue,
-                                                                                                    selection:
-                                                                                                    TextSelection.collapsed(
-                                                                                                        offset:
-                                                                                                        newValue.length),
-                                                                                                  );
-                                                                                            }
-                                                                                          }
-                                                                                        },
-                                                                                        maxLines: null,
-                                                                                        minLines: 1,
-                                                                                        style: TextStyle(
-                                                                                          color: colorsConst.textColor,
-                                                                                        ),
-                                                                                        decoration: const InputDecoration(
-                                                                                          border: InputBorder.none,
-                                                                                        ),
-                                                                                      ),
-                                                                                    )
-                                                                                  ],
-                                                                                ),
-                                                                                Divider(
-                                                                                  color: Colors.grey.shade300,
-                                                                                  thickness: 1,
-                                                                                ),
-                                                                                Obx(() => controllers.isTemplate.value == false
-                                                                                    ? SingleChildScrollView(
-                                                                                  child: Column(
-                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                    children: [
-                                                                                      SizedBox(
-                                                                                        width: 600,
-                                                                                        height: 70,
-                                                                                        child: TextField(
-                                                                                          textInputAction: TextInputAction.newline,
-                                                                                          controller: controllers.emailMessageCtr,
-                                                                                          onChanged: (value){
-                                                                                            if (value.toString().isNotEmpty) {
-                                                                                              String newValue = value
-                                                                                                  .toString()[0]
-                                                                                                  .toUpperCase() +
-                                                                                                  value.toString().substring(1);
-                                                                                              if (newValue != value) {
-                                                                                                controllers.emailMessageCtr.value =
-                                                                                                    controllers.emailMessageCtr.value
-                                                                                                        .copyWith(
-                                                                                                      text: newValue,
-                                                                                                      selection:
-                                                                                                      TextSelection.collapsed(
-                                                                                                          offset:
-                                                                                                          newValue.length),
-                                                                                                    );
-                                                                                              }
-                                                                                            }
-                                                                                          },
-                                                                                          keyboardType: TextInputType.multiline,
-                                                                                          maxLines: 21,
-                                                                                          expands: false,
-                                                                                          style: TextStyle(
-                                                                                            color: colorsConst.textColor,
-                                                                                          ),
-                                                                                          decoration: InputDecoration(
-                                                                                            hintText: "Message",
-                                                                                            hintStyle: TextStyle(
-                                                                                                color: colorsConst.textColor,
-                                                                                                fontSize: 14,
-                                                                                                fontFamily: "Lato"),
-                                                                                            border: InputBorder.none,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    ],
-                                                                                  ),
-                                                                                )
-                                                                                    :Obx(() => UnconstrainedBox(
-                                                                                  child: Container(
-                                                                                    width: 500,
-                                                                                    alignment: Alignment.center,
-                                                                                    decoration: BoxDecoration(
-                                                                                      color: colorsConst.secondary,
-                                                                                      borderRadius: BorderRadius.circular(10),
-                                                                                    ),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                      child: SizedBox(
-                                                                                        width: 500,
-                                                                                        child: Table(
-                                                                                          defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                                          border: TableBorder.all(
-                                                                                            color: Colors.grey.shade300,
-                                                                                            style: BorderStyle.solid,
-                                                                                            borderRadius: BorderRadius.circular(10),
-                                                                                            width: 1,
-                                                                                          ),
-                                                                                          children: [
-                                                                                            // Header Row
-                                                                                            TableRow(
-                                                                                              children: [
-                                                                                                CustomText(
-                                                                                                  textAlign: TextAlign.center,
-                                                                                                  text: "\nTemplate Name\n",
-                                                                                                  colors: colorsConst.textColor,
-                                                                                                  size: 15,
-                                                                                                  isBold: true,
-                                                                                                  isCopy: false,
-                                                                                                ),
-                                                                                                CustomText(
-                                                                                                  textAlign: TextAlign.center,
-                                                                                                  text: "\nSubject\n",
-                                                                                                  colors: colorsConst.textColor,
-                                                                                                  size: 15,
-                                                                                                  isBold: true,
-                                                                                                  isCopy: false,
-                                                                                                ),
-                                                                                              ],
-                                                                                            ),
-                                                                                            // Dynamic Rows
-                                                                                            for (var item in settingsController.templateList)
-                                                                                              utils.emailRow(
-                                                                                                  context,
-                                                                                                  isCheck: controllers.isAdd,
-                                                                                                  templateName: item.templateName,
-                                                                                                  msg: item.message,
-                                                                                                  subject: item.subject,
-                                                                                                  id: item.id
-                                                                                              ),
-                                                                                          ],
-                                                                                        ),
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                ))),
-                                                                                10.height,
-                                                                                SizedBox(
-                                                                                  width: 600,
-                                                                                  height: 50,
-                                                                                  child: TextField(
-                                                                                    textInputAction: TextInputAction.newline,
-                                                                                    controller: controllers.notesCtr,
-                                                                                    onChanged: (value){
-                                                                                      if (value.toString().isNotEmpty) {
-                                                                                        String newValue = value
-                                                                                            .toString()[0]
-                                                                                            .toUpperCase() +
-                                                                                            value.toString().substring(1);
-                                                                                        if (newValue != value) {
-                                                                                          controllers.notesCtr.value =
-                                                                                              controllers.notesCtr.value
-                                                                                                  .copyWith(
-                                                                                                text: newValue,
-                                                                                                selection:
-                                                                                                TextSelection.collapsed(
-                                                                                                    offset:
-                                                                                                    newValue.length),
-                                                                                              );
-                                                                                        }
-                                                                                      }
-                                                                                    },
-                                                                                    keyboardType: TextInputType.multiline,
-                                                                                    maxLines: null,
-                                                                                    minLines: 3,
-                                                                                    style: TextStyle(
-                                                                                      color: colorsConst.textColor,
-                                                                                    ),
-                                                                                    decoration: InputDecoration(
-                                                                                      hintText: "",
-                                                                                      hintStyle: TextStyle(
-                                                                                          color: colorsConst.textColor,
-                                                                                          fontSize: 14,
-                                                                                          fontFamily: "Lato"),
-                                                                                      border: InputBorder.none,
-                                                                                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-                                                                                InkWell(
-                                                                                  onTap:(){
-                                                                                    printInvoice(billingProvider);
-                                                                                  },
-                                                                                  child: Container(
-                                                                                    width: MediaQuery.of(context).size.width*0.6,
-                                                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                                                      color: Colors.grey.shade50,radius: 5,
-                                                                                    ),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                      child: CustomText(
-                                                                                        textAlign: TextAlign.start,
-                                                                                        text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
-                                                                                        isCopy: false,colors: colorsConst.primary,isBold: true,),
-                                                                                    ),
-                                                                                  ),
-                                                                                )
-                                                                              ],
-                                                                            ),
-                                                                          )),
-                                                                    ],
-                                                                  ),
-                                                                )),
-                                                          );
-                                                        });
-                                                  }
+                                                if (isOutOfStock(product)) {
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    const SnackBar(
+                                                      content: Text("❌ Out of Stock"),
+                                                      backgroundColor: Colors.red,
+                                                    ),
+                                                  );
+                                                  return;
                                                 }
-                                              });
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                if(controllers.directNavigate.value==true)
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    CustomLoadingButton(
-                                      callback: () {
-                                        if(controllers.selectedCustomerId.value==""){
-                                          utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
-                                        }else if(billingProvider.billingItems.isEmpty){
-                                          utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
-                                        }else{
-                                          printInvoice(billingProvider);
-                                        }
-                                      },
-                                      isLoading: false,
-                                      height: 45,
-                                      backgroundColor: colorsConst.primary,
-                                      radius: 2,
-                                      width: screenWidth*0.1,
-                                      isImage: false,
-                                      text: "View Invoice",
-                                      textColor: Colors.white,
-                                    ),10.width,
-                                    CustomLoadingButton(
-                                      callback: () {
-                                        if(controllers.selectedCustomerId.value==""){
-                                          utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
-                                        }else if(billingProvider.billingItems.isEmpty){
-                                          utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
-                                        }else{
-                                          showDialog(
-                                              context: context,
-                                              barrierDismissible: false,
-                                              builder: (context) {
-                                                return AlertDialog(
-                                                  content: SizedBox(
-                                                      width: 300,
-                                                      height: 150,
-                                                      child: Obx(()=>SingleChildScrollView(
-                                                        child: Column(
-                                                          children: [
-                                                            Align(
-                                                                alignment: Alignment.topRight,
-                                                                child: InkWell(
-                                                                    hoverColor: Colors.transparent,
-                                                                    splashColor: Colors.transparent,
-                                                                    highlightColor: Colors.transparent,
-                                                                    focusColor: Colors.transparent,
-                                                                    overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                                                    onTap: () {
-                                                                      Navigator.pop(context);
-                                                                    },
-                                                                    child: Icon(
-                                                                      Icons.clear,
-                                                                      size: 18,
-                                                                      color: colorsConst.textColor,
-                                                                    ))),
-                                                            Column(
-                                                              children: [
-                                                                InkWell(
-                                                                  onTap: (){
-                                                                    setState(() {
-                                                                      controllers.type.value="0";
-                                                                      controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
-                                                                      controllers.notesCtr.text="The proforma invoice is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
-                                                                      controllers.isTemplate.value=false;
-                                                                      controllers.emailSubjectCtr.text="Proforma Invoice";
-                                                                      controllers.emailMessageCtr.clear();
-                                                                    });
-                                                                    showDialog(
-                                                                        context: context,
-                                                                        barrierDismissible: false,
-                                                                        builder: (context) {
-                                                                          return AlertDialog(
-                                                                            actions: [
-                                                                              Column(
-                                                                                children: [
-                                                                                  Divider(
-                                                                                    color: Colors.grey.shade300,
-                                                                                    thickness: 1,
-                                                                                  ),
-                                                                                  Row(
-                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                    children: [
-                                                                                      SizedBox(
-                                                                                        child: Row(
-                                                                                          children: [
-                                                                                            TextButton(
-                                                                                                onPressed: () {
-                                                                                                  // Navigator.of(context).pop();
-                                                                                                  settingsController.showAddTemplateDialog(context);
-                                                                                                },
-                                                                                                child: CustomText(
-                                                                                                  text: "Create Template",
-                                                                                                  isCopy: false,
-                                                                                                  colors: colorsConst.third,
-                                                                                                  size: 18,
-                                                                                                  isBold: true,
-                                                                                                )),
-                                                                                          ],
-                                                                                        ),
-                                                                                      ),
-                                                                                      CustomLoadingButton(
-                                                                                        callback: () {
-                                                                                          if(controllers.emailToCtr.text.trim().isEmpty){
-                                                                                            utils.showToast("To is empty!",Colors.red);
-                                                                                            controllers.emailCtr.reset();
-                                                                                            return;
-                                                                                          }
-                                                                                          if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
-                                                                                            utils.showToast("Invalid mail!",Colors.red);
-                                                                                            controllers.emailCtr.reset();
-                                                                                            return;
-                                                                                          }
-                                                                                          if(controllers.emailSubjectCtr.text.trim().isEmpty){
-                                                                                            utils.showToast("Subject is empty!",Colors.red);
-                                                                                            controllers.emailCtr.reset();
-                                                                                            return;
-                                                                                          }
-                                                                                          if(controllers.emailMessageCtr.text.trim().isEmpty){
-                                                                                            utils.showToast("Message is empty!",Colors.red);
-                                                                                            controllers.emailCtr.reset();
-                                                                                            return;
-                                                                                          }
-                                                                                          sendInvoice(billingProvider);
-                                                                                        },
-                                                                                        controller: controllers.emailCtr,
-                                                                                        isImage: false,
-                                                                                        isLoading: true,
-                                                                                        backgroundColor: colorsConst.primary,
-                                                                                        radius: 5,
-                                                                                        width: 200,
-                                                                                        height: 50,
-                                                                                        text: "Send Proforma Invoice",
-                                                                                        textColor: Colors.white,
-                                                                                      ),
-                                                                                    ],
-                                                                                  )
-                                                                                ],
-                                                                              ),
-                                                                            ],
-                                                                            content: SizedBox(
-                                                                                width: 600,
-                                                                                height: 400,
-                                                                                child: SingleChildScrollView(
-                                                                                  child: Column(
-                                                                                    children: [
-                                                                                      Align(
-                                                                                          alignment: Alignment.topRight,
-                                                                                          child: InkWell(
-                                                                                              hoverColor: Colors.transparent,
-                                                                                              splashColor: Colors.transparent,
-                                                                                              highlightColor: Colors.transparent,
-                                                                                              focusColor: Colors.transparent,
-                                                                                              overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                                                                              onTap: () {
-                                                                                                Navigator.pop(context);
-                                                                                              },
-                                                                                              child: Icon(
-                                                                                                Icons.clear,
-                                                                                                size: 18,
-                                                                                                color: colorsConst.textColor,
-                                                                                              ))),
-                                                                                      Align(
-                                                                                        alignment: Alignment.topRight,
-                                                                                        child: TextButton(
-                                                                                            onPressed: () {
-                                                                                              controllers.isTemplate.value = !controllers.isTemplate.value;
-                                                                                            },
-                                                                                            child: CustomText(
-                                                                                              text: "Get From Template",
-                                                                                              colors: colorsConst.third,
-                                                                                              size: 18,
-                                                                                              isCopy: false,
-                                                                                              isBold: true,
-                                                                                            )),
-                                                                                      ),
-                                                                                      Padding(
-                                                                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                                                                        child: Row(
-                                                                                          children: [
-                                                                                            CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
-                                                                                            if(controllers.selectedCompanyName.value!="")
-                                                                                              CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
-                                                                                            CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
-                                                                                          ],
-                                                                                        ),
-                                                                                      ),
-                                                                                      Row(
-                                                                                        children: [
-                                                                                          CustomText(
-                                                                                            textAlign: TextAlign.center,
-                                                                                            text: "To",
-                                                                                            colors: colorsConst.textColor,
-                                                                                            size: 15,
-                                                                                            isCopy: false,
-                                                                                          ),
-                                                                                          50.width,
-                                                                                          SizedBox(
-                                                                                            width: 500,
-                                                                                            child: TextField(
-                                                                                              controller: controllers.emailToCtr,
-                                                                                              style: TextStyle(
-                                                                                                  fontSize: 15, color: colorsConst.textColor),
-                                                                                              decoration: const InputDecoration(
-                                                                                                border: InputBorder.none,
-                                                                                              ),
-                                                                                            ),
-                                                                                          )
-                                                                                        ],
-                                                                                      ),
-                                                                                      SizedBox(
-                                                                                          width: 600,
-                                                                                          child: SingleChildScrollView(
-                                                                                            child: Column(
-                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                              children: [
-                                                                                                Divider(
-                                                                                                  color: Colors.grey.shade300,
-                                                                                                  thickness: 1,
-                                                                                                ),
-                                                                                                Row(
-                                                                                                  children: [
-                                                                                                    15.height,
-                                                                                                    CustomText(
-                                                                                                      text: "Subject",
-                                                                                                      colors: colorsConst.textColor,
-                                                                                                      size: 14,
-                                                                                                      isCopy: false,
-                                                                                                    ),
-                                                                                                    20.width,
-                                                                                                    SizedBox(
-                                                                                                      width: 500,
-                                                                                                      height: 50,
-                                                                                                      child: TextField(
-                                                                                                        controller: controllers.emailSubjectCtr,
-                                                                                                        onChanged: (value){
-                                                                                                          if (value.toString().isNotEmpty) {
-                                                                                                            String newValue = value
-                                                                                                                .toString()[0]
-                                                                                                                .toUpperCase() +
-                                                                                                                value.toString().substring(1);
-                                                                                                            if (newValue != value) {
-                                                                                                              controllers.emailSubjectCtr.value =
-                                                                                                                  controllers.emailSubjectCtr.value
-                                                                                                                      .copyWith(
-                                                                                                                    text: newValue,
-                                                                                                                    selection:
-                                                                                                                    TextSelection.collapsed(
-                                                                                                                        offset:
-                                                                                                                        newValue.length),
-                                                                                                                  );
-                                                                                                            }
-                                                                                                          }
-                                                                                                        },
-                                                                                                        maxLines: null,
-                                                                                                        minLines: 1,
-                                                                                                        style: TextStyle(
-                                                                                                          color: colorsConst.textColor,
-                                                                                                        ),
-                                                                                                        decoration: const InputDecoration(
-                                                                                                          border: InputBorder.none,
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    )
-                                                                                                  ],
-                                                                                                ),
-                                                                                                Divider(
-                                                                                                  color: Colors.grey.shade300,
-                                                                                                  thickness: 1,
-                                                                                                ),
-                                                                                                Obx(() => controllers.isTemplate.value == false
-                                                                                                    ? SingleChildScrollView(
-                                                                                                  child: Column(
-                                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                    children: [
-                                                                                                      SizedBox(
-                                                                                                        width: 600,
-                                                                                                        height: 70,
-                                                                                                        child: TextField(
-                                                                                                          textInputAction: TextInputAction.newline,
-                                                                                                          controller: controllers.emailMessageCtr,
-                                                                                                          onChanged: (value){
-                                                                                                            if (value.toString().isNotEmpty) {
-                                                                                                              String newValue = value
-                                                                                                                  .toString()[0]
-                                                                                                                  .toUpperCase() +
-                                                                                                                  value.toString().substring(1);
-                                                                                                              if (newValue != value) {
-                                                                                                                controllers.emailMessageCtr.value =
-                                                                                                                    controllers.emailMessageCtr.value
-                                                                                                                        .copyWith(
-                                                                                                                      text: newValue,
-                                                                                                                      selection:
-                                                                                                                      TextSelection.collapsed(
-                                                                                                                          offset:
-                                                                                                                          newValue.length),
-                                                                                                                    );
-                                                                                                              }
-                                                                                                            }
-                                                                                                          },
-                                                                                                          keyboardType: TextInputType.multiline,
-                                                                                                          maxLines: 21,
-                                                                                                          expands: false,
-                                                                                                          style: TextStyle(
-                                                                                                            color: colorsConst.textColor,
-                                                                                                          ),
-                                                                                                          decoration: InputDecoration(
-                                                                                                            hintText: "Message",
-                                                                                                            hintStyle: TextStyle(
-                                                                                                                color: colorsConst.textColor,
-                                                                                                                fontSize: 14,
-                                                                                                                fontFamily: "Lato"),
-                                                                                                            border: InputBorder.none,
-                                                                                                          ),
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    ],
-                                                                                                  ),
-                                                                                                )
-                                                                                                    :Obx(() => UnconstrainedBox(
-                                                                                                  child: Container(
-                                                                                                    width: 500,
-                                                                                                    alignment: Alignment.center,
-                                                                                                    decoration: BoxDecoration(
-                                                                                                      color: colorsConst.secondary,
-                                                                                                      borderRadius: BorderRadius.circular(10),
-                                                                                                    ),
-                                                                                                    child: Padding(
-                                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                                      child: SizedBox(
-                                                                                                        width: 500,
-                                                                                                        child: Table(
-                                                                                                          defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                                                          border: TableBorder.all(
-                                                                                                            color: Colors.grey.shade300,
-                                                                                                            style: BorderStyle.solid,
-                                                                                                            borderRadius: BorderRadius.circular(10),
-                                                                                                            width: 1,
-                                                                                                          ),
-                                                                                                          children: [
-                                                                                                            // Header Row
-                                                                                                            TableRow(
-                                                                                                              children: [
-                                                                                                                CustomText(
-                                                                                                                  textAlign: TextAlign.center,
-                                                                                                                  text: "\nTemplate Name\n",
-                                                                                                                  colors: colorsConst.textColor,
-                                                                                                                  size: 15,
-                                                                                                                  isBold: true,
-                                                                                                                  isCopy: false,
-                                                                                                                ),
-                                                                                                                CustomText(
-                                                                                                                  textAlign: TextAlign.center,
-                                                                                                                  text: "\nSubject\n",
-                                                                                                                  colors: colorsConst.textColor,
-                                                                                                                  size: 15,
-                                                                                                                  isBold: true,
-                                                                                                                  isCopy: false,
-                                                                                                                ),
-                                                                                                              ],
-                                                                                                            ),
-                                                                                                            // Dynamic Rows
-                                                                                                            for (var item in settingsController.templateList)
-                                                                                                              utils.emailRow(
-                                                                                                                  context,
-                                                                                                                  isCheck: controllers.isAdd,
-                                                                                                                  templateName: item.templateName,
-                                                                                                                  msg: item.message,
-                                                                                                                  subject: item.subject,
-                                                                                                                  id: item.id
-                                                                                                              ),
-                                                                                                          ],
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                ))),
-                                                                                                10.height,
-                                                                                                SizedBox(
-                                                                                                  width: 600,
-                                                                                                  height: 50,
-                                                                                                  child: TextField(
-                                                                                                    textInputAction: TextInputAction.newline,
-                                                                                                    controller: controllers.notesCtr,
-                                                                                                    onChanged: (value){
-                                                                                                      if (value.toString().isNotEmpty) {
-                                                                                                        String newValue = value
-                                                                                                            .toString()[0]
-                                                                                                            .toUpperCase() +
-                                                                                                            value.toString().substring(1);
-                                                                                                        if (newValue != value) {
-                                                                                                          controllers.notesCtr.value =
-                                                                                                              controllers.notesCtr.value
-                                                                                                                  .copyWith(
-                                                                                                                text: newValue,
-                                                                                                                selection:
-                                                                                                                TextSelection.collapsed(
-                                                                                                                    offset:
-                                                                                                                    newValue.length),
-                                                                                                              );
-                                                                                                        }
-                                                                                                      }
-                                                                                                    },
-                                                                                                    keyboardType: TextInputType.multiline,
-                                                                                                    maxLines: null,
-                                                                                                    minLines: 3,
-                                                                                                    style: TextStyle(
-                                                                                                      color: colorsConst.textColor,
-                                                                                                    ),
-                                                                                                    decoration: InputDecoration(
-                                                                                                      hintText: "",
-                                                                                                      hintStyle: TextStyle(
-                                                                                                          color: colorsConst.textColor,
-                                                                                                          fontSize: 14,
-                                                                                                          fontFamily: "Lato"),
-                                                                                                      border: InputBorder.none,
-                                                                                                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                ),
-                                                                                                InkWell(
-                                                                                                  onTap:(){
-                                                                                                    printInvoice(billingProvider);
-                                                                                                  },
-                                                                                                  child: Container(
-                                                                                                    width: MediaQuery.of(context).size.width*0.6,
-                                                                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                                                                      color: Colors.grey.shade50,radius: 5,
-                                                                                                    ),
-                                                                                                    child: Padding(
-                                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                                      child: CustomText(
-                                                                                                        textAlign: TextAlign.start,
-                                                                                                        text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
-                                                                                                        isCopy: false,colors: colorsConst.primary,isBold: true,),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                )
-                                                                                              ],
-                                                                                            ),
-                                                                                          )),
-                                                                                    ],
-                                                                                  ),
-                                                                                )),
-                                                                          );
-                                                                        });
-                                                                  },
-                                                                  child: Container(
-                                                                    width: 100,
-                                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                                      color: controllers.type.value=="0"?Colors.green:Colors.white,
-                                                                      radius: 5,borderColor: controllers.type.value=="0"?Colors.green:Colors.grey
-                                                                    ),
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.all(8.0),
-                                                                      child: CustomText(text: "Proforma Invoice", isCopy: false),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                10.height,
-                                                                InkWell(
-                                                                  onTap: (){
-                                                                    setState(() {
-                                                                      controllers.type.value="1";
-                                                                      controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
-                                                                      controllers.notesCtr.text="The invoice is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
-                                                                      controllers.isTemplate.value=false;
-                                                                      controllers.emailSubjectCtr.text="Invoice";
-                                                                      controllers.emailMessageCtr.clear();
-                                                                    });
-                                                                    showDialog(
-                                                                        context: context,
-                                                                        barrierDismissible: false,
-                                                                        builder: (context) {
-                                                                          return AlertDialog(
-                                                                            actions: [
-                                                                              Column(
-                                                                                children: [
-                                                                                  Divider(
-                                                                                    color: Colors.grey.shade300,
-                                                                                    thickness: 1,
-                                                                                  ),
-                                                                                  Row(
-                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                    children: [
-                                                                                      SizedBox(
-                                                                                        child: Row(
-                                                                                          children: [
-                                                                                            TextButton(
-                                                                                                onPressed: () {
-                                                                                                  // Navigator.of(context).pop();
-                                                                                                  settingsController.showAddTemplateDialog(context);
-                                                                                                },
-                                                                                                child: CustomText(
-                                                                                                  text: "Create Template",
-                                                                                                  isCopy: false,
-                                                                                                  colors: colorsConst.third,
-                                                                                                  size: 18,
-                                                                                                  isBold: true,
-                                                                                                )),
-                                                                                          ],
-                                                                                        ),
-                                                                                      ),
-                                                                                      CustomLoadingButton(
-                                                                                        callback: () {
-                                                                                          if(controllers.emailToCtr.text.trim().isEmpty){
-                                                                                            utils.showToast("To is empty!",Colors.red);
-                                                                                            controllers.emailCtr.reset();
-                                                                                            return;
-                                                                                          }
-                                                                                          if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
-                                                                                            utils.showToast("Invalid mail!",Colors.red);
-                                                                                            controllers.emailCtr.reset();
-                                                                                            return;
-                                                                                          }
-                                                                                          if(controllers.emailSubjectCtr.text.trim().isEmpty){
-                                                                                            utils.showToast("Subject is empty!",Colors.red);
-                                                                                            controllers.emailCtr.reset();
-                                                                                            return;
-                                                                                          }
-                                                                                          if(controllers.emailMessageCtr.text.trim().isEmpty){
-                                                                                            utils.showToast("Message is empty!",Colors.red);
-                                                                                            controllers.emailCtr.reset();
-                                                                                            return;
-                                                                                          }
-                                                                                          sendInvoice(billingProvider);
-                                                                                        },
-                                                                                        controller: controllers.emailCtr,
-                                                                                        isImage: false,
-                                                                                        isLoading: true,
-                                                                                        backgroundColor: colorsConst.primary,
-                                                                                        radius: 5,
-                                                                                        width: 200,
-                                                                                        height: 50,
-                                                                                        text: "Send Invoice",
-                                                                                        textColor: Colors.white,
-                                                                                      ),
-                                                                                    ],
-                                                                                  )
-                                                                                ],
-                                                                              ),
-                                                                            ],
-                                                                            content: SizedBox(
-                                                                                width: 600,
-                                                                                height: 400,
-                                                                                child: SingleChildScrollView(
-                                                                                  child: Column(
-                                                                                    children: [
-                                                                                      Align(
-                                                                                          alignment: Alignment.topRight,
-                                                                                          child: InkWell(
-                                                                                              hoverColor: Colors.transparent,
-                                                                                              splashColor: Colors.transparent,
-                                                                                              highlightColor: Colors.transparent,
-                                                                                              focusColor: Colors.transparent,
-                                                                                              overlayColor: WidgetStateProperty.all(Colors.transparent),
-                                                                                              onTap: () {
-                                                                                                Navigator.pop(context);
-                                                                                              },
-                                                                                              child: Icon(
-                                                                                                Icons.clear,
-                                                                                                size: 18,
-                                                                                                color: colorsConst.textColor,
-                                                                                              ))),
-                                                                                      Align(
-                                                                                        alignment: Alignment.topRight,
-                                                                                        child: TextButton(
-                                                                                            onPressed: () {
-                                                                                              controllers.isTemplate.value = !controllers.isTemplate.value;
-                                                                                            },
-                                                                                            child: CustomText(
-                                                                                              text: "Get From Template",
-                                                                                              colors: colorsConst.third,
-                                                                                              size: 18,
-                                                                                              isCopy: false,
-                                                                                              isBold: true,
-                                                                                            )),
-                                                                                      ),
-                                                                                      Padding(
-                                                                                        padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
-                                                                                        child: Row(
-                                                                                          children: [
-                                                                                            CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
-                                                                                            if(controllers.selectedCompanyName.value!="")
-                                                                                              CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
-                                                                                            CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
-                                                                                          ],
-                                                                                        ),
-                                                                                      ),
-                                                                                      Row(
-                                                                                        children: [
-                                                                                          CustomText(
-                                                                                            textAlign: TextAlign.center,
-                                                                                            text: "To",
-                                                                                            colors: colorsConst.textColor,
-                                                                                            size: 15,
-                                                                                            isCopy: false,
-                                                                                          ),
-                                                                                          50.width,
-                                                                                          SizedBox(
-                                                                                            width: 500,
-                                                                                            child: TextField(
-                                                                                              controller: controllers.emailToCtr,
-                                                                                              style: TextStyle(
-                                                                                                  fontSize: 15, color: colorsConst.textColor),
-                                                                                              decoration: const InputDecoration(
-                                                                                                border: InputBorder.none,
-                                                                                              ),
-                                                                                            ),
-                                                                                          )
-                                                                                        ],
-                                                                                      ),
-                                                                                      SizedBox(
-                                                                                          width: 600,
-                                                                                          child: SingleChildScrollView(
-                                                                                            child: Column(
-                                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                              children: [
-                                                                                                Divider(
-                                                                                                  color: Colors.grey.shade300,
-                                                                                                  thickness: 1,
-                                                                                                ),
-                                                                                                Row(
-                                                                                                  children: [
-                                                                                                    15.height,
-                                                                                                    CustomText(
-                                                                                                      text: "Subject",
-                                                                                                      colors: colorsConst.textColor,
-                                                                                                      size: 14,
-                                                                                                      isCopy: false,
-                                                                                                    ),
-                                                                                                    20.width,
-                                                                                                    SizedBox(
-                                                                                                      width: 500,
-                                                                                                      height: 50,
-                                                                                                      child: TextField(
-                                                                                                        controller: controllers.emailSubjectCtr,
-                                                                                                        onChanged: (value){
-                                                                                                          if (value.toString().isNotEmpty) {
-                                                                                                            String newValue = value
-                                                                                                                .toString()[0]
-                                                                                                                .toUpperCase() +
-                                                                                                                value.toString().substring(1);
-                                                                                                            if (newValue != value) {
-                                                                                                              controllers.emailSubjectCtr.value =
-                                                                                                                  controllers.emailSubjectCtr.value
-                                                                                                                      .copyWith(
-                                                                                                                    text: newValue,
-                                                                                                                    selection:
-                                                                                                                    TextSelection.collapsed(
-                                                                                                                        offset:
-                                                                                                                        newValue.length),
-                                                                                                                  );
-                                                                                                            }
-                                                                                                          }
-                                                                                                        },
-                                                                                                        maxLines: null,
-                                                                                                        minLines: 1,
-                                                                                                        style: TextStyle(
-                                                                                                          color: colorsConst.textColor,
-                                                                                                        ),
-                                                                                                        decoration: const InputDecoration(
-                                                                                                          border: InputBorder.none,
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    )
-                                                                                                  ],
-                                                                                                ),
-                                                                                                Divider(
-                                                                                                  color: Colors.grey.shade300,
-                                                                                                  thickness: 1,
-                                                                                                ),
-                                                                                                Obx(() => controllers.isTemplate.value == false
-                                                                                                    ? SingleChildScrollView(
-                                                                                                  child: Column(
-                                                                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                                    children: [
-                                                                                                      SizedBox(
-                                                                                                        width: 600,
-                                                                                                        height: 70,
-                                                                                                        child: TextField(
-                                                                                                          textInputAction: TextInputAction.newline,
-                                                                                                          controller: controllers.emailMessageCtr,
-                                                                                                          onChanged: (value){
-                                                                                                            if (value.toString().isNotEmpty) {
-                                                                                                              String newValue = value
-                                                                                                                  .toString()[0]
-                                                                                                                  .toUpperCase() +
-                                                                                                                  value.toString().substring(1);
-                                                                                                              if (newValue != value) {
-                                                                                                                controllers.emailMessageCtr.value =
-                                                                                                                    controllers.emailMessageCtr.value
-                                                                                                                        .copyWith(
-                                                                                                                      text: newValue,
-                                                                                                                      selection:
-                                                                                                                      TextSelection.collapsed(
-                                                                                                                          offset:
-                                                                                                                          newValue.length),
-                                                                                                                    );
-                                                                                                              }
-                                                                                                            }
-                                                                                                          },
-                                                                                                          keyboardType: TextInputType.multiline,
-                                                                                                          maxLines: 21,
-                                                                                                          expands: false,
-                                                                                                          style: TextStyle(
-                                                                                                            color: colorsConst.textColor,
-                                                                                                          ),
-                                                                                                          decoration: InputDecoration(
-                                                                                                            hintText: "Message",
-                                                                                                            hintStyle: TextStyle(
-                                                                                                                color: colorsConst.textColor,
-                                                                                                                fontSize: 14,
-                                                                                                                fontFamily: "Lato"),
-                                                                                                            border: InputBorder.none,
-                                                                                                          ),
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    ],
-                                                                                                  ),
-                                                                                                )
-                                                                                                    :Obx(() => UnconstrainedBox(
-                                                                                                  child: Container(
-                                                                                                    width: 500,
-                                                                                                    alignment: Alignment.center,
-                                                                                                    decoration: BoxDecoration(
-                                                                                                      color: colorsConst.secondary,
-                                                                                                      borderRadius: BorderRadius.circular(10),
-                                                                                                    ),
-                                                                                                    child: Padding(
-                                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                                      child: SizedBox(
-                                                                                                        width: 500,
-                                                                                                        child: Table(
-                                                                                                          defaultColumnWidth: const FixedColumnWidth(120.0),
-                                                                                                          border: TableBorder.all(
-                                                                                                            color: Colors.grey.shade300,
-                                                                                                            style: BorderStyle.solid,
-                                                                                                            borderRadius: BorderRadius.circular(10),
-                                                                                                            width: 1,
-                                                                                                          ),
-                                                                                                          children: [
-                                                                                                            // Header Row
-                                                                                                            TableRow(
-                                                                                                              children: [
-                                                                                                                CustomText(
-                                                                                                                  textAlign: TextAlign.center,
-                                                                                                                  text: "\nTemplate Name\n",
-                                                                                                                  colors: colorsConst.textColor,
-                                                                                                                  size: 15,
-                                                                                                                  isBold: true,
-                                                                                                                  isCopy: false,
-                                                                                                                ),
-                                                                                                                CustomText(
-                                                                                                                  textAlign: TextAlign.center,
-                                                                                                                  text: "\nSubject\n",
-                                                                                                                  colors: colorsConst.textColor,
-                                                                                                                  size: 15,
-                                                                                                                  isBold: true,
-                                                                                                                  isCopy: false,
-                                                                                                                ),
-                                                                                                              ],
-                                                                                                            ),
-                                                                                                            // Dynamic Rows
-                                                                                                            for (var item in settingsController.templateList)
-                                                                                                              utils.emailRow(
-                                                                                                                  context,
-                                                                                                                  isCheck: controllers.isAdd,
-                                                                                                                  templateName: item.templateName,
-                                                                                                                  msg: item.message,
-                                                                                                                  subject: item.subject,
-                                                                                                                  id: item.id
-                                                                                                              ),
-                                                                                                          ],
-                                                                                                        ),
-                                                                                                      ),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                ))),
-                                                                                                10.height,
-                                                                                                SizedBox(
-                                                                                                  width: 600,
-                                                                                                  height: 50,
-                                                                                                  child: TextField(
-                                                                                                    textInputAction: TextInputAction.newline,
-                                                                                                    controller: controllers.notesCtr,
-                                                                                                    onChanged: (value){
-                                                                                                      if (value.toString().isNotEmpty) {
-                                                                                                        String newValue = value
-                                                                                                            .toString()[0]
-                                                                                                            .toUpperCase() +
-                                                                                                            value.toString().substring(1);
-                                                                                                        if (newValue != value) {
-                                                                                                          controllers.notesCtr.value =
-                                                                                                              controllers.notesCtr.value
-                                                                                                                  .copyWith(
-                                                                                                                text: newValue,
-                                                                                                                selection:
-                                                                                                                TextSelection.collapsed(
-                                                                                                                    offset:
-                                                                                                                    newValue.length),
-                                                                                                              );
-                                                                                                        }
-                                                                                                      }
-                                                                                                    },
-                                                                                                    keyboardType: TextInputType.multiline,
-                                                                                                    maxLines: null,
-                                                                                                    minLines: 3,
-                                                                                                    style: TextStyle(
-                                                                                                      color: colorsConst.textColor,
-                                                                                                    ),
-                                                                                                    decoration: InputDecoration(
-                                                                                                      hintText: "",
-                                                                                                      hintStyle: TextStyle(
-                                                                                                          color: colorsConst.textColor,
-                                                                                                          fontSize: 14,
-                                                                                                          fontFamily: "Lato"),
-                                                                                                      border: InputBorder.none,
-                                                                                                      contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                ),
-                                                                                                InkWell(
-                                                                                                  onTap:(){
-                                                                                                    printInvoice(billingProvider);
-                                                                                                  },
-                                                                                                  child: Container(
-                                                                                                    width: MediaQuery.of(context).size.width*0.6,
-                                                                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                                                                      color: Colors.grey.shade50,radius: 5,
-                                                                                                    ),
-                                                                                                    child: Padding(
-                                                                                                      padding: const EdgeInsets.all(8.0),
-                                                                                                      child: CustomText(
-                                                                                                        textAlign: TextAlign.start,
-                                                                                                        text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
-                                                                                                        isCopy: false,colors: colorsConst.primary,isBold: true,),
-                                                                                                    ),
-                                                                                                  ),
-                                                                                                )
-                                                                                              ],
-                                                                                            ),
-                                                                                          )),
-                                                                                    ],
-                                                                                  ),
-                                                                                )),
-                                                                          );
-                                                                        });
-                                                                  },
-                                                                  child: Container(
-                                                                    width: 100,
-                                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                                        color: controllers.type.value=="1"?Colors.green:Colors.white,
-                                                                        radius: 5,borderColor: controllers.type.value=="1"?Colors.green:Colors.grey
-                                                                    ),
-                                                                    child: Padding(
-                                                                      padding: const EdgeInsets.all(8.0),
-                                                                      child: CustomText(text: "Final Invoice", isCopy: false, colors: controllers.type.value=="1"?Colors.white:Colors.black),
-                                                                    ),
-                                                                  ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ))),
+
+                                                // 2) Entered value cleanup
+                                                final enteredText = value.trim().isEmpty ? "1" : value.trim();
+
+                                                // 3) Safe parsing
+                                                final double parsedDouble = safeDouble(enteredText);
+                                                final int parsedInt = safeInt(enteredText);
+
+                                                // 4) Safe product values
+                                                final double stockQty = safeDouble(product.qtyLeft);
+
+                                                // ---------------------------------------------------
+                                                // PRODUCT EXISTS → UPDATE IT
+                                                // ---------------------------------------------------
+                                                final alreadyExists = billing.billingItems.any(
+                                                      (item) => item.id == product.id.toString(),
                                                 );
-                                              });
-                                        }
-                                      },
-                                      isLoading: false,
-                                      height: 45,
-                                      backgroundColor: Colors.green,
-                                      radius: 2,
-                                      width: screenWidth*0.1,
-                                      isImage: false,
-                                      text: "Send Invoice",
-                                      textColor: Colors.white,
-                                    ),
-                                  ],
-                                ),
-                                10.height,
-                                ///  Billing Table :
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
-                                    child: Column(
-                                      children: [
-                                        // ===========================
-                                        // HEADER
-                                        // ===========================
-                                        Table(
-                                          border: TableBorder(
-                                            horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                            verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+
+                                                if (alreadyExists) {
+                                                  final existingItem = billing.billingItems.firstWhere(
+                                                        (item) => item.id == product.id.toString(),
+                                                  );
+
+                                                  final double currentQty = product.isLoose == '1'
+                                                      ? existingItem.variation / 1000
+                                                      : existingItem.quantity.toDouble();
+
+                                                  final double newQty = product.isLoose == '1'
+                                                      ? parsedDouble
+                                                      : parsedInt.toDouble();
+
+                                                  final double totalQty = currentQty + newQty;
+                                                  if (stockQty <= 0) {
+                                                    Toasts.showToastBar(
+                                                      context: context,
+                                                      text: "Out of Stock",
+                                                      color: Colors.red,
+                                                    );
+                                                    return;
+                                                  }
+
+                                                  // STOCK CHECK
+                                                  if (totalQty > stockQty) {
+                                                    Toasts.showToastBar(
+                                                      context: context,
+                                                      text: "Stock limit reached! Available: $stockQty",
+                                                      color: Colors.red,
+                                                    );
+
+                                                    // 🔥 CLEAR EVERYTHING RELATED TO THIS PRODUCT
+                                                    safeClear(quantityVariationController);
+                                                    safeClear(dropdownController);
+
+                                                    billing.selectedProduct = null;
+
+                                                    // 🔥 MOVE FOCUS BACK TO PRODUCT FIELD
+                                                    Future.microtask(() {
+                                                      billing.dropdownFocusNode.requestFocus();
+                                                    });
+
+                                                    return;
+                                                  }
+                                                  // UPDATE EXISTING ITEM
+                                                  final index = billing.billingItems.indexOf(existingItem);
+
+                                                  if (product.isLoose == '1') {
+                                                    final double addQty = parsedDouble * 1000;
+                                                    existingItem.variation += addQty;
+
+                                                    billing.quantityControllers[index]!.text =
+                                                        (existingItem.variation / 1000).toStringAsFixed(3);
+
+                                                  } else
+                                                  {
+                                                    existingItem.quantity += parsedInt;
+
+                                                    billing.quantityControllers[index]!.text =
+                                                        existingItem.quantity.toString();
+                                                  }
+
+                                                  billing.updateExistingBillingItem(existingItem);
+                                                  billing.notifyListeners();
+
+                                                  // RESET
+                                                  safeClear(quantityVariationController);
+                                                  safeClear(dropdownController);
+                                                  billing.selectedProduct = null;
+                                                  Future.microtask(() {
+                                                    billing.dropdownFocusNode.requestFocus();
+                                                  });
+
+                                                  return;
+                                                }
+
+                                                // ---------------------------------------------------
+                                                // ADD NEW PRODUCT
+                                                // ---------------------------------------------------
+                                                if (product.isLoose == '1') {
+                                                  final double enteredKg = parsedDouble <= 0 ? 1.0 : parsedDouble;
+                                                  final double enteredQty = enteredKg * 1000;
+                                                  if (enteredQty > stockQty) {
+                                                    Toasts.showToastBar(
+                                                      context: context,
+                                                      text: "Entered weight exceeds stock ($stockQty g).",
+                                                      color: Colors.red,
+                                                    );
+                                                    Future.microtask(() {
+                                                      fieldFocusNode.requestFocus();
+                                                    });
+
+                                                    return;
+                                                  }
+
+                                                  billing.addBillingItem(
+                                                    BillingItem(
+                                                      id: product.id.toString(),
+                                                      product: product,
+                                                      productTitle: "${product.pTitle}",
+                                                      variation: enteredQty,
+                                                      variationUnit: "${product.pVariation}${product.unit}",
+                                                      quantity: 1,
+                                                      p_out_price: product.outPrice.toString(),
+                                                      p_mrp:product.mrp.toString(),
+                                                    ),
+                                                  );
+
+                                                  final index = billing.billingItems.indexWhere(
+                                                          (item) => item.product.id == product.id.toString());
+
+                                                  billing.quantityControllers[index]!.text =
+                                                      enteredKg.toStringAsFixed(3);
+
+                                                } else {
+                                                  final int finalQty = parsedInt <= 0 ? 1 : parsedInt;
+                                                  if (stockQty <= 0) {
+                                                    Toasts.showToastBar(
+                                                      context: context,
+                                                      text: "Out of Stock",
+                                                      color: Colors.red,
+                                                    );
+                                                    return;
+                                                  }
+
+                                                  if (finalQty > stockQty) {
+                                                    Toasts.showToastBar(
+                                                      context: context,
+                                                      text: "Entered quantity exceeds stock ($stockQty).",
+                                                      color: Colors.red,
+                                                    );
+                                                    Future.microtask(() {
+                                                      fieldFocusNode.requestFocus();
+                                                    });
+
+                                                    return;
+                                                  }
+
+                                                  billing.addBillingItem(
+                                                    BillingItem(
+                                                      id: product.id.toString(),
+                                                      product: product,
+                                                      variation: 1,
+                                                      variationUnit: "${product.pVariation}${product.unit}",
+                                                      quantity: finalQty,
+                                                      productTitle: product.pTitle ?? "",
+                                                      p_out_price: product.outPrice.toString(),
+                                                      p_mrp:product.mrp.toString(),
+                                                    ),
+                                                  );
+                                                }
+
+                                                // ---------------------------------------------------
+                                                // FINAL RESET
+                                                // ---------------------------------------------------
+                                                safeClear(billing.barcodeScanner);
+                                                billing.selectedProduct = null;
+
+                                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                    scrollDown();
+                                                  });
+                                                });
+
+                                                safeClear(quantityVariationController);
+                                                safeClear(dropdownController);
+
+                                                Future.microtask(() {
+                                                  billing.dropdownFocusNode.requestFocus();
+                                                });
+                                              },
+                                            ),
                                           ),
-                                          columnWidths: const {
-                                            0: FixedColumnWidth(70),//s no
-                                            1: FlexColumnWidth(4),//ptp
-                                            2: FixedColumnWidth(200),//HSN
-                                            3: FixedColumnWidth(70),//Var
-                                            4: FixedColumnWidth(60),//Qty
-                                            5: FlexColumnWidth(1),//mrp
-                                            6: FlexColumnWidth(1),//op
-                                            7: FlexColumnWidth(1),//dic
-                                            8: FlexColumnWidth(1),//st
-                                          },
-                                          children: [
-                                            TableRow(
+                                          if(controllers.directNavigate.value==false)
+                                            CustomLoadingButton(
+                                              callback: () {
+                                                if(controllers.selectedCustomerId.value==""){
+                                                  utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
+                                                }else if(billingProvider.billingItems.isEmpty){
+                                                  utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
+                                                }else{
+                                                  printInvoice(billingProvider);
+                                                }
+                                              },
+                                              isLoading: false,
+                                              height: 45,
+                                              backgroundColor: colorsConst.primary,
+                                              radius: 2,
+                                              width: screenWidth*0.1,
+                                              isImage: false,
+                                              text: "View This Draft",
+                                              textColor: Colors.white,
+                                            ),
+                                          if(controllers.directNavigate.value==false)
+                                            Container(
+                                              height:45,
+                                              width:screenWidth*0.1,
                                               decoration: BoxDecoration(
-                                                  color: colorsConst.primary,
-                                                  borderRadius: const BorderRadius.only(
-                                                      topLeft: Radius.circular(5),
-                                                      topRight: Radius.circular(5))),
-                                              children: [
-                                                _buildHeaderCell("S.N"),
-                                                _buildHeaderCell("Product"),
-                                                _buildHeaderCell("HSN"),
-                                                _buildHeaderCell("Vari"),
-                                                _buildHeaderCell("Qty"),
-                                                // _buildRightHeaderCell("Tot Sto"),
-                                                _buildRightHeaderCell("MRP"),
-                                                _buildRightHeaderCell("Our Price"),
-                                                _buildRightHeaderCell("Disc"),
-                                                _buildRightHeaderCell("Sub Tot"),
-                                              ],
+                                                color: Colors.green,
+                                                borderRadius: BorderRadius.circular(5),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(8.0),
+                                                child: DropdownButtonHideUnderline(
+                                                  child: DropdownButton<String>(
+                                                    dropdownColor: Colors.green,
+                                                    value: dropValue,
+                                                    hint: CustomText(text: "Select Status",isCopy: false,colors: Colors.white,),
+                                                    isExpanded: true,
+                                                    icon: const Icon(Icons.keyboard_arrow_down,color: Colors.white,),
+                                                    items: statusList.map((status) {
+                                                      return DropdownMenuItem(
+                                                        value: status,
+                                                        child: CustomText(text: status,isCopy: false,colors: Colors.white,),
+                                                      );
+                                                    }).toList(),
+                                                    onChanged: (value) {
+                                                      setState(() {
+                                                        dropValue = value.toString();
+                                                        if(dropValue=="Send Quotation"){
+                                                          if(controllers.selectedCustomerId.value==""){
+                                                            utils.showToast("Please select customer",Colors.red);
+                                                          }else if(billingProvider.billingItems.isEmpty){
+                                                            utils.showToast("Please select products",Colors.red);
+                                                          }else{
+                                                            setState(() {
+                                                              controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
+                                                              controllers.notesCtr.text="The quotation is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
+                                                              controllers.isTemplate.value=false;
+                                                              controllers.emailSubjectCtr.text="Quotation";
+                                                              controllers.emailMessageCtr.clear();
+                                                            });
+                                                            showDialog(
+                                                                context: context,
+                                                                barrierDismissible: false,
+                                                                builder: (context) {
+                                                                  return AlertDialog(
+                                                                    actions: [
+                                                                      Column(
+                                                                        children: [
+                                                                          Divider(
+                                                                            color: Colors.grey.shade300,
+                                                                            thickness: 1,
+                                                                          ),
+                                                                          Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                            children: [
+                                                                              SizedBox(
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    TextButton(
+                                                                                        onPressed: () {
+                                                                                          // Navigator.of(context).pop();
+                                                                                          settingsController.showAddTemplateDialog(context);
+                                                                                        },
+                                                                                        child: CustomText(
+                                                                                          text: "Create Template",
+                                                                                          isCopy: false,
+                                                                                          colors: colorsConst.third,
+                                                                                          size: 18,
+                                                                                          isBold: true,
+                                                                                        )),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              CustomLoadingButton(
+                                                                                callback: () {
+                                                                                  if(controllers.emailToCtr.text.trim().isEmpty){
+                                                                                    utils.showToast("To is empty!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
+                                                                                    utils.showToast("Invalid mail!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                                                                    utils.showToast("Subject is empty!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                                                                    utils.showToast("Message is empty!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  sendInvoice(billingProvider);
+                                                                                },
+                                                                                controller: controllers.emailCtr,
+                                                                                isImage: false,
+                                                                                isLoading: true,
+                                                                                backgroundColor: colorsConst.primary,
+                                                                                radius: 5,
+                                                                                width: 200,
+                                                                                height: 50,
+                                                                                text: "Send Quotation",
+                                                                                textColor: Colors.white,
+                                                                              ),
+                                                                            ],
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                    content: SizedBox(
+                                                                        width: 600,
+                                                                        height: 400,
+                                                                        child: SingleChildScrollView(
+                                                                          child: Column(
+                                                                            children: [
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                children: [
+                                                                                  CustomText(text: "Send Quotation", isCopy: false,isBold: true,size: 18,),
+                                                                                  Row(
+                                                                                    children: [
+                                                                                      TextButton(
+                                                                                          onPressed: () {
+                                                                                            controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                          },
+                                                                                          child: CustomText(
+                                                                                            text: "Get From Template",
+                                                                                            colors: colorsConst.third,
+                                                                                            size: 18,
+                                                                                            isCopy: false,
+                                                                                            isBold: true,
+                                                                                          )),
+                                                                                      10.width,
+                                                                                      InkWell(
+                                                                                          hoverColor: Colors.transparent,
+                                                                                          splashColor: Colors.transparent,
+                                                                                          highlightColor: Colors.transparent,
+                                                                                          focusColor: Colors.transparent,
+                                                                                          overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                                                                          onTap: () {
+                                                                                            Navigator.pop(context);
+                                                                                          },
+                                                                                          child: Icon(
+                                                                                            Icons.clear,
+                                                                                            size: 18,
+                                                                                            color: colorsConst.textColor,
+                                                                                          )),
+                                                                                    ],
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                              10.height,
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                                                                    if(controllers.selectedCompanyName.value!="")
+                                                                                      CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                                                                    CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              Row(
+                                                                                children: [
+                                                                                  CustomText(
+                                                                                    textAlign: TextAlign.center,
+                                                                                    text: "To",
+                                                                                    colors: colorsConst.textColor,
+                                                                                    size: 15,
+                                                                                    isCopy: false,
+                                                                                  ),
+                                                                                  50.width,
+                                                                                  SizedBox(
+                                                                                    width: 500,
+                                                                                    child: TextField(
+                                                                                      controller: controllers.emailToCtr,
+                                                                                      style: TextStyle(
+                                                                                          fontSize: 15, color: colorsConst.textColor),
+                                                                                      decoration: const InputDecoration(
+                                                                                        border: InputBorder.none,
+                                                                                      ),
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                              SizedBox(
+                                                                                  width: 600,
+                                                                                  child: SingleChildScrollView(
+                                                                                    child: Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        Divider(
+                                                                                          color: Colors.grey.shade300,
+                                                                                          thickness: 1,
+                                                                                        ),
+                                                                                        Row(
+                                                                                          children: [
+                                                                                            15.height,
+                                                                                            CustomText(
+                                                                                              text: "Subject",
+                                                                                              colors: colorsConst.textColor,
+                                                                                              size: 14,
+                                                                                              isCopy: false,
+                                                                                            ),
+                                                                                            20.width,
+                                                                                            SizedBox(
+                                                                                              width: 500,
+                                                                                              height: 50,
+                                                                                              child: TextField(
+                                                                                                controller: controllers.emailSubjectCtr,
+                                                                                                onChanged: (value){
+                                                                                                  if (value.toString().isNotEmpty) {
+                                                                                                    String newValue = value
+                                                                                                        .toString()[0]
+                                                                                                        .toUpperCase() +
+                                                                                                        value.toString().substring(1);
+                                                                                                    if (newValue != value) {
+                                                                                                      controllers.emailSubjectCtr.value =
+                                                                                                          controllers.emailSubjectCtr.value
+                                                                                                              .copyWith(
+                                                                                                            text: newValue,
+                                                                                                            selection:
+                                                                                                            TextSelection.collapsed(
+                                                                                                                offset:
+                                                                                                                newValue.length),
+                                                                                                          );
+                                                                                                    }
+                                                                                                  }
+                                                                                                },
+                                                                                                maxLines: null,
+                                                                                                minLines: 1,
+                                                                                                style: TextStyle(
+                                                                                                  color: colorsConst.textColor,
+                                                                                                ),
+                                                                                                decoration: const InputDecoration(
+                                                                                                  border: InputBorder.none,
+                                                                                                ),
+                                                                                              ),
+                                                                                            )
+                                                                                          ],
+                                                                                        ),
+                                                                                        Divider(
+                                                                                          color: Colors.grey.shade300,
+                                                                                          thickness: 1,
+                                                                                        ),
+                                                                                        Obx(() => controllers.isTemplate.value == false
+                                                                                            ? SingleChildScrollView(
+                                                                                          child: Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                              SizedBox(
+                                                                                                width: 600,
+                                                                                                height: 70,
+                                                                                                child: TextField(
+                                                                                                  textInputAction: TextInputAction.newline,
+                                                                                                  controller: controllers.emailMessageCtr,
+                                                                                                  onChanged: (value){
+                                                                                                    if (value.toString().isNotEmpty) {
+                                                                                                      String newValue = value
+                                                                                                          .toString()[0]
+                                                                                                          .toUpperCase() +
+                                                                                                          value.toString().substring(1);
+                                                                                                      if (newValue != value) {
+                                                                                                        controllers.emailMessageCtr.value =
+                                                                                                            controllers.emailMessageCtr.value
+                                                                                                                .copyWith(
+                                                                                                              text: newValue,
+                                                                                                              selection:
+                                                                                                              TextSelection.collapsed(
+                                                                                                                  offset:
+                                                                                                                  newValue.length),
+                                                                                                            );
+                                                                                                      }
+                                                                                                    }
+                                                                                                  },
+                                                                                                  keyboardType: TextInputType.multiline,
+                                                                                                  maxLines: 21,
+                                                                                                  expands: false,
+                                                                                                  style: TextStyle(
+                                                                                                    color: colorsConst.textColor,
+                                                                                                  ),
+                                                                                                  decoration: InputDecoration(
+                                                                                                    hintText: "Message",
+                                                                                                    hintStyle: TextStyle(
+                                                                                                        color: colorsConst.textColor,
+                                                                                                        fontSize: 14,
+                                                                                                        fontFamily: "Lato"),
+                                                                                                    border: InputBorder.none,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        )
+                                                                                            :Obx(() => UnconstrainedBox(
+                                                                                          child: Container(
+                                                                                            width: 500,
+                                                                                            height: 300,
+                                                                                            alignment: Alignment.center,
+                                                                                            decoration: BoxDecoration(
+                                                                                              color: colorsConst.secondary,
+                                                                                              borderRadius: BorderRadius.circular(10),
+                                                                                            ),
+                                                                                            child: Padding(
+                                                                                              padding: const EdgeInsets.all(8.0),
+                                                                                              child: SizedBox(
+                                                                                                width: 500,
+                                                                                                child: Table(
+                                                                                                  defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                                  border: TableBorder.all(
+                                                                                                    color: Colors.grey.shade300,
+                                                                                                    style: BorderStyle.solid,
+                                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                                    width: 1,
+                                                                                                  ),
+                                                                                                  children: [
+                                                                                                    // Header Row
+                                                                                                    TableRow(
+                                                                                                      children: [
+                                                                                                        CustomText(
+                                                                                                          textAlign: TextAlign.center,
+                                                                                                          text: "\nTemplate Name\n",
+                                                                                                          colors: colorsConst.textColor,
+                                                                                                          size: 15,
+                                                                                                          isBold: true,
+                                                                                                          isCopy: false,
+                                                                                                        ),
+                                                                                                        CustomText(
+                                                                                                          textAlign: TextAlign.center,
+                                                                                                          text: "\nSubject\n",
+                                                                                                          colors: colorsConst.textColor,
+                                                                                                          size: 15,
+                                                                                                          isBold: true,
+                                                                                                          isCopy: false,
+                                                                                                        ),
+                                                                                                      ],
+                                                                                                    ),
+                                                                                                    // Dynamic Rows
+                                                                                                    for (var item in settingsController.templateList)
+                                                                                                      utils.emailRow(
+                                                                                                          context,
+                                                                                                          isCheck: controllers.isAdd,
+                                                                                                          templateName: item.templateName,
+                                                                                                          msg: item.message,
+                                                                                                          subject: item.subject,
+                                                                                                          id: item.id
+                                                                                                      ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ))),
+                                                                                        10.height,
+                                                                                        SizedBox(
+                                                                                          width: 600,
+                                                                                          height: 50,
+                                                                                          child: TextField(
+                                                                                            textInputAction: TextInputAction.newline,
+                                                                                            controller: controllers.notesCtr,
+                                                                                            keyboardType: TextInputType.multiline,
+                                                                                            maxLines: null,
+                                                                                            minLines: 3,
+                                                                                            style: TextStyle(
+                                                                                              color: colorsConst.textColor,
+                                                                                            ),
+                                                                                            decoration: InputDecoration(
+                                                                                              hintText: "",
+                                                                                              hintStyle: TextStyle(
+                                                                                                  color: colorsConst.textColor,
+                                                                                                  fontSize: 14,
+                                                                                                  fontFamily: "Lato"),
+                                                                                              border: InputBorder.none,
+                                                                                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        InkWell(
+                                                                                          onTap:(){
+                                                                                            printInvoice(billingProvider);
+                                                                                          },
+                                                                                          child: Container(
+                                                                                            width: MediaQuery.of(context).size.width*0.6,
+                                                                                            decoration: customDecoration.baseBackgroundDecoration(
+                                                                                              color: Colors.grey.shade50,radius: 5,
+                                                                                            ),
+                                                                                            child: Padding(
+                                                                                              padding: const EdgeInsets.all(8.0),
+                                                                                              child: CustomText(
+                                                                                                textAlign: TextAlign.start,
+                                                                                                text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
+                                                                                                isCopy: false,colors: colorsConst.primary,isBold: true,),
+                                                                                            ),
+                                                                                          ),
+                                                                                        )
+                                                                                      ],
+                                                                                    ),
+                                                                                  )),
+                                                                            ],
+                                                                          ),
+                                                                        )),
+                                                                  );
+                                                                });
+                                                          }
+                                                        }
+                                                        else if(dropValue=="Create Invoice"){
+                                                          if(controllers.selectedCustomerId.value==""){
+                                                            utils.showToast("Please select customer",Colors.red);
+                                                          }else if(billingProvider.billingItems.isEmpty){
+                                                            utils.showToast("Please select products",Colors.red);
+                                                          }else{
+                                                            setState(() {
+                                                              controllers.type.value="1";
+                                                              controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
+                                                              controllers.notesCtr.text="The invoice is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
+                                                              controllers.isTemplate.value=false;
+                                                              controllers.emailSubjectCtr.text="Invoice";
+                                                              controllers.emailMessageCtr.clear();
+                                                            });
+                                                            showDialog(
+                                                                context: context,
+                                                                barrierDismissible: false,
+                                                                builder: (context) {
+                                                                  return AlertDialog(
+                                                                    actions: [
+                                                                      Column(
+                                                                        children: [
+                                                                          Divider(
+                                                                            color: Colors.grey.shade300,
+                                                                            thickness: 1,
+                                                                          ),
+                                                                          Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                            children: [
+                                                                              SizedBox(
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    TextButton(
+                                                                                        onPressed: () {
+                                                                                          // Navigator.of(context).pop();
+                                                                                          settingsController.showAddTemplateDialog(context);
+                                                                                        },
+                                                                                        child: CustomText(
+                                                                                          text: "Create Template",
+                                                                                          isCopy: false,
+                                                                                          colors: colorsConst.third,
+                                                                                          size: 18,
+                                                                                          isBold: true,
+                                                                                        )),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              CustomLoadingButton(
+                                                                                callback: () {
+                                                                                  if(controllers.emailToCtr.text.trim().isEmpty){
+                                                                                    utils.showToast("To is empty!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
+                                                                                    utils.showToast("Invalid mail!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                                                                    utils.showToast("Subject is empty!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                                                                    utils.showToast("Message is empty!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  sendInvoice(billingProvider);
+                                                                                },
+                                                                                controller: controllers.emailCtr,
+                                                                                isImage: false,
+                                                                                isLoading: true,
+                                                                                backgroundColor: colorsConst.primary,
+                                                                                radius: 5,
+                                                                                width: 200,
+                                                                                height: 50,
+                                                                                text: "Send Invoice",
+                                                                                textColor: Colors.white,
+                                                                              ),
+                                                                            ],
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                    content: SizedBox(
+                                                                        width: 600,
+                                                                        height: 400,
+                                                                        child: SingleChildScrollView(
+                                                                          child: Column(
+                                                                            children: [
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                children: [
+                                                                                  CustomText(text: "Create Invoice", isCopy: false,isBold: true,size: 18,),
+                                                                                  Row(
+                                                                                    children: [
+                                                                                      TextButton(
+                                                                                          onPressed: () {
+                                                                                            controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                          },
+                                                                                          child: CustomText(
+                                                                                            text: "Get From Template",
+                                                                                            colors: colorsConst.third,
+                                                                                            size: 18,
+                                                                                            isCopy: false,
+                                                                                            isBold: true,
+                                                                                          )),
+                                                                                      10.width,
+                                                                                      InkWell(
+                                                                                          hoverColor: Colors.transparent,
+                                                                                          splashColor: Colors.transparent,
+                                                                                          highlightColor: Colors.transparent,
+                                                                                          focusColor: Colors.transparent,
+                                                                                          overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                                                                          onTap: () {
+                                                                                            Navigator.pop(context);
+                                                                                          },
+                                                                                          child: Icon(
+                                                                                            Icons.clear,
+                                                                                            size: 18,
+                                                                                            color: colorsConst.textColor,
+                                                                                          )),
+                                                                                    ],
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                              10.height,
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                                                                    if(controllers.selectedCompanyName.value!="")
+                                                                                      CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                                                                    CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              Row(
+                                                                                children: [
+                                                                                  CustomText(
+                                                                                    textAlign: TextAlign.center,
+                                                                                    text: "To",
+                                                                                    colors: colorsConst.textColor,
+                                                                                    size: 15,
+                                                                                    isCopy: false,
+                                                                                  ),
+                                                                                  50.width,
+                                                                                  SizedBox(
+                                                                                    width: 500,
+                                                                                    child: TextField(
+                                                                                      controller: controllers.emailToCtr,
+                                                                                      style: TextStyle(
+                                                                                          fontSize: 15, color: colorsConst.textColor),
+                                                                                      decoration: const InputDecoration(
+                                                                                        border: InputBorder.none,
+                                                                                      ),
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                              SizedBox(
+                                                                                  width: 600,
+                                                                                  child: SingleChildScrollView(
+                                                                                    child: Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        Divider(
+                                                                                          color: Colors.grey.shade300,
+                                                                                          thickness: 1,
+                                                                                        ),
+                                                                                        Row(
+                                                                                          children: [
+                                                                                            15.height,
+                                                                                            CustomText(
+                                                                                              text: "Subject",
+                                                                                              colors: colorsConst.textColor,
+                                                                                              size: 14,
+                                                                                              isCopy: false,
+                                                                                            ),
+                                                                                            20.width,
+                                                                                            SizedBox(
+                                                                                              width: 500,
+                                                                                              height: 50,
+                                                                                              child: TextField(
+                                                                                                controller: controllers.emailSubjectCtr,
+                                                                                                onChanged: (value){
+                                                                                                  if (value.toString().isNotEmpty) {
+                                                                                                    String newValue = value
+                                                                                                        .toString()[0]
+                                                                                                        .toUpperCase() +
+                                                                                                        value.toString().substring(1);
+                                                                                                    if (newValue != value) {
+                                                                                                      controllers.emailSubjectCtr.value =
+                                                                                                          controllers.emailSubjectCtr.value
+                                                                                                              .copyWith(
+                                                                                                            text: newValue,
+                                                                                                            selection:
+                                                                                                            TextSelection.collapsed(
+                                                                                                                offset:
+                                                                                                                newValue.length),
+                                                                                                          );
+                                                                                                    }
+                                                                                                  }
+                                                                                                },
+                                                                                                maxLines: null,
+                                                                                                minLines: 1,
+                                                                                                style: TextStyle(
+                                                                                                  color: colorsConst.textColor,
+                                                                                                ),
+                                                                                                decoration: const InputDecoration(
+                                                                                                  border: InputBorder.none,
+                                                                                                ),
+                                                                                              ),
+                                                                                            )
+                                                                                          ],
+                                                                                        ),
+                                                                                        Divider(
+                                                                                          color: Colors.grey.shade300,
+                                                                                          thickness: 1,
+                                                                                        ),
+                                                                                        Obx(() => controllers.isTemplate.value == false
+                                                                                            ? SingleChildScrollView(
+                                                                                          child: Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                              SizedBox(
+                                                                                                width: 600,
+                                                                                                height: 70,
+                                                                                                child: TextField(
+                                                                                                  textInputAction: TextInputAction.newline,
+                                                                                                  controller: controllers.emailMessageCtr,
+                                                                                                  onChanged: (value){
+                                                                                                    if (value.toString().isNotEmpty) {
+                                                                                                      String newValue = value
+                                                                                                          .toString()[0]
+                                                                                                          .toUpperCase() +
+                                                                                                          value.toString().substring(1);
+                                                                                                      if (newValue != value) {
+                                                                                                        controllers.emailMessageCtr.value =
+                                                                                                            controllers.emailMessageCtr.value
+                                                                                                                .copyWith(
+                                                                                                              text: newValue,
+                                                                                                              selection:
+                                                                                                              TextSelection.collapsed(
+                                                                                                                  offset:
+                                                                                                                  newValue.length),
+                                                                                                            );
+                                                                                                      }
+                                                                                                    }
+                                                                                                  },
+                                                                                                  keyboardType: TextInputType.multiline,
+                                                                                                  maxLines: 21,
+                                                                                                  expands: false,
+                                                                                                  style: TextStyle(
+                                                                                                    color: colorsConst.textColor,
+                                                                                                  ),
+                                                                                                  decoration: InputDecoration(
+                                                                                                    hintText: "Message",
+                                                                                                    hintStyle: TextStyle(
+                                                                                                        color: colorsConst.textColor,
+                                                                                                        fontSize: 14,
+                                                                                                        fontFamily: "Lato"),
+                                                                                                    border: InputBorder.none,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        )
+                                                                                            :Obx(() => UnconstrainedBox(
+                                                                                          child: Container(
+                                                                                            width: 500,
+                                                                                            alignment: Alignment.center,
+                                                                                            decoration: BoxDecoration(
+                                                                                              color: colorsConst.secondary,
+                                                                                              borderRadius: BorderRadius.circular(10),
+                                                                                            ),
+                                                                                            child: Padding(
+                                                                                              padding: const EdgeInsets.all(8.0),
+                                                                                              child: SizedBox(
+                                                                                                width: 500,
+                                                                                                child: Table(
+                                                                                                  defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                                  border: TableBorder.all(
+                                                                                                    color: Colors.grey.shade300,
+                                                                                                    style: BorderStyle.solid,
+                                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                                    width: 1,
+                                                                                                  ),
+                                                                                                  children: [
+                                                                                                    // Header Row
+                                                                                                    TableRow(
+                                                                                                      children: [
+                                                                                                        CustomText(
+                                                                                                          textAlign: TextAlign.center,
+                                                                                                          text: "\nTemplate Name\n",
+                                                                                                          colors: colorsConst.textColor,
+                                                                                                          size: 15,
+                                                                                                          isBold: true,
+                                                                                                          isCopy: false,
+                                                                                                        ),
+                                                                                                        CustomText(
+                                                                                                          textAlign: TextAlign.center,
+                                                                                                          text: "\nSubject\n",
+                                                                                                          colors: colorsConst.textColor,
+                                                                                                          size: 15,
+                                                                                                          isBold: true,
+                                                                                                          isCopy: false,
+                                                                                                        ),
+                                                                                                      ],
+                                                                                                    ),
+                                                                                                    // Dynamic Rows
+                                                                                                    for (var item in settingsController.templateList)
+                                                                                                      utils.emailRow(
+                                                                                                          context,
+                                                                                                          isCheck: controllers.isAdd,
+                                                                                                          templateName: item.templateName,
+                                                                                                          msg: item.message,
+                                                                                                          subject: item.subject,
+                                                                                                          id: item.id
+                                                                                                      ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ))),
+                                                                                        10.height,
+                                                                                        SizedBox(
+                                                                                          width: 600,
+                                                                                          height: 50,
+                                                                                          child: TextField(
+                                                                                            textInputAction: TextInputAction.newline,
+                                                                                            controller: controllers.notesCtr,
+                                                                                            onChanged: (value){
+                                                                                              if (value.toString().isNotEmpty) {
+                                                                                                String newValue = value
+                                                                                                    .toString()[0]
+                                                                                                    .toUpperCase() +
+                                                                                                    value.toString().substring(1);
+                                                                                                if (newValue != value) {
+                                                                                                  controllers.notesCtr.value =
+                                                                                                      controllers.notesCtr.value
+                                                                                                          .copyWith(
+                                                                                                        text: newValue,
+                                                                                                        selection:
+                                                                                                        TextSelection.collapsed(
+                                                                                                            offset:
+                                                                                                            newValue.length),
+                                                                                                      );
+                                                                                                }
+                                                                                              }
+                                                                                            },
+                                                                                            keyboardType: TextInputType.multiline,
+                                                                                            maxLines: null,
+                                                                                            minLines: 3,
+                                                                                            style: TextStyle(
+                                                                                              color: colorsConst.textColor,
+                                                                                            ),
+                                                                                            decoration: InputDecoration(
+                                                                                              hintText: "",
+                                                                                              hintStyle: TextStyle(
+                                                                                                  color: colorsConst.textColor,
+                                                                                                  fontSize: 14,
+                                                                                                  fontFamily: "Lato"),
+                                                                                              border: InputBorder.none,
+                                                                                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        InkWell(
+                                                                                          onTap:(){
+                                                                                            printInvoice(billingProvider);
+                                                                                          },
+                                                                                          child: Container(
+                                                                                            width: MediaQuery.of(context).size.width*0.6,
+                                                                                            decoration: customDecoration.baseBackgroundDecoration(
+                                                                                              color: Colors.grey.shade50,radius: 5,
+                                                                                            ),
+                                                                                            child: Padding(
+                                                                                              padding: const EdgeInsets.all(8.0),
+                                                                                              child: CustomText(
+                                                                                                textAlign: TextAlign.start,
+                                                                                                text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
+                                                                                                isCopy: false,colors: colorsConst.primary,isBold: true,),
+                                                                                            ),
+                                                                                          ),
+                                                                                        )
+                                                                                      ],
+                                                                                    ),
+                                                                                  )),
+                                                                            ],
+                                                                          ),
+                                                                        )),
+                                                                  );
+                                                                });
+                                                          }
+                                                        }
+                                                        else if(dropValue=="Proforma Invoice"){
+                                                          if(controllers.selectedCustomerId.value==""){
+                                                            utils.showToast("Please select customer",Colors.red);
+                                                          }else if(billingProvider.billingItems.isEmpty){
+                                                            utils.showToast("Please select products",Colors.red);
+                                                          }else{
+                                                            setState(() {
+                                                              controllers.type.value="0";
+                                                              controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
+                                                              controllers.notesCtr.text="The proforma invoice is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
+                                                              controllers.isTemplate.value=false;
+                                                              controllers.emailSubjectCtr.text="Proforma Invoice";
+                                                              controllers.emailMessageCtr.clear();
+                                                            });
+                                                            showDialog(
+                                                                context: context,
+                                                                barrierDismissible: false,
+                                                                builder: (context) {
+                                                                  return AlertDialog(
+                                                                    actions: [
+                                                                      Column(
+                                                                        children: [
+                                                                          Divider(
+                                                                            color: Colors.grey.shade300,
+                                                                            thickness: 1,
+                                                                          ),
+                                                                          Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                            children: [
+                                                                              SizedBox(
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    TextButton(
+                                                                                        onPressed: () {
+                                                                                          // Navigator.of(context).pop();
+                                                                                          settingsController.showAddTemplateDialog(context);
+                                                                                        },
+                                                                                        child: CustomText(
+                                                                                          text: "Create Template",
+                                                                                          isCopy: false,
+                                                                                          colors: colorsConst.third,
+                                                                                          size: 18,
+                                                                                          isBold: true,
+                                                                                        )),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              CustomLoadingButton(
+                                                                                callback: () {
+                                                                                  if(controllers.emailToCtr.text.trim().isEmpty){
+                                                                                    utils.showToast("To is empty!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
+                                                                                    utils.showToast("Invalid mail!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                                                                    utils.showToast("Subject is empty!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                                                                    utils.showToast("Message is empty!",Colors.red);
+                                                                                    controllers.emailCtr.reset();
+                                                                                    return;
+                                                                                  }
+                                                                                  sendInvoice(billingProvider);
+                                                                                },
+                                                                                controller: controllers.emailCtr,
+                                                                                isImage: false,
+                                                                                isLoading: true,
+                                                                                backgroundColor: colorsConst.primary,
+                                                                                radius: 5,
+                                                                                width: 200,
+                                                                                height: 50,
+                                                                                text: "Send Proforma Invoice",
+                                                                                textColor: Colors.white,
+                                                                              ),
+                                                                            ],
+                                                                          )
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                    content: SizedBox(
+                                                                        width: 600,
+                                                                        height: 400,
+                                                                        child: SingleChildScrollView(
+                                                                          child: Column(
+                                                                            children: [
+                                                                              Row(
+                                                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                children: [
+                                                                                  CustomText(text: "Proforma Invoice", isCopy: false,isBold: true,size: 18,),
+                                                                                  Row(
+                                                                                    children: [
+                                                                                      TextButton(
+                                                                                          onPressed: () {
+                                                                                            controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                          },
+                                                                                          child: CustomText(
+                                                                                            text: "Get From Template",
+                                                                                            colors: colorsConst.third,
+                                                                                            size: 18,
+                                                                                            isCopy: false,
+                                                                                            isBold: true,
+                                                                                          )),
+                                                                                      10.width,
+                                                                                      InkWell(
+                                                                                          hoverColor: Colors.transparent,
+                                                                                          splashColor: Colors.transparent,
+                                                                                          highlightColor: Colors.transparent,
+                                                                                          focusColor: Colors.transparent,
+                                                                                          overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                                                                          onTap: () {
+                                                                                            Navigator.pop(context);
+                                                                                          },
+                                                                                          child: Icon(
+                                                                                            Icons.clear,
+                                                                                            size: 18,
+                                                                                            color: colorsConst.textColor,
+                                                                                          )),
+                                                                                    ],
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                              10.height,
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                                                                    if(controllers.selectedCompanyName.value!="")
+                                                                                      CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                                                                    CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              Row(
+                                                                                children: [
+                                                                                  CustomText(
+                                                                                    textAlign: TextAlign.center,
+                                                                                    text: "To",
+                                                                                    colors: colorsConst.textColor,
+                                                                                    size: 15,
+                                                                                    isCopy: false,
+                                                                                  ),
+                                                                                  50.width,
+                                                                                  SizedBox(
+                                                                                    width: 500,
+                                                                                    child: TextField(
+                                                                                      controller: controllers.emailToCtr,
+                                                                                      style: TextStyle(
+                                                                                          fontSize: 15, color: colorsConst.textColor),
+                                                                                      decoration: const InputDecoration(
+                                                                                        border: InputBorder.none,
+                                                                                      ),
+                                                                                    ),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                              SizedBox(
+                                                                                  width: 600,
+                                                                                  child: SingleChildScrollView(
+                                                                                    child: Column(
+                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                      children: [
+                                                                                        Divider(
+                                                                                          color: Colors.grey.shade300,
+                                                                                          thickness: 1,
+                                                                                        ),
+                                                                                        Row(
+                                                                                          children: [
+                                                                                            15.height,
+                                                                                            CustomText(
+                                                                                              text: "Subject",
+                                                                                              colors: colorsConst.textColor,
+                                                                                              size: 14,
+                                                                                              isCopy: false,
+                                                                                            ),
+                                                                                            20.width,
+                                                                                            SizedBox(
+                                                                                              width: 500,
+                                                                                              height: 50,
+                                                                                              child: TextField(
+                                                                                                controller: controllers.emailSubjectCtr,
+                                                                                                onChanged: (value){
+                                                                                                  if (value.toString().isNotEmpty) {
+                                                                                                    String newValue = value
+                                                                                                        .toString()[0]
+                                                                                                        .toUpperCase() +
+                                                                                                        value.toString().substring(1);
+                                                                                                    if (newValue != value) {
+                                                                                                      controllers.emailSubjectCtr.value =
+                                                                                                          controllers.emailSubjectCtr.value
+                                                                                                              .copyWith(
+                                                                                                            text: newValue,
+                                                                                                            selection:
+                                                                                                            TextSelection.collapsed(
+                                                                                                                offset:
+                                                                                                                newValue.length),
+                                                                                                          );
+                                                                                                    }
+                                                                                                  }
+                                                                                                },
+                                                                                                maxLines: null,
+                                                                                                minLines: 1,
+                                                                                                style: TextStyle(
+                                                                                                  color: colorsConst.textColor,
+                                                                                                ),
+                                                                                                decoration: const InputDecoration(
+                                                                                                  border: InputBorder.none,
+                                                                                                ),
+                                                                                              ),
+                                                                                            )
+                                                                                          ],
+                                                                                        ),
+                                                                                        Divider(
+                                                                                          color: Colors.grey.shade300,
+                                                                                          thickness: 1,
+                                                                                        ),
+                                                                                        Obx(() => controllers.isTemplate.value == false
+                                                                                            ? SingleChildScrollView(
+                                                                                          child: Column(
+                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                            children: [
+                                                                                              SizedBox(
+                                                                                                width: 600,
+                                                                                                height: 70,
+                                                                                                child: TextField(
+                                                                                                  textInputAction: TextInputAction.newline,
+                                                                                                  controller: controllers.emailMessageCtr,
+                                                                                                  onChanged: (value){
+                                                                                                    if (value.toString().isNotEmpty) {
+                                                                                                      String newValue = value
+                                                                                                          .toString()[0]
+                                                                                                          .toUpperCase() +
+                                                                                                          value.toString().substring(1);
+                                                                                                      if (newValue != value) {
+                                                                                                        controllers.emailMessageCtr.value =
+                                                                                                            controllers.emailMessageCtr.value
+                                                                                                                .copyWith(
+                                                                                                              text: newValue,
+                                                                                                              selection:
+                                                                                                              TextSelection.collapsed(
+                                                                                                                  offset:
+                                                                                                                  newValue.length),
+                                                                                                            );
+                                                                                                      }
+                                                                                                    }
+                                                                                                  },
+                                                                                                  keyboardType: TextInputType.multiline,
+                                                                                                  maxLines: 21,
+                                                                                                  expands: false,
+                                                                                                  style: TextStyle(
+                                                                                                    color: colorsConst.textColor,
+                                                                                                  ),
+                                                                                                  decoration: InputDecoration(
+                                                                                                    hintText: "Message",
+                                                                                                    hintStyle: TextStyle(
+                                                                                                        color: colorsConst.textColor,
+                                                                                                        fontSize: 14,
+                                                                                                        fontFamily: "Lato"),
+                                                                                                    border: InputBorder.none,
+                                                                                                  ),
+                                                                                                ),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                        )
+                                                                                            :Obx(() => UnconstrainedBox(
+                                                                                          child: Container(
+                                                                                            width: 500,
+                                                                                            alignment: Alignment.center,
+                                                                                            decoration: BoxDecoration(
+                                                                                              color: colorsConst.secondary,
+                                                                                              borderRadius: BorderRadius.circular(10),
+                                                                                            ),
+                                                                                            child: Padding(
+                                                                                              padding: const EdgeInsets.all(8.0),
+                                                                                              child: SizedBox(
+                                                                                                width: 500,
+                                                                                                child: Table(
+                                                                                                  defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                                  border: TableBorder.all(
+                                                                                                    color: Colors.grey.shade300,
+                                                                                                    style: BorderStyle.solid,
+                                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                                    width: 1,
+                                                                                                  ),
+                                                                                                  children: [
+                                                                                                    // Header Row
+                                                                                                    TableRow(
+                                                                                                      children: [
+                                                                                                        CustomText(
+                                                                                                          textAlign: TextAlign.center,
+                                                                                                          text: "\nTemplate Name\n",
+                                                                                                          colors: colorsConst.textColor,
+                                                                                                          size: 15,
+                                                                                                          isBold: true,
+                                                                                                          isCopy: false,
+                                                                                                        ),
+                                                                                                        CustomText(
+                                                                                                          textAlign: TextAlign.center,
+                                                                                                          text: "\nSubject\n",
+                                                                                                          colors: colorsConst.textColor,
+                                                                                                          size: 15,
+                                                                                                          isBold: true,
+                                                                                                          isCopy: false,
+                                                                                                        ),
+                                                                                                      ],
+                                                                                                    ),
+                                                                                                    // Dynamic Rows
+                                                                                                    for (var item in settingsController.templateList)
+                                                                                                      utils.emailRow(
+                                                                                                          context,
+                                                                                                          isCheck: controllers.isAdd,
+                                                                                                          templateName: item.templateName,
+                                                                                                          msg: item.message,
+                                                                                                          subject: item.subject,
+                                                                                                          id: item.id
+                                                                                                      ),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ))),
+                                                                                        10.height,
+                                                                                        SizedBox(
+                                                                                          width: 600,
+                                                                                          height: 50,
+                                                                                          child: TextField(
+                                                                                            textInputAction: TextInputAction.newline,
+                                                                                            controller: controllers.notesCtr,
+                                                                                            onChanged: (value){
+                                                                                              if (value.toString().isNotEmpty) {
+                                                                                                String newValue = value
+                                                                                                    .toString()[0]
+                                                                                                    .toUpperCase() +
+                                                                                                    value.toString().substring(1);
+                                                                                                if (newValue != value) {
+                                                                                                  controllers.notesCtr.value =
+                                                                                                      controllers.notesCtr.value
+                                                                                                          .copyWith(
+                                                                                                        text: newValue,
+                                                                                                        selection:
+                                                                                                        TextSelection.collapsed(
+                                                                                                            offset:
+                                                                                                            newValue.length),
+                                                                                                      );
+                                                                                                }
+                                                                                              }
+                                                                                            },
+                                                                                            keyboardType: TextInputType.multiline,
+                                                                                            maxLines: null,
+                                                                                            minLines: 3,
+                                                                                            style: TextStyle(
+                                                                                              color: colorsConst.textColor,
+                                                                                            ),
+                                                                                            decoration: InputDecoration(
+                                                                                              hintText: "",
+                                                                                              hintStyle: TextStyle(
+                                                                                                  color: colorsConst.textColor,
+                                                                                                  fontSize: 14,
+                                                                                                  fontFamily: "Lato"),
+                                                                                              border: InputBorder.none,
+                                                                                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                                                            ),
+                                                                                          ),
+                                                                                        ),
+                                                                                        InkWell(
+                                                                                          onTap:(){
+                                                                                            printInvoice(billingProvider);
+                                                                                          },
+                                                                                          child: Container(
+                                                                                            width: MediaQuery.of(context).size.width*0.6,
+                                                                                            decoration: customDecoration.baseBackgroundDecoration(
+                                                                                              color: Colors.grey.shade50,radius: 5,
+                                                                                            ),
+                                                                                            child: Padding(
+                                                                                              padding: const EdgeInsets.all(8.0),
+                                                                                              child: CustomText(
+                                                                                                textAlign: TextAlign.start,
+                                                                                                text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
+                                                                                                isCopy: false,colors: colorsConst.primary,isBold: true,),
+                                                                                            ),
+                                                                                          ),
+                                                                                        )
+                                                                                      ],
+                                                                                    ),
+                                                                                  )),
+                                                                            ],
+                                                                          ),
+                                                                        )),
+                                                                  );
+                                                                });
+                                                          }
+                                                        }
+                                                      });
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                      if(controllers.directNavigate.value==true)
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            CustomLoadingButton(
+                                              callback: () {
+                                                if(controllers.selectedCustomerId.value==""){
+                                                  utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
+                                                }else if(billingProvider.billingItems.isEmpty){
+                                                  utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
+                                                }else{
+                                                  printInvoice(billingProvider);
+                                                }
+                                              },
+                                              isLoading: false,
+                                              height: 45,
+                                              backgroundColor: colorsConst.primary,
+                                              radius: 2,
+                                              width: screenWidth*0.1,
+                                              isImage: false,
+                                              text: "View Invoice",
+                                              textColor: Colors.white,
+                                            ),10.width,
+                                            CustomLoadingButton(
+                                              callback: () {
+                                                if(controllers.selectedCustomerId.value==""){
+                                                  utils.snackBar(context: context, msg: "Please select customer", color: Colors.red);
+                                                }else if(billingProvider.billingItems.isEmpty){
+                                                  utils.snackBar(context: context, msg: "Please select products", color: Colors.red);
+                                                }else{
+                                                  showDialog(
+                                                      context: context,
+                                                      barrierDismissible: false,
+                                                      builder: (context) {
+                                                        return AlertDialog(
+                                                          content: SizedBox(
+                                                              width: 300,
+                                                              height: 150,
+                                                              child: Obx(()=>SingleChildScrollView(
+                                                                child: Column(
+                                                                  children: [
+                                                                    Align(
+                                                                        alignment: Alignment.topRight,
+                                                                        child: InkWell(
+                                                                            hoverColor: Colors.transparent,
+                                                                            splashColor: Colors.transparent,
+                                                                            highlightColor: Colors.transparent,
+                                                                            focusColor: Colors.transparent,
+                                                                            overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                                                            onTap: () {
+                                                                              Navigator.pop(context);
+                                                                            },
+                                                                            child: Icon(
+                                                                              Icons.clear,
+                                                                              size: 18,
+                                                                              color: colorsConst.textColor,
+                                                                            ))),
+                                                                    Column(
+                                                                      children: [
+                                                                        InkWell(
+                                                                          onTap: (){
+                                                                            setState(() {
+                                                                              controllers.type.value="0";
+                                                                              controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
+                                                                              controllers.notesCtr.text="The proforma invoice is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
+                                                                              controllers.isTemplate.value=false;
+                                                                              controllers.emailSubjectCtr.text="Proforma Invoice";
+                                                                              controllers.emailMessageCtr.clear();
+                                                                            });
+                                                                            showDialog(
+                                                                                context: context,
+                                                                                barrierDismissible: false,
+                                                                                builder: (context) {
+                                                                                  return AlertDialog(
+                                                                                    actions: [
+                                                                                      Column(
+                                                                                        children: [
+                                                                                          Divider(
+                                                                                            color: Colors.grey.shade300,
+                                                                                            thickness: 1,
+                                                                                          ),
+                                                                                          Row(
+                                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                            children: [
+                                                                                              SizedBox(
+                                                                                                child: Row(
+                                                                                                  children: [
+                                                                                                    TextButton(
+                                                                                                        onPressed: () {
+                                                                                                          // Navigator.of(context).pop();
+                                                                                                          settingsController.showAddTemplateDialog(context);
+                                                                                                        },
+                                                                                                        child: CustomText(
+                                                                                                          text: "Create Template",
+                                                                                                          isCopy: false,
+                                                                                                          colors: colorsConst.third,
+                                                                                                          size: 18,
+                                                                                                          isBold: true,
+                                                                                                        )),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                              CustomLoadingButton(
+                                                                                                callback: () {
+                                                                                                  if(controllers.emailToCtr.text.trim().isEmpty){
+                                                                                                    utils.showToast("To is empty!",Colors.red);
+                                                                                                    controllers.emailCtr.reset();
+                                                                                                    return;
+                                                                                                  }
+                                                                                                  if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
+                                                                                                    utils.showToast("Invalid mail!",Colors.red);
+                                                                                                    controllers.emailCtr.reset();
+                                                                                                    return;
+                                                                                                  }
+                                                                                                  if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                                                                                    utils.showToast("Subject is empty!",Colors.red);
+                                                                                                    controllers.emailCtr.reset();
+                                                                                                    return;
+                                                                                                  }
+                                                                                                  if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                                                                                    utils.showToast("Message is empty!",Colors.red);
+                                                                                                    controllers.emailCtr.reset();
+                                                                                                    return;
+                                                                                                  }
+                                                                                                  sendInvoice(billingProvider);
+                                                                                                },
+                                                                                                controller: controllers.emailCtr,
+                                                                                                isImage: false,
+                                                                                                isLoading: true,
+                                                                                                backgroundColor: colorsConst.primary,
+                                                                                                radius: 5,
+                                                                                                width: 200,
+                                                                                                height: 50,
+                                                                                                text: "Send Proforma Invoice",
+                                                                                                textColor: Colors.white,
+                                                                                              ),
+                                                                                            ],
+                                                                                          )
+                                                                                        ],
+                                                                                      ),
+                                                                                    ],
+                                                                                    content: SizedBox(
+                                                                                        width: 600,
+                                                                                        height: 400,
+                                                                                        child: SingleChildScrollView(
+                                                                                          child: Column(
+                                                                                            children: [
+                                                                                              Align(
+                                                                                                  alignment: Alignment.topRight,
+                                                                                                  child: InkWell(
+                                                                                                      hoverColor: Colors.transparent,
+                                                                                                      splashColor: Colors.transparent,
+                                                                                                      highlightColor: Colors.transparent,
+                                                                                                      focusColor: Colors.transparent,
+                                                                                                      overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                                                                                      onTap: () {
+                                                                                                        Navigator.pop(context);
+                                                                                                      },
+                                                                                                      child: Icon(
+                                                                                                        Icons.clear,
+                                                                                                        size: 18,
+                                                                                                        color: colorsConst.textColor,
+                                                                                                      ))),
+                                                                                              Align(
+                                                                                                alignment: Alignment.topRight,
+                                                                                                child: TextButton(
+                                                                                                    onPressed: () {
+                                                                                                      controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                                    },
+                                                                                                    child: CustomText(
+                                                                                                      text: "Get From Template",
+                                                                                                      colors: colorsConst.third,
+                                                                                                      size: 18,
+                                                                                                      isCopy: false,
+                                                                                                      isBold: true,
+                                                                                                    )),
+                                                                                              ),
+                                                                                              Padding(
+                                                                                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                                                                child: Row(
+                                                                                                  children: [
+                                                                                                    CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                                                                                    if(controllers.selectedCompanyName.value!="")
+                                                                                                      CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                                                                                    CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                              Row(
+                                                                                                children: [
+                                                                                                  CustomText(
+                                                                                                    textAlign: TextAlign.center,
+                                                                                                    text: "To",
+                                                                                                    colors: colorsConst.textColor,
+                                                                                                    size: 15,
+                                                                                                    isCopy: false,
+                                                                                                  ),
+                                                                                                  50.width,
+                                                                                                  SizedBox(
+                                                                                                    width: 500,
+                                                                                                    child: TextField(
+                                                                                                      controller: controllers.emailToCtr,
+                                                                                                      style: TextStyle(
+                                                                                                          fontSize: 15, color: colorsConst.textColor),
+                                                                                                      decoration: const InputDecoration(
+                                                                                                        border: InputBorder.none,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  )
+                                                                                                ],
+                                                                                              ),
+                                                                                              SizedBox(
+                                                                                                  width: 600,
+                                                                                                  child: SingleChildScrollView(
+                                                                                                    child: Column(
+                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                      children: [
+                                                                                                        Divider(
+                                                                                                          color: Colors.grey.shade300,
+                                                                                                          thickness: 1,
+                                                                                                        ),
+                                                                                                        Row(
+                                                                                                          children: [
+                                                                                                            15.height,
+                                                                                                            CustomText(
+                                                                                                              text: "Subject",
+                                                                                                              colors: colorsConst.textColor,
+                                                                                                              size: 14,
+                                                                                                              isCopy: false,
+                                                                                                            ),
+                                                                                                            20.width,
+                                                                                                            SizedBox(
+                                                                                                              width: 500,
+                                                                                                              height: 50,
+                                                                                                              child: TextField(
+                                                                                                                controller: controllers.emailSubjectCtr,
+                                                                                                                onChanged: (value){
+                                                                                                                  if (value.toString().isNotEmpty) {
+                                                                                                                    String newValue = value
+                                                                                                                        .toString()[0]
+                                                                                                                        .toUpperCase() +
+                                                                                                                        value.toString().substring(1);
+                                                                                                                    if (newValue != value) {
+                                                                                                                      controllers.emailSubjectCtr.value =
+                                                                                                                          controllers.emailSubjectCtr.value
+                                                                                                                              .copyWith(
+                                                                                                                            text: newValue,
+                                                                                                                            selection:
+                                                                                                                            TextSelection.collapsed(
+                                                                                                                                offset:
+                                                                                                                                newValue.length),
+                                                                                                                          );
+                                                                                                                    }
+                                                                                                                  }
+                                                                                                                },
+                                                                                                                maxLines: null,
+                                                                                                                minLines: 1,
+                                                                                                                style: TextStyle(
+                                                                                                                  color: colorsConst.textColor,
+                                                                                                                ),
+                                                                                                                decoration: const InputDecoration(
+                                                                                                                  border: InputBorder.none,
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            )
+                                                                                                          ],
+                                                                                                        ),
+                                                                                                        Divider(
+                                                                                                          color: Colors.grey.shade300,
+                                                                                                          thickness: 1,
+                                                                                                        ),
+                                                                                                        Obx(() => controllers.isTemplate.value == false
+                                                                                                            ? SingleChildScrollView(
+                                                                                                          child: Column(
+                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                            children: [
+                                                                                                              SizedBox(
+                                                                                                                width: 600,
+                                                                                                                height: 70,
+                                                                                                                child: TextField(
+                                                                                                                  textInputAction: TextInputAction.newline,
+                                                                                                                  controller: controllers.emailMessageCtr,
+                                                                                                                  onChanged: (value){
+                                                                                                                    if (value.toString().isNotEmpty) {
+                                                                                                                      String newValue = value
+                                                                                                                          .toString()[0]
+                                                                                                                          .toUpperCase() +
+                                                                                                                          value.toString().substring(1);
+                                                                                                                      if (newValue != value) {
+                                                                                                                        controllers.emailMessageCtr.value =
+                                                                                                                            controllers.emailMessageCtr.value
+                                                                                                                                .copyWith(
+                                                                                                                              text: newValue,
+                                                                                                                              selection:
+                                                                                                                              TextSelection.collapsed(
+                                                                                                                                  offset:
+                                                                                                                                  newValue.length),
+                                                                                                                            );
+                                                                                                                      }
+                                                                                                                    }
+                                                                                                                  },
+                                                                                                                  keyboardType: TextInputType.multiline,
+                                                                                                                  maxLines: 21,
+                                                                                                                  expands: false,
+                                                                                                                  style: TextStyle(
+                                                                                                                    color: colorsConst.textColor,
+                                                                                                                  ),
+                                                                                                                  decoration: InputDecoration(
+                                                                                                                    hintText: "Message",
+                                                                                                                    hintStyle: TextStyle(
+                                                                                                                        color: colorsConst.textColor,
+                                                                                                                        fontSize: 14,
+                                                                                                                        fontFamily: "Lato"),
+                                                                                                                    border: InputBorder.none,
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            ],
+                                                                                                          ),
+                                                                                                        )
+                                                                                                            :Obx(() => UnconstrainedBox(
+                                                                                                          child: Container(
+                                                                                                            width: 500,
+                                                                                                            alignment: Alignment.center,
+                                                                                                            decoration: BoxDecoration(
+                                                                                                              color: colorsConst.secondary,
+                                                                                                              borderRadius: BorderRadius.circular(10),
+                                                                                                            ),
+                                                                                                            child: Padding(
+                                                                                                              padding: const EdgeInsets.all(8.0),
+                                                                                                              child: SizedBox(
+                                                                                                                width: 500,
+                                                                                                                child: Table(
+                                                                                                                  defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                                                  border: TableBorder.all(
+                                                                                                                    color: Colors.grey.shade300,
+                                                                                                                    style: BorderStyle.solid,
+                                                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                                                    width: 1,
+                                                                                                                  ),
+                                                                                                                  children: [
+                                                                                                                    // Header Row
+                                                                                                                    TableRow(
+                                                                                                                      children: [
+                                                                                                                        CustomText(
+                                                                                                                          textAlign: TextAlign.center,
+                                                                                                                          text: "\nTemplate Name\n",
+                                                                                                                          colors: colorsConst.textColor,
+                                                                                                                          size: 15,
+                                                                                                                          isBold: true,
+                                                                                                                          isCopy: false,
+                                                                                                                        ),
+                                                                                                                        CustomText(
+                                                                                                                          textAlign: TextAlign.center,
+                                                                                                                          text: "\nSubject\n",
+                                                                                                                          colors: colorsConst.textColor,
+                                                                                                                          size: 15,
+                                                                                                                          isBold: true,
+                                                                                                                          isCopy: false,
+                                                                                                                        ),
+                                                                                                                      ],
+                                                                                                                    ),
+                                                                                                                    // Dynamic Rows
+                                                                                                                    for (var item in settingsController.templateList)
+                                                                                                                      utils.emailRow(
+                                                                                                                          context,
+                                                                                                                          isCheck: controllers.isAdd,
+                                                                                                                          templateName: item.templateName,
+                                                                                                                          msg: item.message,
+                                                                                                                          subject: item.subject,
+                                                                                                                          id: item.id
+                                                                                                                      ),
+                                                                                                                  ],
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ))),
+                                                                                                        10.height,
+                                                                                                        SizedBox(
+                                                                                                          width: 600,
+                                                                                                          height: 50,
+                                                                                                          child: TextField(
+                                                                                                            textInputAction: TextInputAction.newline,
+                                                                                                            controller: controllers.notesCtr,
+                                                                                                            onChanged: (value){
+                                                                                                              if (value.toString().isNotEmpty) {
+                                                                                                                String newValue = value
+                                                                                                                    .toString()[0]
+                                                                                                                    .toUpperCase() +
+                                                                                                                    value.toString().substring(1);
+                                                                                                                if (newValue != value) {
+                                                                                                                  controllers.notesCtr.value =
+                                                                                                                      controllers.notesCtr.value
+                                                                                                                          .copyWith(
+                                                                                                                        text: newValue,
+                                                                                                                        selection:
+                                                                                                                        TextSelection.collapsed(
+                                                                                                                            offset:
+                                                                                                                            newValue.length),
+                                                                                                                      );
+                                                                                                                }
+                                                                                                              }
+                                                                                                            },
+                                                                                                            keyboardType: TextInputType.multiline,
+                                                                                                            maxLines: null,
+                                                                                                            minLines: 3,
+                                                                                                            style: TextStyle(
+                                                                                                              color: colorsConst.textColor,
+                                                                                                            ),
+                                                                                                            decoration: InputDecoration(
+                                                                                                              hintText: "",
+                                                                                                              hintStyle: TextStyle(
+                                                                                                                  color: colorsConst.textColor,
+                                                                                                                  fontSize: 14,
+                                                                                                                  fontFamily: "Lato"),
+                                                                                                              border: InputBorder.none,
+                                                                                                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                        InkWell(
+                                                                                                          onTap:(){
+                                                                                                            printInvoice(billingProvider);
+                                                                                                          },
+                                                                                                          child: Container(
+                                                                                                            width: MediaQuery.of(context).size.width*0.6,
+                                                                                                            decoration: customDecoration.baseBackgroundDecoration(
+                                                                                                              color: Colors.grey.shade50,radius: 5,
+                                                                                                            ),
+                                                                                                            child: Padding(
+                                                                                                              padding: const EdgeInsets.all(8.0),
+                                                                                                              child: CustomText(
+                                                                                                                textAlign: TextAlign.start,
+                                                                                                                text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
+                                                                                                                isCopy: false,colors: colorsConst.primary,isBold: true,),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        )
+                                                                                                      ],
+                                                                                                    ),
+                                                                                                  )),
+                                                                                            ],
+                                                                                          ),
+                                                                                        )),
+                                                                                  );
+                                                                                });
+                                                                          },
+                                                                          child: Container(
+                                                                            width: 100,
+                                                                            decoration: customDecoration.baseBackgroundDecoration(
+                                                                                color: controllers.type.value=="0"?Colors.green:Colors.white,
+                                                                                radius: 5,borderColor: controllers.type.value=="0"?Colors.green:Colors.grey
+                                                                            ),
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: CustomText(text: "Proforma Invoice", isCopy: false),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        10.height,
+                                                                        InkWell(
+                                                                          onTap: (){
+                                                                            setState(() {
+                                                                              controllers.type.value="1";
+                                                                              controllers.emailToCtr.text=controllers.selectedCustomerEmail.value;
+                                                                              controllers.notesCtr.text="The invoice is for ${billingProvider.calculatedTotalProducts()} items with total value of ${TextFormat.formattedAmount(billingProvider.calculatedGrandTotal())}.";
+                                                                              controllers.isTemplate.value=false;
+                                                                              controllers.emailSubjectCtr.text="Invoice";
+                                                                              controllers.emailMessageCtr.clear();
+                                                                            });
+                                                                            showDialog(
+                                                                                context: context,
+                                                                                barrierDismissible: false,
+                                                                                builder: (context) {
+                                                                                  return AlertDialog(
+                                                                                    actions: [
+                                                                                      Column(
+                                                                                        children: [
+                                                                                          Divider(
+                                                                                            color: Colors.grey.shade300,
+                                                                                            thickness: 1,
+                                                                                          ),
+                                                                                          Row(
+                                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                                            children: [
+                                                                                              SizedBox(
+                                                                                                child: Row(
+                                                                                                  children: [
+                                                                                                    TextButton(
+                                                                                                        onPressed: () {
+                                                                                                          // Navigator.of(context).pop();
+                                                                                                          settingsController.showAddTemplateDialog(context);
+                                                                                                        },
+                                                                                                        child: CustomText(
+                                                                                                          text: "Create Template",
+                                                                                                          isCopy: false,
+                                                                                                          colors: colorsConst.third,
+                                                                                                          size: 18,
+                                                                                                          isBold: true,
+                                                                                                        )),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                              CustomLoadingButton(
+                                                                                                callback: () {
+                                                                                                  if(controllers.emailToCtr.text.trim().isEmpty){
+                                                                                                    utils.showToast("To is empty!",Colors.red);
+                                                                                                    controllers.emailCtr.reset();
+                                                                                                    return;
+                                                                                                  }
+                                                                                                  if(!utils.isValidEmail(controllers.emailToCtr.text.trim())){
+                                                                                                    utils.showToast("Invalid mail!",Colors.red);
+                                                                                                    controllers.emailCtr.reset();
+                                                                                                    return;
+                                                                                                  }
+                                                                                                  if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                                                                                    utils.showToast("Subject is empty!",Colors.red);
+                                                                                                    controllers.emailCtr.reset();
+                                                                                                    return;
+                                                                                                  }
+                                                                                                  if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                                                                                    utils.showToast("Message is empty!",Colors.red);
+                                                                                                    controllers.emailCtr.reset();
+                                                                                                    return;
+                                                                                                  }
+                                                                                                  sendInvoice(billingProvider);
+                                                                                                },
+                                                                                                controller: controllers.emailCtr,
+                                                                                                isImage: false,
+                                                                                                isLoading: true,
+                                                                                                backgroundColor: colorsConst.primary,
+                                                                                                radius: 5,
+                                                                                                width: 200,
+                                                                                                height: 50,
+                                                                                                text: "Send Invoice",
+                                                                                                textColor: Colors.white,
+                                                                                              ),
+                                                                                            ],
+                                                                                          )
+                                                                                        ],
+                                                                                      ),
+                                                                                    ],
+                                                                                    content: SizedBox(
+                                                                                        width: 600,
+                                                                                        height: 400,
+                                                                                        child: SingleChildScrollView(
+                                                                                          child: Column(
+                                                                                            children: [
+                                                                                              Align(
+                                                                                                  alignment: Alignment.topRight,
+                                                                                                  child: InkWell(
+                                                                                                      hoverColor: Colors.transparent,
+                                                                                                      splashColor: Colors.transparent,
+                                                                                                      highlightColor: Colors.transparent,
+                                                                                                      focusColor: Colors.transparent,
+                                                                                                      overlayColor: WidgetStateProperty.all(Colors.transparent),
+                                                                                                      onTap: () {
+                                                                                                        Navigator.pop(context);
+                                                                                                      },
+                                                                                                      child: Icon(
+                                                                                                        Icons.clear,
+                                                                                                        size: 18,
+                                                                                                        color: colorsConst.textColor,
+                                                                                                      ))),
+                                                                                              Align(
+                                                                                                alignment: Alignment.topRight,
+                                                                                                child: TextButton(
+                                                                                                    onPressed: () {
+                                                                                                      controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                                    },
+                                                                                                    child: CustomText(
+                                                                                                      text: "Get From Template",
+                                                                                                      colors: colorsConst.third,
+                                                                                                      size: 18,
+                                                                                                      isCopy: false,
+                                                                                                      isBold: true,
+                                                                                                    )),
+                                                                                              ),
+                                                                                              Padding(
+                                                                                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                                                                                child: Row(
+                                                                                                  children: [
+                                                                                                    CustomText(text: controllers.selectedCustomerName.value, isCopy: false,size: 16,isBold: true,),
+                                                                                                    if(controllers.selectedCompanyName.value!="")
+                                                                                                      CustomText(text: " - ${controllers.selectedCompanyName.value}", isCopy: false,size: 16,),
+                                                                                                    CustomText(text: " - ${controllers.selectedCustomerMobile.value}", isCopy: false,size: 16,),
+                                                                                                  ],
+                                                                                                ),
+                                                                                              ),
+                                                                                              Row(
+                                                                                                children: [
+                                                                                                  CustomText(
+                                                                                                    textAlign: TextAlign.center,
+                                                                                                    text: "To",
+                                                                                                    colors: colorsConst.textColor,
+                                                                                                    size: 15,
+                                                                                                    isCopy: false,
+                                                                                                  ),
+                                                                                                  50.width,
+                                                                                                  SizedBox(
+                                                                                                    width: 500,
+                                                                                                    child: TextField(
+                                                                                                      controller: controllers.emailToCtr,
+                                                                                                      style: TextStyle(
+                                                                                                          fontSize: 15, color: colorsConst.textColor),
+                                                                                                      decoration: const InputDecoration(
+                                                                                                        border: InputBorder.none,
+                                                                                                      ),
+                                                                                                    ),
+                                                                                                  )
+                                                                                                ],
+                                                                                              ),
+                                                                                              SizedBox(
+                                                                                                  width: 600,
+                                                                                                  child: SingleChildScrollView(
+                                                                                                    child: Column(
+                                                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                      children: [
+                                                                                                        Divider(
+                                                                                                          color: Colors.grey.shade300,
+                                                                                                          thickness: 1,
+                                                                                                        ),
+                                                                                                        Row(
+                                                                                                          children: [
+                                                                                                            15.height,
+                                                                                                            CustomText(
+                                                                                                              text: "Subject",
+                                                                                                              colors: colorsConst.textColor,
+                                                                                                              size: 14,
+                                                                                                              isCopy: false,
+                                                                                                            ),
+                                                                                                            20.width,
+                                                                                                            SizedBox(
+                                                                                                              width: 500,
+                                                                                                              height: 50,
+                                                                                                              child: TextField(
+                                                                                                                controller: controllers.emailSubjectCtr,
+                                                                                                                onChanged: (value){
+                                                                                                                  if (value.toString().isNotEmpty) {
+                                                                                                                    String newValue = value
+                                                                                                                        .toString()[0]
+                                                                                                                        .toUpperCase() +
+                                                                                                                        value.toString().substring(1);
+                                                                                                                    if (newValue != value) {
+                                                                                                                      controllers.emailSubjectCtr.value =
+                                                                                                                          controllers.emailSubjectCtr.value
+                                                                                                                              .copyWith(
+                                                                                                                            text: newValue,
+                                                                                                                            selection:
+                                                                                                                            TextSelection.collapsed(
+                                                                                                                                offset:
+                                                                                                                                newValue.length),
+                                                                                                                          );
+                                                                                                                    }
+                                                                                                                  }
+                                                                                                                },
+                                                                                                                maxLines: null,
+                                                                                                                minLines: 1,
+                                                                                                                style: TextStyle(
+                                                                                                                  color: colorsConst.textColor,
+                                                                                                                ),
+                                                                                                                decoration: const InputDecoration(
+                                                                                                                  border: InputBorder.none,
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            )
+                                                                                                          ],
+                                                                                                        ),
+                                                                                                        Divider(
+                                                                                                          color: Colors.grey.shade300,
+                                                                                                          thickness: 1,
+                                                                                                        ),
+                                                                                                        Obx(() => controllers.isTemplate.value == false
+                                                                                                            ? SingleChildScrollView(
+                                                                                                          child: Column(
+                                                                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                                            children: [
+                                                                                                              SizedBox(
+                                                                                                                width: 600,
+                                                                                                                height: 70,
+                                                                                                                child: TextField(
+                                                                                                                  textInputAction: TextInputAction.newline,
+                                                                                                                  controller: controllers.emailMessageCtr,
+                                                                                                                  onChanged: (value){
+                                                                                                                    if (value.toString().isNotEmpty) {
+                                                                                                                      String newValue = value
+                                                                                                                          .toString()[0]
+                                                                                                                          .toUpperCase() +
+                                                                                                                          value.toString().substring(1);
+                                                                                                                      if (newValue != value) {
+                                                                                                                        controllers.emailMessageCtr.value =
+                                                                                                                            controllers.emailMessageCtr.value
+                                                                                                                                .copyWith(
+                                                                                                                              text: newValue,
+                                                                                                                              selection:
+                                                                                                                              TextSelection.collapsed(
+                                                                                                                                  offset:
+                                                                                                                                  newValue.length),
+                                                                                                                            );
+                                                                                                                      }
+                                                                                                                    }
+                                                                                                                  },
+                                                                                                                  keyboardType: TextInputType.multiline,
+                                                                                                                  maxLines: 21,
+                                                                                                                  expands: false,
+                                                                                                                  style: TextStyle(
+                                                                                                                    color: colorsConst.textColor,
+                                                                                                                  ),
+                                                                                                                  decoration: InputDecoration(
+                                                                                                                    hintText: "Message",
+                                                                                                                    hintStyle: TextStyle(
+                                                                                                                        color: colorsConst.textColor,
+                                                                                                                        fontSize: 14,
+                                                                                                                        fontFamily: "Lato"),
+                                                                                                                    border: InputBorder.none,
+                                                                                                                  ),
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            ],
+                                                                                                          ),
+                                                                                                        )
+                                                                                                            :Obx(() => UnconstrainedBox(
+                                                                                                          child: Container(
+                                                                                                            width: 500,
+                                                                                                            alignment: Alignment.center,
+                                                                                                            decoration: BoxDecoration(
+                                                                                                              color: colorsConst.secondary,
+                                                                                                              borderRadius: BorderRadius.circular(10),
+                                                                                                            ),
+                                                                                                            child: Padding(
+                                                                                                              padding: const EdgeInsets.all(8.0),
+                                                                                                              child: SizedBox(
+                                                                                                                width: 500,
+                                                                                                                child: Table(
+                                                                                                                  defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                                                                  border: TableBorder.all(
+                                                                                                                    color: Colors.grey.shade300,
+                                                                                                                    style: BorderStyle.solid,
+                                                                                                                    borderRadius: BorderRadius.circular(10),
+                                                                                                                    width: 1,
+                                                                                                                  ),
+                                                                                                                  children: [
+                                                                                                                    // Header Row
+                                                                                                                    TableRow(
+                                                                                                                      children: [
+                                                                                                                        CustomText(
+                                                                                                                          textAlign: TextAlign.center,
+                                                                                                                          text: "\nTemplate Name\n",
+                                                                                                                          colors: colorsConst.textColor,
+                                                                                                                          size: 15,
+                                                                                                                          isBold: true,
+                                                                                                                          isCopy: false,
+                                                                                                                        ),
+                                                                                                                        CustomText(
+                                                                                                                          textAlign: TextAlign.center,
+                                                                                                                          text: "\nSubject\n",
+                                                                                                                          colors: colorsConst.textColor,
+                                                                                                                          size: 15,
+                                                                                                                          isBold: true,
+                                                                                                                          isCopy: false,
+                                                                                                                        ),
+                                                                                                                      ],
+                                                                                                                    ),
+                                                                                                                    // Dynamic Rows
+                                                                                                                    for (var item in settingsController.templateList)
+                                                                                                                      utils.emailRow(
+                                                                                                                          context,
+                                                                                                                          isCheck: controllers.isAdd,
+                                                                                                                          templateName: item.templateName,
+                                                                                                                          msg: item.message,
+                                                                                                                          subject: item.subject,
+                                                                                                                          id: item.id
+                                                                                                                      ),
+                                                                                                                  ],
+                                                                                                                ),
+                                                                                                              ),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ))),
+                                                                                                        10.height,
+                                                                                                        SizedBox(
+                                                                                                          width: 600,
+                                                                                                          height: 50,
+                                                                                                          child: TextField(
+                                                                                                            textInputAction: TextInputAction.newline,
+                                                                                                            controller: controllers.notesCtr,
+                                                                                                            onChanged: (value){
+                                                                                                              if (value.toString().isNotEmpty) {
+                                                                                                                String newValue = value
+                                                                                                                    .toString()[0]
+                                                                                                                    .toUpperCase() +
+                                                                                                                    value.toString().substring(1);
+                                                                                                                if (newValue != value) {
+                                                                                                                  controllers.notesCtr.value =
+                                                                                                                      controllers.notesCtr.value
+                                                                                                                          .copyWith(
+                                                                                                                        text: newValue,
+                                                                                                                        selection:
+                                                                                                                        TextSelection.collapsed(
+                                                                                                                            offset:
+                                                                                                                            newValue.length),
+                                                                                                                      );
+                                                                                                                }
+                                                                                                              }
+                                                                                                            },
+                                                                                                            keyboardType: TextInputType.multiline,
+                                                                                                            maxLines: null,
+                                                                                                            minLines: 3,
+                                                                                                            style: TextStyle(
+                                                                                                              color: colorsConst.textColor,
+                                                                                                            ),
+                                                                                                            decoration: InputDecoration(
+                                                                                                              hintText: "",
+                                                                                                              hintStyle: TextStyle(
+                                                                                                                  color: colorsConst.textColor,
+                                                                                                                  fontSize: 14,
+                                                                                                                  fontFamily: "Lato"),
+                                                                                                              border: InputBorder.none,
+                                                                                                              contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        ),
+                                                                                                        InkWell(
+                                                                                                          onTap:(){
+                                                                                                            printInvoice(billingProvider);
+                                                                                                          },
+                                                                                                          child: Container(
+                                                                                                            width: MediaQuery.of(context).size.width*0.6,
+                                                                                                            decoration: customDecoration.baseBackgroundDecoration(
+                                                                                                              color: Colors.grey.shade50,radius: 5,
+                                                                                                            ),
+                                                                                                            child: Padding(
+                                                                                                              padding: const EdgeInsets.all(8.0),
+                                                                                                              child: CustomText(
+                                                                                                                textAlign: TextAlign.start,
+                                                                                                                text: "${controllers.selectedCustomerName.value.replaceAll(' ', '_')}_${controllers.selectedCompanyName.value.replaceAll(' ', '_')}_${DateFormat('dd-MM-yyyy').format(DateTime.now())}.pdf",
+                                                                                                                isCopy: false,colors: colorsConst.primary,isBold: true,),
+                                                                                                            ),
+                                                                                                          ),
+                                                                                                        )
+                                                                                                      ],
+                                                                                                    ),
+                                                                                                  )),
+                                                                                            ],
+                                                                                          ),
+                                                                                        )),
+                                                                                  );
+                                                                                });
+                                                                          },
+                                                                          child: Container(
+                                                                            width: 100,
+                                                                            decoration: customDecoration.baseBackgroundDecoration(
+                                                                                color: controllers.type.value=="1"?Colors.green:Colors.white,
+                                                                                radius: 5,borderColor: controllers.type.value=="1"?Colors.green:Colors.grey
+                                                                            ),
+                                                                            child: Padding(
+                                                                              padding: const EdgeInsets.all(8.0),
+                                                                              child: CustomText(text: "Final Invoice", isCopy: false, colors: controllers.type.value=="1"?Colors.white:Colors.black),
+                                                                            ),
+                                                                          ),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ))),
+                                                        );
+                                                      });
+                                                }
+                                              },
+                                              isLoading: false,
+                                              height: 45,
+                                              backgroundColor: Colors.green,
+                                              radius: 2,
+                                              width: screenWidth*0.1,
+                                              isImage: false,
+                                              text: "Send Invoice",
+                                              textColor: Colors.white,
                                             ),
                                           ],
                                         ),
-
-                                        // ===========================
-                                        //     BILLING LIST
-                                        // ===========================
-                                        Expanded(
-                                          child: billingProvider.billingItems.isNotEmpty
-                                              ? ListView.builder(
-                                            controller: scrollController,
-                                            itemCount: billingProvider.billingItems.length,
-                                            itemBuilder: (context, index) {
-
-                                              // --- ALWAYS sync qtyFocusNodes with items ---
-                                              if (qtyFocusNodes.length != billingProvider.billingItems.length) {
-                                                qtyFocusNodes = List.generate(
-                                                  billingProvider.billingItems.length,
-                                                      (_) => FocusNode(),
-                                                );
-                                              }
-
-                                              final billProduct = billingProvider.billingItems[index];
-                                              // final productData = billingProvider.productsList.firstWhere(
-                                              //       (p) => p.id == billProduct.product.id,
-                                              //   orElse: () => billProduct.product,
-                                              // );
-                                              if (billingProvider.quantityControllers.length <= index) {
-                                                billingProvider.quantityControllers.add(TextEditingController(text: billProduct.quantity.toString().isEmpty?"1":billProduct.quantity.toString()=='null'?"1":billProduct.quantity.toString()));
-                                              }
-                                              return Table(
+                                      10.height,
+                                      ///  Billing Table :
+                                      Expanded(
+                                        child: Container(
+                                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+                                          child: Column(
+                                            children: [
+                                              // ===========================
+                                              // HEADER
+                                              // ===========================
+                                              Table(
                                                 border: TableBorder(
                                                   horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                                                   verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
-                                                  bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
                                                 ),
                                                 columnWidths: const {
                                                   0: FixedColumnWidth(70),//s no
@@ -4928,372 +4871,441 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                 children: [
                                                   TableRow(
                                                     decoration: BoxDecoration(
-                                                      color: selectedRowIndex == index
-                                                          ? Colors.yellow.shade200
-                                                          : Colors.white,
-                                                    ),
+                                                        color: colorsConst.primary,
+                                                        borderRadius: const BorderRadius.only(
+                                                            topLeft: Radius.circular(5),
+                                                            topRight: Radius.circular(5))),
                                                     children: [
-                                                      _buildCell("${index + 1}"),
-
-                                                      Padding(
-                                                        padding: const EdgeInsets.symmetric(vertical: 1),
-                                                        child: Row(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.only(left: 15.0),
-                                                                child: MyText(
-                                                                  text: billProduct.product.isLoose == '1'
-                                                                      ? billProduct.product.pTitle!
-                                                                      : "${billProduct.product.pTitle} "
-                                                                      "${billProduct.product.pVariation ?? ""}"
-                                                                      "${billProduct.product.unit ?? ""}",
-                                                                  fontSize: 15,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            IconButton(
-                                                              icon: const Icon(Icons.delete_forever, color: Colors.black),
-                                                              onPressed: () {
-                                                                showDialog(
-                                                                    context: context,
-                                                                    barrierDismissible: false,
-                                                                    builder: (context) {
-                                                                      return AlertDialog(
-                                                                        content: CustomText(
-                                                                          text: "Are you sure delete this product?",
-                                                                          size: 16,
-                                                                          isCopy: false,
-                                                                          isBold: true,
-                                                                          colors: colorsConst.textColor,
-                                                                        ),
-                                                                        actions: [
-                                                                          Row(
-                                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                                            children: [
-                                                                              Container(
-                                                                                decoration: BoxDecoration(
-                                                                                    border: Border.all(color: colorsConst.primary),
-                                                                                    color: Colors.white),
-                                                                                width: 80,
-                                                                                height: 25,
-                                                                                child: ElevatedButton(
-                                                                                    style: ElevatedButton.styleFrom(
-                                                                                      shape: const RoundedRectangleBorder(
-                                                                                        borderRadius: BorderRadius.zero,
-                                                                                      ),
-                                                                                      backgroundColor: Colors.white,
-                                                                                    ),
-                                                                                    onPressed: () {
-                                                                                      Navigator.pop(context);
-                                                                                    },
-                                                                                    child: CustomText(
-                                                                                      text: "Cancel",
-                                                                                      isCopy: false,
-                                                                                      colors: colorsConst.primary,
-                                                                                      size: 14,
-                                                                                    )),
-                                                                              ),
-                                                                              10.width,
-                                                                              CustomLoadingButton(
-                                                                                callback: (){
-                                                                                  billingProvider.removeBillingItem(index: index);
-                                                                                  Navigator.pop(context);
-                                                                                },
-                                                                                height: 35,
-                                                                                isLoading: false,
-                                                                                backgroundColor: colorsConst.primary,
-                                                                                radius: 2,
-                                                                                width: 80,
-                                                                                isImage: false,
-                                                                                text: "Delete",
-                                                                                textColor: Colors.white,
-                                                                              ),
-                                                                              5.width
-                                                                            ],
-                                                                          ),
-                                                                        ],
-                                                                      );
-                                                                    });
-                                                              },
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-
-                                                      _buildCell(billProduct.product.hsnCode),
-                                                      billProduct.product.isLoose == '1'
-                                                          ? TextField(
-                                                        focusNode: qtyFocusNodes[index],
-                                                        controller: billingProvider.quantityControllers[index]!,
-                                                        textAlign: TextAlign.center,
-                                                        keyboardType:
-                                                        const TextInputType.numberWithOptions(decimal: true),
-
-                                                        inputFormatters: [
-                                                          FilteringTextInputFormatter.allow(
-                                                            RegExp(r'^\d*\.?\d{0,3}'),
-                                                          ),
-                                                        ],
-
-                                                        style: const TextStyle(fontSize: 15),
-
-                                                        decoration: const InputDecoration(
-                                                          isDense: true,
-                                                          border: InputBorder.none,
-                                                          enabledBorder: InputBorder.none,
-                                                          focusedBorder: InputBorder.none,
-                                                          contentPadding: EdgeInsets.fromLTRB(5, 15, 5, 5),
-                                                        ),
-                                                        // 🔹 USER TYPING (ALLOW EMPTY)
-                                                        onChanged: (value) {
-                                                          // allow empty while typing
-                                                          if (value.isEmpty) {
-                                                            billingProvider.updateBillingItem(
-                                                              index,
-                                                              isLoose: '1',
-                                                              variation: 0, // temp
-                                                            );
-                                                            return;
-                                                          }
-
-                                                          final controller =
-                                                          billingProvider.quantityControllers[index]!;
-
-                                                          final double enteredKg = double.tryParse(value) ?? 0;
-
-                                                          final double maxKg =
-                                                              (double.tryParse(billProduct.product.qtyLeft ?? "0") ??
-                                                                  0) /
-                                                                  1000;
-
-                                                          double safeKg = enteredKg;
-
-                                                          // 🔥 STOCK LIMIT
-                                                          if (enteredKg > maxKg) {
-                                                            safeKg = maxKg;
-
-                                                            final fixedText = safeKg.toStringAsFixed(3);
-
-                                                            if (controller.text != fixedText) {
-                                                              controller.value = controller.value.copyWith(
-                                                                text: fixedText,
-                                                                selection:
-                                                                TextSelection.collapsed(offset: fixedText.length),
-                                                                composing: TextRange.empty,
-                                                              );
-                                                            }
-                                                          }
-
-                                                          // update provider in grams
-                                                          billingProvider.updateBillingItem(
-                                                            index,
-                                                            isLoose: '1',
-                                                            variation: safeKg * 1000,
-                                                          );
-                                                        },
-
-                                                        // 🔹 USER FINISHED → APPLY DEFAULT
-                                                        onEditingComplete: () {
-                                                          _applyDefaultLooseIfNeeded(
-                                                            billingProvider,
-                                                            index,
-                                                          );
-                                                          Future.microtask(() {
-                                                            billingProvider.dropdownFocusNode.requestFocus();
-                                                          });
-                                                        },
-
-                                                        onSubmitted: (_) {
-                                                          _applyDefaultLooseIfNeeded(
-                                                            billingProvider,
-                                                            index,
-                                                          );
-                                                          Future.microtask(() {
-                                                            billingProvider.dropdownFocusNode.requestFocus();
-                                                          });
-                                                        },
-                                                      )
-                                                          : _buildCell(
-                                                        billProduct.variationUnit == "nullnull"
-                                                            ? ""
-                                                            : billProduct.variationUnit,
-                                                      ),
-
-
-                                                      //cahnge qty
-                                                      billProduct.product.isLoose == '0'
-                                                          ? TextField(
-                                                        focusNode: qtyFocusNodes[index],
-                                                        controller: billingProvider.quantityControllers[index]!,
-                                                        textAlign: TextAlign.center,
-                                                        keyboardType: TextInputType.number,
-                                                        style: const TextStyle(fontSize: 15),
-                                                        decoration: const InputDecoration(
-                                                          isDense: true,
-                                                          border: InputBorder.none,
-                                                          enabledBorder: InputBorder.none,
-                                                          focusedBorder: InputBorder.none,
-                                                          contentPadding: EdgeInsets.fromLTRB(5, 15, 5, 5),
-                                                        ),
-
-                                                        // 🔹 USER TYPING — ALLOW EMPTY / 0
-                                                        onChanged: (value) {
-                                                          // allow empty while typing
-                                                          if (value.isEmpty) {
-                                                            billingProvider.updateBillingItem(
-                                                              index,
-                                                              isLoose: '0',
-                                                              quantity: 0, // temp
-                                                            );
-                                                            return;
-                                                          }
-
-                                                          int qty = int.tryParse(value) ?? 0;
-
-                                                          // allow 0 while typing
-                                                          if (qty < 0) qty = 0;
-
-                                                          // stock limit
-
-                                                          // if (qty > maxQty) {
-                                                          //   qty = maxQty;
-                                                          //
-                                                          //   final controller =
-                                                          //   billingProvider.quantityControllers[index]!;
-                                                          //
-                                                          //   final fixedText = qty.toString();
-                                                          //
-                                                          //   // cursor-safe update
-                                                          //   if (controller.text != fixedText) {
-                                                          //     controller.value = controller.value.copyWith(
-                                                          //       text: fixedText,
-                                                          //       selection:
-                                                          //       TextSelection.collapsed(offset: fixedText.length),
-                                                          //       composing: TextRange.empty,
-                                                          //     );
-                                                          //   }
-                                                          // }
-
-                                                          // update provider
-                                                          billingProvider.updateBillingItem(
-                                                            index,
-                                                            isLoose: '0',
-                                                            quantity: qty,
-                                                          );
-                                                        },
-
-                                                        // 🔹 USER FINISHED → APPLY DEFAULT
-                                                        // 🔹 Enter pressed
-                                                        onEditingComplete: () {
-                                                          _applyDefaultQtyIfNeeded(billingProvider, index);
-                                                          qtyFocusNodes[index].unfocus();
-
-                                                          Future.microtask(() {
-                                                            Future.microtask(() {
-                                                              billingProvider.dropdownFocusNode.requestFocus();
-                                                            });
-                                                          });
-                                                        },
-
-                                                        onSubmitted: (_) {
-                                                          _applyDefaultQtyIfNeeded(billingProvider, index);
-                                                          qtyFocusNodes[index].unfocus();
-
-                                                          Future.microtask(() {
-                                                            billingProvider.dropdownFocusNode.requestFocus();
-                                                          });
-                                                        },
-
-                                                      )
-                                                          : _buildCellQuantity("${1}"),
-
-                                                      _buildBoldCell(
-                                                        TextFormat.formattedAmount(
-                                                          billProduct.mrpPerProduct(),
-                                                        ),
-                                                      ),
-                                                      _buildRedBoldCell(
-                                                        TextFormat.formattedAmount(
-                                                          billProduct.calculateOutPrice(),
-                                                        ),
-                                                      ),
-                                                      _buildRightCell(
-                                                        billProduct.calculateDiscount().toStringAsFixed(2),
-                                                      ),
-                                                      _buildBoldCell(
-                                                        TextFormat.formattedAmount(
-                                                          billProduct.calculateSubtotal(),
-                                                        ),
-                                                      ),
+                                                      _buildHeaderCell("S.No"),
+                                                      _buildHeaderCell("Product"),
+                                                      _buildHeaderCell("HSN"),
+                                                      _buildHeaderCell("Vari"),
+                                                      _buildHeaderCell("Qty"),
+                                                      // _buildRightHeaderCell("Tot Sto"),
+                                                      _buildRightHeaderCell("MRP"),
+                                                      _buildRightHeaderCell("Our Price"),
+                                                      _buildRightHeaderCell("Disc"),
+                                                      _buildRightHeaderCell("Sub Tot"),
                                                     ],
                                                   ),
                                                 ],
-                                              );
-                                            },
-                                          )
-                                              : ScreenWidgets.emptyAlert(
-                                            context,
-                                            image: 'assets/bill/empty_bill.png',
-                                            text: '',
+                                              ),
+
+                                              // ===========================
+                                              //     BILLING LIST
+                                              // ===========================
+                                              Expanded(
+                                                child: billingProvider.billingItems.isNotEmpty
+                                                    ? ListView.builder(
+                                                  controller: scrollController,
+                                                  itemCount: billingProvider.billingItems.length,
+                                                  itemBuilder: (context, index) {
+
+                                                    // --- ALWAYS sync qtyFocusNodes with items ---
+                                                    if (qtyFocusNodes.length != billingProvider.billingItems.length) {
+                                                      qtyFocusNodes = List.generate(
+                                                        billingProvider.billingItems.length,
+                                                            (_) => FocusNode(),
+                                                      );
+                                                    }
+
+                                                    final billProduct = billingProvider.billingItems[index];
+                                                    // final productData = billingProvider.productsList.firstWhere(
+                                                    //       (p) => p.id == billProduct.product.id,
+                                                    //   orElse: () => billProduct.product,
+                                                    // );
+                                                    if (billingProvider.quantityControllers.length <= index) {
+                                                      billingProvider.quantityControllers.add(TextEditingController(text: billProduct.quantity.toString().isEmpty?"1":billProduct.quantity.toString()=='null'?"1":billProduct.quantity.toString()));
+                                                    }
+                                                    return Table(
+                                                      border: TableBorder(
+                                                        horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                        verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                        bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
+                                                      ),
+                                                      columnWidths: const {
+                                                        0: FixedColumnWidth(70),//s no
+                                                        1: FlexColumnWidth(4),//ptp
+                                                        2: FixedColumnWidth(200),//HSN
+                                                        3: FixedColumnWidth(70),//Var
+                                                        4: FixedColumnWidth(60),//Qty
+                                                        5: FlexColumnWidth(1),//mrp
+                                                        6: FlexColumnWidth(1),//op
+                                                        7: FlexColumnWidth(1),//dic
+                                                        8: FlexColumnWidth(1),//st
+                                                      },
+                                                      children: [
+                                                        TableRow(
+                                                          decoration: BoxDecoration(
+                                                            color: selectedRowIndex == index
+                                                                ? Colors.yellow.shade200
+                                                                : Colors.white,
+                                                          ),
+                                                          children: [
+                                                            _buildCell("${index + 1}"),
+
+                                                            Padding(
+                                                              padding: const EdgeInsets.symmetric(vertical: 1),
+                                                              child: Row(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.only(left: 15.0),
+                                                                      child: MyText(
+                                                                        text: billProduct.product.isLoose == '1'
+                                                                            ? billProduct.product.pTitle!
+                                                                            : "${billProduct.product.pTitle} "
+                                                                            "${billProduct.product.pVariation ?? ""}"
+                                                                            "${billProduct.product.unit ?? ""}",
+                                                                        fontSize: 15,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  IconButton(
+                                                                    icon: const Icon(Icons.delete_forever, color: Colors.black),
+                                                                    onPressed: () {
+                                                                      showDialog(
+                                                                          context: context,
+                                                                          barrierDismissible: false,
+                                                                          builder: (context) {
+                                                                            return AlertDialog(
+                                                                              content: CustomText(
+                                                                                text: "Are you sure delete this product?",
+                                                                                size: 16,
+                                                                                isCopy: false,
+                                                                                isBold: true,
+                                                                                colors: colorsConst.textColor,
+                                                                              ),
+                                                                              actions: [
+                                                                                Row(
+                                                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                                                  children: [
+                                                                                    Container(
+                                                                                      decoration: BoxDecoration(
+                                                                                          border: Border.all(color: colorsConst.primary),
+                                                                                          color: Colors.white),
+                                                                                      width: 80,
+                                                                                      height: 25,
+                                                                                      child: ElevatedButton(
+                                                                                          style: ElevatedButton.styleFrom(
+                                                                                            shape: const RoundedRectangleBorder(
+                                                                                              borderRadius: BorderRadius.zero,
+                                                                                            ),
+                                                                                            backgroundColor: Colors.white,
+                                                                                          ),
+                                                                                          onPressed: () {
+                                                                                            Navigator.pop(context);
+                                                                                          },
+                                                                                          child: CustomText(
+                                                                                            text: "Cancel",
+                                                                                            isCopy: false,
+                                                                                            colors: colorsConst.primary,
+                                                                                            size: 14,
+                                                                                          )),
+                                                                                    ),
+                                                                                    10.width,
+                                                                                    CustomLoadingButton(
+                                                                                      callback: (){
+                                                                                        billingProvider.removeBillingItem(index: index);
+                                                                                        Navigator.pop(context);
+                                                                                      },
+                                                                                      height: 35,
+                                                                                      isLoading: false,
+                                                                                      backgroundColor: colorsConst.primary,
+                                                                                      radius: 2,
+                                                                                      width: 80,
+                                                                                      isImage: false,
+                                                                                      text: "Delete",
+                                                                                      textColor: Colors.white,
+                                                                                    ),
+                                                                                    5.width
+                                                                                  ],
+                                                                                ),
+                                                                              ],
+                                                                            );
+                                                                          });
+                                                                    },
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+
+                                                            _buildCell(billProduct.product.hsnCode),
+                                                            billProduct.product.isLoose == '1'
+                                                                ? TextField(
+                                                              focusNode: qtyFocusNodes[index],
+                                                              controller: billingProvider.quantityControllers[index]!,
+                                                              textAlign: TextAlign.center,
+                                                              keyboardType:
+                                                              const TextInputType.numberWithOptions(decimal: true),
+
+                                                              inputFormatters: [
+                                                                FilteringTextInputFormatter.allow(
+                                                                  RegExp(r'^\d*\.?\d{0,3}'),
+                                                                ),
+                                                              ],
+
+                                                              style: const TextStyle(fontSize: 15),
+
+                                                              decoration: const InputDecoration(
+                                                                isDense: true,
+                                                                border: InputBorder.none,
+                                                                enabledBorder: InputBorder.none,
+                                                                focusedBorder: InputBorder.none,
+                                                                contentPadding: EdgeInsets.fromLTRB(5, 15, 5, 5),
+                                                              ),
+                                                              // 🔹 USER TYPING (ALLOW EMPTY)
+                                                              onChanged: (value) {
+                                                                // allow empty while typing
+                                                                if (value.isEmpty) {
+                                                                  billingProvider.updateBillingItem(
+                                                                    index,
+                                                                    isLoose: '1',
+                                                                    variation: 0, // temp
+                                                                  );
+                                                                  return;
+                                                                }
+
+                                                                final controller =
+                                                                billingProvider.quantityControllers[index]!;
+
+                                                                final double enteredKg = double.tryParse(value) ?? 0;
+
+                                                                final double maxKg =
+                                                                    (double.tryParse(billProduct.product.qtyLeft ?? "0") ??
+                                                                        0) /
+                                                                        1000;
+
+                                                                double safeKg = enteredKg;
+
+                                                                // 🔥 STOCK LIMIT
+                                                                if (enteredKg > maxKg) {
+                                                                  safeKg = maxKg;
+
+                                                                  final fixedText = safeKg.toStringAsFixed(3);
+
+                                                                  if (controller.text != fixedText) {
+                                                                    controller.value = controller.value.copyWith(
+                                                                      text: fixedText,
+                                                                      selection:
+                                                                      TextSelection.collapsed(offset: fixedText.length),
+                                                                      composing: TextRange.empty,
+                                                                    );
+                                                                  }
+                                                                }
+
+                                                                // update provider in grams
+                                                                billingProvider.updateBillingItem(
+                                                                  index,
+                                                                  isLoose: '1',
+                                                                  variation: safeKg * 1000,
+                                                                );
+                                                              },
+
+                                                              // 🔹 USER FINISHED → APPLY DEFAULT
+                                                              onEditingComplete: () {
+                                                                _applyDefaultLooseIfNeeded(
+                                                                  billingProvider,
+                                                                  index,
+                                                                );
+                                                                Future.microtask(() {
+                                                                  billingProvider.dropdownFocusNode.requestFocus();
+                                                                });
+                                                              },
+
+                                                              onSubmitted: (_) {
+                                                                _applyDefaultLooseIfNeeded(
+                                                                  billingProvider,
+                                                                  index,
+                                                                );
+                                                                Future.microtask(() {
+                                                                  billingProvider.dropdownFocusNode.requestFocus();
+                                                                });
+                                                              },
+                                                            )
+                                                                : _buildCell(
+                                                              billProduct.variationUnit == "nullnull"
+                                                                  ? ""
+                                                                  : billProduct.variationUnit,
+                                                            ),
+
+
+                                                            //cahnge qty
+                                                            billProduct.product.isLoose == '0'
+                                                                ? TextField(
+                                                              focusNode: qtyFocusNodes[index],
+                                                              controller: billingProvider.quantityControllers[index]!,
+                                                              textAlign: TextAlign.center,
+                                                              keyboardType: TextInputType.number,
+                                                              style: const TextStyle(fontSize: 15),
+                                                              decoration: const InputDecoration(
+                                                                isDense: true,
+                                                                border: InputBorder.none,
+                                                                enabledBorder: InputBorder.none,
+                                                                focusedBorder: InputBorder.none,
+                                                                contentPadding: EdgeInsets.fromLTRB(5, 15, 5, 5),
+                                                              ),
+
+                                                              // 🔹 USER TYPING — ALLOW EMPTY / 0
+                                                              onChanged: (value) {
+                                                                // allow empty while typing
+                                                                if (value.isEmpty) {
+                                                                  billingProvider.updateBillingItem(
+                                                                    index,
+                                                                    isLoose: '0',
+                                                                    quantity: 0, // temp
+                                                                  );
+                                                                  return;
+                                                                }
+
+                                                                int qty = int.tryParse(value) ?? 0;
+
+                                                                // allow 0 while typing
+                                                                if (qty < 0) qty = 0;
+
+                                                                // stock limit
+
+                                                                // if (qty > maxQty) {
+                                                                //   qty = maxQty;
+                                                                //
+                                                                //   final controller =
+                                                                //   billingProvider.quantityControllers[index]!;
+                                                                //
+                                                                //   final fixedText = qty.toString();
+                                                                //
+                                                                //   // cursor-safe update
+                                                                //   if (controller.text != fixedText) {
+                                                                //     controller.value = controller.value.copyWith(
+                                                                //       text: fixedText,
+                                                                //       selection:
+                                                                //       TextSelection.collapsed(offset: fixedText.length),
+                                                                //       composing: TextRange.empty,
+                                                                //     );
+                                                                //   }
+                                                                // }
+
+                                                                // update provider
+                                                                billingProvider.updateBillingItem(
+                                                                  index,
+                                                                  isLoose: '0',
+                                                                  quantity: qty,
+                                                                );
+                                                              },
+
+                                                              // 🔹 USER FINISHED → APPLY DEFAULT
+                                                              // 🔹 Enter pressed
+                                                              onEditingComplete: () {
+                                                                _applyDefaultQtyIfNeeded(billingProvider, index);
+                                                                qtyFocusNodes[index].unfocus();
+
+                                                                Future.microtask(() {
+                                                                  Future.microtask(() {
+                                                                    billingProvider.dropdownFocusNode.requestFocus();
+                                                                  });
+                                                                });
+                                                              },
+
+                                                              onSubmitted: (_) {
+                                                                _applyDefaultQtyIfNeeded(billingProvider, index);
+                                                                qtyFocusNodes[index].unfocus();
+
+                                                                Future.microtask(() {
+                                                                  billingProvider.dropdownFocusNode.requestFocus();
+                                                                });
+                                                              },
+
+                                                            )
+                                                                : _buildCellQuantity("${1}"),
+
+                                                            _buildBoldCell(
+                                                              TextFormat.formattedAmount(
+                                                                billProduct.mrpPerProduct(),
+                                                              ),
+                                                            ),
+                                                            _buildRedBoldCell(
+                                                              TextFormat.formattedAmount(
+                                                                billProduct.calculateOutPrice(),
+                                                              ),
+                                                            ),
+                                                            _buildRightCell(
+                                                              billProduct.calculateDiscount().toStringAsFixed(2),
+                                                            ),
+                                                            _buildBoldCell(
+                                                              TextFormat.formattedAmount(
+                                                                billProduct.calculateSubtotal(),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                )
+                                                    : ScreenWidgets.emptyAlert(
+                                                  context,
+                                                  image: 'assets/bill/empty_bill.png',
+                                                  text: '',
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                ),30.height,
-                                billingProvider.isLoading ? 0.height
-                                    : Container(
-                                  width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
-                                  color: Colors.white,
-                                  // padding: const EdgeInsets.only(
-                                  //     top: 8, left: 12, right: 12, bottom: 8),
-                                  height: screenHeight * 0.14,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      BottomWidgets.valueCard(context: context,
-                                          title: 'Items',
-                                          value: billingProvider
-                                              .calculatedTotalProducts()
-                                              .toString(),
-                                          isBold: false),
-                                      BottomWidgets.valueCard(context: context,
-                                          title: 'Qty',
-                                          value: billingProvider
-                                              .calculatedTotalQuantity()
-                                              .toString(),
-                                          isBold: false),
-                                      BottomWidgets.valueCard(context: context,
-                                          title: 'MRP',
-                                          value: billingProvider
-                                              .calculatedMrpSubtotal()
-                                              .toString(),
-                                          isBold: false),
-                                      BottomWidgets.valueCard(context: context,
-                                          title: 'Discount',
-                                          value: billingProvider.calculateTotalDiscount(),
-                                          isBold: false),
-                                      BottomWidgets.valueCard(context: context,
-                                          title: 'GST',
-                                          value: '0.0%',
-                                          isBold: false),
-                                      BottomWidgets.valueRight(
-                                        context: context,
-                                        title: 'Grand Total',
-                                        value: TextFormat.formattedAmount(
-                                            billingProvider.calculatedGrandTotal()),
-                                        isBold: true,
+                                      ),30.height,
+                                      billingProvider.isLoading ? 0.height
+                                          : Container(
+                                        width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 150:MediaQuery.of(context).size.width - 60,
+                                        color: Colors.white,
+                                        // padding: const EdgeInsets.only(
+                                        //     top: 8, left: 12, right: 12, bottom: 8),
+                                        height: screenHeight * 0.14,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            BottomWidgets.valueCard(context: context,
+                                                title: 'Items',
+                                                value: billingProvider
+                                                    .calculatedTotalProducts()
+                                                    .toString(),
+                                                isBold: false),
+                                            BottomWidgets.valueCard(context: context,
+                                                title: 'Qty',
+                                                value: billingProvider
+                                                    .calculatedTotalQuantity()
+                                                    .toString(),
+                                                isBold: false),
+                                            BottomWidgets.valueCard(context: context,
+                                                title: 'MRP',
+                                                value: billingProvider
+                                                    .calculatedMrpSubtotal()
+                                                    .toString(),
+                                                isBold: false),
+                                            BottomWidgets.valueCard(context: context,
+                                                title: 'Discount',
+                                                value: billingProvider.calculateTotalDiscount(),
+                                                isBold: false),
+                                            BottomWidgets.valueCard(context: context,
+                                                title: 'GST',
+                                                value: '0.0%',
+                                                isBold: false),
+                                            BottomWidgets.valueRight(
+                                              context: context,
+                                              title: 'Grand Total',
+                                              value: TextFormat.formattedAmount(
+                                                  billingProvider.calculatedGrandTotal()),
+                                              isBold: true,
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
-                                  ),
-                                ),
-                              ],
-                            )
-                        ),
-                      ),
-                    ),
-                  )),
+                                  )
+                              ),
+                            ),
+                          ),
+                        )),
+                  ),
+                ),)
+              ],
             ),
           );
         }

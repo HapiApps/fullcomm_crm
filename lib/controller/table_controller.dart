@@ -13,7 +13,7 @@ import '../services/api_services.dart';
 
 final tableController = Get.put(TableController());
 class TableController extends GetxController {
-
+final ScrollController scrollController=ScrollController();
   RxMap<String, double> colWidth = <String, double>{}.obs;
   var defaultHeadings = [
     "Name",
@@ -567,6 +567,13 @@ class TableController extends GetxController {
         await prefs.setString('tableHeadings', jsonEncode(headingFields.toList()));
         apiService.getHeading();
         Navigator.pop(context);
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent,
+            duration: const Duration(milliseconds: 700),
+            curve: Curves.easeOut,
+          );
+        }
         utils.snackBar(context: context, msg: "Heading added successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {

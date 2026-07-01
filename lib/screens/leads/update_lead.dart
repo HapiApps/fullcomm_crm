@@ -616,11 +616,15 @@ class _UpdateLeadState extends State<UpdateLead> {
                                 if (controllers.leadEmailCrt[0].text.isNotEmpty) {
                                   if (controllers.leadEmailCrt[0].text.isEmail) {
                                     if (controllers.pinCodeController.text.isEmpty) {
-                                      apiService.insertSingleCustomer(context,widget.list,widget.list2);
+                                      apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                          type:widget.type.toString(),addressId:widget.addressId.toString(),
+                                          list:widget.list,list2:widget.list2, addList: widget.additional);
                                     } else {
                                       if (controllers.pinCodeController.text.length ==
                                           6) {
-                                        apiService.insertSingleCustomer(context,widget.list,widget.list2);
+                                        apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                            type:widget.type.toString(),addressId:widget.addressId.toString(),
+                                            list:widget.list,list2:widget.list2, addList: widget.additional);
                                       } else {
                                         utils.snackBar(
                                             msg: "Please add 6 digits pin code",
@@ -639,11 +643,15 @@ class _UpdateLeadState extends State<UpdateLead> {
                                   }
                                 } else {
                                   if (controllers.pinCodeController.text.isEmpty) {
-                                    apiService.insertSingleCustomer(context,widget.list,widget.list2);
+                                    apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                        type:widget.type.toString(),addressId:widget.addressId.toString(),
+                                        list:widget.list,list2:widget.list2, addList: widget.additional);
                                   } else {
                                     if (controllers.pinCodeController.text.length ==
                                         6) {
-                                      apiService.insertSingleCustomer(context,widget.list,widget.list2);
+                                      apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                          type:widget.type.toString(),addressId:widget.addressId.toString(),
+                                          list:widget.list,list2:widget.list2, addList: widget.additional);
                                     } else {
                                       utils.snackBar(
                                           msg: "Please add 6 digits pin code",
@@ -1996,43 +2004,79 @@ class _UpdateLeadState extends State<UpdateLead> {
                                 ),
                                 20.height,
 
-                                Row(
-                                  children:[
-                                    if(widget.additional.isNotEmpty)
-                                    CustomText(
-                                      text: "Update Customer Additional Information",
-                                      colors: colorsConst.textColor,
-                                      size: 20,
-                                      isCopy: false,
-                                    ),
-                                  ],
-                                ),
-                                10.height,
-                                if(widget.additional.isNotEmpty)
-                                  Divider(
-                                  color: Colors.grey.shade400,
-                                  thickness: 1,
-                                ),
-                                20.height,
-                                GridView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: widget.additional.length,
-                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2, // 2 items per row
-                                    crossAxisSpacing: 50,
-                                    mainAxisSpacing: 10,
-                                    childAspectRatio: 3,
-                                  ),
-                                  itemBuilder: (context, index) {
-                                    final info = widget.additional[index];
-                                    return CustomTextField(
-                                        hintText:info.fieldName.toString(),
-                                        text:info.fieldName.toString(),width: textFieldSize,
-                                        controller: info.controller!);
-                                  },
-                                ),
-                                20.height,
+                                // Row(
+                                //   children:[
+                                //     if(widget.additional.isNotEmpty)
+                                //     CustomText(
+                                //       text: "Update Customer Additional Information",
+                                //       colors: colorsConst.textColor,
+                                //       size: 20,
+                                //       isCopy: false,
+                                //     ),
+                                //   ],
+                                // ),
+                                // 10.height,
+                                // if(widget.additional.isNotEmpty)
+                                //   Divider(
+                                //   color: Colors.grey.shade400,
+                                //   thickness: 1,
+                                // ),
+                                // 20.height,
+                                // GridView.builder(
+                                //   shrinkWrap: true,
+                                //   physics: const NeverScrollableScrollPhysics(),
+                                //   itemCount: widget.additional.length,
+                                //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                //     crossAxisCount: 2, // 2 items per row
+                                //     crossAxisSpacing: 50,
+                                //     mainAxisSpacing: 10,
+                                //     childAspectRatio: 3,
+                                //   ),
+                                //   itemBuilder: (context, index) {
+                                //     final info = widget.additional[index];
+                                //     return CustomTextField(
+                                //         hintText:info.fieldName.toString(),
+                                //         text:info.fieldName.toString(),width: textFieldSize,
+                                //         controller: info.controller!);
+                                //   },
+                                // ),
+                                ///
+                                // 20.height,
+                                // Row(
+                                //   children: [
+                                //     CustomText(
+                                //       text: "Additional Information",
+                                //       colors: colorsConst.textColor,
+                                //       size: 20,
+                                //       isCopy: false,
+                                //     ),
+                                //   ],
+                                // ), ////Todo:Address details
+                                // 10.height,
+                                // Divider(
+                                //   color: Colors.grey.shade400,
+                                //   thickness: 1,
+                                // ),
+                                // 20.height,
+                                // GridView.builder(
+                                //   shrinkWrap: true,
+                                //   physics: const NeverScrollableScrollPhysics(),
+                                //   itemCount: controllers.addList.length,
+                                //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                //     crossAxisCount: 2, // 2 items per row
+                                //     crossAxisSpacing: 50,
+                                //     mainAxisSpacing: 10,
+                                //     childAspectRatio: 3,
+                                //   ),
+                                //   itemBuilder: (context, index) {
+                                //     final info = controllers.addList[index];
+                                //     return CustomTextField(
+                                //         hintText:info.fieldName.toString(),
+                                //         text:info.fieldName.toString(),width: textFieldSize,
+                                //         controller: info.controller!);
+                                //   },
+                                // ),
+                                // 20.height,
                                 CustomLoadingButton(
                                     callback: (){
                                       bool isMistake = false;

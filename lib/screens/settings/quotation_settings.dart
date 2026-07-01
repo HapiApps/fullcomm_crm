@@ -53,7 +53,7 @@ class _QuotationSettingsState extends State<QuotationSettings> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomAppbar(text:"Invoice Settings",subText:"Manage global settings across the application."),
+                CustomAppbar(text:"Quotation Settings",subText:"Manage global settings across the application."),
                 Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

@@ -1,4 +1,5 @@
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fullcomm_crm/billing/billing_view/new_billing_screen.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/reminder_utils.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
@@ -1219,8 +1220,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                               controllers.directNavigate.value=true;
                               controllers.qId.value=widget.id.toString();
                               controllers.selectedIndex.value=107;
-                              productCtr.changeTab(1);
-                              Get.to(QuotationPage());
+                              Get.to(NewBillingScreen());
                             }
                           },
                           // onCanceled: () {
@@ -1307,52 +1307,49 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                   // );
                   final value = key != null ? toJson()[key] ?? "" : "";
 
-                  return Tooltip(
-                    message: value.toString() == "null" ? "" : value.toString(),
-                    child: GestureDetector(
-                        onDoubleTap: () {
-                        setState(() {
-                        isEditing = true;
-                        });},
-                      onTap: (){
-                        setState(() {
-                        isEditing = false;
-                        });
-                      },
-                      child: Container(
-                        height: 45,
-                        // color: Colors.yellow,
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.symmetric(horizontal: 5),
-                        // child: TextFormField(
-                        //   readOnly:true,
-                        //   // readOnly: isEditing, // 👈 important
-                        //   onFieldSubmitted: (value) async {
-                        //     if(TextEditingController(
-                        //       text: value.toString() == "null" ? "" : value.toString(),
-                        //     ).text.isNotEmpty){
-                        //       // updateLeadAPI(context);
-                        //     }else{
-                        //       utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
-                        //     }
-                        //
-                        //   },
-                        //   controller: TextEditingController(
-                        //     text: value.toString() == "null" ? "" : value.toString(),
-                        //   ),
-                        //   textAlign: TextAlign.left,
-                        //   style: TextStyle(
-                        //     fontSize: 14,
-                        //     color: colorsConst.textColor,
-                        //   ),
-                        //   decoration: const InputDecoration(
-                        //     border: InputBorder.none,
-                        //     isDense: true,
-                        //     contentPadding: EdgeInsets.zero,
-                        //   ),
-                        // ),
-                        child: CustomText(text: value.toString() == "null" ? "" : value.toString(), isCopy: false,textAlign: TextAlign.start,),
-                      ),
+                  return GestureDetector(
+                      onDoubleTap: () {
+                      setState(() {
+                      isEditing = true;
+                      });},
+                    onTap: (){
+                      setState(() {
+                      isEditing = false;
+                      });
+                    },
+                    child: Container(
+                      height: 45,
+                      // color: Colors.yellow,
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      // child: TextFormField(
+                      //   readOnly:true,
+                      //   // readOnly: isEditing, // 👈 important
+                      //   onFieldSubmitted: (value) async {
+                      //     if(TextEditingController(
+                      //       text: value.toString() == "null" ? "" : value.toString(),
+                      //     ).text.isNotEmpty){
+                      //       // updateLeadAPI(context);
+                      //     }else{
+                      //       utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
+                      //     }
+                      //
+                      //   },
+                      //   controller: TextEditingController(
+                      //     text: value.toString() == "null" ? "" : value.toString(),
+                      //   ),
+                      //   textAlign: TextAlign.left,
+                      //   style: TextStyle(
+                      //     fontSize: 14,
+                      //     color: colorsConst.textColor,
+                      //   ),
+                      //   decoration: const InputDecoration(
+                      //     border: InputBorder.none,
+                      //     isDense: true,
+                      //     contentPadding: EdgeInsets.zero,
+                      //   ),
+                      // ),
+                      child: CustomText(text: value.toString() == "null" ? "" : value.toString(), isCopy: false,textAlign: TextAlign.start,),
                     ),
                   );
                 }),

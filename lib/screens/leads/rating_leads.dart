@@ -692,7 +692,9 @@ class _RatingLeadsState extends State<RatingLeads> {
                               _focusNode.requestFocus();
                               controllers.currentPage.value--;
                             }),
-                            ...utils.buildPagination(totalPages, currentPage),
+                            ...utils.buildPagination(totalPages, currentPage, () {
+                              _focusNode.requestFocus();
+                            }),
                             utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
                               controllers.currentPage.value++;
                               _focusNode.requestFocus();

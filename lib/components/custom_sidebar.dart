@@ -29,6 +29,7 @@ import '../screens/new_payroll/salary_slip.dart';
 import '../screens/new_payroll/wages_sheet.dart';
 import '../screens/order/order_page.dart';
 import '../screens/products/product_page.dart';
+import '../screens/quotation/quotation_history.dart';
 import '../screens/quotation/quotation_page.dart';
 import '../screens/records/records.dart';
 import '../screens/reminder/reminder_page.dart';
@@ -262,7 +263,7 @@ class SideBar extends StatelessWidget {
               selectedImage: "assets/images/order1.png",
               unSelectedImage: "assets/images/order.png",
               label: "Quotation",
-              page: const QuotationPage(),
+              page: const QuotationHistory(),
             ),
             SidebarItem(
               context: context,
@@ -290,12 +291,23 @@ class SideBar extends StatelessWidget {
               context: context,
               controllers: controllers,
               colorsConst: colorsConst,
-              selectedImage: assets.whatsapp,
-              unSelectedImage: assets.whatsapp,
+              selectedImage: assets.whatsapp2,
+              unSelectedImage: assets.whatsapp3,
               index: 109,
               icon: Icons.logout,
               label: "Chat",
               page: const ChatDashboard(),
+            ),
+            SidebarItem(
+              context: context,
+              controllers: controllers,
+              colorsConst: colorsConst,
+              selectedImage: assets.emp2,
+              unSelectedImage: assets.emp1,
+              index: 200,
+              icon: Icons.logout,
+              label: "Employees",
+              page: const EmployeeScreen(),
             ),
             if(isRelease==true&&controllers.storage.read("cos_id")!="202629")
             controllers.storage.read("role") != "See All Customer Records"
@@ -499,10 +511,8 @@ class SideBar extends StatelessWidget {
                         children: [
                           subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "General Settings", 701, const GeneralSettings()),
                           subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Role Management", 702, const RoleManagement()),
-                          //subItem(context,controllers.isSettingsExpanded, "User Plan & Access", 703, const UserPlan()),
-                          subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "User Management", 704, const EmployeeScreen()),
-                          // subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Reminder Settings", 705, const ReminderSettings()),
-                          subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Invoice Settings", 706, const QuotationSettings()),
+                          // subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "User Management", 704, const EmployeeScreen()),
+                          subItem(context,controllers.isSettingsExpanded,controllers.isLeadsExpanded, "Quotation Settings", 706, const QuotationSettings()),
                         ],
                       ),
                     )
@@ -660,6 +670,7 @@ class SidebarItem extends StatelessWidget {
   final VoidCallback? onTap;
   final VoidCallback? onPreTap;
   final bool? isNetWrk;
+  final double? imgWidth;
 
   const SidebarItem({
     super.key,
@@ -671,7 +682,7 @@ class SidebarItem extends StatelessWidget {
     required this.label,
     this.page,
     this.onTap,
-    this.onPreTap, required this.selectedImage, required this.unSelectedImage, this.isNetWrk,
+    this.onPreTap, required this.selectedImage, required this.unSelectedImage, this.isNetWrk, this.imgWidth=18,
   });
 
   @override
@@ -769,7 +780,7 @@ class SidebarItem extends StatelessWidget {
                       //     placeholder: (context,url)=>Icon(Icons.leaderboard_outlined,color: isSelected?colorsConst.primary:Colors.black,)
                       // ):
                       Image.asset(isSelected?selectedImage:isHovered.value?selectedImage:unSelectedImage,
-                        width: 18,height: 18,
+                        width: imgWidth,height: imgWidth,
                       ),
                       5.width,
                       Text(

@@ -39,6 +39,7 @@ class DashboardController extends GetxController {
   // var totalUnQualified = "0".obs;
   // var totalCustomers   = "0".obs;
   var totalQuotations   = "0".obs;
+  var totalQuotationsAmt   = "0".obs;
   var totalOrders   = "0".obs;
   var totalAmt   = "0".obs;
   var dayReport = <CustomerDayData>[].obs;
@@ -776,6 +777,8 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
 
         dashController.totalQuotations.value =
             dashboardReport["total_quotations"].toString();
+        dashController.totalQuotationsAmt.value =
+            dashboardReport["total_quotation_amount"].toString();
 
         dashController.totalOrders.value =
             dashboardReport["total_orders"].toString();
