@@ -46,7 +46,12 @@ class _SearchObjectDropdownState<T>
     super.initState();
     filtered = widget.items;
   }
-
+  @override
+  void dispose() {
+    closeDropdown();
+    controller.dispose();
+    super.dispose();
+  }
   void openDropdown() {
     closeDropdown();
 
@@ -55,88 +60,183 @@ class _SearchObjectDropdownState<T>
 
     final size = renderBox.size;
 
+    // overlay = OverlayEntry(
+    //   builder: (context) {
+    //     return Positioned(
+    //       width: size.width,
+    //       child: CompositedTransformFollower(
+    //         link: layerLink,
+    //         offset: Offset(0, size.height + 5),
+    //         child: Material(
+    //           elevation: 8,
+    //           child: Container(
+    //             constraints:
+    //             BoxConstraints(maxHeight: 350),
+    //             color: Colors.white,
+    //             child: Column(
+    //               children: [
+    //
+    //                 Expanded(
+    //                   child: ListView.builder(
+    //                     itemCount: filtered.length,
+    //                     itemBuilder: (context, index) {
+    //
+    //                       final item =
+    //                       filtered[index];
+    //
+    //                       return InkWell(
+    //                         onTap: () {
+    //
+    //                           controller.text =
+    //                               widget.title(item);
+    //
+    //                           widget.onSelected
+    //                               ?.call(item);
+    //
+    //                           closeDropdown();
+    //                         },
+    //                         child: Container(
+    //                           padding:
+    //                           EdgeInsets.all(12),
+    //                           child: Row(
+    //                             children: [
+    //
+    //                               Container(
+    //                                 height: 30,
+    //                                 width: 30,
+    //                                 decoration: customDecoration
+    //                                     .baseBackgroundDecoration(
+    //                                     color: colorsConst.primary,
+    //                                     radius: 10),
+    //                                 child: Image.asset(
+    //                                     "assets/images/people1.png"),
+    //                               ),
+    //
+    //                               12.width,
+    //
+    //                               Expanded(
+    //                                 child: Column(
+    //                                   crossAxisAlignment:
+    //                                   CrossAxisAlignment
+    //                                       .start,
+    //                                   children: [
+    //
+    //                                     CustomText(text:widget.title(item), isCopy: false,isBold: true,),
+    //                                     if (widget.subTitle !=null)
+    //                                     CustomText(text:widget.subTitle!(item),isCopy: false,colors: Colors.grey,),
+    //                                   ],
+    //                                 ),
+    //                               ),
+    //
+    //                               if (widget .trailingText != null)
+    //                                 CustomText(text:widget.trailingText!(item),isCopy: false,colors: colorsConst.primary,),
+    //                             ],
+    //                           ),
+    //                         ),
+    //                       );
+    //                     },
+    //                   ),
+    //                 ),
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
+    //
+    // Overlay.of(context).insert(overlay!);
+
     overlay = OverlayEntry(
       builder: (context) {
-        return Positioned(
-          width: size.width,
-          child: CompositedTransformFollower(
-            link: layerLink,
-            offset: Offset(0, size.height + 5),
-            child: Material(
-              elevation: 8,
-              child: Container(
-                constraints:
-                BoxConstraints(maxHeight: 350),
-                color: Colors.white,
-                child: Column(
-                  children: [
+        return Stack(
+          children: [
 
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: filtered.length,
-                        itemBuilder: (context, index) {
+            /// Outside click detect
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  closeDropdown();
+                },
+                child: const SizedBox(),
+              ),
+            ),
 
-                          final item =
-                          filtered[index];
+            Positioned(
+              width: size.width,
+              child: CompositedTransformFollower(
+                link: layerLink,
+                offset: Offset(0, size.height + 5),
+                child: Material(
+                  elevation: 8,
+                  child: Container(
+                    constraints: const BoxConstraints(maxHeight: 350),
+                    color: Colors.white,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: ListView.builder(
+                            itemCount: filtered.length,
+                            itemBuilder: (context, index) {
+                              final item = filtered[index];
 
-                          return InkWell(
-                            onTap: () {
-
-                              controller.text =
-                                  widget.title(item);
-
-                              widget.onSelected
-                                  ?.call(item);
-
-                              closeDropdown();
-                            },
-                            child: Container(
-                              padding:
-                              EdgeInsets.all(12),
-                              child: Row(
-                                children: [
-
-                                  Container(
-                                    height: 30,
-                                    width: 30,
-                                    decoration: customDecoration
-                                        .baseBackgroundDecoration(
-                                        color: colorsConst.primary,
-                                        radius: 10),
-                                    child: Image.asset(
-                                        "assets/images/people1.png"),
-                                  ),
-
-                                  12.width,
-
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment
-                                          .start,
+                              return InkWell(
+                                  onTap: () {
+                                    controller.text = widget.title(item);
+                                    widget.onSelected?.call(item);
+                                    closeDropdown();
+                                  },
+                                  child: Container(
+                                    padding:
+                                    EdgeInsets.all(12),
+                                    child: Row(
                                       children: [
 
-                                        CustomText(text:widget.title(item), isCopy: false,isBold: true,),
-                                        if (widget.subTitle !=null)
-                                        CustomText(text:widget.subTitle!(item),isCopy: false,colors: Colors.grey,),
+                                        Container(
+                                          height: 30,
+                                          width: 30,
+                                          decoration: customDecoration
+                                              .baseBackgroundDecoration(
+                                              color: colorsConst.primary,
+                                              radius: 10),
+                                          child: Image.asset(
+                                              "assets/images/people1.png"),
+                                        ),
+
+                                        12.width,
+
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment
+                                                .start,
+                                            children: [
+
+                                              CustomText(text:widget.title(item), isCopy: false,isBold: true,),
+                                              if (widget.subTitle !=null)
+                                                CustomText(text:widget.subTitle!(item),isCopy: false,colors: Colors.grey,),
+                                            ],
+                                          ),
+                                        ),
+
+                                        if (widget .trailingText != null)
+                                          CustomText(text:widget.trailingText!(item),isCopy: false,colors: colorsConst.primary,),
                                       ],
                                     ),
                                   ),
-
-                                  if (widget .trailingText != null)
-                                    CustomText(text:widget.trailingText!(item),isCopy: false,colors: colorsConst.primary,),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         );
       },
     );

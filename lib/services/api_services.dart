@@ -43,7 +43,6 @@ import '../models/meeting_obj.dart';
 import '../models/month_report_obj.dart';
 import '../screens/DashboardPage.dart';
 import '../screens/order/order_page.dart';
-import '../screens/quotation/quotation_page.dart';
 
 final ApiService apiService = ApiService._();
 
@@ -403,7 +402,7 @@ class ApiService {
           rating: controllers.prospectGradingCrt.text.trim(),
           owner: controllers.leadTitleCrt[0].text.trim(),
 
-          updatedTs: DateTime.now().toString(),
+          updatedTs: DateTime.now().toString(), additional: controllers.addList,
         );
         list2[index]=NewLeadObj(
           userId: leadId,
@@ -473,7 +472,7 @@ class ApiService {
           rating: controllers.prospectGradingCrt.text.trim(),
           owner: controllers.leadTitleCrt[0].text.trim(),
 
-          updatedTs: DateTime.now().toString(),
+          updatedTs: DateTime.now().toString(), additional: controllers.addList,
         );
         if(controllers.selectedQualifiedSortBy.value==""){
           controllers.selectedQualifiedSortBy.value="All";
@@ -2101,7 +2100,7 @@ class ApiService {
               owner: controllers.leadTitleCrt[0].text.trim(),
 
               createdTs: DateTime.now().toString(),
-              updatedTs: DateTime.now().toString(),
+              updatedTs: DateTime.now().toString(), additional: controllers.addList,
             ));
             controllers.leadCategoryList[i].list2.add(NewLeadObj(
               select: false,
@@ -2172,7 +2171,7 @@ class ApiService {
               owner: controllers.leadTitleCrt[0].text.trim(),
 
               createdTs: DateTime.now().toString(),
-              updatedTs: DateTime.now().toString(),
+              updatedTs: DateTime.now().toString(), additional: controllers.addList,
             ));
             controllers.allLeadList.add(NewLeadObj(
               select: false,
@@ -2243,7 +2242,7 @@ class ApiService {
               owner: controllers.leadTitleCrt[0].text.trim(),
 
               createdTs: DateTime.now().toString(),
-              updatedTs: DateTime.now().toString(),
+              updatedTs: DateTime.now().toString(), additional: controllers.addList,
             ));
             controllers.customers.add(AllCustomersObj(
               id:customerId.toString(),

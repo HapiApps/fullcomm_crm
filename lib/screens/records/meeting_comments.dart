@@ -165,12 +165,21 @@ class _MeetingCommentsState extends State<MeetingComments> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomText(
-                          text: "Appointments",
-                          colors: colorsConst.textColor,
-                          size: 20,
-                          isBold: true,
-                          isCopy: true,
+                        Row(
+                          children: [
+                            InkWell(
+                                onTap: (){
+                                  Get.back();
+                                },
+                                child: Icon(Icons.arrow_back_rounded)),10.width,
+                            CustomText(
+                              text: "Appointments",
+                              colors: colorsConst.textColor,
+                              size: 20,
+                              isBold: true,
+                              isCopy: true,
+                            ),
+                          ],
                         ),
                         5.height,
                         CustomText(
@@ -2656,17 +2665,14 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           ],
                                         ),
                                       ),
-                                      Tooltip(
-                                        message: data.cusName.toString()=="null"?"":data.cusName.toString(),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            text: data.cusName.toString()=="null"?"":data.cusName.toString(),
-                                            size: 14,
-                                            isCopy: true,
-                                            colors:colorsConst.textColor,
-                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          text: data.cusName.toString()=="null"?"":data.cusName.toString(),
+                                          size: 14,
+                                          isCopy: true,
+                                          colors:colorsConst.textColor,
                                         ),
                                       ),
                                       Padding(
@@ -2689,30 +2695,24 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           colors: colorsConst.textColor,
                                         ),
                                       ),
-                                      Tooltip(
-                                        message: data.title.toString()=="null"?"":data.title.toString(),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            isCopy: true,
-                                            text: data.title.toString(),
-                                            size: 14,
-                                            colors:colorsConst.textColor,
-                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          isCopy: true,
+                                          text: data.title.toString(),
+                                          size: 14,
+                                          colors:colorsConst.textColor,
                                         ),
                                       ),
-                                      Tooltip(
-                                        message: data.venue.toString()=="null"?"":data.venue.toString(),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            text: data.venue.toString(),
-                                            size: 14,
-                                            isCopy: true,
-                                            colors:colorsConst.textColor,
-                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          text: data.venue.toString(),
+                                          size: 14,
+                                          isCopy: true,
+                                          colors:colorsConst.textColor,
                                         ),
                                       ),
                                       Padding(
@@ -2725,17 +2725,14 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           colors:data.status.toString()=="Scheduled"?Colors.blue:data.status.toString()=="Cancelled"?Colors.red:Colors.green,
                                         ),
                                       ),
-                                      Tooltip(
-                                        message: data.notes.toString()=="null"?"":data.notes.toString(),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            text: data.notes.toString(),
-                                            isCopy: true,
-                                            size: 14,
-                                            colors:colorsConst.textColor,
-                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          text: data.notes.toString(),
+                                          isCopy: true,
+                                          size: 14,
+                                          colors:colorsConst.textColor,
                                         ),
                                       ),
                                       Padding(

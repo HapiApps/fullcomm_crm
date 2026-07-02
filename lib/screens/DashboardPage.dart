@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/controller/product_controller.dart';
-import 'package:fullcomm_crm/screens/quotation/quotation_page.dart';
+import 'package:fullcomm_crm/screens/quotation/quotation_history.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -38,6 +38,7 @@ import '../services/api_services.dart';
 import 'dart:html' as html;
 import '../services/new_payroll_api_services.dart';
 import '../view_models/billing_provider.dart';
+import 'employee/dashboard_emp_report.dart';
 import 'leads/new_lead_page.dart';
 import 'leads/rating_customer_page.dart';
 import 'order/order_page.dart';
@@ -877,7 +878,7 @@ void checkDate(){
                                             pageBuilder: (context,
                                                 animation1,
                                                 animation2) =>
-                                            const QuotationPage(),
+                                            const QuotationHistory(),
                                             transitionDuration:
                                             Duration.zero,
                                             reverseTransitionDuration:
@@ -1917,7 +1918,7 @@ void checkDate(){
                                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     SizedBox(
-                                      width: width / 3,
+                                      width: width / 4,
                                       height: 300,
                                       child: LeadPieCard(
                                         // title: "Lead Distribution",
@@ -1940,218 +1941,8 @@ void checkDate(){
                                       ),
                                     ),15.width,
                                     if(dashController.customerStatusReport.isNotEmpty)
-                                    CustomerActivityCard(width: width/3,),15.width,
-                                    Container(
-                                      height: 300,
-                                      width: width/3.75,
-                                      padding: const EdgeInsets.all(16),
-                                      decoration: _whiteCard(),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          // -------- TITLE --------
-                                          Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            children: [
-                                              CustomText(
-                                                text: "Portfolio Heat",
-                                                isCopy: false,
-                                                size: 15,
-                                                isBold: true,
-                                              ),
-                                              4.height,
-                                              // -------- DIVIDER --------
-                                              const Divider(
-                                                height: 1,
-                                                thickness: 1,
-                                                color: Color(0xffD1D5DB),
-                                              ),
-                                            ],
-                                          ),
-                                          CustomText(
-                                            text: "Customer Engagement Levels",
-                                            isCopy: false,
-                                            size: 13,
-                                            isBold: false,
-                                            colors: Color(0xff6B7280),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              InkWell(
-                                                onTap:dashController.totalHot2.value!="0"?(){
-                                                  Get.to(RatingPage(rep:"1",type: "Hot", pageName: 'Customer',));
-                                                }:null,
-                                                child: Container(
-                                                  height: width/20,width: width/20,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFFFF2F2),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Image.asset("assets/images/hot.png"),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          CustomText(text: "Hot", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
-                                                          5.width,
-                                                          CustomText(text: "${int.tryParse(dashController.totalHot2.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
-
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap:dashController.totalWarm2.value!="0"?(){
-                                                  Get.to(RatingPage(rep:"1",type: "Warm", pageName: 'Customer',));
-                                                }:null,
-                                                child: Container(
-                                                  height: width/20,width: width/20,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFFFF8ED),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Image.asset("assets/images/warm.png"),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          CustomText(text: "Warm", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
-                                                          5.width,
-                                                          CustomText(text: "${int.tryParse(dashController.totalWarm2.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap:dashController.totalCold2.value!="0"?(){
-                                                  Get.to(RatingPage(rep:"1",type: "Cold", pageName: 'Customer',));
-                                                }:null,
-                                                child: Container(
-                                                  height: width/20,width: width/20,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFF0F6FF),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Image.asset("assets/images/cold.png"),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          CustomText(text: "Cold", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),5.width,
-                                                          CustomText(text: "${int.tryParse(dashController.totalCold2.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const Divider(
-                                            height: 1,
-                                            thickness: 1,
-                                            color: Color(0xffD1D5DB),
-                                          ),
-                                          CustomText(
-                                            text: "Lead Engagement Levels",
-                                            isCopy: false,
-                                            size: 13,
-                                            isBold: false,
-                                            colors: Color(0xff6B7280),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              InkWell(
-                                                onTap:dashController.totalHot.value!="0"?(){
-                                                  Get.to(RatingPage(rep:"2",type: "Hot", pageName: 'Leads',));
-                                                }:null,
-                                                child: Container(
-                                                  height: width/20,width: width/20,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFFFF2F2),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Image.asset("assets/images/hot.png"),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          CustomText(text: "Hot", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
-                                                          5.width,
-                                                          CustomText(text: "${int.tryParse(dashController.totalHot.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
-
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap:dashController.totalWarm.value!="0"?(){
-                                                  Get.to(RatingPage(rep:"2",type: "Warm", pageName: 'Leads',));
-                                                }:null,
-                                                child: Container(
-                                                  height: width/20,width: width/20,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFFFF8ED),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Image.asset("assets/images/warm.png"),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          CustomText(text: "Warm", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
-                                                          5.width,
-                                                          CustomText(text: "${int.tryParse(dashController.totalWarm.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              InkWell(
-                                                onTap:dashController.totalCold.value!="0"?(){
-                                                  Get.to(RatingPage(rep:"2",type: "Cold", pageName: 'Leads',));
-                                                }:null,
-                                                child: Container(
-                                                  height: width/20,width: width/20,
-                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                      color: Color(0xFFF0F6FF),radius: 10
-                                                  ),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Image.asset("assets/images/cold.png"),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          CustomText(text: "Cold", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),5.width,
-                                                          CustomText(text: "${int.tryParse(dashController.totalCold.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
+                                    CustomerActivityCard(width: width/4,),15.width,
+                                    EmployeePerformanceTable(width: width/2.3,),
                                     SizedBox(
                                       width: width/70,
                                     )
@@ -2180,9 +1971,13 @@ void checkDate(){
                                           Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              Row(
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   CustomText(text: "Communication Details", isCopy: false,isBold: true,size: 15,),
+                                                  5.height,
+                                                  CustomText(text: "Communication insights based on calls and emails.",colors: Colors.grey,
+                                                    isCopy: false,size: 13,),
                                                 ],
                                               ),
                                               Container(
@@ -2975,7 +2770,7 @@ void checkDate(){
                                             pageBuilder: (context,
                                                 animation1,
                                                 animation2) =>
-                                            const QuotationPage(),
+                                            const QuotationHistory(),
                                             transitionDuration:
                                             Duration.zero,
                                             reverseTransitionDuration:
@@ -3087,7 +2882,7 @@ void checkDate(){
                                 Row(
                                   children: [
                                     ActivityOverTimeChart(
-                                      width: width/1.055,
+                                      width: width/1.49,
                                       xLabels: controllers.xLabels.toList(),
                                       lines: [
 
@@ -3110,6 +2905,224 @@ void checkDate(){
                                         ),
 
                                       ],
+                                    ),
+                                    15.width,
+                                    Container(
+                                      height: 400,
+                                      width: width/3.75,
+                                      padding: const EdgeInsets.all(16),
+                                      decoration: _whiteCard(),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          // -------- TITLE --------
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+                                              CustomText(
+                                                text: "Portfolio Heat",
+                                                isCopy: false,
+                                                size: 15,
+                                                isBold: true,
+                                              ),
+                                              5.height,
+                                              CustomText(
+                                                text: "Visualize the current engagement health of your portfolio.",
+                                                colors: Colors.grey,
+                                                isCopy: false,size: 13,
+                                              ),
+                                              12.height,
+                                              const Divider(
+                                                height: 1,
+                                                thickness: 1,
+                                                color: Color(0xffE5E7EB),
+                                              ),
+                                              5.height,
+                                            ],
+                                          ),
+                                          CustomText(
+                                            text: "Customer Engagement Levels",
+                                            isCopy: false,
+                                            size: 13,
+                                            isBold: false,
+                                            colors: Color(0xff6B7280),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              InkWell(
+                                                onTap:dashController.totalHot2.value!="0"?(){
+                                                  Get.to(RatingPage(rep:"1",type: "Hot", pageName: 'Customer',));
+                                                }:null,
+                                                child: Container(
+                                                  height: width/20,width: width/20,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Color(0xFFFFF2F2),radius: 10
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: [
+                                                      Image.asset("assets/images/hot.png"),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          CustomText(text: "Hot", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
+                                                          5.width,
+                                                          CustomText(text: "${int.tryParse(dashController.totalHot2.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
+
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap:dashController.totalWarm2.value!="0"?(){
+                                                  Get.to(RatingPage(rep:"1",type: "Warm", pageName: 'Customer',));
+                                                }:null,
+                                                child: Container(
+                                                  height: width/20,width: width/20,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Color(0xFFFFF8ED),radius: 10
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: [
+                                                      Image.asset("assets/images/warm.png"),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          CustomText(text: "Warm", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
+                                                          5.width,
+                                                          CustomText(text: "${int.tryParse(dashController.totalWarm2.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap:dashController.totalCold2.value!="0"?(){
+                                                  Get.to(RatingPage(rep:"1",type: "Cold", pageName: 'Customer',));
+                                                }:null,
+                                                child: Container(
+                                                  height: width/20,width: width/20,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Color(0xFFF0F6FF),radius: 10
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: [
+                                                      Image.asset("assets/images/cold.png"),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          CustomText(text: "Cold", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),5.width,
+                                                          CustomText(text: "${int.tryParse(dashController.totalCold2.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const Divider(
+                                            height: 1,
+                                            thickness: 1,
+                                            color: Color(0xffD1D5DB),
+                                          ),
+                                          CustomText(
+                                            text: "Lead Engagement Levels",
+                                            isCopy: false,
+                                            size: 13,
+                                            isBold: false,
+                                            colors: Color(0xff6B7280),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              InkWell(
+                                                onTap:dashController.totalHot.value!="0"?(){
+                                                  Get.to(RatingPage(rep:"2",type: "Hot", pageName: 'Leads',));
+                                                }:null,
+                                                child: Container(
+                                                  height: width/20,width: width/20,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Color(0xFFFFF2F2),radius: 10
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: [
+                                                      Image.asset("assets/images/hot.png"),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          CustomText(text: "Hot", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
+                                                          5.width,
+                                                          CustomText(text: "${int.tryParse(dashController.totalHot.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFEF4444)),
+
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap:dashController.totalWarm.value!="0"?(){
+                                                  Get.to(RatingPage(rep:"2",type: "Warm", pageName: 'Leads',));
+                                                }:null,
+                                                child: Container(
+                                                  height: width/20,width: width/20,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Color(0xFFFFF8ED),radius: 10
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: [
+                                                      Image.asset("assets/images/warm.png"),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          CustomText(text: "Warm", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
+                                                          5.width,
+                                                          CustomText(text: "${int.tryParse(dashController.totalWarm.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFFF59E0B)),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              InkWell(
+                                                onTap:dashController.totalCold.value!="0"?(){
+                                                  Get.to(RatingPage(rep:"2",type: "Cold", pageName: 'Leads',));
+                                                }:null,
+                                                child: Container(
+                                                  height: width/20,width: width/20,
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                      color: Color(0xFFF0F6FF),radius: 10
+                                                  ),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: [
+                                                      Image.asset("assets/images/cold.png"),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          CustomText(text: "Cold", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),5.width,
+                                                          CustomText(text: "${int.tryParse(dashController.totalCold.value) ??0}", isCopy: false,isBold: true,colors: Color(0xFF3B82F6)),
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                     SizedBox(
                                       width: width/70,

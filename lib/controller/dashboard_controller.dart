@@ -714,10 +714,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "thisMonthTo": thisMonthTo,
       };
 
-      // debugPrint("================================================");
-      // debugPrint("REQUEST DATA");
-      // debugPrint("================================================");
-      // debugPrint(data.toString());
+      debugPrint("================================================");
+      debugPrint("REQUEST DATA");
+      debugPrint("================================================");
+      debugPrint(data.toString());
 
       final request = await http.post(
         Uri.parse(scriptApi),
@@ -729,9 +729,9 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         encoding: Encoding.getByName("utf-8"),
       );
       // debugPrint("================================================");
-      // debugPrint("RAW RESPONSE");
-      // debugPrint("================================================");
-      // log(request.body);
+      debugPrint("RAW RESPONSE");
+      debugPrint("================================================");
+      log(request.body);
 
       if (request.statusCode == 401) {
 
@@ -806,6 +806,9 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         List<dynamic> comReport2 = List<dynamic>.from(response['data']['comparison_month_report']);
         comparisonReport2.value=comReport2;
 
+        List<dynamic> performanceRep = List<dynamic>.from(response['data']['performance_report']);
+        performanceReport.value=performanceRep;
+
         List<dynamic> quotationReport = List<dynamic>.from(response['data']['quotation_customers_report']);
         groupedData.clear();
         for (var item in quotationReport) {
@@ -813,7 +816,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
           groupedData[item['amount_range']]!.add(item);
         }
 
-        debugPrint("groupedData ${groupedData}");
+        debugPrint("groupedData $groupedData");
         // =====================================================
         /// RANGE REPORT
         /// =====================================================
@@ -1044,6 +1047,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
   RxList customerStatusReport=[].obs;
   RxList comparisonReport=[].obs;
   RxList comparisonReport2=[].obs;
+  RxList performanceReport=[].obs;
   RxMap<dynamic, dynamic> groupedData ={}.obs;
   // Future<void> getCustomerStatus() async {
   //   try {

@@ -126,12 +126,21 @@ class _MailCommentsState extends State<MailComments> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomText(
-                          text: "All Mails",
-                          colors: colorsConst.textColor,
-                          isBold: true,
-                          size: 25,
-                          isCopy: true,
+                        Row(
+                          children: [
+                            InkWell(
+                                onTap: (){
+                                  Get.back();
+                                },
+                                child: Icon(Icons.arrow_back_rounded)),10.width,
+                            CustomText(
+                              text: "All Mails",
+                              colors: colorsConst.textColor,
+                              isBold: true,
+                              size: 25,
+                              isCopy: true,
+                            ),
+                          ],
                         ),
                         5.height,
                         CustomText(
@@ -288,7 +297,7 @@ class _MailCommentsState extends State<MailComments> {
                   children: [
                     CustomSearchTextField(
                       controller: controllers.search,
-                      hintText: "Search Email, Subject",
+                      hintText: "Search Lead Name, Company Name, Email, Subject",
                       onChanged: (value) {
                         remController.searchText.value = value.toString().trim();
                       },
@@ -569,6 +578,8 @@ class _MailCommentsState extends State<MailComments> {
                       final searchText = remController.searchText.value.toLowerCase();
                       final filteredList = remController.paginatedMailItems.where((activity) {
                         final matchesSearch = searchText.isEmpty ||
+                            (activity.customerName.toString().toLowerCase().contains(searchText)) ||
+                            (activity.companyName.toString().toLowerCase().contains(searchText)) ||
                             (activity.toData.toString().toLowerCase().contains(searchText)) ||
                             (activity.subject.toString().toLowerCase().contains(searchText));
                         return matchesSearch;
@@ -655,30 +666,24 @@ class _MailCommentsState extends State<MailComments> {
                                           colors: colorsConst.textColor,
                                         ),
                                       ),
-                                      Tooltip(
-                                        message: data.subject.toString()=="null"?"":data.subject.toString(),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            isCopy: true,
-                                            text: data.subject.toString().trim(),
-                                            size: 14,
-                                            colors:colorsConst.textColor,
-                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          textAlign: TextAlign.left,
+                                          isCopy: true,
+                                          text: data.subject.toString().trim(),
+                                          size: 14,
+                                          colors:colorsConst.textColor,
                                         ),
                                       ),
-                                      Tooltip(
-                                        message: data.message.toString()=="null"?"":data.message.toString(),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            isCopy: true,
-                                            textAlign: TextAlign.left,
-                                            text: data.message.toString().trim(),
-                                            size: 14,
-                                            colors:colorsConst.textColor,
-                                          ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: CustomText(
+                                          isCopy: true,
+                                          textAlign: TextAlign.left,
+                                          text: data.message.toString().trim(),
+                                          size: 14,
+                                          colors:colorsConst.textColor,
                                         ),
                                       ),
                                       InkWell(

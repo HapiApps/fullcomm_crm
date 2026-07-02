@@ -620,21 +620,16 @@ class _OrderPageState extends State<OrderPage> {
                                                           ),
                                                         );
                                                       case "order_no":
-                                                      return Tooltip(
-                                                        message: data.orderId.toString() == "null"
-                                                            ? ""
-                                                            : data.orderId.toString(),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(10.0),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.orderId.toString() == "null"
-                                                                ? ""
-                                                                : data.orderId.toString(),
-                                                            size: 14,
-                                                            isCopy: true,
-                                                            colors: colorsConst.textColor,
-                                                          ),
+                                                      return Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: data.orderId.toString() == "null"
+                                                              ? ""
+                                                              : data.orderId.toString(),
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
                                                         ),
                                                       );
 
@@ -653,32 +648,26 @@ class _OrderPageState extends State<OrderPage> {
                                                       );
 
                                                     case "company":
-                                                      return Tooltip(
-                                                        message: data.companyName.toString(),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(10.0),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.companyName.toString(),
-                                                            size: 14,
-                                                            isCopy: true,
-                                                            colors: colorsConst.textColor,
-                                                          ),
+                                                      return Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: data.companyName.toString(),
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
                                                         ),
                                                       );
 
                                                     case "customer":
-                                                      return Tooltip(
-                                                        message: data.customerName.toString(),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(10.0),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.customerName.toString(),
-                                                            size: 14,
-                                                            isCopy: true,
-                                                            colors: colorsConst.textColor,
-                                                          ),
+                                                      return Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: data.customerName.toString(),
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
                                                         ),
                                                       );
 

@@ -941,7 +941,19 @@ class CustomerActivityCard extends StatelessWidget {
             size: 15,
             isBold: true,isCopy: false,colors: Colors.black,
           ),
-          15.height,
+          5.height,
+          CustomText(
+            text: "Overview of daily customer engagement activities.",
+            colors: Colors.grey,
+            isCopy: false,size: 13,
+          ),
+          12.height,
+          const Divider(
+            height: 1,
+            thickness: 1,
+            color: Color(0xffE5E7EB),
+          ),
+          5.height,
           Expanded(
             child: SfCartesianChart(
               // onPointTap: (ChartPointDetails details) {

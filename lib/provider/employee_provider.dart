@@ -165,7 +165,9 @@ class EmployeeProvider with ChangeNotifier {
       filteredStaff = List.from(_staffRoleData);
     } else {
       filteredStaff = _staffRoleData.where((staffData) =>
-          staffData.sName!.toLowerCase().contains(query.toLowerCase()))
+          staffData.sName!.toLowerCase().contains(query.toLowerCase())||
+          staffData.sMobile!.toLowerCase().contains(query.toLowerCase())
+      )
           .toList();
     }
     notifyListeners();

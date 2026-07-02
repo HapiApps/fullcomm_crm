@@ -704,17 +704,14 @@ class _ESIWagesState extends State<ESIWages> {
                                                           colors: colorsConst.textColor,
                                                         ),
                                                       ),
-                                                      Tooltip(
-                                                        message: data.name,
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(10.0),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: data.name,
-                                                            size: 14,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
-                                                          ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: data.name,
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors:colorsConst.textColor,
                                                         ),
                                                       ),
                                                       Padding(

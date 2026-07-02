@@ -11,12 +11,12 @@ import 'package:fullcomm_crm/components/custom_checkbox.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
+import '../controller/image_controller.dart';
 import '../controller/product_controller.dart';
 import '../controller/reminder_controller.dart';
 import '../controller/table_controller.dart';
 import '../models/all_customers_obj.dart';
 import '../models/new_lead_obj.dart';
-import '../screens/quotation/quotation_page.dart';
 import '../screens/records/cus_mail_comments.dart';
 import '../screens/leads/update_lead.dart';
 import '../screens/records/records.dart';
@@ -546,7 +546,20 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                               controllers.selectNCustomer(widget.id.toString(), widget.mainName.toString(), widget.mainEmail.toString(),
                                   widget.mainMobile.toString());
                               reminderUtils.showAddReminderDialog(context);
-                            }else if(value=="View appointment"){
+                            }
+                            else if(value=="mail"){
+                              controllers.emailSubjectCtr.clear();
+                              controllers.emailMessageCtr.clear();
+                              imageController.photo1.value = "";
+                              controllers.emailToCtr.text =widget.email.toString()=="null"?"":widget.email.toString();
+                              utils.sendEmailDialog(
+                                id: widget.id.toString(),
+                                name: widget.name.toString(),
+                                mobile: widget.mobileNumber.toString(),
+                                coName: widget.companyName.toString()=="null"?"":widget.companyName.toString(),
+                              );
+                            }
+                            else if(value=="View appointment"){
                               controllers.selectedIndex.value = 101;
                               apiService.getAllMeetingActivity(widget.id.toString());
                               controllers.changeTab(2);
@@ -1241,12 +1254,22 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                 child: Text("Edit ${widget.pageName}",
                                     style: TextStyle(color: colorsConst.textColor))),
                             PopupMenuItem(
-                                value: "call log",
-                                child: Text("Add Call Log",
-                                    style: TextStyle(color: colorsConst.textColor))),
+                                value: "mail",
+                                child: Text("Send Email",
+                                    style:
+                                    TextStyle(color: colorsConst.textColor))),
+                            PopupMenuItem(
+                                value: "Create Quotation",
+                                child: Text("Create Quotation",
+                                    style:
+                                    TextStyle(color: colorsConst.textColor))),
                             PopupMenuItem(
                                 value: "Set a Reminder",
                                 child: Text("Set a Reminder",
+                                    style: TextStyle(color: colorsConst.textColor))),
+                            PopupMenuItem(
+                                value: "call log",
+                                child: Text("Add Call Log",
                                     style: TextStyle(color: colorsConst.textColor))),
                             PopupMenuItem(
                                 value: "View appointment",
@@ -1261,11 +1284,6 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                             PopupMenuItem(
                                 value: "View email record",
                                 child: Text("View email record",
-                                    style:
-                                    TextStyle(color: colorsConst.textColor))),
-                            PopupMenuItem(
-                                value: "Create Quotation",
-                                child: Text("Create Quotation",
                                     style:
                                     TextStyle(color: colorsConst.textColor))),
                             // PopupMenuItem(

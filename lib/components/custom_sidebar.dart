@@ -30,7 +30,6 @@ import '../screens/new_payroll/wages_sheet.dart';
 import '../screens/order/order_page.dart';
 import '../screens/products/product_page.dart';
 import '../screens/quotation/quotation_history.dart';
-import '../screens/quotation/quotation_page.dart';
 import '../screens/records/records.dart';
 import '../screens/reminder/reminder_page.dart';
 import '../screens/settings/general_settings.dart';

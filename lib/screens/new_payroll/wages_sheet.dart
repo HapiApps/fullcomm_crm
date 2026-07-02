@@ -1057,17 +1057,14 @@ class _UnitSlipState extends State<UnitSlip> {
                                                           colors: colorsConst.textColor,
                                                         ),
                                                       ),
-                                                      Tooltip(
-                                                        message: namesList[index],
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.all(10.0),
-                                                          child: CustomText(
-                                                            textAlign: TextAlign.left,
-                                                            text: namesList[index],
-                                                            size: 14,
-                                                            isCopy: true,
-                                                            colors:colorsConst.textColor,
-                                                          ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text: namesList[index],
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors:colorsConst.textColor,
                                                         ),
                                                       ),
                                                       Padding(

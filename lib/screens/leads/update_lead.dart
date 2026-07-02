@@ -663,7 +663,7 @@ class _UpdateLeadState extends State<UpdateLead> {
                                 }
                               }
                             },
-                            text: "Save Lead",
+                            text: "Save ${widget.pageName}",
                             height: 45,
                             controller: controllers.leadCtr,
                             isLoading: true,

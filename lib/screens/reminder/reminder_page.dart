@@ -963,17 +963,14 @@ class _ReminderPageState extends State<ReminderPage> {
                                                      ],
                                                    ),
                                                  ),
-                                                 Tooltip(
-                                                   message: reminder.title.toString()=="null"?"":reminder.title.toString(),
-                                                   child: Padding(
-                                                     padding: const EdgeInsets.all(10.0),
-                                                     child: CustomText(
-                                                       isCopy: true,
-                                                       textAlign: TextAlign.left,
-                                                       text: reminder.title.toString()=="null"?"":reminder.title.toString(),
-                                                       size: 14,
-                                                       colors:colorsConst.textColor,
-                                                     ),
+                                                 Padding(
+                                                   padding: const EdgeInsets.all(10.0),
+                                                   child: CustomText(
+                                                     isCopy: true,
+                                                     textAlign: TextAlign.left,
+                                                     text: reminder.title.toString()=="null"?"":reminder.title.toString(),
+                                                     size: 14,
+                                                     colors:colorsConst.textColor,
                                                    ),
                                                  ),
                                                  Padding(
@@ -996,55 +993,34 @@ class _ReminderPageState extends State<ReminderPage> {
                                                      colors: colorsConst.textColor,
                                                    ),
                                                  ),
-                                                 // Tooltip(
-                                                 //   message: reminder.repeatType.toString()=="null"?"":reminder.repeatType.toString(),
-                                                 //   child: Padding(
-                                                 //     padding: const EdgeInsets.all(10.0),
-                                                 //     child: CustomText(
-                                                 //       textAlign: TextAlign.left,
-                                                 //       text: reminder.repeatType.toString(),
-                                                 //       size: 14,
-                                                 //       colors:colorsConst.textColor,
-                                                 //     ),
-                                                 //   ),
-                                                 // ),
-                                                 Tooltip(
-                                                   message: reminder.employeeName.toString()=="null"?"":reminder.employeeName.toString(),
-                                                   child: Padding(
-                                                     padding: const EdgeInsets.all(10.0),
-                                                     child: CustomText(
-                                                       isCopy: true,
-                                                       textAlign: TextAlign.left,
-                                                       text: reminder.employeeName.toString(),
-                                                       size: 14,
-                                                       colors:colorsConst.textColor,
-                                                     ),
+                                                 Padding(
+                                                   padding: const EdgeInsets.all(10.0),
+                                                   child: CustomText(
+                                                     isCopy: true,
+                                                     textAlign: TextAlign.left,
+                                                     text: reminder.employeeName.toString(),
+                                                     size: 14,
+                                                     colors:colorsConst.textColor,
                                                    ),
                                                  ),
-                                                 Tooltip(
-                                                   message: reminder.customerName.toString()=="null"?"":reminder.customerName.toString(),
-                                                   child: Padding(
-                                                     padding: const EdgeInsets.all(10.0),
-                                                     child: CustomText(
-                                                       isCopy: true,
-                                                       textAlign: TextAlign.left,
-                                                       text: reminder.customerName.toString(),
-                                                       size: 14,
-                                                       colors:colorsConst.textColor,
-                                                     ),
+                                                 Padding(
+                                                   padding: const EdgeInsets.all(10.0),
+                                                   child: CustomText(
+                                                     isCopy: true,
+                                                     textAlign: TextAlign.left,
+                                                     text: reminder.customerName.toString(),
+                                                     size: 14,
+                                                     colors:colorsConst.textColor,
                                                    ),
                                                  ),
-                                                 Tooltip(
-                                                   message: reminder.startDt.toString()=="null"?"":reminder.startDt.toString(),
-                                                   child: Padding(
-                                                     padding: const EdgeInsets.all(10.0),
-                                                     child: CustomText(
-                                                       isCopy: true,
-                                                       textAlign: TextAlign.left,
-                                                       text: controllers.formatDate(reminder.startDt.toString()),
-                                                       size: 14,
-                                                       colors:colorsConst.textColor,
-                                                     ),
+                                                 Padding(
+                                                   padding: const EdgeInsets.all(10.0),
+                                                   child: CustomText(
+                                                     isCopy: true,
+                                                     textAlign: TextAlign.left,
+                                                     text: controllers.formatDate(reminder.startDt.toString()),
+                                                     size: 14,
+                                                     colors:colorsConst.textColor,
                                                    ),
                                                  ),
                                                  Padding(
@@ -1057,17 +1033,14 @@ class _ReminderPageState extends State<ReminderPage> {
                                                      colors: colorsConst.textColor,
                                                    ),
                                                  ),
-                                                 Tooltip(
-                                                   message: reminder.details.toString()=="null"?"":reminder.details.toString(),
-                                                   child: Padding(
-                                                     padding: const EdgeInsets.all(10.0),
-                                                     child: CustomText(
-                                                       isCopy: true,
-                                                       textAlign: TextAlign.left,
-                                                       text: reminder.details.toString(),
-                                                       size: 14,
-                                                       colors: colorsConst.textColor,
-                                                     ),
+                                                 Padding(
+                                                   padding: const EdgeInsets.all(10.0),
+                                                   child: CustomText(
+                                                     isCopy: true,
+                                                     textAlign: TextAlign.left,
+                                                     text: reminder.details.toString(),
+                                                     size: 14,
+                                                     colors: colorsConst.textColor,
                                                    ),
                                                  ),
                                                ]

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
+import 'package:fullcomm_crm/screens/employee/report_page.dart';
 import 'package:fullcomm_crm/screens/employee/update_employee.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -113,7 +114,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             CustomSearchTextField(
-                                hintText: "Search Employee...",
+                                hintText: "Search Employee Name Or Mobile Number",
                                 controller: employeeProvider.vendorSearchController,
                                 onChanged:  (value){
                                   employeeProvider.filterStaff(value.toString());
@@ -657,21 +658,23 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                     "assets/images/a_delete.svg",
                                                     width: 16,
                                                     height: 16,
-                                                  ))
+                                                  )),
+                                              IconButton(
+                                                  onPressed: (){
+                                                    Get.to(EmployeeReportPage());
+                                                  },
+                                                  icon: Icon(Icons.report_gmailerrorred_rounded)),
                                             ],
                                           ),
                                         ),
-                                        Tooltip(
-                                          message: staffData.sName.toString()=="null"?"":staffData.sName.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              text: "${staffData.sName}",
-                                              size: 14,
-                                              isCopy: false,
-                                              colors:colorsConst.textColor,
-                                            ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            textAlign: TextAlign.left,
+                                            text: "${staffData.sName}",
+                                            size: 14,
+                                            isCopy: false,
+                                            colors:colorsConst.textColor,
                                           ),
                                         ),
                                         Padding(
@@ -695,69 +698,54 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                             colors: colorsConst.textColor,
                                           ),
                                         ),
-                                        Tooltip(
-                                          message: staffData.sMobile.toString()=="null"?"":staffData.sMobile.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              isCopy: false,
-                                              textAlign: TextAlign.left,
-                                              text: staffData.sMobile.toString(),
-                                              size: 14,
-                                              colors:colorsConst.textColor,
-                                            ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            isCopy: false,
+                                            textAlign: TextAlign.left,
+                                            text: staffData.sMobile.toString(),
+                                            size: 14,
+                                            colors:colorsConst.textColor,
                                           ),
                                         ),
-                                        Tooltip(
-                                          message: staffData.email.toString()=="null"?"":staffData.email.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              textAlign: TextAlign.left,
-                                              isCopy: false,
-                                              text: staffData.email.toString(),
-                                              size: 14,
-                                              colors:colorsConst.textColor,
-                                            ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            textAlign: TextAlign.left,
+                                            isCopy: false,
+                                            text: staffData.email.toString(),
+                                            size: 14,
+                                            colors:colorsConst.textColor,
                                           ),
                                         ),
-                                        Tooltip(
-                                          message: staffData.sAddress.toString()=="null"?"":staffData.sAddress.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              isCopy: false,
-                                              textAlign: TextAlign.left,
-                                              text: staffData.sAddress.toString(),
-                                              size: 14,
-                                              colors:colorsConst.textColor,
-                                            ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            isCopy: false,
+                                            textAlign: TextAlign.left,
+                                            text: staffData.sAddress.toString(),
+                                            size: 14,
+                                            colors:colorsConst.textColor,
                                           ),
                                         ),
-                                        Tooltip(
-                                          message: staffData.salary.toString()=="null"?"":staffData.salary.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              isCopy: false,
-                                              textAlign: TextAlign.left,
-                                              text: staffData.salary.toString(),
-                                              size: 14,
-                                              colors:colorsConst.textColor,
-                                            ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            isCopy: false,
+                                            textAlign: TextAlign.left,
+                                            text: staffData.salary.toString(),
+                                            size: 14,
+                                            colors:colorsConst.textColor,
                                           ),
                                         ),
-                                        Tooltip(
-                                          message: staffData.bonus.toString()=="null"?"":staffData.bonus.toString(),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: CustomText(
-                                              isCopy: false,
-                                              textAlign: TextAlign.left,
-                                              text: staffData.bonus.toString(),
-                                              size: 14,
-                                              colors:colorsConst.textColor,
-                                            ),
+                                        Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: CustomText(
+                                            isCopy: false,
+                                            textAlign: TextAlign.left,
+                                            text: staffData.bonus.toString(),
+                                            size: 14,
+                                            colors:colorsConst.textColor,
                                           ),
                                         ),
                                         // Visibility(
@@ -870,8 +858,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                         ) :
                         Container(
                             alignment: Alignment.center,
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
+                            height: 500,width: 500,
                             child: SvgPicture.asset(
                                 "assets/images/noDataFound.svg"));
                       }

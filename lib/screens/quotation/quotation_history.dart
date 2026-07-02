@@ -1900,28 +1900,22 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                 onTap:(){
                                                                   Get.to(ViewQuotationDetails(id:data.id.toString(), list: data,));
                                                                 },
-                                                                child: Tooltip(
-                                                                  message: data.name
-                                                                      .toString() ==
-                                                                      "null" ? "" : data
-                                                                      .name.toString(),
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets
-                                                                        .all(10.0),
-                                                                    child: CustomText(
-                                                                      textAlign: TextAlign
-                                                                          .left,
-                                                                      text: data.name
-                                                                          .toString() ==
-                                                                          "null"
-                                                                          ? ""
-                                                                          : data.name
-                                                                          .toString(),
-                                                                      size: 14,
-                                                                      isCopy: true,
-                                                                      colors: colorsConst
-                                                                          .textColor,
-                                                                    ),
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets
+                                                                      .all(10.0),
+                                                                  child: CustomText(
+                                                                    textAlign: TextAlign
+                                                                        .left,
+                                                                    text: data.name
+                                                                        .toString() ==
+                                                                        "null"
+                                                                        ? ""
+                                                                        : data.name
+                                                                        .toString(),
+                                                                    size: 14,
+                                                                    isCopy: true,
+                                                                    colors: colorsConst
+                                                                        .textColor,
                                                                   ),
                                                                 ),
                                                               ),
@@ -1929,29 +1923,22 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                 onTap:(){
                                                                   Get.to(ViewQuotationDetails(id:data.id.toString(), list: data,));
                                                                 },
-                                                                child: Tooltip(
-                                                                  message: data.company
-                                                                      .toString() ==
-                                                                      "null" ? "" : data
-                                                                      .company
-                                                                      .toString(),
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets
-                                                                        .all(10.0),
-                                                                    child: CustomText(
-                                                                      textAlign: TextAlign
-                                                                          .left,
-                                                                      text: data.company
-                                                                          .toString() ==
-                                                                          "null"
-                                                                          ? ""
-                                                                          : data.company
-                                                                          .toString(),
-                                                                      size: 14,
-                                                                      isCopy: true,
-                                                                      colors: colorsConst
-                                                                          .textColor,
-                                                                    ),
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets
+                                                                      .all(10.0),
+                                                                  child: CustomText(
+                                                                    textAlign: TextAlign
+                                                                        .left,
+                                                                    text: data.company
+                                                                        .toString() ==
+                                                                        "null"
+                                                                        ? ""
+                                                                        : data.company
+                                                                        .toString(),
+                                                                    size: 14,
+                                                                    isCopy: true,
+                                                                    colors: colorsConst
+                                                                        .textColor,
                                                                   ),
                                                                 ),
                                                               ),

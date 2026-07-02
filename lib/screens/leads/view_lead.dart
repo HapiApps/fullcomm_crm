@@ -22,8 +22,6 @@ import '../../models/all_customers_obj.dart';
 import '../../models/customer_full_obj.dart';
 import '../../models/new_lead_obj.dart';
 import '../chat/chat_screen.dart';
-import '../invoice/invoice.dart';
-import '../quotation/quotation_page.dart';
 
 class ViewLead extends StatefulWidget {
   final int listIndex;

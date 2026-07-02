@@ -1698,17 +1698,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                       ],
                                     ),
                                   ),
-                                  Tooltip(
-                                    message: officeHour.employeeName,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: CustomText(
-                                        textAlign: TextAlign.start,
-                                        text:officeHour.employeeName,//1
-                                        size: 14,
-                                        isCopy: true,
-                                        colors:colorsConst.textColor,
-                                      ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(15.0),
+                                    child: CustomText(
+                                      textAlign: TextAlign.start,
+                                      text:officeHour.employeeName,//1
+                                      size: 14,
+                                      isCopy: true,
+                                      colors:colorsConst.textColor,
                                     ),
                                   ),
                                   Padding(

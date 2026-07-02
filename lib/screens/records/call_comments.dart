@@ -171,12 +171,21 @@ class _CallCommentsState extends State<CallComments> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CustomText(
-                          text: "Calls",
-                          colors: colorsConst.textColor,
-                          size: 20,
-                          isBold: true,
-                          isCopy: true,
+                        Row(
+                          children: [
+                            InkWell(
+                              onTap: (){
+                                Get.back();
+                              },
+                                child: Icon(Icons.arrow_back_rounded)),10.width,
+                            CustomText(
+                              text: "Calls",
+                              colors: colorsConst.textColor,
+                              size: 20,
+                              isBold: true,
+                              isCopy: true,
+                            ),
+                          ],
                         ),
                         10.height,
                         CustomText(
@@ -1475,30 +1484,24 @@ class _CallCommentsState extends State<CallComments> {
                                                       ],
                                                     ),
                                                   ),
-                                                  Tooltip(
-                                                    message: data.companyName.toString()=="null"?"":data.companyName.toString(),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(10.0),
-                                                      child: CustomText(
-                                                        textAlign: TextAlign.left,
-                                                        text: data.companyName.toString()=="null"?"":data.companyName.toString(),
-                                                        size: 14,
-                                                        isCopy: true,
-                                                        colors:colorsConst.textColor,
-                                                      ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.left,
+                                                      text: data.companyName.toString()=="null"?"":data.companyName.toString(),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
                                                     ),
                                                   ),
-                                                  Tooltip(
-                                                    message: data.customerName.toString()=="null"?"":data.customerName.toString(),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(10.0),
-                                                      child: CustomText(
-                                                        textAlign: TextAlign.left,
-                                                        text: data.customerName.toString()=="null"?"":data.customerName.toString(),
-                                                        size: 14,
-                                                        isCopy: true,
-                                                        colors:colorsConst.textColor,
-                                                      ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.left,
+                                                      text: data.customerName.toString()=="null"?"":data.customerName.toString(),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
                                                     ),
                                                   ),
                                                   Padding(
@@ -1511,30 +1514,24 @@ class _CallCommentsState extends State<CallComments> {
                                                       colors: colorsConst.textColor,
                                                     ),
                                                   ),
-                                                  Tooltip(
-                                                    message: data.callType.toString()=="null"?"":data.callType.toString(),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(10.0),
-                                                      child: CustomText(
-                                                        textAlign: TextAlign.left,
-                                                        text: data.callType.toString(),
-                                                        size: 14,
-                                                        isCopy: true,
-                                                        colors:colorsConst.textColor,
-                                                      ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.left,
+                                                      text: data.callType.toString(),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
                                                     ),
                                                   ),
-                                                  Tooltip(
-                                                    message: data.message.toString()=="null"?"":data.message.toString(),
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(10.0),
-                                                      child: CustomText(
-                                                        textAlign: TextAlign.left,
-                                                        text: data.message.toString(),
-                                                        size: 14,
-                                                        isCopy: true,
-                                                        colors:colorsConst.textColor,
-                                                      ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.all(10.0),
+                                                    child: CustomText(
+                                                      textAlign: TextAlign.left,
+                                                      text: data.message.toString(),
+                                                      size: 14,
+                                                      isCopy: true,
+                                                      colors:colorsConst.textColor,
                                                     ),
                                                   ),
                                                   Padding(
