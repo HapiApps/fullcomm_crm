@@ -2385,12 +2385,13 @@ class ApiService {
   //     controllers.productCtr.reset();
   //   }
   // }
-  Future insertPromoteListAPI(BuildContext context,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
+  Future insertPromoteListAPI(BuildContext context,String reason,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
       debugPrint("#####");
       Map<String, dynamic> data ={
         "id":controllers.idList,
         "lead_status": status,
+        "reason": reason,
         "created_by": controllers.storage.read("id"),
         "cos_id": controllers.storage.read("cos_id"),
         "action": "update_promote_list"
@@ -2408,7 +2409,7 @@ class ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return insertPromoteListAPI(context,status,name,list,list2);
+          return insertPromoteListAPI(context,reason,status,name,list,list2);
         } else {
           controllers.setLogOut();
         }
@@ -3000,8 +3001,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint("chat_clients");
-      debugPrint(request.body);
+      // debugPrint("chat_clients");
+      // debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3788,12 +3789,13 @@ class ApiService {
     }
   }
 
-  Future confirmOrderAPI(BuildContext context,String id,String cusId,String totalAmt,String name,String number) async {
+  Future confirmOrderAPI(BuildContext context,String iNo,String id,String cusId,String totalAmt,String name,String number) async {
     try {
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
       request.fields['cos_id'] = controllers.storage.read("cos_id").toString();
       request.fields['updated_by'] = controllers.storage.read("id").toString();
       request.fields['id'] = id;
+      request.fields['i_no'] = iNo;
       request.fields['customer_id'] = cusId;
       request.fields['action'] = 'insert_order';
       request.fields['total_amt'] = totalAmt;
@@ -3811,7 +3813,7 @@ class ApiService {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return confirmOrderAPI(context,id,cusId,totalAmt,name,number);
+          return confirmOrderAPI(context,id,cusId,totalAmt,name,number,iNo);
         } else {
           controllers.setLogOut();
         }
@@ -5744,9 +5746,9 @@ class ApiService {
 
         body: jsonEncode(data),
       );
-      debugPrint("customer_chats");
-      debugPrint(data.toString());
-      debugPrint(response.body);
+      // debugPrint("customer_chats");
+      // debugPrint(data.toString());
+      // debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

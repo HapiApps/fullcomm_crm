@@ -304,7 +304,7 @@ class _MailCommentsState extends State<MailComments> {
                     ),
                     DateFilterBar(
                       selectedSortBy: remController.selectedMailSortBy,
-                      selectedRange: remController.selectedMailRange,
+                      selectedRange: remController.selectedCallRange,
                       selectedMonth: remController.selectedMailMonth,
                       focusNode: _focusNode,
                       onDaysSelected: () {
@@ -322,7 +322,7 @@ class _MailCommentsState extends State<MailComments> {
                       onSelectDateRange: (ctx) {
                         remController.showDatePickerDialog(ctx, (pickedRange) {
                           remController.selectedMailSortBy.value = 'Custom Range';
-                          remController.selectedMailRange.value = pickedRange;
+                          remController.selectedCallRange.value = pickedRange;
                           remController.sortMails();
                         });
                       },

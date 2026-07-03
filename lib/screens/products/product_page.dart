@@ -61,8 +61,8 @@ class _ProductPageState extends State<ProductPage> {
       _focusNode.requestFocus();
       productCtr.filterProducts(
         value: controllers.searchText.value.toLowerCase(),
-        selectedRangeStart: productCtr.selectedCallRange.value?.start,
-        selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+        selectedRangeStart: remController.selectedCallRange.value?.start,
+        selectedRangeEnd: remController.selectedCallRange.value?.end,
         selectedMonth: productCtr.selectedCallMonth.value,
         selectedDateFilter: productCtr.selectedCallSortBy.value,
       );
@@ -359,16 +359,14 @@ class _ProductPageState extends State<ProductPage> {
                       ),
                       DateFilterBar(
                         selectedSortBy: productCtr.selectedCallSortBy,
-                        selectedRange: productCtr.selectedCallRange,
+                        selectedRange: remController.selectedCallRange,
                         selectedMonth: productCtr.selectedCallMonth,
                         focusNode: _focusNode,
                         onDaysSelected: () {
-                          print("clicked");
-                          print(productCtr.selectedCallSortBy.value);
                           productCtr.filterProducts(
                             value: controllers.searchText.value.toLowerCase(),
-                            selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                            selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                            selectedRangeStart: remController.selectedCallRange.value?.start,
+                            selectedRangeEnd: remController.selectedCallRange.value?.end,
                             selectedMonth: productCtr.selectedCallMonth.value,
                             selectedDateFilter: productCtr.selectedCallSortBy.value,
                           );
@@ -378,7 +376,7 @@ class _ProductPageState extends State<ProductPage> {
                           //   sortField: controllers.sortFieldCallActivity.value,
                           //   sortOrder: controllers.sortOrderCallActivity.value,
                           //   selectedMonth: productCtr.selectedCallMonth.value,
-                          //   selectedRange: productCtr.selectedCallRange.value,
+                          //   selectedRange: remController.selectedCallRange.value,
                           //   selectedDateFilter: productCtr.selectedCallSortBy.value,
                           // );
                         },
@@ -390,8 +388,8 @@ class _ProductPageState extends State<ProductPage> {
                                 () {
                                   productCtr.filterProducts(
                                     value: controllers.searchText.value.toLowerCase(),
-                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                     selectedMonth: productCtr.selectedCallMonth.value,
                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                   );
@@ -400,11 +398,11 @@ class _ProductPageState extends State<ProductPage> {
                         },
                         onSelectDateRange: (ctx) {
                           remController.showDatePickerDialog(ctx, (pickedRange) {
-                            productCtr.selectedCallRange.value = pickedRange;
+                            remController.selectedCallRange.value = pickedRange;
                             productCtr.filterProducts(
                               value: controllers.searchText.value.toLowerCase(),
-                              selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                              selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                              selectedRangeStart: remController.selectedCallRange.value?.start,
+                              selectedRangeEnd: remController.selectedCallRange.value?.end,
                               selectedMonth: productCtr.selectedCallMonth.value,
                               selectedDateFilter: productCtr.selectedCallSortBy.value,
                             );
@@ -510,8 +508,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='sku';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -550,8 +548,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='hsn';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -590,8 +588,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='barcode';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -630,8 +628,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='name';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -670,8 +668,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='hsn';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -710,8 +708,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='mrp';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -750,8 +748,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='price';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -790,8 +788,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='brand';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -830,8 +828,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='cat';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -870,8 +868,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='subcat';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -910,8 +908,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='gst';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -950,8 +948,8 @@ class _ProductPageState extends State<ProductPage> {
                                                   controllers.sortFieldCallActivity.value='date';
                                                   productCtr.filterProducts(
                                                     value: controllers.searchText.value.toLowerCase(),
-                                                    selectedRangeStart: productCtr.selectedCallRange.value?.start,
-                                                    selectedRangeEnd: productCtr.selectedCallRange.value?.end,
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
                                                     selectedMonth: productCtr.selectedCallMonth.value,
                                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                                   );
@@ -1048,6 +1046,22 @@ class _ProductPageState extends State<ProductPage> {
                                                                     Row(
                                                                       mainAxisAlignment: MainAxisAlignment.end,
                                                                       children: [
+                                                                        CustomLoadingButton(
+                                                                          callback: (){
+                                                                            final p = context.read<BillingProvider>();
+                                                                            p.deleteProduct(context,productCtr.selectedPrdIds);
+                                                                          },
+                                                                          height: 35,
+                                                                          isLoading: true,
+                                                                          backgroundColor: colorsConst.primary,
+                                                                          radius: 2,
+                                                                          width: 80,
+                                                                          controller: controllers.productCtr,
+                                                                          isImage: false,
+                                                                          text: "Delete",
+                                                                          textColor: Colors.white,
+                                                                        ),
+                                                                        10.width,
                                                                         Container(
                                                                           decoration: BoxDecoration(
                                                                               border: Border.all(color: colorsConst.primary),
@@ -1070,22 +1084,6 @@ class _ProductPageState extends State<ProductPage> {
                                                                                 colors: colorsConst.primary,
                                                                                 size: 14,
                                                                               )),
-                                                                        ),
-                                                                        10.width,
-                                                                        CustomLoadingButton(
-                                                                          callback: (){
-                                                                            final p = context.read<BillingProvider>();
-                                                                            p.deleteProduct(context,productCtr.selectedPrdIds);
-                                                                          },
-                                                                          height: 35,
-                                                                          isLoading: true,
-                                                                          backgroundColor: colorsConst.primary,
-                                                                          radius: 2,
-                                                                          width: 80,
-                                                                          controller: controllers.productCtr,
-                                                                          isImage: false,
-                                                                          text: "Delete",
-                                                                          textColor: Colors.white,
                                                                         ),
                                                                       ],
                                                                     ),
@@ -1117,6 +1115,21 @@ class _ProductPageState extends State<ProductPage> {
                                                                     Row(
                                                                       mainAxisAlignment: MainAxisAlignment.end,
                                                                       children: [
+                                                                        CustomLoadingButton(
+                                                                          callback: (){
+                                                                            context.read<BillingProvider>().manageProduct(context,p.id,p.isSheet.toString()=="1"?"2":"1",p.pTitle.toString(),p.outPrice.toString());
+                                                                          },
+                                                                          height: 35,
+                                                                          isLoading: true,
+                                                                          backgroundColor: colorsConst.primary,
+                                                                          radius: 2,
+                                                                          width: 80,
+                                                                          controller: controllers.productCtr,
+                                                                          isImage: false,
+                                                                          text: "Yes",
+                                                                          textColor: Colors.white,
+                                                                        ),
+                                                                        10.width,
                                                                         Container(
                                                                           decoration: BoxDecoration(
                                                                               border: Border.all(color: colorsConst.primary),
@@ -1139,21 +1152,6 @@ class _ProductPageState extends State<ProductPage> {
                                                                                 colors: colorsConst.primary,
                                                                                 size: 14,
                                                                               )),
-                                                                        ),
-                                                                        10.width,
-                                                                        CustomLoadingButton(
-                                                                          callback: (){
-                                                                            context.read<BillingProvider>().manageProduct(context,p.id,p.isSheet.toString()=="1"?"2":"1",p.pTitle.toString(),p.outPrice.toString());
-                                                                          },
-                                                                          height: 35,
-                                                                          isLoading: true,
-                                                                          backgroundColor: colorsConst.primary,
-                                                                          radius: 2,
-                                                                          width: 80,
-                                                                          controller: controllers.productCtr,
-                                                                          isImage: false,
-                                                                          text: "Yes",
-                                                                          textColor: Colors.white,
                                                                         ),
                                                                       ],
                                                                     ),

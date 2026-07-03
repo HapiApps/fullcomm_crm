@@ -1244,8 +1244,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   }
 
   var selectedCallRange = Rxn<DateTimeRange>();
-  var selectedMailRange = Rxn<DateTimeRange>();
-  var selectedMeetRange = Rxn<DateTimeRange>();
+  // var selectedMailRange = Rxn<DateTimeRange>();
+  // var selectedMeetRange = Rxn<DateTimeRange>();
   var selectedReminderRange = Rxn<DateTimeRange>();
   var reminderList = <ReminderModel>[].obs;
   var selectedReminderIds = <String>[].obs;
@@ -1347,8 +1347,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         return null;
       },
       initialDate: selectedMonthTarget.value ?? now,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(now.year, now.month + 1, 0),
+      firstDate: DateTime(2026),
+      lastDate: DateTime(DateTime.now().year + 1,DateTime.now().month,DateTime.now().day),
     ).then((selected) {
       if (selected != null) {
         sortByKey.value = 'Custom Month';
@@ -1393,9 +1393,15 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
                 width: 350,
                 child: SfDateRangePicker(
                   backgroundColor: const Color(0xffFFFCF9),
-                  minDate: DateTime(2023),
-                  maxDate: DateTime.now(),
+                  minDate: DateTime(2026),
+                  maxDate: DateTime(DateTime.now().year + 1,DateTime.now().month,DateTime.now().day),
                   selectionMode: DateRangePickerSelectionMode.extendableRange,
+                  initialSelectedRange: remController.selectedCallRange.value == null
+                      ? null
+                      : PickerDateRange(
+                    remController.selectedCallRange.value!.start,
+                    remController.selectedCallRange.value!.end,
+                  ),
                   selectionShape: DateRangePickerSelectionShape.circle,
                   selectionRadius: 18,
                   selectionColor: const Color(0xFF004AAD),
@@ -2880,8 +2886,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
               break;
 
             case 'Custom Range':
-              if (selectedMeetRange.value != null) {
-                final range = selectedMeetRange.value!;
+              if (selectedCallRange.value != null) {
+                final range = selectedCallRange.value!;
                 final start = normalize(range.start);
                 final end = normalize(range.end);
 
@@ -3078,8 +3084,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
               break;
 
             case 'Custom Range':
-              if (selectedMeetRange.value != null) {
-                final range = selectedMeetRange.value!;
+              if (selectedCallRange.value != null) {
+                final range = selectedCallRange.value!;
                 final start = normalize(range.start);
                 final end = normalize(range.end);
 
@@ -4215,9 +4221,9 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           break;
 
         case 'Custom Range':
-          if (selectedMailRange.value != null) {
+          if (selectedCallRange.value != null) {
 
-            final range = selectedMailRange.value!;
+            final range = selectedCallRange.value!;
 
             filteredList = filteredList.where((mail) {
 

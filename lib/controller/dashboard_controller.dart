@@ -110,14 +110,20 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
                 width: 350,
                 child: SfDateRangePicker(
                   backgroundColor: const Color(0xffFFFCF9),
-                  minDate: DateTime(2023),
-                  maxDate: DateTime(2050),
+                  minDate: DateTime(2026),
+                  maxDate: DateTime(DateTime.now().year + 1,DateTime.now().month,DateTime.now().day),
                   selectionMode: DateRangePickerSelectionMode.range,
                   selectionColor: const Color(0xFF004AAD),
                   startRangeSelectionColor: const Color(0xFF004AAD),
                   endRangeSelectionColor: const Color(0xFF004AAD),
                   rangeSelectionColor: const Color(0x22004AAD),
-
+                  // 👇 Already selected range
+                  initialSelectedRange: dashController.selectedRange.value == null
+                      ? null
+                      : PickerDateRange(
+                    dashController.selectedRange.value!.start,
+                    dashController.selectedRange.value!.end,
+                  ),
                   onSelectionChanged:
                       (DateRangePickerSelectionChangedArgs args) {
                     if (args.value is PickerDateRange) {
@@ -191,7 +197,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
                           );
 
                           /// meeting filter
-                          remController.selectedMeetRange.value = tempRange;
+                          remController.selectedCallRange.value = tempRange;
                           remController.selectedMeetSortBy.value =
                           "Custom Range";
 

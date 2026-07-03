@@ -1895,6 +1895,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                     onChanged: (AllCustomersObj? customer) {
                                                       setState(() {
                                                         controllers.selectCustomer(customer!);
+                                                        billingProvider.dropdownFocusNode.requestFocus();
                                                       });
                                                     },),
                                                 ],
@@ -2867,7 +2868,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                     children: [
                                                                                       TextButton(
                                                                                           onPressed: () {
-                                                                                            controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                            if(settingsController.templateList.isEmpty){
+                                                                                              utils.showToast("No templates found",Colors.red);
+                                                                                            }else{
+                                                                                              controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                            }
                                                                                           },
                                                                                           child: CustomText(
                                                                                             text: "Get From Template",
@@ -3250,7 +3255,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                     children: [
                                                                                       TextButton(
                                                                                           onPressed: () {
-                                                                                            controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                            if(settingsController.templateList.isEmpty){
+                                                                                              utils.showToast("No templates found",Colors.red);
+                                                                                            }else{
+                                                                                              controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                            }
                                                                                           },
                                                                                           child: CustomText(
                                                                                             text: "Get From Template",
@@ -3651,7 +3660,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                     children: [
                                                                                       TextButton(
                                                                                           onPressed: () {
-                                                                                            controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                            if(settingsController.templateList.isEmpty){
+                                                                                              utils.showToast("No templates found",Colors.red);
+                                                                                            }else{
+                                                                                              controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                            }
                                                                                           },
                                                                                           child: CustomText(
                                                                                             text: "Get From Template",
@@ -4127,7 +4140,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                                 alignment: Alignment.topRight,
                                                                                                 child: TextButton(
                                                                                                     onPressed: () {
-                                                                                                      controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                                      if(settingsController.templateList.isEmpty){
+                                                                                                        utils.showToast("No templates found",Colors.red);
+                                                                                                      }else{
+                                                                                                        controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                                      }
                                                                                                     },
                                                                                                     child: CustomText(
                                                                                                       text: "Get From Template",
@@ -4529,7 +4546,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                                                 alignment: Alignment.topRight,
                                                                                                 child: TextButton(
                                                                                                     onPressed: () {
-                                                                                                      controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                                      if(settingsController.templateList.isEmpty){
+                                                                                                        utils.showToast("No templates found",Colors.red);
+                                                                                                      }else{
+                                                                                                        controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                                                      }
                                                                                                     },
                                                                                                     child: CustomText(
                                                                                                       text: "Get From Template",

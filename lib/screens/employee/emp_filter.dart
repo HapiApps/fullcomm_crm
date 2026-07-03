@@ -3,7 +3,11 @@ import 'package:fullcomm_crm/billing_utils/sized_box.dart';
 import 'package:get/get.dart';
 import '../../common/styles/decoration.dart';
 import '../../components/Customtext.dart';
+import '../../components/keyboard_search.dart';
+import '../../controller/controller.dart';
 import '../../controller/emp_report_controller.dart';
+import '../../models/all_customers_obj.dart';
+import '../../models/employee_details.dart';
 
 class EmployeeFilter extends StatefulWidget {
   const EmployeeFilter({super.key});
@@ -22,11 +26,49 @@ class _EmployeeFilterState extends State<EmployeeFilter> {
         color: Colors.white,radius: 12,borderColor: Colors.grey.shade200
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
 
           Expanded(
-            child: _dropdown(
-              "Employee",
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CustomText(text: "Employee Name", isCopy: false,isBold: true,),10.height,
+                SizedBox(
+                  width: 480,
+                  height: 40,
+                  child: KeyboardDropdownField<AllEmployeesObj>(
+                    items: controllers.employees,
+                    hintText: "Employee Name",
+                    borderRadius: 5,
+                    borderColor: Colors.grey.shade200,
+                    labelBuilder: (customer) =>
+                    '${customer.name} ${customer.phoneNo}',
+                    itemBuilder: (customer) =>
+                        Container(
+                          width: 300,
+                          alignment: Alignment.topLeft,
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          child: CustomText(
+                            text:
+                            '${customer.name} , ${customer.phoneNo}',
+                            colors: Colors.black,
+                            size: 14,
+                            isCopy: false,
+                            textAlign: TextAlign.start,
+                          ),
+                        ),
+                    textEditingController: controllers.cusController,
+                    onSelected: (value) {
+                      repCtr.empId.value=value.id;
+                      repCtr.getWholeReport(repCtr.empId.value);
+                    },
+                    onClear: () {
+                      controllers.clearSelectedCustomer();
+                    },
+                  ),
+                ),
+              ],
             ),
           ),
 

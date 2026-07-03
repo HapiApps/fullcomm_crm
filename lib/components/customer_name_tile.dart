@@ -986,6 +986,9 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                             /// REASON FIELD
                                             TextField(
                                               controller: reasonController,
+                                              onChanged: (value){
+                                                controllers.firstCaps(value, reasonController);
+                                              },
                                               decoration: const InputDecoration(
                                                 labelText: "Reason",
                                                 border: OutlineInputBorder(),
@@ -1037,7 +1040,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                                   controllers.idList.add(widget.id.toString());
 
                                                   await apiService.insertPromoteListAPI(
-                                                    context,
+                                                    context,reasonController.text,
                                                     stageId!,
                                                     selectedStage ?? "",
                                                     widget.list,

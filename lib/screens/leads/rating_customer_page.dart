@@ -318,6 +318,9 @@ class _RatingPageState extends State<RatingPage> {
                                       /// REASON FIELD
                                       TextField(
                                         controller: reasonController,
+                                        onChanged: (value){
+                                          controllers.firstCaps(value, reasonController);
+                                        },
                                         decoration:
                                         const InputDecoration(
                                           labelText: "Reason",
@@ -379,7 +382,7 @@ class _RatingPageState extends State<RatingPage> {
 
                                             await apiService
                                                 .insertPromoteListAPI(
-                                              context,
+                                              context,reasonController.text,
                                               stageId.toString(),
                                               selectedStage,
                                               controllers.ratingList,
@@ -511,6 +514,9 @@ class _RatingPageState extends State<RatingPage> {
                                       /// REASON FIELD
                                       TextField(
                                         controller: reasonController,
+                                        onChanged: (value){
+                                          controllers.firstCaps(value, reasonController);
+                                        },
                                         decoration:
                                         const InputDecoration(
                                           labelText: "Reason",
@@ -572,7 +578,7 @@ class _RatingPageState extends State<RatingPage> {
 
                                             await apiService
                                                 .insertPromoteListAPI(
-                                              context,
+                                              context,reasonController.text,
                                               stageId.toString(),
                                               selectedStage,
                                               controllers.ratingList,

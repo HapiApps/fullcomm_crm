@@ -694,7 +694,11 @@ class Utils {
                         alignment: Alignment.topRight,
                         child: TextButton(
                             onPressed: () {
-                              controllers.isTemplate.value = !controllers.isTemplate.value;
+                              if(settingsController.templateList.isEmpty){
+                                utils.showToast("No templates found",Colors.red);
+                              }else{
+                                controllers.isTemplate.value = !controllers.isTemplate.value;
+                              }
                             },
                             child: CustomText(
                               text: "Get From Template",

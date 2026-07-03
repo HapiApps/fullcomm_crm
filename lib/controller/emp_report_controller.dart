@@ -19,6 +19,7 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
   String betweenDates="";
   var stDate="".obs;
   var enDate="".obs;
+  var empId="".obs;
   void showDatePickerDialog(BuildContext context) {
     DateTime today = DateTime.now();
     selectedDate = PickerDateRange(today, today);
@@ -38,7 +39,8 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
             height: 300, // Adjust height as needed
             width: 300, // Adjust width as needed
             child: SfDateRangePicker(
-              minDate: DateTime.now(), // Disable past dates
+              minDate: DateTime(2026),
+              maxDate: DateTime.now(),
               onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
                 selectedDate = args.value;
                 stDate.value="";
@@ -89,6 +91,9 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
 
                     List<String> formattedDates = datesBetween.map((date) => dateFormat.format(date)).toList();
                     betweenDates = formattedDates.join(' || ');
+                    if(empId.value!=""){
+                      getWholeReport(empId.value);
+                    }
                     Navigator.of(context).pop();
                   },
                 ),
@@ -161,8 +166,6 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
     thisMonthTitle = DateFormat('MMMM yyyy').format(thisMonthStart);
   }
 
-  var date1="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}".obs;
-  var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}".obs;
   var totalMails       = "0".obs;
   var totalMeetings       = "0".obs;
   var totalCalls       = "0".obs;
@@ -170,7 +173,7 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
   var totalSuspects    = "0".obs;
   var leadReport    = [].obs;
   var comparisonReport    = [].obs;
-  var activeReport    = [].obs;
+  var activeReport    = {}.obs;
   var firstCount = 0.obs;
   List<IconData> activityIcons = [
     Icons.call,
@@ -198,9 +201,10 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
   // previousHeading = "";
   // }
 
-
-  Future getWholeReport() async {
+var refreshData=true.obs;
+  Future getWholeReport(String id) async {
     try {
+      refreshData.value=false;
       String lastWeekFrom = DateFormat('yyyy-MM-dd').format(lastWeekStart);
       String lastWeekTo   = DateFormat('yyyy-MM-dd').format(lastWeekEnd);
 
@@ -215,10 +219,10 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
       Map data = {
         "cos_id": controllers.storage.read("cos_id"),
         "role": controllers.storage.read("role"),
-        "id": controllers.storage.read("id"),
+        "id": id,
         "action": "emp_report",
-        "stDate": date1.value,
-        "enDate": date2.value,
+        "stDate": DateFormat('yyyy-MM-dd').format(DateFormat('dd-MM-yyyy').parse(stDate.value)),
+        "enDate": DateFormat('yyyy-MM-dd').format(DateFormat('dd-MM-yyyy').parse(enDate.value==""?stDate.value:enDate.value)),
         "lead_status": controllers.leadCategoryList.last.leadStatus,
 
         "lastWeekFrom": lastWeekFrom,
@@ -256,7 +260,7 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
         final refreshed = await controllers.refreshToken();
 
         if (refreshed) {
-          return getWholeReport();
+          return getWholeReport(id);
         } else {
           controllers.setLogOut();
         }
@@ -303,12 +307,14 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
         List<dynamic> comReport = List<dynamic>.from(response['data']['comparison_report']);
         comparisonReport.value=comReport;
 
-        List<dynamic> acReport = List<dynamic>.from(response['data']['activity_summary']);
+        Map acReport = response['data']['activity_summary'];
         activeReport.value=acReport;
+        refreshData.value=true;
       } else {
         // debugPrint("================================================");
         // debugPrint("API FAILED");
         // debugPrint("================================================");
+        refreshData.value=true;
         throw Exception('Failed to load dashboard report');
       }
     } catch (e) {
@@ -316,6 +322,7 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
       // debugPrint("CATCH ERROR");
       // debugPrint("================================================");
       // debugPrint(e.toString());
+      refreshData.value=true;
       throw Exception(
           'Failed to load dashboard report $e');
     }

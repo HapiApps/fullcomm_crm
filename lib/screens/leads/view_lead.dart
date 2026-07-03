@@ -436,6 +436,9 @@ void checkType(){
                                                                               /// REASON FIELD
                                                                               TextField(
                                                                                 controller: reasonController,
+                                                                                onChanged: (value){
+                                                                                  controllers.firstCaps(value, reasonController);
+                                                                                },
                                                                                 decoration: const InputDecoration(
                                                                                   labelText: "Reason",
                                                                                   border: OutlineInputBorder(),
@@ -487,7 +490,7 @@ void checkType(){
                                                                                     controllers.idList.add(widget.id.toString());
 
                                                                                     await apiService.insertPromoteListAPI(
-                                                                                      context,
+                                                                                      context,reasonController.text,
                                                                                       stageId!,
                                                                                       selectedStage ?? "",
                                                                                       widget.list,
@@ -1337,14 +1340,20 @@ void checkType(){
                                                                         Row(
                                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                           children: [
-                                                                            Container(
-                                                                              decoration: customDecoration.baseBackgroundDecoration(
-                                                                                color: colorsConst.primary.withOpacity(0.2),radius: 5
-                                                                              ),
-                                                                                child: Padding(
-                                                                                  padding: const EdgeInsets.all(5),
-                                                                                  child: CustomText(text:dataValue["category"] ?? "",isCopy: false,isBold: true,),
-                                                                                )),
+                                                                            Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Container(
+                                                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                                                    color: colorsConst.primary.withOpacity(0.2),radius: 5
+                                                                                  ),
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.all(5),
+                                                                                      child: CustomText(text:dataValue["category"] ?? "",isCopy: false,isBold: true,),
+                                                                                    )),
+                                                                                CustomText(text:"Reason : ${dataValue["reason"] ?? ""}",isCopy: false),
+                                                                              ],
+                                                                            ),
                                                                             CustomText(text:dataValue["created_by"] ?? "",isCopy: false,),
                                                                             CustomText(
                                                                               text: dataValue["created_ts"] == null

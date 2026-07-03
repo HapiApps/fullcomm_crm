@@ -240,10 +240,10 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       initialDate: selectedMonthTarget.value ?? now,
 
       // ✅ Starting limit
-      firstDate: DateTime(2020),
+      firstDate: DateTime(2026),
 
       // ✅ Allow full current month (Important)
-      lastDate: DateTime(now.year, now.month + 1, 0),
+      lastDate: DateTime(DateTime.now().year + 1,DateTime.now().month,DateTime.now().day),
 
     ).then((selected) {
       if (selected != null) {
@@ -518,10 +518,16 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
                 width: 350,
                 child: SfDateRangePicker(
                   backgroundColor: const Color(0xffFFFCF9),
-                  minDate: DateTime(2023),
-                  maxDate: DateTime.now(),
+                  minDate: DateTime(2026),
+                  maxDate: DateTime(DateTime.now().year + 1,DateTime.now().month,DateTime.now().day),
                   selectionMode: DateRangePickerSelectionMode.extendableRange,
                   selectionShape: DateRangePickerSelectionShape.circle,
+                  initialSelectedRange: controllers.selectedRange.value == null
+                      ? null
+                      : PickerDateRange(
+                    controllers.selectedRange.value!.start,
+                    controllers.selectedRange.value!.end,
+                  ),
                   selectionRadius: 18,
                   selectionColor: const Color(0xFF004AAD),
                   startRangeSelectionColor: const Color(0xFF004AAD),

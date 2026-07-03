@@ -1358,6 +1358,9 @@ class MailUtils {
                   const SizedBox(height: 15),
                   TextField(
                     controller: reasonController,
+                    onChanged: (value){
+                      controllers.firstCaps(value, reasonController);
+                    },
                     decoration: InputDecoration(
                       labelText: "Reason",
                       border: OutlineInputBorder(),

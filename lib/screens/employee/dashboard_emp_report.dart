@@ -28,7 +28,7 @@ class _EmployeePerformanceTableState extends State<EmployeePerformanceTable> {
   Widget build(BuildContext context) {
     return Container(
       width: widget.width,
-      height: 300,
+      height: 310,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),

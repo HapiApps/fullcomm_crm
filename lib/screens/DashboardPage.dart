@@ -115,7 +115,7 @@ class _DashboardPageState extends State<DashboardPage>
           ),
         ),
       );
-      remController.selectedMeetRange=selectedMeetRange;
+      remController.selectedCallRange=selectedMeetRange;
       remController.selectedReminderRange=selectedMeetRange;
       _focusNode.requestFocus();
       controllers.insertSeriesNo(context,true);
@@ -966,7 +966,7 @@ void checkDate(){
                                                     children: [
                                                       InkWell(
                                                         onTap: (){
-                                                          final currentRange =remController.selectedMeetRange.value;
+                                                          final currentRange =remController.selectedCallRange.value;
                                                           if (currentRange != null) {
                                                             final difference =currentRange.end.difference(currentRange.start);
 
@@ -979,7 +979,7 @@ void checkDate(){
                                                               Duration(days: difference.inDays + 1),
                                                             );
 
-                                                            remController.selectedMeetRange.value =
+                                                            remController.selectedCallRange.value =
                                                                 DateTimeRange(
                                                                   start: newStart,
                                                                   end: newEnd,
@@ -999,7 +999,7 @@ void checkDate(){
                                                         onTap: (){
                                                           remController.showDatePickerDialog(context, (pickedRange) {
                                                             remController.selectedMeetSortBy.value = "Custom Range";
-                                                            remController.selectedMeetRange.value = pickedRange;
+                                                            remController.selectedCallRange.value = pickedRange;
                                                             remController.dashboardMeetings(
                                                               searchText: controllers.searchText.value.toLowerCase(),
                                                               callType: controllers.selectMeetingType.value,
@@ -1009,7 +1009,7 @@ void checkDate(){
                                                           });
                                                         },
                                                         child: Obx(() {
-                                                          final range = remController.selectedMeetRange.value;
+                                                          final range = remController.selectedCallRange.value;
                                                           if (range == null) {
                                                             return CustomText(
                                                               text:DateFormat("dd-MM-yyyy").format(DateTime.now()),isCopy: false,
@@ -1030,7 +1030,7 @@ void checkDate(){
                                                       InkWell(
                                                         onTap: (){
                                                           final currentRange =
-                                                              remController.selectedMeetRange.value;
+                                                              remController.selectedCallRange.value;
 
                                                           if (currentRange != null) {
 
@@ -1052,7 +1052,7 @@ void checkDate(){
                                                               return;
                                                             }
 
-                                                            remController.selectedMeetRange.value =
+                                                            remController.selectedCallRange.value =
                                                                 DateTimeRange(
                                                                   start: newStart,
                                                                   end: newEnd,
@@ -1914,45 +1914,9 @@ void checkDate(){
                                 ),
                                 20.height,
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    SizedBox(
-                                      width: width / 4,
-                                      height: 300,
-                                      child: LeadPieCard(
-                                        // title: "Lead Distribution",
-                                        // subtitle: "Breakdown by current stage",
-                                        // total: controllers.allLeadList.length,
-                                          data: [
-                                            for (int i = 0; i < dashController.leadReport.length; i++)
-                                              if ((double.tryParse(
-                                                  dashController.leadReport[i]["customer_count"].toString()) ??
-                                                  0) >
-                                                  0)
-                                                PieData(
-                                                  label: dashController.leadReport[i]["category"] ?? "",
-                                                  value: double.tryParse(
-                                                      dashController.leadReport[i]["customer_count"].toString()) ??
-                                                      0,
-                                                  color: controllers.leadColors[i],
-                                                ),
-                                          ]
-                                      ),
-                                    ),15.width,
-                                    if(dashController.customerStatusReport.isNotEmpty)
-                                    CustomerActivityCard(width: width/4,),15.width,
-                                    EmployeePerformanceTable(width: width/2.3,),
-                                    SizedBox(
-                                      width: width/70,
-                                    )
-                                  ],
-                                ),
-                                20.height,
-                                Row(
                                   children: [
                                     Container(
-                                      width: width/1.8,
+                                      width: width/1.97,
                                       padding: const EdgeInsets.all(16),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
@@ -2042,15 +2006,15 @@ void checkDate(){
                                           ),5.height,
                                           Container(
                                             color: Colors.white,
-                                            width: width/1.8,
+                                            width: width/1.97,
                                             child: Table(
                                               columnWidths: {
                                                 0: FixedColumnWidth(100),
                                                 1: FixedColumnWidth(100),
-                                                2: FixedColumnWidth(100),
+                                                2: FixedColumnWidth(80),
                                                 3: FixedColumnWidth(100),
-                                                4: FixedColumnWidth(100),
-                                                5: FixedColumnWidth(100),
+                                                4: FixedColumnWidth(80),
+                                                5: FixedColumnWidth(80),
                                               },
                                               border: TableBorder(
                                                 horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -2287,7 +2251,7 @@ void checkDate(){
                                           ),
                                           Container(
                                             color: Colors.white,
-                                            width: width/1.8,
+                                            width: width/1.97,
                                             height: 200,
                                             child: remController.callMailsDetailsList.isEmpty?
                                             Center(
@@ -2308,10 +2272,10 @@ void checkDate(){
                                                   columnWidths: {
                                                     0: FixedColumnWidth(100),
                                                     1: FixedColumnWidth(100),
-                                                    2: FixedColumnWidth(100),
+                                                    2: FixedColumnWidth(80),
                                                     3: FixedColumnWidth(100),
-                                                    4: FixedColumnWidth(100),
-                                                    5: FixedColumnWidth(100),
+                                                    4: FixedColumnWidth(80),
+                                                    5: FixedColumnWidth(80),
                                                   },
                                                   border: TableBorder(
                                                     horizontalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
@@ -2439,6 +2403,42 @@ void checkDate(){
                                       ),
                                     ),
                                     15.width,
+                                    EmployeePerformanceTable(width: width/2.3,),
+                                    SizedBox(
+                                      width: width/70,
+                                    )
+                                  ],
+                                ),
+                                20.height,
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      width: width /3.5,
+                                      height: 300,
+                                      child: LeadPieCard(
+                                        // title: "Lead Distribution",
+                                        // subtitle: "Breakdown by current stage",
+                                        // total: controllers.allLeadList.length,
+                                          data: [
+                                            for (int i = 0; i < dashController.leadReport.length; i++)
+                                              if ((double.tryParse(
+                                                  dashController.leadReport[i]["customer_count"].toString()) ??
+                                                  0) >
+                                                  0)
+                                                PieData(
+                                                  label: dashController.leadReport[i]["category"] ?? "",
+                                                  value: double.tryParse(
+                                                      dashController.leadReport[i]["customer_count"].toString()) ??
+                                                      0,
+                                                  color: controllers.leadColors[i],
+                                                ),
+                                          ]
+                                      ),
+                                    ),15.width,
+                                    if(dashController.customerStatusReport.isNotEmpty)
+                                    CustomerActivityCard(width: width/3.5,),15.width,
                                     InkWell(
                                       onTap: (){
                                         remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
@@ -2453,7 +2453,7 @@ void checkDate(){
                                         controllers.selectedIndex.value = 101;
                                       },
                                       child: SizedBox(
-                                        width: width/2.6,
+                                        width: width/2.75,
                                         height: 310,
                                         child: CustomerStatusCard(
                                           items: [

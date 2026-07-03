@@ -43,7 +43,7 @@ class _OrderPageState extends State<OrderPage> {
         sortField: controllers.sortFieldCallActivity.value,
         sortOrder: controllers.sortOrderCallActivity.value,
         selectedMonth: productCtr.selectedCallMonth.value,
-        selectedRange: productCtr.selectedCallRange.value,
+        selectedRange: remController.selectedCallRange.value,
         selectedDateFilter: productCtr.selectedCallSortBy.value,
       );
     });
@@ -56,7 +56,7 @@ class _OrderPageState extends State<OrderPage> {
     },
     {
       "key": "order_no",
-      "title": "Order No",
+      "title": "Invoice No",
       "width": 150.0,
     },
     {
@@ -227,7 +227,7 @@ class _OrderPageState extends State<OrderPage> {
                       ),
                       DateFilterBar(
                         selectedSortBy: productCtr.selectedCallSortBy,
-                        selectedRange: productCtr.selectedCallRange,
+                        selectedRange: remController.selectedCallRange,
                         selectedMonth: productCtr.selectedCallMonth,
                         focusNode: _focusNode,
                         onDaysSelected: () {
@@ -236,7 +236,7 @@ class _OrderPageState extends State<OrderPage> {
                             sortField: controllers.sortFieldCallActivity.value,
                             sortOrder: controllers.sortOrderCallActivity.value,
                             selectedMonth: productCtr.selectedCallMonth.value,
-                            selectedRange: productCtr.selectedCallRange.value,
+                            selectedRange: remController.selectedCallRange.value,
                             selectedDateFilter: productCtr.selectedCallSortBy.value,
                           );
                         },
@@ -251,7 +251,7 @@ class _OrderPageState extends State<OrderPage> {
                                 sortField: controllers.sortFieldCallActivity.value,
                                 sortOrder: controllers.sortOrderCallActivity.value,
                                 selectedMonth: productCtr.selectedCallMonth.value,
-                                selectedRange: productCtr.selectedCallRange.value,
+                                selectedRange: remController.selectedCallRange.value,
                                 selectedDateFilter: productCtr.selectedCallSortBy.value,
                               );
                             },
@@ -259,13 +259,13 @@ class _OrderPageState extends State<OrderPage> {
                         },
                         onSelectDateRange: (ctx) {
                           remController.showDatePickerDialog(ctx, (pickedRange) {
-                            productCtr.selectedCallRange.value = pickedRange;
+                            remController.selectedCallRange.value = pickedRange;
                             productCtr.filterAndSortOrders(
                               searchText: controllers.searchText.value.toLowerCase(),
                               sortField: controllers.sortFieldCallActivity.value,
                               sortOrder: controllers.sortOrderCallActivity.value,
                               selectedMonth: productCtr.selectedCallMonth.value,
-                              selectedRange: productCtr.selectedCallRange.value,
+                              selectedRange: remController.selectedCallRange.value,
                               selectedDateFilter: productCtr.selectedCallSortBy.value,
                             );
                           });
@@ -430,7 +430,7 @@ class _OrderPageState extends State<OrderPage> {
                                                                 selectedMonth:
                                                                 productCtr.selectedCallMonth.value,
                                                                 selectedRange:
-                                                                productCtr.selectedCallRange.value,
+                                                                remController.selectedCallRange.value,
                                                                 selectedDateFilter:
                                                                 productCtr.selectedCallSortBy.value,
                                                               );
@@ -533,7 +533,7 @@ class _OrderPageState extends State<OrderPage> {
                                                               selectedMonth:
                                                               productCtr.selectedCallMonth.value,
                                                               selectedRange:
-                                                              productCtr.selectedCallRange.value,
+                                                              remController.selectedCallRange.value,
                                                               selectedDateFilter:
                                                               productCtr.selectedCallSortBy.value,
                                                             );

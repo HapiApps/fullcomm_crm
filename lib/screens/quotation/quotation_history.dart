@@ -71,7 +71,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
         sortField: controllers.sortFieldCallActivity.value,
         sortOrder: controllers.sortOrderCallActivity.value,
         selectedMonth: productCtr.selectedCallMonth.value,
-        selectedRange: productCtr.selectedCallRange.value,
+        selectedRange: remController.selectedCallRange.value,
         selectedDateFilter: productCtr.selectedCallSortBy.value,
       );
     });
@@ -232,7 +232,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                 ),
                                 DateFilterBar(
                                   selectedSortBy: productCtr.selectedCallSortBy,
-                                  selectedRange: productCtr.selectedCallRange,
+                                  selectedRange: remController.selectedCallRange,
                                   selectedMonth: productCtr.selectedCallMonth,
                                   focusNode: _focusNode,
                                   onDaysSelected: () {
@@ -245,7 +245,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                           .value,
                                       selectedMonth: productCtr.selectedCallMonth
                                           .value,
-                                      selectedRange: productCtr.selectedCallRange
+                                      selectedRange: remController.selectedCallRange
                                           .value,
                                       selectedDateFilter: productCtr
                                           .selectedCallSortBy.value,
@@ -277,7 +277,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                   onSelectDateRange: (ctx) {
                                     remController.showDatePickerDialog(
                                         ctx, (pickedRange) {
-                                      productCtr.selectedCallRange.value =
+                                      remController.selectedCallRange.value =
                                           pickedRange;
                                       productCtr.filterAndSortQuotations(
                                         searchText: controllers.searchText.value
@@ -288,7 +288,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                             .value,
                                         selectedMonth: productCtr.selectedCallMonth
                                             .value,
-                                        selectedRange: productCtr.selectedCallRange
+                                        selectedRange: remController.selectedCallRange
                                             .value,
                                         selectedDateFilter: productCtr
                                             .selectedCallSortBy.value,
@@ -1754,7 +1754,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                                           10.width,
                                                                                           CustomLoadingButton(
                                                                                             callback: (){
-                                                                                              apiService.confirmOrderAPI(context,data.id.toString(),data.cusId.toString(),
+                                                                                              apiService.confirmOrderAPI(context,data.iNo.toString(),data.id.toString(),data.cusId.toString(),
                                                                                                 data.totalAmt.toString(),data.name.toString(),data.number.toString());
                                                                                             },
                                                                                             height: 35,

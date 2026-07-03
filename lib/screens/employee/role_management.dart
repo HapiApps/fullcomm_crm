@@ -836,6 +836,22 @@ class _RoleManagementState extends State<RoleManagement> {
                                                     Row(
                                                       mainAxisAlignment: MainAxisAlignment.end,
                                                       children: [
+                                                        CustomLoadingButton(
+                                                          callback: ()async{
+                                                            settingsController.selectedRoleIds.add(role.id.toString());
+                                                            settingsController.deleteRoleAPI(context);
+                                                          },
+                                                          height: 35,
+                                                          isLoading: true,
+                                                          backgroundColor: colorsConst.primary,
+                                                          radius: 2,
+                                                          width: 80,
+                                                          controller: controllers.productCtr,
+                                                          isImage: false,
+                                                          text: "Delete",
+                                                          textColor: Colors.white,
+                                                        ),
+                                                        10.width,
                                                         Container(
                                                           decoration: BoxDecoration(
                                                               border: Border.all(color: colorsConst.primary),
@@ -858,22 +874,6 @@ class _RoleManagementState extends State<RoleManagement> {
                                                                 size: 14,
                                                                 isCopy: false,
                                                               )),
-                                                        ),
-                                                        10.width,
-                                                        CustomLoadingButton(
-                                                          callback: ()async{
-                                                            settingsController.selectedRoleIds.add(role.id.toString());
-                                                            settingsController.deleteRoleAPI(context);
-                                                          },
-                                                          height: 35,
-                                                          isLoading: true,
-                                                          backgroundColor: colorsConst.primary,
-                                                          radius: 2,
-                                                          width: 80,
-                                                          controller: controllers.productCtr,
-                                                          isImage: false,
-                                                          text: "Delete",
-                                                          textColor: Colors.white,
                                                         ),
                                                       ],
                                                     ),

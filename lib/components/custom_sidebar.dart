@@ -703,7 +703,7 @@ class SidebarItem extends StatelessWidget {
             // remController.selectedReminderSortBy.value="All";
             // productCtr.selectedCallSortBy.value ="All";
             remController.selectedReminderRange.value=null;
-            remController.selectedMeetRange.value=null;
+            remController.selectedCallRange.value=null;
             controllers.changeTab(0);
             Navigator.push(
               context,

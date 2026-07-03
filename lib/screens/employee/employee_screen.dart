@@ -144,6 +144,24 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.end,
                                               children: [
+                                                CustomLoadingButton(
+                                                  callback: ()async{
+                                                    employeeProvider.employeeDelete(
+                                                      context: context,
+                                                      eIds: employeeProvider.selectedEmployeeIds,
+                                                    );
+                                                  },
+                                                  height: 35,
+                                                  isLoading: true,
+                                                  backgroundColor: colorsConst.primary,
+                                                  radius: 2,
+                                                  width: 80,
+                                                  controller: controllers.productCtr,
+                                                  isImage: false,
+                                                  text: "Delete",
+                                                  textColor: Colors.white,
+                                                ),
+                                                10.width,
                                                 Container(
                                                   decoration: BoxDecoration(
                                                       border: Border.all(color: colorsConst.primary),
@@ -166,24 +184,6 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                         size: 14,
                                                         isCopy: false,
                                                       )),
-                                                ),
-                                                10.width,
-                                                CustomLoadingButton(
-                                                  callback: ()async{
-                                                    employeeProvider.employeeDelete(
-                                                      context: context,
-                                                      eIds: employeeProvider.selectedEmployeeIds,
-                                                    );
-                                                  },
-                                                  height: 35,
-                                                  isLoading: true,
-                                                  backgroundColor: colorsConst.primary,
-                                                  radius: 2,
-                                                  width: 80,
-                                                  controller: controllers.productCtr,
-                                                  isImage: false,
-                                                  text: "Delete",
-                                                  textColor: Colors.white,
                                                 ),
                                               ],
                                             ),
@@ -605,6 +605,25 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                           Row(
                                                             mainAxisAlignment: MainAxisAlignment.end,
                                                             children: [
+                                                              CustomLoadingButton(
+                                                                callback: ()async{
+                                                                  employeeProvider.employeeDelete(
+                                                                      eId:staffData.id,
+                                                                      context: context
+                                                                  );
+
+                                                                },
+                                                                height: 35,
+                                                                isLoading: true,
+                                                                backgroundColor: colorsConst.primary,
+                                                                radius: 2,
+                                                                width: 80,
+                                                                controller: controllers.productCtr,
+                                                                isImage: false,
+                                                                text: "Delete",
+                                                                textColor: Colors.white,
+                                                              ),
+                                                              10.width,
                                                               Container(
                                                                 decoration: BoxDecoration(
                                                                     border: Border.all(color: colorsConst.primary),
@@ -628,25 +647,6 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                                       size: 14,
                                                                     )),
                                                               ),
-                                                              10.width,
-                                                              CustomLoadingButton(
-                                                                callback: ()async{
-                                                                  employeeProvider.employeeDelete(
-                                                                      eId:staffData.id,
-                                                                      context: context
-                                                                  );
-
-                                                                },
-                                                                height: 35,
-                                                                isLoading: true,
-                                                                backgroundColor: colorsConst.primary,
-                                                                radius: 2,
-                                                                width: 80,
-                                                                controller: controllers.productCtr,
-                                                                isImage: false,
-                                                                text: "Delete",
-                                                                textColor: Colors.white,
-                                                              ),
                                                             ],
                                                           ),
                                                         ],
@@ -661,7 +661,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                   )),
                                               IconButton(
                                                   onPressed: (){
-                                                    Get.to(EmployeeReportPage());
+                                                    Get.to(EmployeeReportPage(id:staffData.id.toString()));
                                                   },
                                                   icon: Icon(Icons.report_gmailerrorred_rounded)),
                                             ],

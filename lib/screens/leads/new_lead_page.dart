@@ -248,137 +248,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
                         mailUtils.bulkEmail(_focusNode, list: widget.list);
                       },
                       onPromote: () {
-                        // showDialog(
-                        //   context: context,
-                        //   builder: (context) {
-                        //     String selectedStage="";
-                        //     for (var i=0;i<controllers.leadCategoryList.length;i++){
-                        //       if(i==int.parse(widget.index)){
-                        //         selectedStage=controllers.leadCategoryList[i]["value"];
-                        //       }
-                        //     }
-                        //     bool isEdit=false;
-                        //     TextEditingController reasonController = TextEditingController();
-                        //     return StatefulBuilder(
-                        //       builder: (context, setState) {
-                        //         return AlertDialog(
-                        //           title: CustomText(
-                        //             text: "Move to Next Level",
-                        //             size: 18,
-                        //             isBold: true,
-                        //             isCopy: false,
-                        //             colors: colorsConst.textColor,
-                        //           ),
-                        //           content: Column(
-                        //             mainAxisSize: MainAxisSize.min,
-                        //             crossAxisAlignment: CrossAxisAlignment.start,
-                        //             children: [
-                        //               CustomText(
-                        //                 text: "Select Stage",
-                        //                 size: 14,
-                        //                 isBold: true,
-                        //                 isCopy: false,
-                        //               ),
-                        //               8.height,
-                        //               Container(
-                        //                 padding: EdgeInsets.symmetric(horizontal: 8),
-                        //                 decoration: BoxDecoration(
-                        //                   border: Border.all(color: colorsConst.primary),
-                        //                   borderRadius: BorderRadius.circular(4),
-                        //                 ),
-                        //                 child: DropdownButton<String>(
-                        //                   value: selectedStage,
-                        //                   isExpanded: true,
-                        //                   focusColor: Colors.transparent,
-                        //                   underline: SizedBox(),
-                        //                   items: controllers.leadCategoryList.map((item) {
-                        //                     return DropdownMenuItem<String>(
-                        //                       value: item.value,
-                        //                       child: Text(item.value),
-                        //                     );
-                        //                   }).toList(),
-                        //                   onChanged: (value) {
-                        //                     setState(() {
-                        //                       selectedStage = value!;
-                        //                       isEdit=true;
-                        //                     });
-                        //                   },
-                        //                 ),
-                        //               ),
-                        //               15.height,
-                        //               TextField(
-                        //                 controller: reasonController,
-                        //                 decoration: InputDecoration(
-                        //                   labelText: "Reason",
-                        //                   border: OutlineInputBorder(),
-                        //                 ),
-                        //               ),
-                        //             ],
-                        //           ),
-                        //           actions: [
-                        //             Row(
-                        //               mainAxisAlignment: MainAxisAlignment.end,
-                        //               children: [
-                        //                 Container(
-                        //                   decoration: BoxDecoration(
-                        //                       border: Border.all(color: colorsConst.primary),
-                        //                       color: Colors.white),
-                        //                   width: 80,
-                        //                   height: 25,
-                        //                   child: ElevatedButton(
-                        //                       style: ElevatedButton.styleFrom(
-                        //                         shape: const RoundedRectangleBorder(
-                        //                           borderRadius: BorderRadius.zero,
-                        //                         ),
-                        //                         backgroundColor: Colors.white,
-                        //                       ),
-                        //                       onPressed: () {
-                        //                         Navigator.pop(context);
-                        //                       },
-                        //                       child: CustomText(
-                        //                         text: "Cancel",
-                        //                         isCopy: false,
-                        //                         colors: colorsConst.primary,
-                        //                         size: 14,
-                        //                       )),
-                        //                 ),
-                        //                 10.width,
-                        //                 CustomLoadingButton(
-                        //                   callback: () async {
-                        //                     if (selectedStage == "Suspects") {
-                        //                       await apiService.insertLeadPromoteAPI(context, apiService.newLeadList);
-                        //                     } else if (selectedStage == "Qualified") {
-                        //                       await apiService.insertQualifiedAPI(context, apiService.newLeadList);
-                        //                     } else if (selectedStage == "Customers") {
-                        //                       await apiService.insertPromoteCustomerAPI(context, apiService.newLeadList);
-                        //                     }
-                        //                     // else {
-                        //                     //   await apiService.insertProspectsAPI(context, [deleteData]);
-                        //                     // }
-                        //                     setState(() {
-                        //                       apiService.newLeadList.clear();
-                        //                     });
-                        //                   },
-                        //                   height: 35,
-                        //                   isLoading: true,
-                        //                   backgroundColor:
-                        //                   colorsConst.primary,
-                        //                   radius: 2,
-                        //                   width: 80,
-                        //                   controller:
-                        //                   controllers.productCtr,
-                        //                   isImage: false,
-                        //                   text: "Promote",
-                        //                   textColor: Colors.white,
-                        //                 ),
-                        //               ],
-                        //             )
-                        //           ],
-                        //         );
-                        //       },
-                        //     );
-                        //   },
-                        // );
                         showDialog(
                           context: context,
                           builder: (context) {
@@ -479,6 +348,9 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                       /// REASON FIELD
                                       TextField(
                                         controller: reasonController,
+                                        onChanged: (value){
+                                          controllers.firstCaps(value, reasonController);
+                                        },
                                         decoration:
                                         const InputDecoration(
                                           labelText: "Reason",
@@ -540,7 +412,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
 
                                             await apiService
                                                 .insertPromoteListAPI(
-                                              context,
+                                              context,reasonController.text,
                                               stageId.toString(),
                                               selectedStage,
                                               widget.list,
@@ -672,6 +544,9 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                       /// REASON FIELD
                                       TextField(
                                         controller: reasonController,
+                                        onChanged: (value){
+                                          controllers.firstCaps(value, reasonController);
+                                        },
                                         decoration:
                                         const InputDecoration(
                                           labelText: "Reason",
@@ -733,7 +608,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
 
                                             await apiService
                                                 .insertPromoteListAPI(
-                                              context,
+                                              context,reasonController.text,
                                               stageId.toString(),
                                               selectedStage,
                                               widget.list,

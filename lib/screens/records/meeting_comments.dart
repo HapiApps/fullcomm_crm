@@ -1116,7 +1116,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                     ),
                     FutureDateFilterBar(
                       selectedSortBy: remController.selectedMeetSortBy,
-                      selectedRange: remController.selectedMeetRange,
+                      selectedRange: remController.selectedCallRange,
                       selectedMonth: remController.selectedMeetMonth,
                       focusNode: _focusNode,
                       onDaysSelected: () {
@@ -1145,7 +1145,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                       onSelectDateRange: (ctx) {
                         remController.showDatePickerDialog(ctx, (pickedRange) {
                           remController.selectedMeetSortBy.value = "Custom Range";
-                          remController.selectedMeetRange.value = pickedRange;
+                          remController.selectedCallRange.value = pickedRange;
                           remController.sortMeetings(
                             searchText: controllers.searchText.value.toLowerCase(),
                             callType: controllers.selectMeetingType.value,
