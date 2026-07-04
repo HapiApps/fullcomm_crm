@@ -83,144 +83,6 @@ class _LeadCategoriesState extends State<LeadCategories> {
               child: Column(
                 children: [
                   CustomAppbar(text:"Lead Categories",subText: "Add, edit and reorder categories used in the dashboard.",),
-
-                  // 10.height,
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  //   children: [
-                  //     Column(
-                  //       crossAxisAlignment: CrossAxisAlignment.start,
-                  //       children: [
-                  //
-                  //         Row(
-                  //           children: [
-                  //             IconButton(onPressed: (){
-                  //               if(isEdit.value==true||editIndex.value!=100){
-                  //                 showDialog(
-                  //                   context: context,
-                  //                   barrierDismissible: false,
-                  //                   builder: (context) {
-                  //                     return Dialog(
-                  //                       shape: RoundedRectangleBorder(
-                  //                         borderRadius: BorderRadius.circular(16),
-                  //                       ),
-                  //                       child: SizedBox(
-                  //                         width: 300,
-                  //                         child: Padding(
-                  //                           padding: const EdgeInsets.all(20),
-                  //                           child: Column(
-                  //                             mainAxisSize: MainAxisSize.min,
-                  //                             children: [
-                  //                               CustomText(
-                  //                                 text: "Confirm",
-                  //                                 size: 18,
-                  //                                 isBold: true, isCopy: false,
-                  //                               ),
-                  //                               10.height,
-                  //                               CustomText(
-                  //                                 text: "Are you sure you want to save changes?",
-                  //                                 size: 14,
-                  //                                 colors: Colors.black54,
-                  //                                 isCopy: false,
-                  //                               ),
-                  //                               20.height,
-                  //                               Row(
-                  //                                 mainAxisAlignment: MainAxisAlignment.end,
-                  //                                 children: [
-                  //                                   TextButton(
-                  //                                     onPressed: () {
-                  //                                       if(editIndex.value!=100){
-                  //                                         editIndex.value=100;
-                  //                                       }else{
-                  //                                         isEdit.value=false;
-                  //                                         controllers.allLeadCategoryList.assignAll(controllers.allLead);
-                  //                                       }
-                  //                                       Navigator.pop(context);
-                  //                                     },
-                  //                                     child: CustomText(
-                  //                                       text: "Cancel",
-                  //                                       size: 14,
-                  //                                       isBold: true,
-                  //                                       colors: Colors.grey,
-                  //                                       isCopy: false,
-                  //                                     ),
-                  //                                   ),
-                  //                                   10.width,
-                  //                                   ElevatedButton(
-                  //                                     style: ElevatedButton.styleFrom(
-                  //                                       backgroundColor: Colors.blue,
-                  //                                       shape: RoundedRectangleBorder(
-                  //                                         borderRadius: BorderRadius.circular(8),
-                  //                                       ),
-                  //                                     ),
-                  //                                     onPressed: () async {
-                  //                                       Navigator.pop(context);
-                  //                                       if(editIndex.value!=100){
-                  //                                         if (controllers.emailMessageCtr.text.trim().isEmpty) {
-                  //                                           utils.snackBar(
-                  //                                             context: context,
-                  //                                             msg: "Please enter lead category",
-                  //                                             color: Colors.red,
-                  //                                           );
-                  //                                           return;
-                  //                                         }else{
-                  //                                           addCategories(context,"update",controllers.allLeadCategoryList[editIndex.value].id,editIndex.value);
-                  //                                         }
-                  //                                       }else{
-                  //                                         await apiService.updateCategories(context);
-                  //                                       }
-                  //                                     },
-                  //                                     child: CustomText(
-                  //                                       text: "Save",
-                  //                                       size: 14,
-                  //                                       isBold: true,
-                  //                                       colors: Colors.white,
-                  //                                       isCopy: false,
-                  //                                     ),
-                  //                                   ),
-                  //                                 ],
-                  //                               )
-                  //                             ],
-                  //                           ),
-                  //                         ),
-                  //                       ),
-                  //                     );
-                  //                   },
-                  //                 );
-                  //               }else{
-                  //                 Get.back();
-                  //               }
-                  //             }, icon: Icon(Icons.arrow_back_ios_new,size: 15,)),10.width,
-                  //             CustomText(
-                  //               text: "",
-                  //               colors: colorsConst.textColor,
-                  //               size: 20,
-                  //               isCopy: true,
-                  //               isBold: true,
-                  //             ),
-                  //           ],
-                  //         ),
-                  //         Row(
-                  //           children: [
-                  //             IconButton(onPressed: null, icon: Icon(Icons.arrow_back_ios_new,size: 0,)),10.width,
-                  //             CustomText(
-                  //               text: "Add, edit and reorder categories used in the dashboard.",
-                  //               colors: Colors.grey,
-                  //               size: 15,
-                  //               isCopy: true,
-                  //             ),
-                  //           ],
-                  //         ),
-                  //         10.height,
-                  //       ],
-                  //     ),
-                  //   ],
-                  // ),
-                  // Divider(
-                  //   thickness: 1.5,
-                  //   color: colorsConst.secondary,
-                  // ),
-                  // 10.height,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -757,66 +619,14 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                         ),
                                         InkWell(
                                           onTap: (){
-                                            showDialog(
-                                                context: context,
-                                                barrierDismissible: false,
-                                                builder: (context) {
-                                                  return AlertDialog(
-                                                    content: CustomText(
-                                                      text: "Are you sure ${data.active=="1"?"inactive":"active"} this category?",
-                                                      size: 16,
-                                                      isCopy: false,
-                                                      isBold: true,
-                                                      colors: colorsConst.textColor,
-                                                    ),
-                                                    actions: [
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Container(
-                                                            decoration: BoxDecoration(
-                                                                border: Border.all(color: colorsConst.primary),
-                                                                color: Colors.white),
-                                                            width: 80,
-                                                            height: 25,
-                                                            child: ElevatedButton(
-                                                                style: ElevatedButton.styleFrom(
-                                                                  shape: const RoundedRectangleBorder(
-                                                                    borderRadius: BorderRadius.zero,
-                                                                  ),
-                                                                  backgroundColor: Colors.white,
-                                                                ),
-                                                                onPressed: () {
-                                                                  Navigator.pop(context);
-                                                                },
-                                                                child: CustomText(
-                                                                  text: "Cancel",
-                                                                  isCopy: false,
-                                                                  colors: colorsConst.primary,
-                                                                  size: 14,
-                                                                )),
-                                                          ),
-                                                          10.width,
-                                                          CustomLoadingButton(
-                                                            callback: (){
-                                                              controllers.manageLead(context,data.id,data.active=="1"?2:1);
-                                                              Navigator.pop(context);
-                                                            },
-                                                            height: 35,
-                                                            isLoading: false,
-                                                            backgroundColor: colorsConst.primary,
-                                                            radius: 2,
-                                                            width: 80,
-                                                            isImage: false,
-                                                            text: "YES",
-                                                            textColor: Colors.white,
-                                                          ),
-                                                          5.width
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  );
-                                                });
+                                            utils.showDeleteDialog(
+                                                context: context, name: '${data.active=="1"?"inactive":"active"} this category',
+                                                isDelete: false,
+                                                callBack: (){
+                                                  controllers.manageLead(context,data.id,data.active=="1"?2:1);
+                                                  Navigator.pop(context);
+                                                },
+                                                controller: controllers.productCtr);
                                           },
                                           child: Container(
                                             decoration: customDecoration.baseBackgroundDecoration(

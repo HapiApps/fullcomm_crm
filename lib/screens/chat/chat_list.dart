@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/billing_utils/sized_box.dart';
-import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
-import '../../common/constant/assets_constant.dart';
 import '../../controller/controller.dart';
 
 class ChatList extends StatelessWidget {

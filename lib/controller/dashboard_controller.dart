@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fullcomm_crm/controller/reminder_controller.dart';
 import 'package:http/http.dart' as http;
@@ -18,6 +17,13 @@ import 'controller.dart';
 final dashController = Get.put(DashboardController());
 
 class DashboardController extends GetxController {
+
+  List colorList=[
+    Colors.blue,
+    Colors.green,
+    Colors.orange,
+    Colors.red,
+  ];
   var totalMails       = "0".obs;
   var selectFilter = "Weekly".obs;
   // var totalReminders   = "0".obs;
@@ -686,7 +692,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
     lastMonthTitle = DateFormat('MMMM yyyy').format(lastMonthStart);
     thisMonthTitle = DateFormat('MMMM yyyy').format(thisMonthStart);
   }
-
+  RxDouble totalQuotationAmt = 0.0.obs;
   Future getWholeReport() async {
     try {
       String lastWeekFrom = DateFormat('yyyy-MM-dd').format(lastWeekStart);
@@ -720,10 +726,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "thisMonthTo": thisMonthTo,
       };
 
-      debugPrint("================================================");
-      debugPrint("REQUEST DATA");
-      debugPrint("================================================");
-      debugPrint(data.toString());
+      // debugPrint("================================================");
+      // debugPrint("REQUEST DATA");
+      // debugPrint("================================================");
+      // debugPrint(data.toString());
 
       final request = await http.post(
         Uri.parse(scriptApi),
@@ -735,9 +741,9 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         encoding: Encoding.getByName("utf-8"),
       );
       // debugPrint("================================================");
-      debugPrint("RAW RESPONSE");
-      debugPrint("================================================");
-      log(request.body);
+      // debugPrint("RAW RESPONSE");
+      // debugPrint("================================================");
+      // log(request.body);
 
       if (request.statusCode == 401) {
 
@@ -823,6 +829,15 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         }
 
         debugPrint("groupedData $groupedData");
+
+        groupedData.forEach((key, value) {
+          for (var item in value) {
+            totalQuotationAmt.value +=
+                double.tryParse(item['total_amt'].toString()) ?? 0.0;
+          }
+        });
+
+        print(totalQuotationAmt.value);
         // =====================================================
         /// RANGE REPORT
         /// =====================================================

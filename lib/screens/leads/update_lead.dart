@@ -337,6 +337,7 @@ class _UpdateLeadState extends State<UpdateLead> {
             .requestFocus(
             name);
       }
+      addListValues();
     });
     //setDefaults();
   }
@@ -378,9 +379,23 @@ class _UpdateLeadState extends State<UpdateLead> {
     pincode.dispose();
     super.dispose();
   }
-
+void addListValues(){
+    for(var i=0;i<controllers.addList.length;i++){
+      for(var j=0;j<widget.additional.length;j++){
+        if(controllers.addList[i].fieldName==widget.additional[i].fieldName){
+          controllers.addList[i].controller?.text=widget.additional[i].fieldValue!;
+        }
+      }
+    }
+}
   @override
   Widget build(BuildContext context){
+    print("widget.additional.length");
+    print(widget.additional.length);
+    print(widget.additional.map((e) => e.toJson()).toList());
+    // print(widget.additional.first.fieldValue);
+    print(controllers.addList.first.fieldName);
+    print(controllers.addList.first.fieldValue);
     double textFieldSize = (MediaQuery.of(context).size.width - 400) / 1.8;
     return SelectionArea(
       child: Scaffold(
@@ -2041,42 +2056,42 @@ class _UpdateLeadState extends State<UpdateLead> {
                                 //   },
                                 // ),
                                 ///
-                                // 20.height,
-                                // Row(
-                                //   children: [
-                                //     CustomText(
-                                //       text: "Additional Information",
-                                //       colors: colorsConst.textColor,
-                                //       size: 20,
-                                //       isCopy: false,
-                                //     ),
-                                //   ],
-                                // ), ////Todo:Address details
-                                // 10.height,
-                                // Divider(
-                                //   color: Colors.grey.shade400,
-                                //   thickness: 1,
-                                // ),
-                                // 20.height,
-                                // GridView.builder(
-                                //   shrinkWrap: true,
-                                //   physics: const NeverScrollableScrollPhysics(),
-                                //   itemCount: controllers.addList.length,
-                                //   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                //     crossAxisCount: 2, // 2 items per row
-                                //     crossAxisSpacing: 50,
-                                //     mainAxisSpacing: 10,
-                                //     childAspectRatio: 3,
-                                //   ),
-                                //   itemBuilder: (context, index) {
-                                //     final info = controllers.addList[index];
-                                //     return CustomTextField(
-                                //         hintText:info.fieldName.toString(),
-                                //         text:info.fieldName.toString(),width: textFieldSize,
-                                //         controller: info.controller!);
-                                //   },
-                                // ),
-                                // 20.height,
+                                20.height,
+                                Row(
+                                  children: [
+                                    CustomText(
+                                      text: "Additional Information",
+                                      colors: colorsConst.textColor,
+                                      size: 20,
+                                      isCopy: false,
+                                    ),
+                                  ],
+                                ), ////Todo:Address details
+                                10.height,
+                                Divider(
+                                  color: Colors.grey.shade400,
+                                  thickness: 1,
+                                ),
+                                20.height,
+                                GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: controllers.addList.length,
+                                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2, // 2 items per row
+                                    crossAxisSpacing: 50,
+                                    mainAxisSpacing: 10,
+                                    childAspectRatio: 3,
+                                  ),
+                                  itemBuilder: (context, index) {
+                                    final info = controllers.addList[index];
+                                    return CustomTextField(
+                                        hintText:info.fieldName.toString(),
+                                        text:info.fieldName.toString(),width: textFieldSize,
+                                        controller: info.controller!);
+                                  },
+                                ),
+                                20.height,
                                 CustomLoadingButton(
                                     callback: (){
                                       bool isMistake = false;

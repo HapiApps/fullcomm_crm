@@ -1,7 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
-import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
@@ -23,9 +21,7 @@ import '../screens/new_payroll/attendance.dart';
 import '../screens/new_payroll/esi_wages.dart';
 import '../screens/new_payroll/pay_slip.dart';
 import '../screens/new_payroll/pf_wages.dart';
-import '../screens/new_payroll/pf_wages.dart';
 import '../screens/new_payroll/role_settings.dart';
-import '../screens/new_payroll/salary_slip.dart';
 import '../screens/new_payroll/wages_sheet.dart';
 import '../screens/order/order_page.dart';
 import '../screens/products/product_page.dart';
@@ -34,7 +30,6 @@ import '../screens/records/records.dart';
 import '../screens/reminder/reminder_page.dart';
 import '../screens/settings/general_settings.dart';
 import '../screens/settings/quotation_settings.dart';
-import '../screens/settings/reminder_settings.dart';
 
 class SideBar extends StatelessWidget {
 

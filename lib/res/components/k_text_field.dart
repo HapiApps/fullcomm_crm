@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../colors.dart';
 
 class MyTextField extends StatelessWidget {
   const MyTextField({

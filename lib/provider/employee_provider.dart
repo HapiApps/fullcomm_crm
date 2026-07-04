@@ -1,12 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/components/custom_textfield.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:http/http.dart' as http;
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
-
 import '../billing_utils/sized_box.dart';
 import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fullcomm_crm/controller/controller.dart';
@@ -295,18 +294,18 @@ final ScrollController scrollController=ScrollController();
               decoded.map((k, v) => MapEntry(k.toString(), v.toString()));
         }
 
-        debugPrint("Saved Map: $savedMap");
+        // debugPrint("Saved Map: $savedMap");
 
         /// update or add
         apiMap.forEach((key, value) {
           if (!savedMap.containsKey(key)) {
             savedMap[key] = value;
             isChanged = true;
-            debugPrint("New column added: $value");
+            // debugPrint("New column added: $value");
           } else if (savedMap[key] != value) {
             savedMap[key] = value;
             isChanged = true;
-            debugPrint("Heading renamed: $value");
+            // debugPrint("Heading renamed: $value");
           }
         });
       } else {
@@ -320,7 +319,7 @@ final ScrollController scrollController=ScrollController();
       tableHeadings.value = finalHeadings;
       headingFields.value = finalHeadings;
 
-      debugPrint("Final tableHeadings: $finalHeadings");
+      // debugPrint("Final tableHeadings: $finalHeadings");
 
       /// column width
       for (var h in finalHeadings) {
@@ -333,9 +332,9 @@ final ScrollController scrollController=ScrollController();
         debugPrint("tableHeadings saved to local");
       }
 
-      debugPrint("FINAL HEADING ${headingFields.value}");
+      // debugPrint("FINAL HEADING ${headingFields.value}");
     } catch (e, s) {
-      debugPrint("FINAL HEADING ${headingFields.value}");
+      // debugPrint("FINAL HEADING ${headingFields.value}");
     }
   }
 

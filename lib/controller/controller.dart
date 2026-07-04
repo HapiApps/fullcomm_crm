@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:developer';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:fullcomm_crm/models/all_customers_obj.dart';
 import 'package:intl/intl.dart';

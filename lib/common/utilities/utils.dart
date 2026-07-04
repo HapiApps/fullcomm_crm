@@ -10,6 +10,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import 'package:spreadsheet_decoder/spreadsheet_decoder.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -599,11 +600,33 @@ class Utils {
                             // ),
                             if(controllers.planType.value!="Business Essential")
                             IconButton(
-                                onPressed: () {
-                                  utils.chooseFile(
-                                      mediaDataV: imageController.empMediaData,
-                                      fileName: imageController.empFileName,
-                                      pathName: imageController.photo1);
+                                onPressed: () async {
+                                  // utils.chooseFile(
+                                  //     mediaDataV: imageController.empMediaData,
+                                  //     fileName: imageController.empFileName,
+                                  //     pathName: imageController.photo1);
+
+                                  FilePickerResult? result =
+                                      await FilePicker.platform.pickFiles(
+                                    allowMultiple: true,
+
+                                    /// ALL TYPES
+                                    type: FileType.any,
+
+                                    withData: true,
+                                  );
+
+                                  if (result != null) {
+
+                                    for (var file in result.files) {
+                                      imageController.images.add({
+                                        "fileName": file.name,
+                                        "bytes": file.bytes,
+                                      });
+                                    }
+
+                                  } else {
+                                  }
                                 },
                                 icon: SvgPicture.asset(assets.file)),
                             // IconButton(
@@ -755,6 +778,9 @@ class Utils {
                                       height: 50,
                                       child: TextField(
                                         controller: controllers.emailSubjectCtr,
+                                        onChanged: (value){
+                                          controllers.firstCaps(value, controllers.emailSubjectCtr);
+                                        },
                                         maxLines: null,
                                         minLines: 1,
                                         style: TextStyle(
@@ -771,194 +797,136 @@ class Utils {
                                   color: Colors.grey.shade300,
                                   thickness: 1,
                                 ),
-                                Obx(() => controllers.isTemplate.value == false
-                                      ? SingleChildScrollView(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Obx(() => imageController.photo1.value.isEmpty
-                                                    ? 0.height
-                                                    :Container(
-                                                  height: 40,
-                                                  padding: EdgeInsets.fromLTRB(8, 5, 8, 5),
-                                                  child: Row(
-                                                    children: [
-                                                      Obx(()=>CustomText(text: imageController.empFileName.value,
-                                                        isCopy: false,
-                                                      ))
-                                                    ],
-                                                  ),
-                                                )
-                                                    // : Image.memory(
-                                                    //     base64Decode(
-                                                    //         imageController
-                                                    //             .photo1.value),
-                                                    //     fit: BoxFit.cover,
-                                                    //     width: 80,
-                                                    //     height: 80,
-                                                    //   ),
+                                SizedBox(
+                                  width: 600,
+                                  height: 223,
+                                  child: TextField(
+                                    textInputAction: TextInputAction.newline,
+                                    controller: controllers.emailMessageCtr,
+                                    onChanged: (value){
+                                      controllers.firstCaps(value, controllers.emailMessageCtr);
+                                    },
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: 21,
+                                    expands: false,
+                                    style: TextStyle(
+                                      color: colorsConst.textColor,
+                                    ),
+                                    decoration: InputDecoration(
+                                      hintText: "Message",
+                                      hintStyle: TextStyle(
+                                          color: colorsConst.textColor,
+                                          fontSize: 14,
+                                          fontFamily: "Lato"),
+                                      border: InputBorder.none,
+                                    ),
+                                  ),
+                                ),
+                                Obx(
+                                      () => imageController.images.isEmpty
+                                      ? 0.height
+                                      : ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemCount: imageController.images.length,
+                                    itemBuilder: (context, index) {
+
+                                      final item = imageController.images[index];
+
+                                      return Container(
+                                        margin: EdgeInsets.only(bottom: 8),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 8,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xff86BAE3FF),
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: Row(
+                                          children: [
+
+                                            Expanded(
+                                              child: CustomText(
+                                                text: item["fileName"],
+                                                isCopy: false,
                                               ),
-                                              SizedBox(
-                                                width: 600,
-                                                height: 223,
-                                                child: TextField(
-                                                  textInputAction: TextInputAction.newline,
-                                                  controller: controllers.emailMessageCtr,
-                                                  keyboardType: TextInputType.multiline,
-                                                  maxLines: 21,
-                                                  expands: false,
-                                                  style: TextStyle(
-                                                    color: colorsConst.textColor,
-                                                  ),
-                                                  decoration: InputDecoration(
-                                                    hintText: "Message",
-                                                    hintStyle: TextStyle(
-                                                        color: colorsConst.textColor,
-                                                        fontSize: 14,
-                                                        fontFamily: "Lato"),
-                                                    border: InputBorder.none,
-                                                  ),
-                                                ),
+                                            ),
+
+                                            IconButton(
+                                              padding: EdgeInsets.zero,
+                                              constraints: const BoxConstraints(),
+                                              onPressed: () {
+                                                imageController.images.removeAt(index);
+                                              },
+                                              icon: const Icon(
+                                                Icons.close,
+                                                size: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Obx(() => controllers.isTemplate.value == true
+                                      ? Container(
+                                  width: 500,
+                                  alignment: Alignment.center,
+                                  decoration: BoxDecoration(
+                                    color: colorsConst.secondary,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: SizedBox(
+                                      width: 500,
+                                      child: Table(
+                                        defaultColumnWidth: const FixedColumnWidth(120.0),
+                                        border: TableBorder.all(
+                                          color: Colors.grey.shade300,
+                                          style: BorderStyle.solid,
+                                          borderRadius: BorderRadius.circular(10),
+                                          width: 1,
+                                        ),
+                                        children: [
+                                          // Header Row
+                                          TableRow(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "\nTemplate Name\n",
+                                                colors: colorsConst.textColor,
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: false,
+                                              ),
+                                              CustomText(
+                                                textAlign: TextAlign.center,
+                                                text: "\nSubject\n",
+                                                colors: colorsConst.textColor,
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: false,
                                               ),
                                             ],
                                           ),
-                                        )
-                                    :Obx(() => UnconstrainedBox(
-                                  child: Container(
-                                    width: 500,
-                                    alignment: Alignment.center,
-                                    decoration: BoxDecoration(
-                                      color: colorsConst.secondary,
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: SizedBox(
-                                        width: 500,
-                                        child: Table(
-                                          defaultColumnWidth: const FixedColumnWidth(120.0),
-                                          border: TableBorder.all(
-                                            color: Colors.grey.shade300,
-                                            style: BorderStyle.solid,
-                                            borderRadius: BorderRadius.circular(10),
-                                            width: 1,
-                                          ),
-                                          children: [
-                                            // Header Row
-                                            TableRow(
-                                              children: [
-                                                CustomText(
-                                                  textAlign: TextAlign.center,
-                                                  text: "\nTemplate Name\n",
-                                                  colors: colorsConst.textColor,
-                                                  size: 15,
-                                                  isBold: true,
-                                                  isCopy: false,
-                                                ),
-                                                CustomText(
-                                                  textAlign: TextAlign.center,
-                                                  text: "\nSubject\n",
-                                                  colors: colorsConst.textColor,
-                                                  size: 15,
-                                                  isBold: true,
-                                                  isCopy: false,
-                                                ),
-                                              ],
-                                            ),
-                                            // Dynamic Rows
-                                            for (var item in settingsController.templateList)
-                                              utils.emailRow(
+                                          // Dynamic Rows
+                                          for (var item in settingsController.templateList)
+                                            utils.emailRow(
                                                 context,
                                                 isCheck: controllers.isAdd,
                                                 templateName: item.templateName,
                                                 msg: item.message,
                                                 subject: item.subject,
                                                 id: item.id
-                                              ),
-                                          ],
-                                        ),
+                                            ),
+                                        ],
                                       ),
                                     ),
                                   ),
-                                ))
-                                  // : UnconstrainedBox(
-                                      //     child: Container(
-                                      //       width: 500,
-                                      //       alignment: Alignment.center,
-                                      //       decoration: BoxDecoration(
-                                      //         color: colorsConst.secondary,
-                                      //         borderRadius:
-                                      //             BorderRadius.circular(10),
-                                      //       ),
-                                      //       child: SingleChildScrollView(
-                                      //         child: Column(
-                                      //           children: [
-                                      //             SizedBox(
-                                      //               width: 500,
-                                      //               height: 210,
-                                      //               child: Table(
-                                      //                 defaultColumnWidth: const FixedColumnWidth(
-                                      //                         120.0),
-                                      //                 border: TableBorder.all(
-                                      //                     color: Colors
-                                      //                         .grey.shade300,
-                                      //                     style: BorderStyle.solid,
-                                      //                     borderRadius: BorderRadius.circular(10),
-                                      //                     width: 1),
-                                      //                 children: [
-                                      //                   TableRow(
-                                      //                       children: [
-                                      //                     CustomText(
-                                      //                       textAlign: TextAlign.center,
-                                      //                       text: "\nTemplate Name\n",
-                                      //                       colors: colorsConst.textColor,
-                                      //                       size: 15,
-                                      //                       isBold: true,
-                                      //                     ),
-                                      //                     CustomText(
-                                      //                       textAlign: TextAlign.center,
-                                      //                       text: "\nSubject\n",
-                                      //                       colors: colorsConst.textColor,
-                                      //                       size: 15,
-                                      //                       isBold: true,
-                                      //                     ),
-                                      //                   ]),
-                                      //                   utils.emailRow(context,
-                                      //                       isCheck: controllers.isAdd,
-                                      //                       templateName: "Promotional",
-                                      //                       msg: "Dear $name,\n \nWe hope this email finds you in good spirits.\n \nWe are excited to announce a special promotion exclusively for you! [Briefly describe the promotion, e.g., discount, free trial, bundle offer, etc.]. This offer is available for a limited time only, so be sure to take advantage of it while you can!\n \nAt $coName, we strive to provide our valued customers with exceptional value and service. We believe this promotion will further enhance your experience with us.\n \nDo not miss out on this fantastic opportunity! [Include a call-to-action, e.g., \"Shop now,\" \"Learn more,\" etc.]\n \nThank you for your continued support. We look forward to serving you.\n \nWarm regards,\n \nAnjali\nManager\n$mobile",
-                                      //                       subject: "Exclusive Promotion for You - \nLimited Time Offer!"),
-                                      //                   utils.emailRow(context,
-                                      //                       isCheck: controllers.isAdd,
-                                      //                       templateName: "Follow-Up",
-                                      //                       msg: "Dear $name,\n \nI hope this email finds you well.\n \nI wanted to follow up on our recent interaction regarding [briefly mention the nature of the interaction, e.g., service request, inquiry, etc.]. We value your feedback and are committed to ensuring your satisfaction.\n \nPlease let us know if everything is proceeding smoothly on your end, or if there are any further questions or concerns you like to address. Our team is here to assist you every step of the way.\n \nThank you for choosing $coName. We appreciate the opportunity to serve you.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                      //                       subject: "Follow-up on Recent Service Interaction"),
-                                      //                   utils.emailRow(context,
-                                      //                       msg: "Dear $name,\n \nWe hope this email finds you well.\n \nWe are writing to inform you of an update regarding our services. [Briefly describe the update or enhancement]. We believe this will [mention the benefit or improvement for the customer].\n \nPlease feel free to [contact us/reach out] if you have any questions or need further assistance regarding this update.\n \nThank you for choosing $coName. We appreciate your continued support.\n \nBest regards,\n \nAnjali\nManager\n$mobile",
-                                      //                       isCheck: controllers.isAdd,
-                                      //                       templateName: "Service Update",
-                                      //                       subject: "Service Update - [Brief Description]"),
-                                      //                 ],
-                                      //               ),
-                                      //             ),
-                                      //             // 10.height,
-                                      //             // CustomLoadingButton(
-                                      //             //   callback: (){},
-                                      //             //   isImage: false,
-                                      //             //   isLoading: false,
-                                      //             //   backgroundColor: colorsConst.primary,
-                                      //             //   radius: 20,
-                                      //             //   width: 70,
-                                      //             //   height: 30,
-                                      //             //   text: "Done",
-                                      //             //   textColor: Colors.white,
-                                      //             //
-                                      //             // ),
-                                      //           ],
-                                      //         ),
-                                      //       ),
-                                      //     ),
-                                      //   ),
+                                ):SizedBox()
                                 )
                               ],
                             ),
@@ -968,6 +936,76 @@ class Utils {
                 )),
           );
         });
+  }
+
+  Future<void> showDeleteDialog({
+    required BuildContext context,
+    required String name,
+    required bool isDelete,
+    required VoidCallback callBack,
+    required RoundedLoadingButtonController controller,
+  }) async {
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          content: CustomText(
+            text: "Are you sure $name?",
+            size: 16,
+            isCopy: false,
+            isBold: true,
+            colors: colorsConst.textColor,
+          ),
+          actions: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                CustomLoadingButton(
+                  callback: callBack,
+                  height: 35,
+                  isLoading: true,
+                  backgroundColor: colorsConst.primary,
+                  radius: 2,
+                  width: 80,
+                  controller: controller,
+                  isImage: false,
+                  text: isDelete?"Delete":"YES",
+                  textColor: Colors.white,
+                ),
+                10.width,
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: colorsConst.primary),
+                    color: Colors.white,
+                  ),
+                  width: 80,
+                  height: 25,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.zero,
+                      ),
+                      backgroundColor: Colors.white,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: CustomText(
+                      text: isDelete?"Cancel":"NO",
+                      isCopy: false,
+                      colors: colorsConst.primary,
+                      size: 14,
+                    ),
+                  ),
+                ),
+                5.width,
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 
   void showComposeMail2(BuildContext context) {

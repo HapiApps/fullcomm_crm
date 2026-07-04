@@ -300,65 +300,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                         ),
                                                         suffixIcon: IconButton(
                                                             onPressed: (){
-                                                              showDialog(
-                                                                context: context,
-                                                                builder: (BuildContext context) {
-                                                                  return AlertDialog(
-                                                                    content: CustomText(
-                                                                      text: "Are you sure delete this status?",
-                                                                      size: 16,
-                                                                      isBold: true,
-                                                                      isCopy: true,
-                                                                      colors: colorsConst.textColor,
-                                                                    ),
-                                                                    actions: [
-                                                                      Row(
-                                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                                        children: [
-                                                                          Container(
-                                                                            decoration: BoxDecoration(
-                                                                                border: Border.all(color: colorsConst.primary),
-                                                                                color: Colors.white),
-                                                                            width: 80,
-                                                                            height: 25,
-                                                                            child: ElevatedButton(
-                                                                                style: ElevatedButton.styleFrom(
-                                                                                  shape: const RoundedRectangleBorder(
-                                                                                    borderRadius: BorderRadius.zero,
-                                                                                  ),
-                                                                                  backgroundColor: Colors.white,
-                                                                                ),
-                                                                                onPressed: () {
-                                                                                  Navigator.pop(context);
-                                                                                },
-                                                                                child: CustomText(
-                                                                                  text: "Cancel",
-                                                                                  isCopy: false,
-                                                                                  colors: colorsConst.primary,
-                                                                                  size: 14,
-                                                                                )),
-                                                                          ),
-                                                                          10.width,
-                                                                          CustomLoadingButton(
-                                                                            callback: (){
-                                                                              controllers.correctionStatus(context,"delete",controllers.hCallStatusList[index]["id"].toString(), "");
-                                                                            },
-                                                                            height: 35,
-                                                                            isLoading: true,
-                                                                            backgroundColor: colorsConst.primary,
-                                                                            radius: 2,
-                                                                            width: 80,
-                                                                            controller: controllers.productCtr,
-                                                                            isImage: false,
-                                                                            text: "Delete",
-                                                                            textColor: Colors.white,
-                                                                          ),
-                                                                        ],
-                                                                      ),
-                                                                    ],
-                                                                  );
-                                                                },
-                                                              );
+                                                              utils.showDeleteDialog(
+                                                                  context: context, name: 'delete this status',
+                                                                  isDelete: true,
+                                                                  callBack: (){
+                                                                    controllers.correctionStatus(context,"delete",controllers.hCallStatusList[index]["id"].toString(), "");
+                                                                  },
+                                                                  controller: controllers.productCtr);
                                                             },
                                                             icon: SvgPicture.asset(
                                                               "assets/images/a_delete.svg",
@@ -819,65 +767,13 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                               focusColor: Colors.transparent,
                               hoverColor: Colors.transparent,
                               onTap: (){
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      content: CustomText(
-                                        text: "Are you sure delete this Office Hours?",
-                                        size: 16,
-                                        isCopy: true,
-                                        isBold: true,
-                                        colors: colorsConst.textColor,
-                                      ),
-                                      actions: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                  border: Border.all(color: colorsConst.primary),
-                                                  color: Colors.white),
-                                              width: 80,
-                                              height: 25,
-                                              child: ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    shape: const RoundedRectangleBorder(
-                                                      borderRadius: BorderRadius.zero,
-                                                    ),
-                                                    backgroundColor: Colors.white,
-                                                  ),
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  child: CustomText(
-                                                    text: "Cancel",
-                                                    colors: colorsConst.primary,
-                                                    isCopy: false,
-                                                    size: 14,
-                                                  )),
-                                            ),
-                                            10.width,
-                                            CustomLoadingButton(
-                                              callback: ()async{
-                                                settingsController.deleteOfficeHoursAPI(context);
-                                              },
-                                              height: 35,
-                                              isLoading: true,
-                                              backgroundColor: colorsConst.primary,
-                                              radius: 2,
-                                              width: 80,
-                                              controller: controllers.productCtr,
-                                              isImage: false,
-                                              text: "Delete",
-                                              textColor: Colors.white,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
+                                utils.showDeleteDialog(
+                                    context: context, name: 'delete this ${settingsController.selectedOfficeIds.length==1?'office hour':'office hours'}',
+                                    isDelete: true,
+                                    callBack: (){
+                                      settingsController.deleteOfficeHoursAPI(context);
+                                    },
+                                    controller: controllers.productCtr);
                               },
                               child: Container(
                                 height: 40,
@@ -1629,66 +1525,14 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                       children: [
                                         IconButton(
                                             onPressed: (){
-                                              showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return AlertDialog(
-                                                    content: CustomText(
-                                                      text: "Are you sure delete this office hours?",
-                                                      size: 16,
-                                                      isBold: true,
-                                                      isCopy: true,
-                                                      colors: colorsConst.textColor,
-                                                    ),
-                                                    actions: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                      children: [
-                                                        Container(
-                                                          decoration: BoxDecoration(
-                                                              border: Border.all(color: colorsConst.primary),
-                                                              color: Colors.white),
-                                                          width: 80,
-                                                          height: 25,
-                                                          child: ElevatedButton(
-                                                              style: ElevatedButton.styleFrom(
-                                                                shape: const RoundedRectangleBorder(
-                                                                  borderRadius: BorderRadius.zero,
-                                                                ),
-                                                                backgroundColor: Colors.white,
-                                                              ),
-                                                              onPressed: () {
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: CustomText(
-                                                                text: "Cancel",
-                                                                isCopy: false,
-                                                                colors: colorsConst.primary,
-                                                                size: 14,
-                                                              )),
-                                                        ),
-                                                        10.width,
-                                                        CustomLoadingButton(
-                                                          callback: ()async{
-                                                            settingsController.selectedOfficeIds.add(officeHour.id.toString());
-                                                            settingsController.deleteOfficeHoursAPI(context);
-                                                          },
-                                                          height: 35,
-                                                          isLoading: true,
-                                                          backgroundColor: colorsConst.primary,
-                                                          radius: 2,
-                                                          width: 80,
-                                                          controller: controllers.productCtr,
-                                                          isImage: false,
-                                                          text: "Delete",
-                                                          textColor: Colors.white,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                  );
-                                                },
-                                              );
+                                              utils.showDeleteDialog(
+                                                  context: context, name: 'delete this office hour',
+                                                  isDelete: true,
+                                                  callBack: (){
+                                                    settingsController.selectedOfficeIds.add(officeHour.id.toString());
+                                                    settingsController.deleteOfficeHoursAPI(context);
+                                                  },
+                                                  controller: controllers.productCtr);
                                             },
                                             icon: SvgPicture.asset(
                                               "assets/images/a_delete.svg",

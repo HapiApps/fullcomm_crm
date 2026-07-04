@@ -821,66 +821,14 @@ class _RoleManagementState extends State<RoleManagement> {
                                             )),
                                         IconButton(
                                             onPressed: (){
-                                              showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return AlertDialog(
-                                                    content: CustomText(
-                                                      text: "Are you sure delete this role?",
-                                                      size: 16,
-                                                      isBold: true,
-                                                      isCopy: true,
-                                                      colors: colorsConst.textColor,
-                                                    ),
-                                                    actions: [
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                      children: [
-                                                        CustomLoadingButton(
-                                                          callback: ()async{
-                                                            settingsController.selectedRoleIds.add(role.id.toString());
-                                                            settingsController.deleteRoleAPI(context);
-                                                          },
-                                                          height: 35,
-                                                          isLoading: true,
-                                                          backgroundColor: colorsConst.primary,
-                                                          radius: 2,
-                                                          width: 80,
-                                                          controller: controllers.productCtr,
-                                                          isImage: false,
-                                                          text: "Delete",
-                                                          textColor: Colors.white,
-                                                        ),
-                                                        10.width,
-                                                        Container(
-                                                          decoration: BoxDecoration(
-                                                              border: Border.all(color: colorsConst.primary),
-                                                              color: Colors.white),
-                                                          width: 80,
-                                                          height: 25,
-                                                          child: ElevatedButton(
-                                                              style: ElevatedButton.styleFrom(
-                                                                shape: const RoundedRectangleBorder(
-                                                                  borderRadius: BorderRadius.zero,
-                                                                ),
-                                                                backgroundColor: Colors.white,
-                                                              ),
-                                                              onPressed: () {
-                                                                Navigator.pop(context);
-                                                              },
-                                                              child: CustomText(
-                                                                text: "Cancel",
-                                                                colors: colorsConst.primary,
-                                                                size: 14,
-                                                                isCopy: false,
-                                                              )),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                  );
-                                                },
-                                              );
+                                              utils.showDeleteDialog(
+                                                  context: context, name: 'delete this role',
+                                                  isDelete: true,
+                                                  callBack: (){
+                                                    settingsController.selectedRoleIds.add(role.id.toString());
+                                                    settingsController.deleteRoleAPI(context);
+                                                  },
+                                                  controller: controllers.productCtr);
                                             },
                                             icon: SvgPicture.asset(
                                               "assets/images/a_delete.svg",

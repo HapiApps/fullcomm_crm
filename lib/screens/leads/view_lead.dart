@@ -639,6 +639,7 @@ void checkType(){
                                                             onPressed: () {
                                                               controllers.emailSubjectCtr.clear();
                                                               controllers.emailMessageCtr.clear();
+                                                              imageController.images.clear();
                                                               imageController.photo1.value = "";
                                                               controllers.emailToCtr.text =
                                                               displayEmail.isEmpty ? "" : displayEmail;
@@ -1337,20 +1338,40 @@ void checkType(){
                                                                     return Column(
                                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                                       children: [
+                                                                        if(i==0)
                                                                         Row(
                                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                           children: [
                                                                             Column(
                                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                                               children: [
-                                                                                Container(
-                                                                                  decoration: customDecoration.baseBackgroundDecoration(
-                                                                                    color: colorsConst.primary.withOpacity(0.2),radius: 5
-                                                                                  ),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.all(5),
-                                                                                      child: CustomText(text:dataValue["category"] ?? "",isCopy: false,isBold: true,),
-                                                                                    )),
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.all(5),
+                                                                                  child: CustomText(text:controllers.leadCategoryList.first.value,isCopy: false,),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                            CustomText(
+                                                                              text: cust?.createdTs == null
+                                                                                  ? ""
+                                                                                  : DateFormat('dd/MM/yyyy hh:mm a').format(
+                                                                                DateTime.parse(cust!.createdTs.toString()),
+                                                                              ),colors: Colors.grey,
+                                                                              isCopy: false,
+                                                                            ),
+                                                                          ],
+                                                                        ),
+                                                                        Row(
+                                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                          children: [
+                                                                            Column(
+                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                              children: [
+                                                                                Padding(
+                                                                                  padding: const EdgeInsets.all(5),
+                                                                                  child: CustomText(text:dataValue["category"] ?? "",isCopy: false,),
+                                                                                ),
+                                                                                if(dataValue["reason"].toString()!="null"&&dataValue["reason"].toString()!="")
                                                                                 CustomText(text:"Reason : ${dataValue["reason"] ?? ""}",isCopy: false),
                                                                               ],
                                                                             ),
@@ -1360,7 +1381,7 @@ void checkType(){
                                                                                   ? ""
                                                                                   : DateFormat('dd/MM/yyyy hh:mm a').format(
                                                                                 DateTime.parse(dataValue["created_ts"]),
-                                                                              ),
+                                                                              ),colors: Colors.grey,
                                                                               isCopy: false,
                                                                             ),
                                                                           ],
@@ -1517,8 +1538,8 @@ void checkType(){
                                                             ],
                                                           ),10.height,
                                                           if(recordList.isNotEmpty)
-                                                            Container(
-                                                              color: Colors.pink,
+                                                            SizedBox(
+                                                              // color: Colors.pink,
                                                               width: screenWidth / 4.5,
                                                               height: 800,
                                                               child: ListView.builder(

@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/reminder_utils.dart';
+import '../../common/utilities/utils.dart';
 import '../../components/custom_appbar.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_no_data.dart';
@@ -328,65 +329,13 @@ class _ReminderPageState extends State<ReminderPage> {
                          focusColor: Colors.transparent,
                          hoverColor: Colors.transparent,
                          onTap: (){
-                           showDialog(
-                             context: context,
-                             builder: (BuildContext context) {
-                               return AlertDialog(
-                                 content: CustomText(
-                                   text: "Are you sure delete this reminder?",
-                                   isCopy: true,
-                                   size: 16,
-                                   isBold: true,
-                                   colors: colorsConst.textColor,
-                                 ),
-                                 actions: [
-                                   Row(
-                                     mainAxisAlignment: MainAxisAlignment.end,
-                                     children: [
-                                       Container(
-                                         decoration: BoxDecoration(
-                                             border: Border.all(color: colorsConst.primary),
-                                             color: Colors.white),
-                                         width: 80,
-                                         height: 25,
-                                         child: ElevatedButton(
-                                             style: ElevatedButton.styleFrom(
-                                               shape: const RoundedRectangleBorder(
-                                                 borderRadius: BorderRadius.zero,
-                                               ),
-                                               backgroundColor: Colors.white,
-                                             ),
-                                             onPressed: () {
-                                               Navigator.pop(context);
-                                             },
-                                             child: CustomText(
-                                               text: "Cancel",
-                                               colors: colorsConst.primary,
-                                               size: 14,
-                                               isCopy: false,
-                                             )),
-                                       ),
-                                       10.width,
-                                       CustomLoadingButton(
-                                         callback: ()async{
-                                           remController.deleteReminderAPI(context);
-                                         },
-                                         height: 35,
-                                         isLoading: true,
-                                         backgroundColor: colorsConst.primary,
-                                         radius: 2,
-                                         width: 80,
-                                         controller: controllers.productCtr,
-                                         isImage: false,
-                                         text: "Delete",
-                                         textColor: Colors.white,
-                                       ),
-                                     ],
-                                   ),
-                                 ],
-                               );
-                             },
-                           );
+                           utils.showDeleteDialog(
+                               context: context, name: 'delete this ${remController.selectedReminderIds.length==1?'reminder':'reminders'}',
+                               isDelete: true,
+                               callBack: (){
+                                 remController.deleteReminderAPI(context);
+                               },
+                               controller: controllers.productCtr);
                          },
                          child: Container(
                            height: 40,
@@ -894,66 +843,14 @@ class _ReminderPageState extends State<ReminderPage> {
                                                            )),
                                                        IconButton(
                                                            onPressed: (){
-                                                             showDialog(
-                                                               context: context,
-                                                               builder: (BuildContext context) {
-                                                                 return AlertDialog(
-                                                                   content: CustomText(
-                                                                     isCopy: true,
-                                                                     text: "Are you sure delete this reminder?",
-                                                                     size: 16,
-                                                                     isBold: true,
-                                                                     colors: colorsConst.textColor,
-                                                                   ),
-                                                                   actions: [
-                                                                     Row(
-                                                                       mainAxisAlignment: MainAxisAlignment.end,
-                                                                       children: [
-                                                                         Container(
-                                                                           decoration: BoxDecoration(
-                                                                               border: Border.all(color: colorsConst.primary),
-                                                                               color: Colors.white),
-                                                                           width: 80,
-                                                                           height: 25,
-                                                                           child: ElevatedButton(
-                                                                               style: ElevatedButton.styleFrom(
-                                                                                 shape: const RoundedRectangleBorder(
-                                                                                   borderRadius: BorderRadius.zero,
-                                                                                 ),
-                                                                                 backgroundColor: Colors.white,
-                                                                               ),
-                                                                               onPressed: () {
-                                                                                 Navigator.pop(context);
-                                                                               },
-                                                                               child: CustomText(
-                                                                                 text: "Cancel",
-                                                                                 isCopy: false,
-                                                                                 colors: colorsConst.primary,
-                                                                                 size: 14,
-                                                                               )),
-                                                                         ),
-                                                                         10.width,
-                                                                         CustomLoadingButton(
-                                                                           callback: ()async{
-                                                                             remController.selectedReminderIds.add(reminder.id.toString());
-                                                                             remController.deleteReminderAPI(context);
-                                                                           },
-                                                                           height: 35,
-                                                                           isLoading: true,
-                                                                           backgroundColor: colorsConst.primary,
-                                                                           radius: 2,
-                                                                           width: 80,
-                                                                           controller: controllers.productCtr,
-                                                                           isImage: false,
-                                                                           text: "Delete",
-                                                                           textColor: Colors.white,
-                                                                         ),
-                                                                       ],
-                                                                     ),
-                                                                   ],
-                                                                 );
-                                                               },
-                                                             );
+                                                             utils.showDeleteDialog(
+                                                                 context: context, name: 'delete this reminder',
+                                                                 isDelete: true,
+                                                                 callBack: (){
+                                                                   remController.selectedReminderIds.add(reminder.id.toString());
+                                                                   remController.deleteReminderAPI(context);
+                                                                 },
+                                                                 controller: controllers.productCtr);
                                                            },
                                                            icon: SvgPicture.asset(
                                                              "assets/images/a_delete.svg",

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -236,10 +235,10 @@ var refreshData=true.obs;
         "thisMonthTo": thisMonthTo,
       };
 
-      debugPrint("================================================");
-      debugPrint("REQUEST DATA");
-      debugPrint("================================================");
-      debugPrint(data.toString());
+      // debugPrint("================================================");
+      // debugPrint("REQUEST DATA");
+      // debugPrint("================================================");
+      // debugPrint(data.toString());
 
       final request = await http.post(
         Uri.parse(scriptApi),
@@ -250,10 +249,10 @@ var refreshData=true.obs;
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      debugPrint("================================================");
-      debugPrint("RAW RESPONSE");
-      debugPrint("================================================");
-      log(request.body);
+      // debugPrint("================================================");
+      // debugPrint("RAW RESPONSE");
+      // debugPrint("================================================");
+      // log(request.body);
 
       if (request.statusCode == 401) {
 

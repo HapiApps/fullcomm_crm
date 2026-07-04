@@ -306,7 +306,8 @@ class ApiService {
         "whatsapp_number": controllers.leadWhatsCrt[0].text,
         "email": controllers.leadEmailCrt[0].text,
         "action": "update_customer",
-        "additional_list": addList
+        // "additional_list": addList
+        "additional_list": controllers.addList,
       };
 
       final request = await http.post(
@@ -3478,8 +3479,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint("Api headings");
-      debugPrint(request.body);
+      // debugPrint("Api headings");
+      // debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3920,15 +3921,29 @@ class ApiService {
         'X-API-TOKEN': "${TokenStorage().readToken()}",
         'Content-Type': 'application/json'
       });
-      if (imageController.empFileName.value.isNotEmpty) {
-        var picture1 = http.MultipartFile.fromBytes(
-          "attachment",
-          imageController.empMediaData,
-          filename: imageController.empFileName.value,
-          //contentType: http.MediaType('image', 'jpeg'),
-        );
-        request.files.add(picture1);
+      // if (imageController.empFileName.value.isNotEmpty) {
+      //   var picture1 = http.MultipartFile.fromBytes(
+      //     "attachment",
+      //     imageController.empMediaData,
+      //     filename: imageController.empFileName.value,
+      //     //contentType: http.MediaType('image', 'jpeg'),
+      //   );
+      //   request.files.add(picture1);
+      // }
+      if (imageController.images.isNotEmpty) {
+
+        for (var file in imageController.images) {
+
+          request.files.add(
+            http.MultipartFile.fromBytes(
+              "attachment[]",
+              file["bytes"],
+              filename: file["fileName"],
+            ),
+          );
+        }
       }
+
       var response = await request.send();
       var body = await response.stream.bytesToString();
       if (response.statusCode == 401) {
@@ -5807,9 +5822,9 @@ class ApiService {
 
         body: jsonEncode(data),
       );
-      // debugPrint("all_leads");
-      // debugPrint(data.toString());
-      // debugPrint(response.body);
+      debugPrint("all_leads");
+      debugPrint(data.toString());
+      log(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

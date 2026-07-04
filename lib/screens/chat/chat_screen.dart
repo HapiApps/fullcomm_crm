@@ -1,11 +1,8 @@
 import 'dart:convert';
-
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/billing_utils/sized_box.dart';
 import 'package:fullcomm_crm/common/constant/colors_constant.dart';
-import 'package:fullcomm_crm/res/components/k_loadings.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import '../../components/Customtext.dart';

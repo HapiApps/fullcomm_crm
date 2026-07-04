@@ -291,8 +291,8 @@ class NewPayrollApiServices{
   }
   Future<void> updatePayrollList(context,List<PayrollUserModel> dataList,String slipId) async {
     try {
-      // debugPrint("log");
-      // debugPrint("print");
+      debugPrint("log");
+      debugPrint("updatePayrollList");
       final List<Map<String, dynamic>> empList =
       dataList.map((e) => e.toJson()).toList();
       final Map<String, dynamic> sendData = {
@@ -319,11 +319,14 @@ class NewPayrollApiServices{
           controllers.setLogOut();
         }
       }
+      print("request.body");
+      log(sendData.toString());
+      print(request.body);
       if (request.statusCode == 200) {
         utils.snackBar(context: context,msg: "Saved Successfully", color: Colors.green);
         pyrlCtr.users.clear();
-        pyrlCtr.unitPayrollList.clear();
-        Get.to(const UnitSlip(), transition: Transition.rightToLeftWithFade, duration: const Duration(seconds: 1));
+        // pyrlCtr.unitPayrollList.clear();
+        // Get.to(const UnitSlip(), transition: Transition.rightToLeftWithFade, duration: const Duration(seconds: 1));
         pyrlCtr.submit.reset();
       } else {
         utils.snackBar(context: context,msg:"Failed",color: Colors.red);

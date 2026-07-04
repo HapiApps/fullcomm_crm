@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:http/http.dart' as http;
-
 import '../common/utilities/jwt_storage.dart';
 import '../controller/controller.dart';
 import '../models/common_response.dart';

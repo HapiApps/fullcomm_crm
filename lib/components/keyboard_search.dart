@@ -1,11 +1,8 @@
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
-import 'package:fullcomm_crm/billing_utils/sized_box.dart';
-import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/models/employee_details.dart';
 import 'package:google_fonts/google_fonts.dart';
-
 import '../common/constant/app_colors.dart';
 import 'Customtext.dart';
 

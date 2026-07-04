@@ -998,65 +998,13 @@ class _MeetingCommentsState extends State<MeetingComments> {
                           focusColor: Colors.transparent,
                           hoverColor: Colors.transparent,
                           onTap: (){
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  content: CustomText(
-                                    text: "Are you sure delete this Appointment?",
-                                    size: 16,
-                                    isBold: true,
-                                    isCopy: false,
-                                    colors: colorsConst.textColor,
-                                  ),
-                                  actions: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              border: Border.all(color: colorsConst.primary),
-                                              color: Colors.white),
-                                          width: 80,
-                                          height: 25,
-                                          child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                shape: const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.zero,
-                                                ),
-                                                backgroundColor: Colors.white,
-                                              ),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: CustomText(
-                                                text: "Cancel",
-                                                isCopy: false,
-                                                colors: colorsConst.primary,
-                                                size: 14,
-                                              )),
-                                        ),
-                                        10.width,
-                                        CustomLoadingButton(
-                                          callback: ()async{
-                                            remController.deleteMeetingAPI(context);
-                                          },
-                                          height: 35,
-                                          isLoading: true,
-                                          backgroundColor: colorsConst.primary,
-                                          radius: 2,
-                                          width: 80,
-                                          controller: controllers.productCtr,
-                                          isImage: false,
-                                          text: "Delete",
-                                          textColor: Colors.white,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            utils.showDeleteDialog(
+                                context: context, name: 'delete this ${remController.selectedMeetingIds.length==1?'Appointment':'Appointments'}',
+                                isDelete: true,
+                                callBack: (){
+                                  remController.deleteMeetingAPI(context);
+                                },
+                                controller: controllers.productCtr);
                           },
                           child: Container(
                             height: 40,
@@ -2596,66 +2544,14 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                 )),
                                             IconButton(
                                                 onPressed: (){
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (BuildContext context) {
-                                                      return AlertDialog(
-                                                        content: CustomText(
-                                                          text: "Are you sure delete this Appointment?",
-                                                          isCopy: true,
-                                                          size: 16,
-                                                          isBold: true,
-                                                          colors: colorsConst.textColor,
-                                                        ),
-                                                        actions: [
-                                                          Row(
-                                                            mainAxisAlignment: MainAxisAlignment.end,
-                                                            children: [
-                                                              Container(
-                                                                decoration: BoxDecoration(
-                                                                    border: Border.all(color: colorsConst.primary),
-                                                                    color: Colors.white),
-                                                                width: 80,
-                                                                height: 25,
-                                                                child: ElevatedButton(
-                                                                    style: ElevatedButton.styleFrom(
-                                                                      shape: const RoundedRectangleBorder(
-                                                                        borderRadius: BorderRadius.zero,
-                                                                      ),
-                                                                      backgroundColor: Colors.white,
-                                                                    ),
-                                                                    onPressed: () {
-                                                                      Navigator.pop(context);
-                                                                    },
-                                                                    child: CustomText(
-                                                                      text: "Cancel",
-                                                                      colors: colorsConst.primary,
-                                                                      size: 14,
-                                                                      isCopy: false,
-                                                                    )),
-                                                              ),
-                                                              10.width,
-                                                              CustomLoadingButton(
-                                                                callback: ()async{
-                                                                  remController.selectedMeetingIds.add(data.id.toString());
-                                                                  remController.deleteMeetingAPI(context);
-                                                                },
-                                                                height: 35,
-                                                                isLoading: true,
-                                                                backgroundColor: colorsConst.primary,
-                                                                radius: 2,
-                                                                width: 80,
-                                                                controller: controllers.productCtr,
-                                                                isImage: false,
-                                                                text: "Delete",
-                                                                textColor: Colors.white,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
+                                                  utils.showDeleteDialog(
+                                                      context: context, name: 'delete this Appointment',
+                                                      isDelete: true,
+                                                      callBack: (){
+                                                        remController.selectedMeetingIds.add(data.id.toString());
+                                                        remController.deleteMeetingAPI(context);
+                                                      },
+                                                      controller: controllers.productCtr);
                                                 },
                                                 icon: SvgPicture.asset(
                                                   "assets/images/a_delete.svg",

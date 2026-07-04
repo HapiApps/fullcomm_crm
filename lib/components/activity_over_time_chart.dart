@@ -4,12 +4,10 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../controller/reminder_controller.dart';
 import '../screens/records/records.dart';
 import 'Customtext.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class ActivityLineData {
   final String label;

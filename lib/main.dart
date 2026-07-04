@@ -1,12 +1,9 @@
 import 'dart:ui';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/provider/dashboard_provider.dart';
 import 'package:fullcomm_crm/provider/employee_provider.dart';
 import 'package:fullcomm_crm/provider/reminder_provider.dart';
 import 'package:fullcomm_crm/screens/DashboardPage.dart';
-import 'package:fullcomm_crm/screens/mobile_dashboard.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';

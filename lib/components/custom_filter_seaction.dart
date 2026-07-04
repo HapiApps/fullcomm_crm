@@ -6,13 +6,11 @@ import 'package:intl/intl.dart';
 import '../common/constant/colors_constant.dart';
 import '../models/all_customers_obj.dart';
 import '../models/new_lead_obj.dart';
-import '../screens/DashboardPage.dart';
 import '../screens/leads/new_lead_page.dart';
 import '../screens/quotation/send_quotation.dart';
 import 'action_button.dart';
 import 'custom_search_textfield.dart';
 import 'custom_text.dart';
-import 'keyboard_search.dart';
 
 class FilterSection extends StatelessWidget {
   final String title;

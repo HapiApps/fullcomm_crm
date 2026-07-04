@@ -1,9 +1,6 @@
-import 'dart:async';
-import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/controller/product_controller.dart';
 import 'package:fullcomm_crm/screens/quotation/quotation_history.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
@@ -11,23 +8,18 @@ import 'package:fullcomm_crm/controller/dashboard_controller.dart';
 import 'package:fullcomm_crm/screens/records/records.dart';
 import 'package:fullcomm_crm/screens/reminder/reminder_page.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
-import '../common/constant/app_colors.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/constant/dashboard_assets.dart';
 import '../common/styles/decoration.dart';
 import '../common/utilities/reminder_utils.dart';
 import '../common/utilities/utils.dart';
 import '../components/activity_over_time_chart.dart';
-import '../components/custom_loading_button.dart';
 import '../components/custom_sidebar.dart';
 import '../components/custom_text.dart';
 import '../components/customer_status_card.dart';
-import '../components/keyboard_search.dart';
 import '../components/new_search_dropdown.dart';
 import '../components/pie_stat_card.dart';
-import '../components/search_custom_dropdown.dart';
 import '../components/wave_stat_card.dart';
 import '../controller/controller.dart';
 import '../controller/new_payroll_controller.dart';
@@ -2799,28 +2791,54 @@ void checkDate(){
                                         child: Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            CustomText(
-                                              text: "High-Value Customer",
-                                              isCopy: false,
-                                              size: 15,
-                                              isBold: true,
-                                              colors: Colors.black,
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                              children: [
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    CustomText(
+                                                      text: "High-Value Customer",
+                                                      isCopy: false,
+                                                      size: 15,
+                                                      isBold: true,
+                                                      colors: Colors.black,
+                                                    ),
+                                                    4.height,
+                                                    CustomText(
+                                                      text: "Based on Quotation Amount",
+                                                      isCopy: false,
+                                                      size: 13,
+                                                      isBold: false,
+                                                      colors: const Color(0xff666666),
+                                                    ),
+                                                  ],
+                                                ),
+                                                Container(
+                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                    color: Color(0xFFD2EBFF).withOpacity(0.2),radius: 10,borderColor: Colors.grey.shade100
+                                                  ),
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.all(8.0),
+                                                    child: Row(
+                                                      children: [
+                                                        CircleAvatar(
+                                                          backgroundColor: Color(0xFFD2EBFF),
+                                                          child: CustomText(text: "₹", isCopy: false,isBold: true,colors: Colors.blue,size: 17,),
+                                                        ),5.width,
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            CustomText(text: "Total Value", isCopy: false,isBold: true,),5.height,
+                                                            CustomText(text: productCtr.formatAmount(dashController.totalQuotationAmt.value), isCopy: false,isBold: true,colors: Colors.blue,),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
                                             ),
-                                            4.height,
-                                            CustomText(
-                                              text: "Based on Quotation Amount",
-                                              isCopy: false,
-                                              size: 13,
-                                              isBold: false,
-                                              colors: const Color(0xff666666),
-                                            ),
-                                            12.height,
-                                            const Divider(
-                                              height: 1,
-                                              thickness: 1,
-                                              color: Color(0xffE5E7EB),
-                                            ),
-                                            16.height,
                                             Expanded(
                                               child: ListView.builder(
                                                 shrinkWrap: true,
@@ -2830,39 +2848,80 @@ void checkDate(){
                                                   final range = dashController.ranges[index];
                                                   final items = dashController.groupedData[range] ?? [];
 
-                                                  return Card(
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.all(12),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          CustomText(text:'$range (${items.length})',isCopy: false,
-                                                            size: 16,isBold: true,
-                                                          ),
-                                                          const Divider(thickness: 0.5,),
-
-                                                          if (items.isEmpty)
-                                                            const CustomText(text:'No quotations found',isCopy: false,)
-                                                          else
-                                                            ...items.map(
-                                                                  (e) => Padding(
-                                                                padding: const EdgeInsets.only(bottom: 10),
-                                                                child: Row(
-                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  return Padding(
+                                                    padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                                    child: Container(
+                                                      decoration: customDecoration.baseBackgroundDecoration(
+                                                        color: Colors.white,radius: 10,borderColor: Colors.grey.shade200
+                                                      ),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(10),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            Row(
+                                                              children: [
+                                                                CircleAvatar(
+                                                                  backgroundColor: dashController.colorList[index].shade100,
+                                                                  child: Icon(Icons.keyboard_double_arrow_up,color: dashController.colorList[index],),
+                                                                ),10.width,
+                                                                Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                                   children: [
                                                                     Row(
                                                                       children: [
-                                                                        CustomText(text:e['q_no'],isCopy: false),5.width,
-                                                                        CustomText(text:e['company_name'],isCopy: false,isBold: true,),5.width,
-                                                                        CustomText(text:" - ${e['category']}",isCopy: false,isBold: true,colors: Colors.grey,),
+                                                                        CustomText(text:range,isCopy: false,
+                                                                          size: 16,isBold: true,
+                                                                        ),
+                                                                        5.width,
+                                                                        Container(
+                                                                          decoration: customDecoration.baseBackgroundDecoration(
+                                                                              color: dashController.colorList[index].shade100,radius: 15
+                                                                          ),
+                                                                          child: Padding(
+                                                                            padding: const EdgeInsets.all(3),
+                                                                            child: CustomText(text:'${items.length}',isCopy: false,isBold: true,colors: dashController.colorList[index],
+                                                                            ),
+                                                                          ),
+                                                                        ),
                                                                       ],
                                                                     ),
-                                                                    CustomText(text:productCtr.formatAmount(e['total_amt']),isCopy: false,isBold: true,colors: Colors.red,),
+                                                                    if (items.isEmpty)
+                                                                      Padding(
+                                                                        padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                        child: const CustomText(text:'No quotations found',isCopy: false,colors: Colors.grey,),
+                                                                      )
+                                                                    else
+                                                                      ...items.map(
+                                                                            (e) => Padding(
+                                                                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                                                          child: Row(
+                                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                            children: [
+                                                                              SizedBox(
+                                                                                // color: Colors.orangeAccent,
+                                                                                width: screenWidth/4,
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    CustomText(text:e['q_no'],isCopy: false,colors: Colors.grey),5.width,
+                                                                                    Icon(Icons.circle,color: Colors.grey,size: 8,),5.width,
+                                                                                    CustomText(text:e['company_name'],isCopy: false,isBold: true,colors: Colors.grey),5.width,
+                                                                                    Icon(Icons.circle,color: dashController.colorList[index],size: 8,),5.width,
+                                                                                    CustomText(text:"${e['category']}",isCopy: false,isBold: true,colors: dashController.colorList[index],),
+                                                                                  ],
+                                                                                ),
+                                                                              ),
+                                                                              CustomText(text:productCtr.formatAmount(e['total_amt']),isCopy: false,isBold: true,colors: dashController.colorList[index],),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      ),
                                                                   ],
                                                                 ),
-                                                              ),
+                                                              ],
                                                             ),
-                                                        ],
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                   );

@@ -179,67 +179,14 @@ class _NewLeadPageState extends State<NewLeadPage> {
                       itemList: controllers.idList,
                       onDelete: () {
                         _focusNode.requestFocus();
-                        showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (context) {
-                              return AlertDialog(
-                                content: CustomText(
-                                  text: "Are you sure delete this ${widget.name}?",
-                                  size: 16,
-                                  isCopy: false,
-                                  isBold: true,
-                                  colors: colorsConst.textColor,
-                                ),
-                                actions: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(color: colorsConst.primary),
-                                            color: Colors.white),
-                                        width: 80,
-                                        height: 25,
-                                        child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.zero,
-                                              ),
-                                              backgroundColor: Colors.white,
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: CustomText(
-                                              text: "Cancel",
-                                              isCopy: false,
-                                              colors: colorsConst.primary,
-                                              size: 14,
-                                            )),
-                                      ),
-                                      10.width,
-                                      CustomLoadingButton(
-                                        callback: ()async{
-                                          _focusNode.requestFocus();
-                                          await apiService.deleteCustomersAPI(context, controllers.idList.value,widget.list,widget.list2);
-                                        },
-                                        height: 35,
-                                        isLoading: true,
-                                        backgroundColor: colorsConst.primary,
-                                        radius: 2,
-                                        width: 80,
-                                        controller: controllers.productCtr,
-                                        isImage: false,
-                                        text: "Delete",
-                                        textColor: Colors.white,
-                                      ),
-                                      5.width
-                                    ],
-                                  ),
-                                ],
-                              );
-                            });
+                        utils.showDeleteDialog(
+                            context: context, name: 'delete this ${widget.name}',
+                            isDelete: true,
+                            callBack: ()async{
+                              _focusNode.requestFocus();
+                              await apiService.deleteCustomersAPI(context, controllers.idList.value,widget.list,widget.list2);
+                            },
+                            controller: controllers.productCtr);
                       },
                       onMail: () {
                         // mailUtils.bulkEmailDialog(_focusNode, list: widget.list);
@@ -828,7 +775,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                             expectedBillingValue: data.expectedBillingValue ?? "",
                                             arpuValue: data.arpuValue ?? "",
                                             updatedTs: data.updatedTs ?? "",
-                                            sourceDetails: data.sourceDetails ?? "",
+                                            sourceDetails: data.sourceDetails ?? "", additional: data.additional??[],
                                           );
                                         },
                                       ),

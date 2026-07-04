@@ -248,66 +248,14 @@ class _ProductPageState extends State<ProductPage> {
                         focusColor: Colors.transparent,
                         hoverColor: Colors.transparent,
                         onTap: (){
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                content: CustomText(
-                                  text: "Are you sure delete this products?",
-                                  isCopy: true,
-                                  size: 16,
-                                  isBold: true,
-                                  colors: colorsConst.textColor,
-                                ),
-                                actions: [
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                            border: Border.all(color: colorsConst.primary),
-                                            color: Colors.white),
-                                        width: 80,
-                                        height: 25,
-                                        child: ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                              shape: const RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.zero,
-                                              ),
-                                              backgroundColor: Colors.white,
-                                            ),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                            child: CustomText(
-                                              text: "Cancel",
-                                              colors: colorsConst.primary,
-                                              size: 14,
-                                              isCopy: false,
-                                            )),
-                                      ),
-                                      10.width,
-                                      CustomLoadingButton(
-                                        callback: (){
-                                          final p = context.read<BillingProvider>();
-                                          p.deleteProduct(context,productCtr.selectedPrdIds);
-                                        },
-                                        height: 35,
-                                        isLoading: true,
-                                        backgroundColor: colorsConst.primary,
-                                        radius: 2,
-                                        width: 80,
-                                        controller: controllers.productCtr,
-                                        isImage: false,
-                                        text: "Delete",
-                                        textColor: Colors.white,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                          utils.showDeleteDialog(
+                              context: context, name: 'delete this ${productCtr.selectedPrdIds.length==1?'product':'products'}',
+                              isDelete: true,
+                              callBack: (){
+                                final p = context.read<BillingProvider>();
+                                p.deleteProduct(context,productCtr.selectedPrdIds);
+                              },
+                              controller: controllers.productCtr);
                         },
                         child: Container(
                           height: 40,
@@ -1031,66 +979,14 @@ class _ProductPageState extends State<ProductPage> {
                                                           )),
                                                       IconButton(
                                                           onPressed: (){
-                                                            showDialog(
-                                                              context: context,
-                                                              builder: (BuildContext context) {
-                                                                return AlertDialog(
-                                                                  content: CustomText(
-                                                                    text: "Are you sure delete this product?",
-                                                                    size: 16,
-                                                                    isBold: true,
-                                                                    isCopy: true,
-                                                                    colors: colorsConst.textColor,
-                                                                  ),
-                                                                  actions: [
-                                                                    Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                                      children: [
-                                                                        CustomLoadingButton(
-                                                                          callback: (){
-                                                                            final p = context.read<BillingProvider>();
-                                                                            p.deleteProduct(context,productCtr.selectedPrdIds);
-                                                                          },
-                                                                          height: 35,
-                                                                          isLoading: true,
-                                                                          backgroundColor: colorsConst.primary,
-                                                                          radius: 2,
-                                                                          width: 80,
-                                                                          controller: controllers.productCtr,
-                                                                          isImage: false,
-                                                                          text: "Delete",
-                                                                          textColor: Colors.white,
-                                                                        ),
-                                                                        10.width,
-                                                                        Container(
-                                                                          decoration: BoxDecoration(
-                                                                              border: Border.all(color: colorsConst.primary),
-                                                                              color: Colors.white),
-                                                                          width: 80,
-                                                                          height: 25,
-                                                                          child: ElevatedButton(
-                                                                              style: ElevatedButton.styleFrom(
-                                                                                shape: const RoundedRectangleBorder(
-                                                                                  borderRadius: BorderRadius.zero,
-                                                                                ),
-                                                                                backgroundColor: Colors.white,
-                                                                              ),
-                                                                              onPressed: () {
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: CustomText(
-                                                                                text: "Cancel",
-                                                                                isCopy: false,
-                                                                                colors: colorsConst.primary,
-                                                                                size: 14,
-                                                                              )),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              },
-                                                            );
+                                                            utils.showDeleteDialog(
+                                                                context: context, name: 'delete this product',
+                                                                isDelete: true,
+                                                                callBack: (){
+                                                                  final p = context.read<BillingProvider>();
+                                                                  p.deleteProduct(context,productCtr.selectedPrdIds);
+                                                                },
+                                                                controller: controllers.productCtr);
                                                           },
                                                           icon: SvgPicture.asset(
                                                             "assets/images/a_delete.svg",
@@ -1100,65 +996,13 @@ class _ProductPageState extends State<ProductPage> {
                                                       IconButton(
                                                           tooltip: 'Manage Whatsapp Product',
                                                           onPressed: (){
-                                                            showDialog(
-                                                              context: context,
-                                                              builder: (BuildContext context) {
-                                                                return AlertDialog(
-                                                                  content: CustomText(
-                                                                    text: "Are you sure you want to ${p.isSheet.toString()=="1"?"Inactive":"Active"} this product in WhatsApp?",
-                                                                    size: 16,
-                                                                    isBold: true,
-                                                                    isCopy: true,
-                                                                    colors: colorsConst.textColor,
-                                                                  ),
-                                                                  actions: [
-                                                                    Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                                      children: [
-                                                                        CustomLoadingButton(
-                                                                          callback: (){
-                                                                            context.read<BillingProvider>().manageProduct(context,p.id,p.isSheet.toString()=="1"?"2":"1",p.pTitle.toString(),p.outPrice.toString());
-                                                                          },
-                                                                          height: 35,
-                                                                          isLoading: true,
-                                                                          backgroundColor: colorsConst.primary,
-                                                                          radius: 2,
-                                                                          width: 80,
-                                                                          controller: controllers.productCtr,
-                                                                          isImage: false,
-                                                                          text: "Yes",
-                                                                          textColor: Colors.white,
-                                                                        ),
-                                                                        10.width,
-                                                                        Container(
-                                                                          decoration: BoxDecoration(
-                                                                              border: Border.all(color: colorsConst.primary),
-                                                                              color: Colors.white),
-                                                                          width: 80,
-                                                                          height: 25,
-                                                                          child: ElevatedButton(
-                                                                              style: ElevatedButton.styleFrom(
-                                                                                shape: const RoundedRectangleBorder(
-                                                                                  borderRadius: BorderRadius.zero,
-                                                                                ),
-                                                                                backgroundColor: Colors.white,
-                                                                              ),
-                                                                              onPressed: () {
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: CustomText(
-                                                                                text: "No",
-                                                                                isCopy: false,
-                                                                                colors: colorsConst.primary,
-                                                                                size: 14,
-                                                                              )),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                );
-                                                              },
-                                                            );
+                                                            utils.showDeleteDialog(
+                                                                context: context, name: '${p.isSheet.toString()=="1"?"Inactive":"Active"} this product in WhatsApp',
+                                                                isDelete: false,
+                                                                callBack: (){
+                                                                  context.read<BillingProvider>().manageProduct(context,p.id,p.isSheet.toString()=="1"?"2":"1",p.pTitle.toString(),p.outPrice.toString());
+                                                                },
+                                                                controller: controllers.productCtr);
                                                           },
                                                           icon: Icon(Icons.sell,color: p.isSheet.toString()=="1"?Colors.green:Colors.grey,))
                                                     ],

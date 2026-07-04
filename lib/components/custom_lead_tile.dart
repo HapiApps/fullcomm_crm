@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:collection/collection.dart';
 import 'package:http/http.dart'as http;
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:intl/intl.dart';

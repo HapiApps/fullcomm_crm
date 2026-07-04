@@ -1,3 +1,11 @@
+import 'package:fullcomm_crm/models/customer_full_obj.dart';
+List<T> listParser<T>(
+    dynamic raw,
+    T Function(Map<String, dynamic>) builder,
+    ) {
+  if (raw == null || raw is! List) return [];
+  return raw.map((e) => builder(e as Map<String, dynamic>)).toList();
+}
 class NewLeadObj {
   final String? userId;
   final String? addressId;
@@ -60,7 +68,7 @@ class NewLeadObj {
   final String? x;
   final String? designation;
   final String? department;
-  final List? additional;
+  final List<AdditionalInfo>? additional;
   bool? select;
 
   NewLeadObj(
@@ -123,7 +131,7 @@ class NewLeadObj {
   factory NewLeadObj.fromJson(Map<String, dynamic> json) {
     return NewLeadObj(
       select: false,
-      additional: json["additional_info"] ?? [],
+      additional: listParser(json['additional_info'], AdditionalInfo.fromJson),
       designation: json["designation"]?.toString() ?? '',
       department: json["department"]?.toString() ?? '',
       userId: json["user_id"]?.toString() ?? '',

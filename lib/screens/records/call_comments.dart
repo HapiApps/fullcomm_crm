@@ -351,65 +351,13 @@ class _CallCommentsState extends State<CallComments> {
                           focusColor: Colors.transparent,
                           hoverColor: Colors.transparent,
                           onTap: (){
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  content: CustomText(
-                                    text: "Are you sure delete this Call records?",
-                                    size: 16,
-                                    isBold: true,
-                                    isCopy: true,
-                                    colors: colorsConst.textColor,
-                                  ),
-                                  actions: [
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          decoration: BoxDecoration(
-                                              border: Border.all(color: colorsConst.primary),
-                                              color: Colors.white),
-                                          width: 80,
-                                          height: 25,
-                                          child: ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                shape: const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.zero,
-                                                ),
-                                                backgroundColor: Colors.white,
-                                              ),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                              child: CustomText(
-                                                text: "Cancel",
-                                                isCopy: false,
-                                                colors: colorsConst.primary,
-                                                size: 14,
-                                              )),
-                                        ),
-                                        10.width,
-                                        CustomLoadingButton(
-                                          callback: ()async{
-                                            remController.deleteRecordCallAPI(context);
-                                          },
-                                          height: 35,
-                                          isLoading: true,
-                                          backgroundColor: colorsConst.primary,
-                                          radius: 2,
-                                          width: 80,
-                                          controller: controllers.productCtr,
-                                          isImage: false,
-                                          text: "Delete",
-                                          textColor: Colors.white,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            utils.showDeleteDialog(
+                                context: context, name: 'delete this call ${remController.selectedRecordCallIds.length==1?'record':'records'}',
+                                isDelete: true,
+                                callBack: (){
+                                  remController.deleteRecordCallAPI(context);
+                                },
+                                controller: controllers.productCtr);
                           },
                           child: Container(
                             height: 40,
@@ -1415,66 +1363,14 @@ class _CallCommentsState extends State<CallComments> {
                                                             )),
                                                         IconButton(
                                                             onPressed: (){
-                                                              showDialog(
-                                                                context: context,
-                                                                builder: (BuildContext context) {
-                                                                  return AlertDialog(
-                                                                    content: CustomText(
-                                                                      text: "Are you sure delete this Call records?",
-                                                                      size: 16,
-                                                                      isBold: true,
-                                                                      isCopy: true,
-                                                                      colors: colorsConst.textColor,
-                                                                    ),
-                                                                    actions: [
-                                                                    Row(
-                                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                                      children: [
-                                                                        Container(
-                                                                          decoration: BoxDecoration(
-                                                                              border: Border.all(color: colorsConst.primary),
-                                                                              color: Colors.white),
-                                                                          width: 80,
-                                                                          height: 25,
-                                                                          child: ElevatedButton(
-                                                                              style: ElevatedButton.styleFrom(
-                                                                                shape: const RoundedRectangleBorder(
-                                                                                  borderRadius: BorderRadius.zero,
-                                                                                ),
-                                                                                backgroundColor: Colors.white,
-                                                                              ),
-                                                                              onPressed: () {
-                                                                                Navigator.pop(context);
-                                                                              },
-                                                                              child: CustomText(
-                                                                                text: "Cancel",
-                                                                                colors: colorsConst.primary,
-                                                                                size: 14,
-                                                                                isCopy: false,
-                                                                              )),
-                                                                        ),
-                                                                        10.width,
-                                                                        CustomLoadingButton(
-                                                                          callback: ()async{
-                                                                            remController.selectedRecordCallIds.add(data.id.toString());
-                                                                            remController.deleteRecordCallAPI(context);
-                                                                          },
-                                                                          height: 35,
-                                                                          isLoading: true,
-                                                                          backgroundColor: colorsConst.primary,
-                                                                          radius: 2,
-                                                                          width: 80,
-                                                                          controller: controllers.productCtr,
-                                                                          isImage: false,
-                                                                          text: "Delete",
-                                                                          textColor: Colors.white,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ],
-                                                                  );
-                                                                },
-                                                              );
+                                                              utils.showDeleteDialog(
+                                                                  context: context, name: 'delete this call record',
+                                                                  isDelete: true,
+                                                                  callBack: (){
+                                                                    remController.selectedRecordCallIds.add(data.id.toString());
+                                                                    remController.deleteRecordCallAPI(context);
+                                                                  },
+                                                                  controller: controllers.productCtr);
                                                             },
                                                             icon: SvgPicture.asset(
                                                               "assets/images/a_delete.svg",
