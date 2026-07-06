@@ -390,12 +390,12 @@ void addListValues(){
 }
   @override
   Widget build(BuildContext context){
-    print("widget.additional.length");
-    print(widget.additional.length);
-    print(widget.additional.map((e) => e.toJson()).toList());
+    // print("widget.additional.length");
+    // print(widget.additional.length);
+    // print(widget.additional.map((e) => e.toJson()).toList());
     // print(widget.additional.first.fieldValue);
-    print(controllers.addList.first.fieldName);
-    print(controllers.addList.first.fieldValue);
+    // print(controllers.addList.first.fieldName);
+    // print(controllers.addList.first.fieldValue);
     double textFieldSize = (MediaQuery.of(context).size.width - 400) / 1.8;
     return SelectionArea(
       child: Scaffold(
@@ -1083,6 +1083,7 @@ void addListValues(){
                                             isOptional: false,
                                             onTap: () {
                                               utils.datePicker(
+                                                isFutureDate: false,
                                                   context: context,
                                                   textEditingController:
                                                   controllers.dateOfConCtr,
@@ -1825,6 +1826,7 @@ void addListValues(){
                                           focusNode: ob7,
                                           onEdit: () {
                                             utils.datePicker(
+                                                isFutureDate: true,
                                                 context: context,
                                                 textEditingController: controllers.dateOfConCtr,
                                                 pathVal: controllers.exDate);
@@ -1858,6 +1860,7 @@ void addListValues(){
                                           width: textFieldSize,
                                           onTap: () {
                                             utils.datePicker(
+                                                isFutureDate: true,
                                                 context: context,
                                                 textEditingController: controllers.dateOfConCtr,
                                                 pathVal: controllers.exDate);
@@ -1869,6 +1872,7 @@ void addListValues(){
                                           focusNode: ob8,
                                           onEdit: () {
                                             utils.datePicker(
+                                                isFutureDate: false,
                                                 context: context,
                                                 textEditingController: controllers.dateOfConCtr,
                                                 pathVal: controllers.prospectDate);
@@ -1903,6 +1907,7 @@ void addListValues(){
                                           isOptional: false,
                                           onTap: () {
                                             utils.datePicker(
+                                                isFutureDate: false,
                                                 context: context,
                                                 textEditingController: controllers.dateOfConCtr,
                                                 pathVal: controllers.prospectDate);
@@ -2065,6 +2070,12 @@ void addListValues(){
                                       size: 20,
                                       isCopy: false,
                                     ),
+                                    IconButton(
+                                        tooltip: "Add Column",
+                                        onPressed: (){
+                                          utils.showAddColumnDialog(context);
+                                        },
+                                        icon: Icon(Icons.add))
                                   ],
                                 ), ////Todo:Address details
                                 10.height,

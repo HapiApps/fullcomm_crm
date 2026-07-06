@@ -303,8 +303,7 @@ class SideBar extends StatelessWidget {
               label: "Employees",
               page: const EmployeeScreen(),
             ),
-            if(isRelease==true&&controllers.storage.read("cos_id")!="202629")
-            controllers.storage.read("role") != "See All Customer Records"
+            isRelease==true&&controllers.storage.read("cos_id")!="202629"&&controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()
                 : Obx(() {
               bool isExpanded = controllers.isPayrollExpanded.value;

@@ -526,6 +526,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                             mainAxisAlignment: MainAxisAlignment.start,
                                             children: [
                                               IconButton(
+                                                  tooltip:'Edit Employee Details',
                                                   onPressed: (){
                                                     Navigator.push(context, MaterialPageRoute(builder: (context)=>UpdateEmployee(
                                                       employeeData :staffData ,
@@ -537,6 +538,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                     height: 16,
                                                   )),
                                               IconButton(
+                                                  tooltip:'Delete Employee',
                                                   onPressed: (){
                                                     utils.showDeleteDialog(
                                                         context: context, name: 'delete this employee',
@@ -555,92 +557,142 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                     height: 16,
                                                   )),
                                               IconButton(
+                                                  tooltip:'Employee Report',
                                                   onPressed: (){
+                                                    controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
                                                     Get.to(EmployeeReportPage(id:staffData.id.toString()));
                                                   },
                                                   icon: Icon(Icons.report_gmailerrorred_rounded)),
                                             ],
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            text: "${staffData.sName}",
-                                            size: 14,
-                                            isCopy: false,
-                                            colors:colorsConst.textColor,
+                                        InkWell(
+                                          onTap:(){
+                                            controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              text: "${staffData.sName}",
+                                              size: 14,
+                                              isCopy: false,
+                                              colors:colorsConst.textColor,
+                                            ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            isCopy: false,
-                                            text:staffData.roleTitle.toString(),
-                                            // text:employeeProvider.getRoleName(staffData.role.toString()=="null"?"1":staffData.role.toString()),
-                                            size: 14,
-                                            colors: colorsConst.textColor,
+                                        InkWell(
+                                          onTap:(){
+                                            controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              isCopy: false,
+                                              text:staffData.roleTitle.toString(),
+                                              // text:employeeProvider.getRoleName(staffData.role.toString()=="null"?"1":staffData.role.toString()),
+                                              size: 14,
+                                              colors: colorsConst.textColor,
+                                            ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            isCopy: false,
-                                            text:staffData.department.toString(),
-                                            size: 14,
-                                            colors: colorsConst.textColor,
+                                        InkWell(
+                                          onTap:(){
+                                            controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              isCopy: false,
+                                              text:staffData.department.toString(),
+                                              size: 14,
+                                              colors: colorsConst.textColor,
+                                            ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            isCopy: false,
-                                            textAlign: TextAlign.left,
-                                            text: staffData.sMobile.toString(),
-                                            size: 14,
-                                            colors:colorsConst.textColor,
+                                        InkWell(
+                                          onTap:(){
+                                            controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              isCopy: false,
+                                              textAlign: TextAlign.left,
+                                              text: staffData.sMobile.toString(),
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            textAlign: TextAlign.left,
-                                            isCopy: false,
-                                            text: staffData.email.toString(),
-                                            size: 14,
-                                            colors:colorsConst.textColor,
+                                        InkWell(
+                                          onTap:(){
+                                            controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              textAlign: TextAlign.left,
+                                              isCopy: false,
+                                              text: staffData.email.toString(),
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            isCopy: false,
-                                            textAlign: TextAlign.left,
-                                            text: staffData.sAddress.toString(),
-                                            size: 14,
-                                            colors:colorsConst.textColor,
+                                        InkWell(
+                                          onTap:(){
+                                            controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              isCopy: false,
+                                              textAlign: TextAlign.left,
+                                              text: staffData.sAddress.toString(),
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            isCopy: false,
-                                            textAlign: TextAlign.left,
-                                            text: staffData.salary.toString(),
-                                            size: 14,
-                                            colors:colorsConst.textColor,
+                                        InkWell(
+                                          onTap:(){
+                                            controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              isCopy: false,
+                                              textAlign: TextAlign.left,
+                                              text: staffData.salary.toString(),
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.all(10.0),
-                                          child: CustomText(
-                                            isCopy: false,
-                                            textAlign: TextAlign.left,
-                                            text: staffData.bonus.toString(),
-                                            size: 14,
-                                            colors:colorsConst.textColor,
+                                        InkWell(
+                                          onTap:(){
+                                            controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: CustomText(
+                                              isCopy: false,
+                                              textAlign: TextAlign.left,
+                                              text: staffData.bonus.toString(),
+                                              size: 14,
+                                              colors:colorsConst.textColor,
+                                            ),
                                           ),
                                         ),
                                         // Visibility(

@@ -256,7 +256,7 @@ class NewPayrollApiServices{
         "cos_id":controllers.storage.read("cos_id"),
         // "com_id":controllers.storage.read("com_id"),
       };
-      // debugPrint(sendData.toString());
+      debugPrint(sendData.toString());
 
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
@@ -265,6 +265,7 @@ class NewPayrollApiServices{
           },
           body: jsonEncode(sendData),
           encoding: Encoding.getByName("utf-8"));
+      debugPrint(request.body.toString());
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -338,7 +339,7 @@ class NewPayrollApiServices{
     }
   }
   Future<List<UnitPayroll>> getUnitPayroll() async {
-    try{
+    // try{
       pyrlCtr.getData.value=false;
       Map data = {
         "action":"get_data",
@@ -357,7 +358,9 @@ class NewPayrollApiServices{
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      debugPrint(request.body.toString());
+      debugPrint("wages sheet response");
+      debugPrint(data.toString());
+      log(request.body.toString());
       final List dataValue= json.decode(request.body);
       pyrlCtr.unitPayrollList2.clear();
       pyrlCtr.unitPayrollList.clear();
@@ -380,13 +383,13 @@ class NewPayrollApiServices{
         pyrlCtr.unitPayrollList.clear();
         throw Exception('Failed to load album');
       }
-    }catch(e){
-      debugPrint(e.toString());
-      pyrlCtr.getData.value=true;
-      pyrlCtr.unitPayrollList.clear();
-      pyrlCtr.unitPayrollList2.clear();
-      throw Exception('Failed to load album');
-    }
+    // }catch(e){
+    //   debugPrint(e.toString());
+    //   pyrlCtr.getData.value=true;
+    //   pyrlCtr.unitPayrollList.clear();
+    //   pyrlCtr.unitPayrollList2.clear();
+    //   throw Exception('Failed to load album');
+    // }
   }
   Future<List<UnitPayroll>> getEsiWages() async {
     try{

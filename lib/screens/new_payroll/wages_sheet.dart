@@ -1000,28 +1000,39 @@ class _UnitSlipState extends State<UnitSlip> {
                                           physics: const ScrollPhysics(),
                                           itemCount: pyrlCtr.unitPayrollList.length,
                                           itemBuilder: (context, index) {
-                                            var namesList = pyrlCtr.unitPayrollList[index].name.toString().split(',');
-                                            var codeList = pyrlCtr.unitPayrollList[index].empcd.toString().split(',');
-                                            var roleList = pyrlCtr.unitPayrollList[index].roleName.toString().split(',');
-                                            var dutyList = pyrlCtr.unitPayrollList[index].duty.toString().split(',');
-                                            var otList = pyrlCtr.unitPayrollList[index].ot.toString().split(',');
-                                            var basicList = pyrlCtr.unitPayrollList[index].basic.toString().split(',');
-                                            var hraList = pyrlCtr.unitPayrollList[index].hra.toString().split(',');
-                                            var daList = pyrlCtr.unitPayrollList[index].da.toString().split(',');
-                                            var netAmtList = pyrlCtr.unitPayrollList[index].netAmount.toString().split(',');
-                                            var advanceList = pyrlCtr.unitPayrollList[index].advance.toString().split(',');
-                                            var uniformList = pyrlCtr.unitPayrollList[index].uniform.toString().split(',');
-                                            var penaltyList = pyrlCtr.unitPayrollList[index].penalty.toString().split(',');
-                                            var esiList = pyrlCtr.unitPayrollList[index].esi.toString().split(',');
-                                            var pfList = pyrlCtr.unitPayrollList[index].pf.toString().split(',');
-                                            var deductionList = pyrlCtr.unitPayrollList[index].deduction.toString().split(',');
-                                            var totalList = pyrlCtr.unitPayrollList[index].total.toString().split(',');
-                                            var acList = pyrlCtr.unitPayrollList[index].aC.toString().split(',');
-                                            var bonusList = pyrlCtr.unitPayrollList[index].bonus.toString().split(',');
-                                            var bonus2List = pyrlCtr.unitPayrollList[index].bonus2.toString().split(',');
-                                            var foodList = pyrlCtr.unitPayrollList[index].food.toString().split(',');
-                                            var opList = pyrlCtr.unitPayrollList[index].op.toString().split(',');
-                                            return Table(
+                                            var namesList = pyrlCtr.unitPayrollList[0].name.toString().split(',');
+                                            var roleList = pyrlCtr.unitPayrollList[0].roleName.toString().split(',');
+                                            var dutyList = pyrlCtr.unitPayrollList[0].duty.toString().split(',');
+                                            var otList = pyrlCtr.unitPayrollList[0].ot.toString().split(',');
+                                            var basicList = pyrlCtr.unitPayrollList[0].basic.toString().split(',');
+                                            var hraList = pyrlCtr.unitPayrollList[0].hra.toString().split(',');
+                                            var daList = pyrlCtr.unitPayrollList[0].da.toString().split(',');
+                                            var netAmtList = pyrlCtr.unitPayrollList[0].netAmount.toString().split(',');
+                                            var advanceList = pyrlCtr.unitPayrollList[0].advance.toString().split(',');
+                                            var uniformList = pyrlCtr.unitPayrollList[0].uniform.toString().split(',');
+                                            var penaltyList = pyrlCtr.unitPayrollList[0].penalty.toString().split(',');
+                                            var esiList = pyrlCtr.unitPayrollList[0].esi.toString().split(',');
+                                            var pfList = pyrlCtr.unitPayrollList[0].pf.toString().split(',');
+                                            var deductionList = pyrlCtr.unitPayrollList[0].deduction.toString().split(',');
+                                            var totalList = pyrlCtr.unitPayrollList[0].total.toString().split(',');
+                                            var bonus2List = pyrlCtr.unitPayrollList[0].bonus2.toString().split(',');
+                                            var foodList = pyrlCtr.unitPayrollList[0].food.toString().split(',');
+                                            print("namesList   : ${namesList.length}");
+                                            print("roleList    : ${roleList.length}");
+                                            print("dutyList    : ${dutyList.length}");
+                                            print("otList      : ${otList.length}");
+                                            print("basicList   : ${basicList.length}");
+                                            print("hraList     : ${hraList.length}");
+                                            print("daList      : ${daList.length}");
+                                            print("netAmtList  : ${netAmtList.length}");
+                                            print("advanceList : ${advanceList.length}");
+                                            print("uniformList : ${uniformList.length}");
+                                            print("penaltyList : ${penaltyList.length}");
+                                            print("esiList     : ${esiList.length}");
+                                            print("pfList      : ${pfList.length}");
+                                            print("deductionList : ${deductionList.length}");
+                                            print("totalList   : ${totalList.length}");
+                                            return  Table(
                                               columnWidths: {
                                                 for (int i = 0; i < colWidths.length; i++)
                                                   i: FixedColumnWidth(colWidths[i]),
@@ -1031,8 +1042,8 @@ class _UnitSlipState extends State<UnitSlip> {
                                                 verticalInside:BorderSide(width: 0.5, color: Colors.grey.shade400),
                                                 bottom:  BorderSide(width: 0.5, color: Colors.grey.shade400),
                                               ),
-                                              children:[
-                                                TableRow(
+                                              children: List.generate(namesList.length, (index) {
+                                                return TableRow(
                                                     decoration: BoxDecoration(
                                                       color: int.parse(index.toString()) % 2 == 0 ? Colors.white : colorsConst.backgroundColor,
                                                     ),
@@ -1209,9 +1220,8 @@ class _UnitSlipState extends State<UnitSlip> {
                                                         ),
                                                       ),
                                                     ]
-                                                ),
-
-                                              ],
+                                                );
+                                              }),
                                             );
                                           },
                                         );
@@ -1279,9 +1289,9 @@ class _UnitSlipState extends State<UnitSlip> {
       if (value == null || value.trim().isEmpty || value.toLowerCase() == "null") {
         return "";
       }
-
       // Try converting to number & format it
       final number = num.tryParse(value);
+      print("number $number");
       if (number != null&&isName==false) {
         return NumberFormat('#,##0').format(number);
 

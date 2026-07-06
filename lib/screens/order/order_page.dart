@@ -254,7 +254,7 @@ class _OrderPageState extends State<OrderPage> {
                                 selectedRange: remController.selectedCallRange.value,
                                 selectedDateFilter: productCtr.selectedCallSortBy.value,
                               );
-                            },
+                            },false
                           );
                         },
                         onSelectDateRange: (ctx) {
@@ -268,7 +268,7 @@ class _OrderPageState extends State<OrderPage> {
                               selectedRange: remController.selectedCallRange.value,
                               selectedDateFilter: productCtr.selectedCallSortBy.value,
                             );
-                          });
+                          },false);
                         },
                       )
                     ],

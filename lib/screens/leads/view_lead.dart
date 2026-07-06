@@ -1176,95 +1176,95 @@ void checkType(){
                                                                     CustomText(text: "Additional Information",isCopy: true,isBold: true,size: 17,),
                                                                   ],
                                                                 ),
-                                                                IconButton(onPressed: (){
-                                                                  showDialog(
-                                                                    context: context,
-                                                                    barrierDismissible: false,
-                                                                    builder: (context) {
-                                                                       return StatefulBuilder(
-                                                                        builder: (context, setState) {
-                                                                          return Dialog(
-                                                                            insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                                                                            child: Container(
-                                                                              width: 600,
-                                                                              constraints: const BoxConstraints(maxHeight: 510),
-                                                                              padding: const EdgeInsets.all(16),
-                                                                              child: Column(
-                                                                                children: [
-                                                                                  Row(
-                                                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                                                    children: [
-                                                                                      CustomText(
-                                                                                        text: "Update Customer Additional Information",
-                                                                                        size: 16,
-                                                                                        isBold: true,
-                                                                                        isCopy: false,
-                                                                                      ),
-                                                                                      InkWell(
-                                                                                        onTap: () => Navigator.pop(context),
-                                                                                        child: const Icon(Icons.clear),
-                                                                                      )
-                                                                                    ],
-                                                                                  ),
-                                                                                  Divider(color: Colors.grey.shade200,),
-                                                                                  10.height,
-                                                                                  GridView.builder(
-                                                                                    shrinkWrap: true,
-                                                                                    physics: const NeverScrollableScrollPhysics(),
-                                                                                    itemCount: additional.length,
-                                                                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                                                                                      crossAxisCount: 2, // 2 items per row
-                                                                                      crossAxisSpacing: 10,
-                                                                                      mainAxisSpacing: 10,
-                                                                                      childAspectRatio: 3,
-                                                                                    ),
-                                                                                    itemBuilder: (context, index) {
-                                                                                      final info = additional[index];
-
-                                                                                      return Column(
-                                                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                                                        children: [
-                                                                                          CustomText(
-                                                                                            text: info.fieldName.toString().toUpperCase(),
-                                                                                            isCopy: true,
-                                                                                            size: 12,
-                                                                                          ),
-                                                                                          10.height,
-                                                                                          CustomTextField(text: "", controller: info.controller!)
-                                                                                        ],
-                                                                                      );
-                                                                                    },
-                                                                                  ),
-                                                                                  10.height,
-                                                                                  Row(
-                                                                                    mainAxisAlignment: MainAxisAlignment.end,
-                                                                                    children: [
-                                                                                      TextButton(
-                                                                                        onPressed: () => Navigator.pop(context),
-                                                                                        child: CustomText(
-                                                                                          text: "Cancel",
-                                                                                          colors: colorsConst.primary,
-                                                                                          isCopy: false,
-                                                                                        ),
-                                                                                      ),
-                                                                                      10.width,
-                                                                                      ElevatedButton(
-                                                                                        onPressed: (){
-                                                                                          bool isValid = true;
-                                                                                        },
-                                                                                        child: const Text("Save"),
-                                                                                      ),
-                                                                                    ],
-                                                                                  )
-                                                                                ],
-                                                                              ),
-                                                                            ),
-                                                                          );
-                                                                        },
-                                                                      );
-                                                                    },
-                                                                  );
-                                                                }, icon: SvgPicture.asset("assets/images/a_edit.svg"))
+                                                                // IconButton(onPressed: (){
+                                                                //   showDialog(
+                                                                //     context: context,
+                                                                //     barrierDismissible: false,
+                                                                //     builder: (context) {
+                                                                //        return StatefulBuilder(
+                                                                //         builder: (context, setState) {
+                                                                //           return Dialog(
+                                                                //             insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                                                                //             child: Container(
+                                                                //               width: 600,
+                                                                //               constraints: const BoxConstraints(maxHeight: 510),
+                                                                //               padding: const EdgeInsets.all(16),
+                                                                //               child: Column(
+                                                                //                 children: [
+                                                                //                   Row(
+                                                                //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                //                     children: [
+                                                                //                       CustomText(
+                                                                //                         text: "Update Customer Additional Information",
+                                                                //                         size: 16,
+                                                                //                         isBold: true,
+                                                                //                         isCopy: false,
+                                                                //                       ),
+                                                                //                       InkWell(
+                                                                //                         onTap: () => Navigator.pop(context),
+                                                                //                         child: const Icon(Icons.clear),
+                                                                //                       )
+                                                                //                     ],
+                                                                //                   ),
+                                                                //                   Divider(color: Colors.grey.shade200,),
+                                                                //                   10.height,
+                                                                //                   GridView.builder(
+                                                                //                     shrinkWrap: true,
+                                                                //                     physics: const NeverScrollableScrollPhysics(),
+                                                                //                     itemCount: additional.length,
+                                                                //                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                                                //                       crossAxisCount: 2, // 2 items per row
+                                                                //                       crossAxisSpacing: 10,
+                                                                //                       mainAxisSpacing: 10,
+                                                                //                       childAspectRatio: 3,
+                                                                //                     ),
+                                                                //                     itemBuilder: (context, index) {
+                                                                //                       final info = additional[index];
+                                                                //
+                                                                //                       return Column(
+                                                                //                         crossAxisAlignment: CrossAxisAlignment.start,
+                                                                //                         children: [
+                                                                //                           CustomText(
+                                                                //                             text: info.fieldName.toString().toUpperCase(),
+                                                                //                             isCopy: true,
+                                                                //                             size: 12,
+                                                                //                           ),
+                                                                //                           10.height,
+                                                                //                           CustomTextField(text: "", controller: info.controller!)
+                                                                //                         ],
+                                                                //                       );
+                                                                //                     },
+                                                                //                   ),
+                                                                //                   10.height,
+                                                                //                   Row(
+                                                                //                     mainAxisAlignment: MainAxisAlignment.end,
+                                                                //                     children: [
+                                                                //                       TextButton(
+                                                                //                         onPressed: () => Navigator.pop(context),
+                                                                //                         child: CustomText(
+                                                                //                           text: "Cancel",
+                                                                //                           colors: colorsConst.primary,
+                                                                //                           isCopy: false,
+                                                                //                         ),
+                                                                //                       ),
+                                                                //                       10.width,
+                                                                //                       ElevatedButton(
+                                                                //                         onPressed: (){
+                                                                //                           bool isValid = true;
+                                                                //                         },
+                                                                //                         child: const Text("Save"),
+                                                                //                       ),
+                                                                //                     ],
+                                                                //                   )
+                                                                //                 ],
+                                                                //               ),
+                                                                //             ),
+                                                                //           );
+                                                                //         },
+                                                                //       );
+                                                                //     },
+                                                                //   );
+                                                                // }, icon: SvgPicture.asset("assets/images/a_edit.svg"))
                                                               ],
                                                             ),
                                                             10.height,

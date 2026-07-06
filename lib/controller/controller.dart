@@ -242,7 +242,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       firstDate: DateTime(2026),
 
       // ✅ Allow full current month (Important)
-      lastDate: DateTime(DateTime.now().year + 1,DateTime.now().month,DateTime.now().day),
+      lastDate: DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day),
 
     ).then((selected) {
       if (selected != null) {
@@ -401,20 +401,49 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
       return inputDate;
     }
   }
+  // String formatDateOnly(String inputDate) {
+  //   print("inputDate ${inputDate}");
+  //   try {
+  //     String normalized = inputDate.replaceAll('.', '-');
+  //     DateTime dateTime = DateFormat("dd-MM-yyyy h:mm a").parse(normalized);
+  //     return DateFormat("dd MMM yyyy").format(dateTime);
+  //   } catch (e) {
+  //     return inputDate;
+  //   }
+  // }
   String formatDateOnly(String inputDate) {
     try {
-      String normalized = inputDate.replaceAll('.', '-');
-      DateTime dateTime = DateFormat("dd-MM-yyyy h:mm a").parse(normalized);
-      return DateFormat("dd MMM yyyy").format(dateTime);
+      DateTime dateTime;
+
+      try {
+        dateTime = DateFormat("dd-MM-yyyy hh:mm a").parse(inputDate);
+      } catch (_) {
+        dateTime = DateFormat("dd-MM-yyyy hh.mm a").parse(inputDate);
+      }
+
+      return DateFormat("dd-MM-yyyy").format(dateTime);
     } catch (e) {
       return inputDate;
     }
   }
   String formatTime(String inputDate) {
+    // try {
+    //   String normalized = inputDate.replaceAll('.', '-');
+    //   DateTime dateTime = DateFormat("dd-MM-yyyy h:mm a").parse(normalized);
+    //   return DateFormat("h:mm a").format(dateTime);
+    // } catch (e) {
+    //   return inputDate;
+    // }
     try {
-      String normalized = inputDate.replaceAll('.', '-');
-      DateTime dateTime = DateFormat("dd-MM-yyyy h:mm a").parse(normalized);
-      return DateFormat("h:mm a").format(dateTime);
+      DateTime dateTime;
+
+      try {
+        dateTime = DateFormat("dd-MM-yyyy hh:mm a").parse(inputDate);
+      } catch (_) {
+        dateTime = DateFormat("dd-MM-yyyy hh.mm a").parse(inputDate);
+      }
+
+      return DateFormat("hh.mm a").format(dateTime);
     } catch (e) {
       return inputDate;
     }
@@ -518,7 +547,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
                 child: SfDateRangePicker(
                   backgroundColor: const Color(0xffFFFCF9),
                   minDate: DateTime(2026),
-                  maxDate: DateTime(DateTime.now().year + 1,DateTime.now().month,DateTime.now().day),
+                  maxDate: DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day),
                   selectionMode: DateRangePickerSelectionMode.extendableRange,
                   selectionShape: DateRangePickerSelectionShape.circle,
                   initialSelectedRange: controllers.selectedRange.value == null

@@ -5822,9 +5822,9 @@ class ApiService {
 
         body: jsonEncode(data),
       );
-      debugPrint("all_leads");
-      debugPrint(data.toString());
-      log(response.body);
+      // debugPrint("all_leads");
+      // debugPrint(data.toString());
+      // log(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

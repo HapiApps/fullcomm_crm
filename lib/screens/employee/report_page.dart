@@ -7,11 +7,17 @@ import 'package:fullcomm_crm/models/month_report_obj.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../common/constant/colors_constant.dart';
 import '../../components/Customtext.dart';
 import '../../components/custom_appbar.dart';
+import '../../components/date_filter_bar.dart';
+import '../../components/keyboard_search.dart';
 import '../../components/report_cards.dart';
 import '../../controller/controller.dart';
 import '../../controller/emp_report_controller.dart';
+import '../../controller/product_controller.dart';
+import '../../controller/reminder_controller.dart';
+import '../../models/all_customers_obj.dart';
 import 'emp_filter.dart';
 
 class EmployeeReportPage extends StatefulWidget {
@@ -40,18 +46,28 @@ class EmployeeReportPage extends StatefulWidget {
 }
 
 class _EmployeeReportPageState extends State<EmployeeReportPage> {
+  late FocusNode _focusNode;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _focusNode = FocusNode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
     repCtr.getWholeReport(widget.id);
     repCtr.empId.value=widget.id;
+  }
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
   }
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: const Color(0xffF6F8FC),
       body: Row(
         children: [
           SideBar(),
@@ -64,13 +80,84 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                 children: [
                   CustomAppbar(
                       text:"Employee Wise Report",subText: "Detailed activity report of the selected employee",
-                    actionsWidget: EmployeeReportPage._button(
-                      "Download",
-                      Icons.download,
-                      Colors.deepPurple,
-                    ),
+                    // actionsWidget: EmployeeReportPage._button(
+                    //   "Download",
+                    //   Icons.download,
+                    //   Colors.deepPurple,
+                    // ),
                   ),
-                  const EmployeeFilter(),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 480,
+                        height: 40,
+                        child: KeyboardDropdownField<AllEmployeesObj>(
+                          items: controllers.employees,
+                          hintText: "Search Employee Name",
+                          borderRadius: 5,
+                          borderColor: Colors.grey.shade200,
+                          labelBuilder: (customer) =>
+                          '${customer.name} ${customer.phoneNo}',
+                          itemBuilder: (customer) =>
+                              Container(
+                                width: 300,
+                                alignment: Alignment.topLeft,
+                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                                child: CustomText(
+                                  text:
+                                  '${customer.name} , ${customer.phoneNo}',
+                                  colors: Colors.black,
+                                  size: 14,
+                                  isCopy: false,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                          textEditingController: controllers.cusController,
+                          onSelected: (value) {
+                            repCtr.empId.value=value.id;
+                            repCtr.getWholeReport(repCtr.empId.value);
+                          },
+                          onClear: () {
+                            controllers.clearSelectedCustomer();
+                          },
+                        ),
+                      ),
+                      DateFilterBar(
+                        selectedSortBy: repCtr.selectedSortBy,
+                        selectedRange: repCtr.selectedRange,
+                        selectedMonth: repCtr.selectedMonth,
+                        focusNode: _focusNode,
+                        onDaysSelected: () {
+                          repCtr.changeType();
+                        },
+                        onSelectMonth: () {
+                          remController.selectMonth(
+                            context,
+                            repCtr.selectedSortBy,
+                            repCtr.selectedMonth,
+                                () {
+                                  DateTime dt = DateTime.parse(repCtr.selectedMonth.toString());
+                                  repCtr.stDate.value= DateFormat('dd-MM-yyyy').format(DateTime(dt.year, dt.month, 1));
+                                  repCtr.enDate.value= DateFormat('dd-MM-yyyy').format(DateTime(dt.year, dt.month + 1, 0));
+                                  repCtr.getWholeReport(repCtr.empId.value);
+                                },false
+                          );
+                        },
+                        onSelectDateRange: (ctx) {
+                          remController.showDatePickerDialog(ctx, (pickedRange) {
+                            repCtr.selectedRange.value = pickedRange;
+                            List<String> dates = repCtr.selectedRange.toString().split(" - ");
+                            DateTime start = DateTime.parse(dates[0]);
+                            DateTime end = DateTime.parse(dates[1]);
+                            repCtr.stDate.value= DateFormat('dd-MM-yyyy').format(start);
+                            repCtr.enDate.value= DateFormat('dd-MM-yyyy').format(end);
+                            repCtr.getWholeReport(repCtr.empId.value);
+                          },false);
+                        },
+                      ),
+                    ],
+                  ),
                   20.height,
                   repCtr.refreshData.value==false?
                   CircularProgressIndicator():
@@ -188,6 +275,34 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: screenWidth/8,
+                                      child: CustomText(
+                                        text: "Comparison Report",
+                                        isCopy: false,
+                                        isBold: true,textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: screenWidth/7,
+                                      child: CustomText(
+                                        text: "Last Week",
+                                        isCopy: false,
+                                        isBold: true,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: screenWidth/7,
+                                      child: CustomText(
+                                        text: "This Week",
+                                        isCopy: false,
+                                        isBold: true,
+                                      ),
+                                    ),
+                                  ],
+                                ),10.height,
                                 Row(
                                   children: [
                                     SizedBox(

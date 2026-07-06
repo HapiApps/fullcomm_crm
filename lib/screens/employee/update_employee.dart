@@ -331,12 +331,6 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                           size: 13,
                                           isCopy: false,
                                         ),
-                                        const CustomText(
-                                          text: "*",
-                                          colors: Colors.red,
-                                          size: 25,
-                                          isCopy: false,
-                                        ),
                                         IconButton(onPressed: (){
                                           employeeProvider.addDepartmentDialog(context);
                                         }, icon: Icon(Icons.add))
@@ -590,15 +584,6 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                       );
                                       return;
                                     }
-                                    if (employeeProvider.dep == null) {
-                                      employeeProvider.addEmployeeButtonController.reset();
-                                      utils.snackBar(
-                                        context: context,
-                                        msg: "Please Select Role",
-                                        color: Colors.red,
-                                      );
-                                      return;
-                                    }
                                     if(employeeProvider.emailController.text.trim().isEmpty){
                                       employeeProvider.employeeUpdate(
                                         context: context,
@@ -737,15 +722,6 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                   return;
                                 }
                                 if (employeeProvider.roleId == null) {
-                                  employeeProvider.addEmployeeButtonController.reset();
-                                  utils.snackBar(
-                                    context: context,
-                                    msg: "Please Select Role",
-                                    color: Colors.red,
-                                  );
-                                  return;
-                                }
-                                if (employeeProvider.depId == null) {
                                   employeeProvider.addEmployeeButtonController.reset();
                                   utils.snackBar(
                                     context: context,

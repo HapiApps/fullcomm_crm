@@ -316,7 +316,7 @@ class _MailCommentsState extends State<MailComments> {
                           remController.selectedMailSortBy,
                           remController.selectedMailMonth, () {
                           remController.sortMails();
-                        },
+                        },false
                         );
                       },
                       onSelectDateRange: (ctx) {
@@ -324,7 +324,7 @@ class _MailCommentsState extends State<MailComments> {
                           remController.selectedMailSortBy.value = 'Custom Range';
                           remController.selectedCallRange.value = pickedRange;
                           remController.sortMails();
-                        });
+                        },false);
                       },
                     )
                   ],

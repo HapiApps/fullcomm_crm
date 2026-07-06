@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +14,10 @@ import 'controller.dart';
 final repCtr = Get.put(RepController());
 
 class RepController extends GetxController with GetSingleTickerProviderStateMixin {
+  RxString selectedSortBy = "Today".obs;
+  var selectedRange = Rxn<DateTimeRange>();
+  final Rxn<DateTime> selectedMonth = Rxn<DateTime>();
+
   PickerDateRange? selectedDate;
   List<DateTime> datesBetween = [];
   String betweenDates="";
@@ -200,6 +205,34 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
   // previousHeading = "";
   // }
 
+void changeType() {
+  DateTime now = DateTime.now();
+  if (repCtr.selectedSortBy.value == "Today") {
+    repCtr.stDate.value =DateFormat('dd-MM-yyyy').format(now);
+    repCtr.enDate.value =DateFormat('dd-MM-yyyy').format(now);
+  } else if (repCtr.selectedSortBy.value == "Yesterday") {
+    DateTime yesterday = now.subtract(const Duration(days: 1));
+    repCtr.stDate.value =DateFormat('dd-MM-yyyy').format(yesterday);
+    repCtr.enDate.value =DateFormat('dd-MM-yyyy').format(yesterday);
+  } else if (repCtr.selectedSortBy.value == "Last 7 Days") {
+    DateTime start = now.subtract(const Duration(days: 6));
+    repCtr.stDate.value =DateFormat('dd-MM-yyyy').format(start);
+    repCtr.enDate.value =DateFormat('dd-MM-yyyy').format(now);
+  } else if (repCtr.selectedSortBy.value == "Last 30 Days") {
+    DateTime start = now.subtract(const Duration(days: 29));
+    repCtr.stDate.value =DateFormat('dd-MM-yyyy').format(start);
+    repCtr.enDate.value =DateFormat('dd-MM-yyyy').format(now);
+  } else if (repCtr.selectedSortBy.value == "This Month") {
+    repCtr.stDate.value = DateFormat('dd-MM-yyyy').format(DateTime(now.year, now.month, 1));
+    repCtr.enDate.value = DateFormat('dd-MM-yyyy').format(DateTime(now.year, now.month + 1, 0));
+  } else if (repCtr.selectedSortBy.value == "Last Month") {
+    DateTime firstDayLastMonth =DateTime(now.year, now.month - 1, 1);
+    DateTime lastDayLastMonth =DateTime(now.year, now.month, 0);
+    repCtr.stDate.value =DateFormat('dd-MM-yyyy').format(firstDayLastMonth);
+    repCtr.enDate.value =DateFormat('dd-MM-yyyy').format(lastDayLastMonth);
+  }
+  repCtr.getWholeReport(repCtr.empId.value);
+}
 var refreshData=true.obs;
   Future getWholeReport(String id) async {
     try {
@@ -269,10 +302,10 @@ var refreshData=true.obs;
 
         final response = jsonDecode(request.body);
 
-        debugPrint("================================================");
-        debugPrint("FULL RESPONSE");
-        debugPrint("================================================");
-        debugPrint(response.toString());
+        // debugPrint("================================================");
+        // debugPrint("FULL RESPONSE");
+        // debugPrint("================================================");
+        // debugPrint(response.toString());
 
         /// =====================================================
         /// DASHBOARD REPORT

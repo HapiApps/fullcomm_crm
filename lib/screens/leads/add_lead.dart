@@ -1128,6 +1128,7 @@ class _AddLeadState extends State<AddLead> {
                                             },
                                             onFieldSubmitted: (value) {
                                               utils.datePicker(
+                                                  isFutureDate: false,
                                                   context: context,
                                                   textEditingController:
                                                       controllers.dateOfConCtr,
@@ -1153,6 +1154,7 @@ class _AddLeadState extends State<AddLead> {
                                             isOptional: false,
                                             onTap: () {
                                               utils.datePicker(
+                                                  isFutureDate: false,
                                                   context: context,
                                                   textEditingController:
                                                       controllers.dateOfConCtr,
@@ -1921,6 +1923,7 @@ class _AddLeadState extends State<AddLead> {
                               focusNode: ob7,
                               onEdit: () {
                                 utils.datePicker(
+                                    isFutureDate: true,
                                     context: context,
                                     textEditingController:
                                         controllers.dateOfConCtr,
@@ -1965,6 +1968,7 @@ class _AddLeadState extends State<AddLead> {
                                 width: textFieldSize,
                                 onTap: () {
                                   utils.datePicker(
+                                      isFutureDate: true,
                                       context: context,
                                       textEditingController:
                                           controllers.dateOfConCtr,
@@ -1977,6 +1981,7 @@ class _AddLeadState extends State<AddLead> {
                               focusNode: ob8,
                               onEdit: () {
                                 utils.datePicker(
+                                    isFutureDate: false,
                                     context: context,
                                     textEditingController:
                                         controllers.dateOfConCtr,
@@ -2028,6 +2033,7 @@ class _AddLeadState extends State<AddLead> {
                                 width: textFieldSize,
                                 onTap: () {
                                   utils.datePicker(
+                                      isFutureDate: false,
                                       context: context,
                                       textEditingController:
                                           controllers.dateOfConCtr,
@@ -2440,6 +2446,12 @@ class _AddLeadState extends State<AddLead> {
                           size: 20,
                           isCopy: false,
                         ),
+                        IconButton(
+                            tooltip: "Add Column",
+                            onPressed: (){
+                              utils.showAddColumnDialog(context);
+                            },
+                            icon: Icon(Icons.add))
                       ],
                     ), ////Todo:Address details
                     10.height,

@@ -3,6 +3,7 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../common/constant/colors_constant.dart';
+import '../controller/emp_report_controller.dart';
 
 class DateFilterBar extends StatelessWidget {
   final RxString selectedSortBy;
@@ -25,7 +26,7 @@ class DateFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final options = ["Today", "Yesterday", "Last 7 Days", "Last 30 Days", "All"];
+    final options = selectedSortBy==repCtr.selectedSortBy?["Today", "Yesterday", "Last 7 Days", "Last 30 Days", "This Month", "Last Month"]:["Today", "Yesterday", "Last 7 Days", "Last 30 Days", "All"];
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [

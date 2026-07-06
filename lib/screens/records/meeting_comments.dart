@@ -1087,7 +1087,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                               sortField: controllers.sortFieldMeetingActivity.value,
                               sortOrder: controllers.sortOrderMeetingActivity.value,
                             );
-                          },
+                          },true
                         );
                       },
                       onSelectDateRange: (ctx) {
@@ -1100,7 +1100,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                             sortField: controllers.sortFieldMeetingActivity.value,
                             sortOrder: controllers.sortOrderMeetingActivity.value,
                           );
-                        });
+                        },true);
                       },
                     )
                   ],
@@ -1540,6 +1540,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                           mainAxisAlignment: MainAxisAlignment.start,
                                           children: [
                                             IconButton(
+                                                tooltip:'Edit Appointment Detail',
                                                 onPressed: (){
                                                   setState(() {
                                                     controllers.selectedCustomerId.value = data.cusId.toString();
@@ -1735,6 +1736,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                                               Obx(() => InkWell(
                                                                                 onTap: () {
                                                                                   utils.datePicker(
+                                                                                    isFutureDate: true,
                                                                                     context: context,
                                                                                     textEditingController: controllers.dateOfConCtr,
                                                                                     pathVal: controllers.fDate,
@@ -2543,6 +2545,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                   height: 16,
                                                 )),
                                             IconButton(
+                                                tooltip:'Delete Appointment Detail',
                                                 onPressed: (){
                                                   utils.showDeleteDialog(
                                                       context: context, name: 'delete this Appointment',

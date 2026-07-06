@@ -1524,6 +1524,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         IconButton(
+                                            tooltip:'Delete Office Hour',
                                             onPressed: (){
                                               utils.showDeleteDialog(
                                                   context: context, name: 'delete this office hour',

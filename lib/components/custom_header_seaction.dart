@@ -264,77 +264,7 @@ class _HeaderSectionState extends State<HeaderSection> {
       ],
     );
   }
-  void showAddColumnDialog(BuildContext context) {
-    TextEditingController columnNameController = TextEditingController();
-    var errorText;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(builder: (context,setState){
-          return AlertDialog(
-            title: CustomText(
-              text:'Add Column Name',
-              colors: colorsConst.primary,
-              isBold: true,
-              isCopy: true,
-            ),
-            content: SizedBox(
-              width: 300,
-              height: 100,
-              child: TextField(
-                controller: columnNameController,
-                autofocus: true,
-                onEditingComplete: (){
-                  if(columnNameController.text.isEmpty){
-                    setState((){
-                      errorText = "Please enter name";
-                    });
-                    return;
-                  }
-                  //Navigator.of(context).pop();
-                  tableController.addColumnNameAPI(context, columnNameController.text);
-                },
-                decoration: customStyle.inputDecoration(
-                    text: "Enter name here",
-                    image: "",
-                    isIcon: false,
-                    isLogin: false,
-                    errorText: errorText,
-                    onPressed: (){}),
-                onChanged: (value){
-                  controllers.firstCaps(value, columnNameController);
-                  setState(() {
-                    errorText = null;
-                  });
-                },
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Cancel'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  if(columnNameController.text.isEmpty){
-                    setState((){
-                      errorText = "Please enter name";
-                    });
-                    return;
-                  }
-                  //Navigator.of(context).pop();
-                  tableController.addColumnNameAPI(context, columnNameController.text);
 
-                },
-              ),
-            ],
-          );
-        });
-      },
-    );}
 
   void showDragDropDialog(BuildContext context) {
     tableController.isLoading.value = false;
@@ -354,7 +284,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                     tooltip: "Add Column",
                       onPressed: (){
                       // Navigator.of(context).pop();
-                      showAddColumnDialog(context);
+                      utils.showAddColumnDialog(context);
                       },
                       icon: Icon(Icons.add))
                 ],

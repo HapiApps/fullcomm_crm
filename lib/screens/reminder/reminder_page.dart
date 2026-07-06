@@ -402,14 +402,14 @@ class _ReminderPageState extends State<ReminderPage> {
                          remController.selectedReminderMonth,
                              () {
                                remController.sortReminders();
-                         },
+                         },true
                        );
                      },
                      onSelectDateRange: (ctx) {
                        remController.showDatePickerDialog(ctx, (pickedRange) {
                          remController.selectedCallRange.value = pickedRange;
                          remController.sortReminders();
-                       });
+                       },true);
                      },
                    )
                  ],
@@ -817,16 +817,73 @@ class _ReminderPageState extends State<ReminderPage> {
                                                      mainAxisAlignment: MainAxisAlignment.start,
                                                      children: [
                                                        IconButton(
+                                                           tooltip:'Edit Reminder Details',
                                                            onPressed: (){
                                                              // remController.updateTitleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
                                                              // remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
                                                              // remController.updateDetailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
                                                              // remController.startController.text = reminder.startDt.toString()=="null"?"":reminder.startDt.toString();
                                                              // remController.endController.text = reminder.endDt.toString()=="null"?"":reminder.endDt.toString();
-
+                                                             controllers.selectedEmployeeId.value=reminder.employee.toString();
+                                                             controllers.selectedCustomerId.value=reminder.customer.toString();
                                                              remController.titleController.text = reminder.title.toString()=="null"?"":reminder.title.toString();
                                                              // remp.selectedNotification.text = reminder.type.toString()=="1"?"Follow-up":"Appointment";
-                                                             remController.updateLocation = reminder.location.toString()=="null"?"":reminder.location.toString();
+                                                             print("reminder.repeatWise");
+                                                             print(reminder.repeatWise);
+
+                                                             final repeatOptions = ["Never", "Every", "Daily", "Weekly", "Bi-Weekly", "Monthly", "Quarterly", "Half Yearly", "Yearly"];
+
+                                                             remController.repeatWise =
+                                                                 reminder.repeatWise?.toString().trim() ?? "";
+
+                                                             if (!repeatOptions.contains(remController.repeatWise)) {
+                                                               remController.repeatWise = "Never";
+                                                             }
+
+                                                             final repeatOptions2 = [
+                                                               "Immediately",
+                                                               "5 mins",
+                                                               "10 mins",
+                                                               "15 mins",
+                                                               "30 mins"
+                                                             ];
+
+                                                             String repeat = reminder.repeatType?.toString().trim() ?? "";
+                                                             remController.repeat =
+                                                             repeatOptions2.contains(repeat) ? repeat : null;
+
+                                                             final repeatOptions3 = [
+                                                               "Day(s)",
+                                                               "Week(s)",
+                                                               "Month(s)",
+                                                               "Quarter(s)",
+                                                               "Year(s)",
+                                                               "Sunday",
+                                                               "Monday",
+                                                               "Tuesday",
+                                                               "Wednesday",
+                                                               "Thursday",
+                                                               "Friday",
+                                                               "Saturday"
+                                                             ];
+
+                                                             String repeatOn = reminder.repeatOn?.toString().trim() ?? "";
+                                                             remController.repeatOn =
+                                                             repeatOptions3.contains(repeatOn) ? repeatOn : null;
+
+                                                             final repeatOptions4 = [
+                                                               "1","2","3","4","5","6","7","8","9","10","11","12"
+                                                             ];
+
+                                                             String repeatEvery = reminder.repeatEvery?.toString().trim() ?? "";
+                                                             remController.repeatEvery =
+                                                             repeatOptions4.contains(repeatEvery) ? repeatEvery : null;
+
+                                                             if (reminder.location.toString() != "null" &&
+                                                                 reminder.location.toString().isNotEmpty) {
+                                                               remController.location = reminder.location.toString();
+                                                             } else {
+                                                             }
                                                              remController.detailsController.text = reminder.details.toString()=="null"?"":reminder.details.toString();
                                                              remController.stDate.value = controllers.formatDateOnly(reminder.startDt.toString());
                                                              remController.stTime.value = controllers.formatTime(reminder.startDt.toString());
@@ -842,6 +899,7 @@ class _ReminderPageState extends State<ReminderPage> {
                                                              height: 16,
                                                            )),
                                                        IconButton(
+                                                           tooltip:'Delete Reminder',
                                                            onPressed: (){
                                                              utils.showDeleteDialog(
                                                                  context: context, name: 'delete this reminder',

@@ -26,6 +26,7 @@ import '../models/reminder_obj.dart';
 import '../provider/reminder_provider.dart';
 import 'controller.dart';
 import 'dashboard_controller.dart';
+import 'emp_report_controller.dart';
 
 class AddReminderModel {
   final TextEditingController titleController = TextEditingController();
@@ -1329,7 +1330,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   RxList<ReminderModel> reminderFilteredList = <ReminderModel>[].obs;
   RxList<ReminderModel> reminderFilteredList2 = <ReminderModel>[].obs;
 
-  void selectMonth(BuildContext context, RxString sortByKey, Rxn<DateTime> selectedMonthTarget,VoidCallback onMonthSelected) {
+  void selectMonth(BuildContext context, RxString sortByKey, Rxn<DateTime> selectedMonthTarget,VoidCallback onMonthSelected,bool isFutureDate) {
     final now = DateTime.now();
     showMonthPicker(
       context: context,
@@ -1345,7 +1346,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
       },
       initialDate: selectedMonthTarget.value ?? now,
       firstDate: DateTime(2026),
-      lastDate: DateTime(DateTime.now().year + 1,DateTime.now().month,DateTime.now().day),
+      lastDate: isFutureDate==true?DateTime(DateTime.now().year+1,DateTime.now().month,DateTime.now().day)
+          :DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day),
     ).then((selected) {
       if (selected != null) {
         sortByKey.value = 'Custom Month';
@@ -1369,7 +1371,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
   List<String> otherTimes = ["1 Day", "2 Days", "3 Days", "1 Week"];
 
-  void showDatePickerDialog(BuildContext context,void Function(DateTimeRange)? onDateSelected) {
+  void showDatePickerDialog(BuildContext context,void Function(DateTimeRange)? onDateSelected,bool isFutureDate) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1391,7 +1393,8 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
                 child: SfDateRangePicker(
                   backgroundColor: const Color(0xffFFFCF9),
                   minDate: DateTime(2026),
-                  maxDate: DateTime(DateTime.now().year + 1,DateTime.now().month,DateTime.now().day),
+                  maxDate: isFutureDate==true?DateTime(DateTime.now().year+1,DateTime.now().month,DateTime.now().day)
+                      :DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day),
                   selectionMode: DateRangePickerSelectionMode.extendableRange,
                   initialSelectedRange: remController.selectedCallRange.value == null
                       ? null
@@ -1493,7 +1496,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
                             );
                           }
                         }
-
+                          print("repCtr.selectedRange ${repCtr.selectedRange}");
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -4630,11 +4633,14 @@ void unSelectAllAppointments() {
         "title": titleController.text.trim(),
         "type": type,
         "location": location,
-        "repeat_type": updateRepeat,
+        "repeat_wise": remController.repeatWise,
+        "repeat_type": repeat,
+        "repeat_on": repeatOn,
+        "repeat_every": repeatEvery,
         "employee": controllers.selectedEmployeeId.value,
         "customer": controllers.selectedCustomerId.value,
-        "start_dt":startController.text.trim(),
-        "end_dt": endController.text.trim(),
+        "start_dt": "${stDate.value} ${stTime.value}",
+        "end_dt": "${enDate.value} ${enTime.value}",
         "details": detailsController.text.trim(),
         "updated_by": controllers.storage.read("id"),
         "cos_id": controllers.storage.read("cos_id")
@@ -4647,6 +4653,7 @@ void unSelectAllAppointments() {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
+      debugPrint("data ${data}");
       debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {

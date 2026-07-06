@@ -452,7 +452,7 @@ class _CallCommentsState extends State<CallComments> {
                               selectedRange: remController.selectedCallRange.value,
                               selectedDateFilter: remController.selectedCallSortBy.value,
                             );
-                          },
+                          },false
                         );
                       },
                       onSelectDateRange: (ctx) {
@@ -468,7 +468,7 @@ class _CallCommentsState extends State<CallComments> {
                             selectedRange: remController.selectedCallRange.value,
                             selectedDateFilter: remController.selectedCallSortBy.value,
                           );
-                        });
+                        },false);
                       },
                     )
                   ],
@@ -977,6 +977,7 @@ class _CallCommentsState extends State<CallComments> {
                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                       children: [
                                                         IconButton(
+                                                            tooltip:'Edit Call Record',
                                                             onPressed: (){
                                                               String sentDate = data.sentDate;
                                                               if (sentDate.isNotEmpty) {
@@ -1362,6 +1363,7 @@ class _CallCommentsState extends State<CallComments> {
                                                               height: 16,
                                                             )),
                                                         IconButton(
+                                                            tooltip:'Delete Call Record',
                                                             onPressed: (){
                                                               utils.showDeleteDialog(
                                                                   context: context, name: 'delete this call record',

@@ -998,7 +998,7 @@ void checkDate(){
                                                               sortField: controllers.sortFieldMeetingActivity.value,
                                                               sortOrder: controllers.sortOrderMeetingActivity.value,
                                                             );
-                                                          });
+                                                          },true);
                                                         },
                                                         child: Obx(() {
                                                           final range = remController.selectedCallRange.value;
@@ -1479,7 +1479,7 @@ void checkDate(){
                                                             remController.selectedReminderSortBy.value = "Custom Range";
                                                             remController.selectedReminderRange.value = pickedRange;
                                                             remController.dashboardSortReminders();
-                                                          });
+                                                          },true);
                                                         },
                                                         child: Obx(() {
                                                           final range = remController.selectedReminderRange.value;
@@ -1907,6 +1907,8 @@ void checkDate(){
                                 20.height,
                                 Row(
                                   children: [
+                                    EmployeePerformanceTable(width: width/2.3,),
+                                    15.width,
                                     Container(
                                       width: width/1.97,
                                       padding: const EdgeInsets.all(16),
@@ -2394,8 +2396,6 @@ void checkDate(){
                                         ],
                                       ),
                                     ),
-                                    15.width,
-                                    EmployeePerformanceTable(width: width/2.3,),
                                     SizedBox(
                                       width: width/70,
                                     )

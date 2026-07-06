@@ -23,6 +23,7 @@ import '../../controller/controller.dart';
 import '../../controller/dashboard_controller.dart';
 import '../../controller/image_controller.dart';
 import '../../controller/reminder_controller.dart';
+import '../../controller/table_controller.dart';
 import '../../main.dart';
 import '../../models/all_customers_obj.dart';
 import '../../provider/reminder_provider.dart';
@@ -32,6 +33,8 @@ import '../constant/assets_constant.dart';
 import '../constant/colors_constant.dart';
 import 'package:http/http.dart' as http;
 import 'dart:html' as html;
+
+import '../styles/styles.dart';
 final Utils utils = Utils._();
 
 class Utils {
@@ -2956,6 +2959,7 @@ class Utils {
                               Obx(() => InkWell(
                                 onTap: () {
                                   utils.datePicker(
+                                    isFutureDate: true,
                                     context: context,
                                     textEditingController: controllers.dateOfConCtr,
                                     pathVal: controllers.fDate,
@@ -3547,6 +3551,7 @@ void appointmentStatus(context,String value){
     BuildContext? context,
     TextEditingController? textEditingController,
     required RxString pathVal,
+    required bool isFutureDate,
   }) async {
 
     DateTime dateTime = DateTime.now();
@@ -3605,8 +3610,8 @@ void appointmentStatus(context,String value){
     final value = await showDatePicker(
       context: context!,
       initialDate: dateTime,
-      firstDate: pathVal==controllers.exDate||pathVal==remController.stDate||pathVal==controllers.fDate?DateTime.now():DateTime(2026),
-      lastDate: pathVal==controllers.exDate||pathVal==remController.stDate||pathVal==controllers.fDate?DateTime(2050):DateTime.now(),
+      firstDate: isFutureDate==true?DateTime.now():DateTime(2026),
+      lastDate: isFutureDate==true?DateTime(DateTime.now().year+1,DateTime.now().month,DateTime.now().day,):DateTime.now(),
     );
 
     debugPrint("Selected Date From Picker : $value");
@@ -3617,8 +3622,8 @@ void appointmentStatus(context,String value){
       dateTime = value;
 
       String formattedDate =
-          "${dateTime.day.toString().padLeft(2, "0")}."
-          "${dateTime.month.toString().padLeft(2, "0")}."
+          "${dateTime.day.toString().padLeft(2, "0")}-"
+          "${dateTime.month.toString().padLeft(2, "0")}-"
           "${dateTime.year}";
 
       debugPrint("Formatted Date : $formattedDate");
@@ -5984,4 +5989,76 @@ void caps(String value,TextEditingController ctr){
       elevation: 0.0,
     );
   }
+
+  void showAddColumnDialog(BuildContext context) {
+    TextEditingController columnNameController = TextEditingController();
+    var errorText;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(builder: (context,setState){
+          return AlertDialog(
+            title: CustomText(
+              text:'Add Column Name',
+              colors: colorsConst.primary,
+              isBold: true,
+              isCopy: true,
+            ),
+            content: SizedBox(
+              width: 300,
+              height: 100,
+              child: TextField(
+                controller: columnNameController,
+                autofocus: true,
+                onEditingComplete: (){
+                  if(columnNameController.text.isEmpty){
+                    setState((){
+                      errorText = "Please enter name";
+                    });
+                    return;
+                  }
+                  //Navigator.of(context).pop();
+                  tableController.addColumnNameAPI(context, columnNameController.text);
+                },
+                decoration: customStyle.inputDecoration(
+                    text: "Enter name here",
+                    image: "",
+                    isIcon: false,
+                    isLogin: false,
+                    errorText: errorText,
+                    onPressed: (){}),
+                onChanged: (value){
+                  controllers.firstCaps(value, columnNameController);
+                  setState(() {
+                    errorText = null;
+                  });
+                },
+              ),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  if(columnNameController.text.isEmpty){
+                    setState((){
+                      errorText = "Please enter name";
+                    });
+                    return;
+                  }
+                  //Navigator.of(context).pop();
+                  tableController.addColumnNameAPI(context, columnNameController.text);
+
+                },
+              ),
+            ],
+          );
+        });
+      },
+    );}
 }

@@ -731,8 +731,8 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(data);
-      print(request.body);
+      // print(data);
+      // print(request.body);
       final List dataValue= json.decode(request.body);
       // print(data);
       if (request.statusCode == 401) {
@@ -745,9 +745,11 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
       }
       if (request.statusCode == 200){
         pyrlCtr.unitPayrollList.value=dataValue.map((json) => UnitPayroll.fromJson(json)).toList();
+        // log("pyrlCtr.unitPayrollList");
+        // log(pyrlCtr.unitPayrollList.toString());
+        // print(jsonEncode(pyrlCtr.unitPayrollList.map((e) => e.toJson()).toList()));
         var idList = pyrlCtr.unitPayrollList[0].empId.toString().split(',');
         var namesList = pyrlCtr.unitPayrollList[0].name.toString().split(',');
-        var codeList = pyrlCtr.unitPayrollList[0].empcd.toString().split(',');
         var roleList = pyrlCtr.unitPayrollList[0].roleName.toString().split(',');
         var dutyList = pyrlCtr.unitPayrollList[0].duty.toString().split(',');
         var otList = pyrlCtr.unitPayrollList[0].ot.toString().split(',');
@@ -763,12 +765,11 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
         var deductionList = pyrlCtr.unitPayrollList[0].deduction.toString().split(',');
         var totalList = pyrlCtr.unitPayrollList[0].total.toString().split(',');
         for(var i=0;i<idList.length;i++){
-
           pyrlCtr.users.add(
             PayrollUserModel(
               empId: idList[i].toString(),
               name: namesList[i].toString(),
-              code: codeList[i].toString(),
+              code: "",
               rank: roleList[i].toString(),
               duty: TextEditingController(text: dutyList[i].toString()),
               ot: TextEditingController(text: parseIntOrZero(otList[i].toString()).toString()),

@@ -14,8 +14,14 @@ class ReminderModel {
   final String updatedTs;
   final String employeeName;
   final String customerName;
+  final String employee;
+  final String customer;
+  final String repeatWise;
+  final String repeatOn;
+  final String repeatEvery;
 
   ReminderModel({
+    required this.employee,
     required this.id,
     required this.cosId,
     required this.title,
@@ -31,16 +37,23 @@ class ReminderModel {
     required this.updatedTs,
     required this.employeeName,
     required this.customerName,
+    required this.customer,
+    required this.repeatWise,
+    required this.repeatOn,
+    required this.repeatEvery,
   });
 
   factory ReminderModel.fromJson(Map<String, dynamic> json) {
     return ReminderModel(
+      employee: json['employee']?.toString() ?? '',
+      repeatOn: json['repeat_on']?.toString() ?? '',
       id: json['id']?.toString() ?? '',
       cosId: json['cos_id']?.toString() ?? '',
       title: json['title']?.toString() ?? '',
       type: json['type']?.toString() ?? '',
       location: json['location']?.toString() ?? '',
       repeatType: json['repeat_type']?.toString() ?? '',
+      repeatWise: json['repeat_wise']?.toString() ?? '',
       startDt: json['start_dt']?.toString() ?? '',
       endDt: json['end_dt']?.toString() ?? '',
       details: json['details']?.toString() ?? '',
@@ -50,11 +63,16 @@ class ReminderModel {
       updatedTs: json['updated_ts']?.toString() ?? '',
       employeeName: json['employee_name']?.toString() ?? '',
       customerName: json['customer_name']?.toString() ?? '',
+      customer: json['customer']?.toString() ?? '',
+      repeatEvery: json['repeat_every']?.toString() ?? '',
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'employee': employee,
+      'repeat_on': repeatOn,
+      'repeat_every': repeatEvery,
       'id': id,
       'cos_id': cosId,
       'title': title,
@@ -70,6 +88,8 @@ class ReminderModel {
       'updated_ts': updatedTs,
       'employee_name': employeeName,
       'customer_name': customerName,
+      'customer': customer,
+      'repeatWise': repeatWise,
     };
   }
 }

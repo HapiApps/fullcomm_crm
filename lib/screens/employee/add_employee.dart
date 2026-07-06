@@ -310,12 +310,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                           size: 13,
                                           isCopy: false,
                                         ),
-                                        const CustomText(
-                                          text: "*",
-                                          colors: Colors.red,
-                                          size: 25,
-                                          isCopy: false,
-                                        ),
                                         IconButton(onPressed: (){
                                           employeeProvider.addDepartmentDialog(context);
                                         }, icon: Icon(Icons.add))
@@ -568,14 +562,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                       utils.snackBar(
                                         context: context,
                                         msg: "Please Select Role",
-                                        color: Colors.red,
-                                      );
-                                    }
-                                    else if(employeeProvider.depId==null){
-                                      employeeProvider.addEmployeeButtonController.reset();
-                                      utils.snackBar(
-                                        context: context,
-                                        msg: "Please Select Department",
                                         color: Colors.red,
                                       );
                                     }

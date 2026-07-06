@@ -1217,6 +1217,22 @@ class ReminderUtils {
     remController.stDate.value = DateFormat('dd-MM-yyyy').format(futureDate);
     controllers.dateOfConCtr.text = DateFormat('dd-MM-yyyy').format(futureDate);
     remController.stTime.value = DateFormat('hh.mm a').format(DateTime.now().subtract(const Duration(minutes: 15)));
+
+
+    controllers.selectedEmployeeId.value="";
+    controllers.selectedCustomerId.value="";
+    remController.titleController.clear();
+    remController.repeatWise = "Never";
+    remController.repeat =null;
+    remController.repeatOn =null;
+    remController.repeatEvery =null;
+    remController.location = null;
+
+    remController.detailsController.clear();
+    remController.enDate.value = "";
+    remController.enTime.value = "";
+    remController.assignedNames.value="";
+    controllers.cusController.clear();
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -1361,6 +1377,7 @@ class ReminderUtils {
                                   width: 150,
                                   onTap: () {
                                     utils.datePicker(
+                                        isFutureDate: true,
                                         context: context,
                                         textEditingController: controllers.dateOfConCtr,
                                         pathVal: remController.stDate);
@@ -1669,6 +1686,7 @@ class ReminderUtils {
                                   width: 150,
                                   onTap: () {
                                     utils.datePicker(
+                                        isFutureDate: true,
                                         context: context,
                                         textEditingController: controllers.dateOfConCtr,
                                         pathVal: remController.enDate);
@@ -2009,6 +2027,7 @@ class ReminderUtils {
                                   width: 150,
                                   onTap: () {
                                     utils.datePicker(
+                                        isFutureDate: true,
                                         context: context,
                                         textEditingController: controllers.dateOfConCtr,
                                         pathVal: remController.stDate);
@@ -2317,6 +2336,7 @@ class ReminderUtils {
                                   width: 150,
                                   onTap: () {
                                     utils.datePicker(
+                                        isFutureDate: true,
                                         context: context,
                                         textEditingController: controllers.dateOfConCtr,
                                         pathVal: remController.enDate);

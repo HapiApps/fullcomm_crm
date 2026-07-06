@@ -341,7 +341,7 @@ class _ProductPageState extends State<ProductPage> {
                                     selectedMonth: productCtr.selectedCallMonth.value,
                                     selectedDateFilter: productCtr.selectedCallSortBy.value,
                                   );
-                            },
+                            },false
                           );
                         },
                         onSelectDateRange: (ctx) {
@@ -354,7 +354,7 @@ class _ProductPageState extends State<ProductPage> {
                               selectedMonth: productCtr.selectedCallMonth.value,
                               selectedDateFilter: productCtr.selectedCallSortBy.value,
                             );
-                          });
+                          },false);
                         },
                       ),
                     ],

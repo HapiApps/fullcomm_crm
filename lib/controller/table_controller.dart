@@ -573,6 +573,7 @@ final ScrollController scrollController=ScrollController();
             curve: Curves.easeOut,
           );
         }
+        apiService.getCustomFields();
         utils.snackBar(context: context, msg: "Heading added successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {

@@ -33,7 +33,6 @@ class _EmployeeFilterState extends State<EmployeeFilter> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomText(text: "Employee Name", isCopy: false,isBold: true,),10.height,
                 SizedBox(
                   width: 480,
                   height: 40,

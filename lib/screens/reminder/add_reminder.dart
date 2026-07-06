@@ -223,6 +223,7 @@ class _AddReminderState extends State<AddReminder> {
                             width: screenWidth/4,
                             onTap: () {
                               utils.datePicker(
+                                  isFutureDate: true,
                                   context: context,
                                   textEditingController: controllers.dateOfConCtr,
                                   pathVal: controllers.fDate);
