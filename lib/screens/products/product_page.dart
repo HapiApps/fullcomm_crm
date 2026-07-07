@@ -979,6 +979,7 @@ class _ProductPageState extends State<ProductPage> {
                                                           )),
                                                       IconButton(
                                                           onPressed: (){
+                                                            productCtr.selectedPrdIds.add(p.id);
                                                             utils.showDeleteDialog(
                                                                 context: context, name: 'delete this product',
                                                                 isDelete: true,
@@ -1036,6 +1037,7 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                   ),
                   20.height,
+                  productCtr.paginatedPrdItems.isNotEmpty&&productCtr.paginatedPrdItems.length>=20?
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -1049,7 +1051,7 @@ class _ProductPageState extends State<ProductPage> {
                         },
                       ),
                     ],
-                  ),
+                  ):0.height,
                 ],
               ),
             )),

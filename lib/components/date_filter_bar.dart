@@ -13,6 +13,7 @@ class DateFilterBar extends StatelessWidget {
   final VoidCallback onSelectMonth;
   final VoidCallback onDaysSelected;
   final Function(BuildContext) onSelectDateRange;
+  final bool? isEmp;
 
   const DateFilterBar({
     super.key,
@@ -21,12 +22,12 @@ class DateFilterBar extends StatelessWidget {
     required this.selectedMonth,
     required this.focusNode,
     required this.onSelectMonth,
-    required this.onSelectDateRange, required this.onDaysSelected,
+    required this.onSelectDateRange, required this.onDaysSelected, this.isEmp=false,
   });
 
   @override
   Widget build(BuildContext context) {
-    final options = selectedSortBy==repCtr.selectedSortBy?["Today", "Yesterday", "Last 7 Days", "Last 30 Days", "This Month", "Last Month"]:["Today", "Yesterday", "Last 7 Days", "Last 30 Days", "All"];
+    final options = isEmp==true?["Today", "Yesterday", "Last 7 Days", "Last 30 Days", "This Month", "Last Month"]:["Today", "Yesterday", "Last 7 Days", "Last 30 Days", "All"];
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [

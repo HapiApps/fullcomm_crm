@@ -747,6 +747,7 @@ class _OrderPageState extends State<OrderPage> {
                     ),
                   ),
                   20.height,
+                  productCtr.paginatedOrdersItems.isNotEmpty&&productCtr.paginatedOrdersItems.length>=20?
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -760,7 +761,7 @@ class _OrderPageState extends State<OrderPage> {
                         },
                       ),
                     ],
-                  ),
+                  ):0.height,
                   20.height,
                 ],
               ),

@@ -5,7 +5,9 @@ import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/components/customer_name_tile.dart';
 import 'package:get/get.dart';
+import '../../common/styles/decoration.dart';
 import '../../common/utilities/mail_utils.dart';
+import '../../components/custom_dropdown.dart';
 import '../../components/custom_filter_seaction.dart';
 import '../../components/custom_header_seaction.dart';
 import '../../components/custom_lead_tile.dart';
@@ -75,9 +77,10 @@ class _NewLeadPageState extends State<NewLeadPage> {
     // debugPrint("widget.list2: ${widget.list2.length}");
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      controllers.currentProspectPage.value=1;
       _focusNode.requestFocus();
       searchBy();
-      controllers.totalProspectPages.value=(widget.list2.length / controllers.itemsPerPage).ceil();
+      controllers.totalProspectPages.value=(widget.list2.length / int.parse(controllers.showData)).ceil();
     });
     Future.delayed(Duration.zero, () {
       apiService.changeList(widget.index);
@@ -165,7 +168,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                       subtitle: "View all of your ${widget.name} Information",
                       // list: controllers.allLeadFuture,
                     ),
-                    20.height,
+                    10.height,
                     // Filter Section
                     FilterSection(
                       //Santhiya
@@ -314,6 +317,35 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                       mainAxisAlignment:
                                       MainAxisAlignment.end,
                                       children: [
+                                        /// PROMOTE BUTTON
+                                        CustomLoadingButton(
+                                          callback: () async {
+                                            if (stageId == null) return;
+
+                                            await apiService
+                                                .insertPromoteListAPI(
+                                              context,reasonController.text,
+                                              stageId.toString(),
+                                              selectedStage,
+                                              widget.list,
+                                              widget.list2,
+                                            );
+
+                                            Navigator.pop(context);
+                                          },
+                                          height: 35,
+                                          isLoading: true,
+                                          backgroundColor:
+                                          colorsConst.primary,
+                                          radius: 2,
+                                          width: 90,
+                                          controller:
+                                          controllers.productCtr,
+                                          isImage: false,
+                                          text: "Promote",
+                                          textColor: Colors.white,
+                                        ),
+                                        const SizedBox(width: 10),
                                         /// CANCEL
                                         Container(
                                           decoration: BoxDecoration(
@@ -348,37 +380,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                               size: 14,
                                             ),
                                           ),
-                                        ),
-
-                                        const SizedBox(width: 10),
-
-                                        /// PROMOTE BUTTON
-                                        CustomLoadingButton(
-                                          callback: () async {
-                                            if (stageId == null) return;
-
-                                            await apiService
-                                                .insertPromoteListAPI(
-                                              context,reasonController.text,
-                                              stageId.toString(),
-                                              selectedStage,
-                                              widget.list,
-                                              widget.list2,
-                                            );
-
-                                            Navigator.pop(context);
-                                          },
-                                          height: 35,
-                                          isLoading: true,
-                                          backgroundColor:
-                                          colorsConst.primary,
-                                          radius: 2,
-                                          width: 90,
-                                          controller:
-                                          controllers.productCtr,
-                                          isImage: false,
-                                          text: "Promote",
-                                          textColor: Colors.white,
                                         ),
                                       ],
                                     )
@@ -510,6 +511,35 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                       mainAxisAlignment:
                                       MainAxisAlignment.end,
                                       children: [
+                                        /// PROMOTE BUTTON
+                                        CustomLoadingButton(
+                                          callback: () async {
+                                            if (stageId == null) return;
+
+                                            await apiService
+                                                .insertPromoteListAPI(
+                                              context,reasonController.text,
+                                              stageId.toString(),
+                                              selectedStage,
+                                              widget.list,
+                                              widget.list2,
+                                            );
+
+                                            Navigator.pop(context);
+                                          },
+                                          height: 35,
+                                          isLoading: true,
+                                          backgroundColor:
+                                          colorsConst.primary,
+                                          radius: 2,
+                                          width: 90,
+                                          controller:
+                                          controllers.productCtr,
+                                          isImage: false,
+                                          text: "Demote",
+                                          textColor: Colors.white,
+                                        ),
+                                        const SizedBox(width: 10),
                                         /// CANCEL
                                         Container(
                                           decoration: BoxDecoration(
@@ -544,37 +574,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                               size: 14,
                                             ),
                                           ),
-                                        ),
-
-                                        const SizedBox(width: 10),
-
-                                        /// PROMOTE BUTTON
-                                        CustomLoadingButton(
-                                          callback: () async {
-                                            if (stageId == null) return;
-
-                                            await apiService
-                                                .insertPromoteListAPI(
-                                              context,reasonController.text,
-                                              stageId.toString(),
-                                              selectedStage,
-                                              widget.list,
-                                              widget.list2,
-                                            );
-
-                                            Navigator.pop(context);
-                                          },
-                                          height: 35,
-                                          isLoading: true,
-                                          backgroundColor:
-                                          colorsConst.primary,
-                                          radius: 2,
-                                          width: 90,
-                                          controller:
-                                          controllers.productCtr,
-                                          isImage: false,
-                                          text: "Demote",
-                                          textColor: Colors.white,
                                         ),
                                       ],
                                     )
@@ -630,7 +629,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                       selectedSortBy: controllers.selectedQualifiedSortBy,
                       isMenuOpen: controllers.isMenuOpen, list: widget.list, list2: widget.list2,
                     ),
-                    10.height,
+                    5.height,
                     Scrollbar(
                       controller: _horizontalController,
                       thumbVisibility: true,
@@ -725,7 +724,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                             visitType: data.visitType.toString(),
                                             detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
                                             statusUpdate: data.statusUpdate.toString(),
-                                            index: index,
+                                            index: controllers.currentProspectPage.value==1?index:index+(int.parse(controllers.showData)),
                                             points: data.points.toString(),
                                             quotationStatus: data.quotationStatus.toString(),
                                             quotationRequired: data.quotationRequired.toString(),
@@ -975,29 +974,130 @@ class _NewLeadPageState extends State<NewLeadPage> {
                       ),
                     ),
 
-                    widget.list2.isNotEmpty&&widget.list2.length>=20? Obx(() {
+                    // widget.list2.isNotEmpty&&widget.list2.length>=int.parse(controllers.showData)?
+                    Obx(() {
                       int totalPages = controllers.totalProspectPages.value == 0 ? 1 : controllers.totalProspectPages.value;
                       final currentPage = controllers.currentProspectPage.value;
                       return Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
-                            _focusNode.requestFocus();
-                            controllers.currentProspectPage.value--;
-                            controllers.changePage(widget.list,widget.list2);
-                          }),
-                          ...utils.buildPagination(totalPages, currentPage, () {
-                           _focusNode.requestFocus();
-                            controllers.changePage(widget.list,widget.list2);
-                            }),
-                          utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
-                            controllers.currentProspectPage.value++;
-                            _focusNode.requestFocus();
-                            controllers.changePage(widget.list,widget.list2);
-                          }),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  CustomText(
+                                      text: "Show",
+                                      colors:colorsConst.textColor,
+                                      isCopy: false),
+                                  5.width,
+                                  Container(
+                                    width: 75,
+                                    height: 40,
+                                    decoration: customDecoration.baseBackgroundDecoration(
+                                        radius: 5,
+                                        color: Colors.white,
+                                        borderColor: Colors.grey.shade200),
+                                    child: DropdownButtonHideUnderline(
+                                      child: ButtonTheme(
+                                        alignedDropdown: true,
+                                        child: DropdownButton(
+                                          underline: const SizedBox(),
+                                          focusColor: Colors.transparent,
+                                          style: TextStyle(
+                                              color: colorsConst.textColor
+                                          ),
+                                          isExpanded: true,
+                                          value: controllers.showData,
+                                          iconEnabledColor: Colors.black,
+                                          iconSize: 22,
+                                          icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                                          items: ["20", "50", "100", "200", "500"].map((list) {
+                                            return DropdownMenuItem(
+                                              value: list,
+                                              child: CustomText(
+                                                  text: list,
+                                                  colors:colorsConst.textColor,
+                                                  size: 15,
+                                                  isCopy: false,
+                                                  isBold: false),
+                                            );
+                                          }).toList(),
+                                          onChanged: (value) {
+                                            setState(() {
+                                              controllers.showData = value.toString();
+                                              controllers.currentProspectPage.value=1;
+                                              controllers.itemsProspectPerPage = int.parse(value.toString());
+                                              controllers.totalProspectPages.value=(widget.list2.length / int.parse(controllers.showData)).ceil();
+                                              _focusNode.requestFocus();
+                                              controllers.changePage(widget.list,widget.list2);
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  5.width,
+                                  CustomText(
+                                      text: "Entries",
+                                      colors:colorsConst.textColor,
+                                      isCopy: false),
+                                ],
+                              ),3.height,
+                              RichText(
+                                text: TextSpan(
+                                  style: TextStyle(
+                                    color: colorsConst.textColor,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.normal,
+                                  ),
+                                  children: [
+                                    const TextSpan(text: "Showing ",style: TextStyle(fontFamily: "Lato",),),
+                                    TextSpan(
+                                      text: "${controllers.currentProspectPage.value == 1?1:"${controllers.currentProspectPage.value}1"}",
+                                      style: const TextStyle(fontWeight: FontWeight.bold,fontFamily: "Lato",),
+                                    ),
+                                    const TextSpan(text: " to ",style: TextStyle(fontFamily: "Lato",),),
+                                    TextSpan(
+                                      text: "${controllers.currentProspectPage.value == 1?controllers.showData:
+                                      controllers.showData.toString() == widget.list.length.toString()
+                                          ? controllers.showData
+                                          : (int.parse(controllers.showData) + widget.list.length)}",
+                                      style: const TextStyle(fontWeight: FontWeight.bold,fontFamily: "Lato",),
+                                    ),
+                                    const TextSpan(text: " of ",style: TextStyle(fontFamily: "Lato",)),
+                                    TextSpan(
+                                      text: "${widget.list2.length}",
+                                      style: const TextStyle(fontWeight: FontWeight.bold,fontFamily: "Lato",),
+                                    ),
+                                    const TextSpan(text: " entries",style: TextStyle(fontFamily: "Lato",)),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              utils.paginationButton(Icons.chevron_left, currentPage > 1, () {
+                                _focusNode.requestFocus();
+                                controllers.currentProspectPage.value--;
+                                controllers.changePage(widget.list,widget.list2);
+                              }),
+                              ...utils.buildPagination(totalPages, currentPage, () {
+                                _focusNode.requestFocus();
+                                controllers.changePage(widget.list,widget.list2);
+                              }),
+                              utils.paginationButton(Icons.chevron_right, currentPage < totalPages, () {
+                                controllers.currentProspectPage.value++;
+                                _focusNode.requestFocus();
+                                controllers.changePage(widget.list,widget.list2);
+                              }),
+                            ],
+                          ),
                         ],
                       );
-                    }):0.height,
+                    }),
+                        // :0.height,
                     20.height,
                   ],
                 ),

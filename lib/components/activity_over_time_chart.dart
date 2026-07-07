@@ -880,7 +880,7 @@ class CustomerActivityCard extends StatelessWidget {
       double.parse(dashController.customerStatusReport[0]["lead_call"].toString()),
       callback: dashController.customerStatusReport[0]["lead_call"].toString()!="0"?(){
         if(dashController.customerStatusReport[0]["lead_call"].toString()!="0"){
-          remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+          // remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
           controllers.changeTab(0);
           Get.to(Records(
             isReload: "true",
@@ -896,7 +896,7 @@ class CustomerActivityCard extends StatelessWidget {
       double.parse(dashController.customerStatusReport[0]["lead_mail"].toString()),
       callback: dashController.customerStatusReport[0]["lead_mail"].toString()!="0"?(){
         if(dashController.customerStatusReport[0]["lead_mail"].toString()!="0"){
-          remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
+          // remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
           controllers.changeTab(1);
           Get.to(Records(
             isReload: "true",

@@ -452,36 +452,6 @@ void checkType(){
                                                                             Row(
                                                                               mainAxisAlignment: MainAxisAlignment.end,
                                                                               children: [
-                                                                                /// CANCEL
-                                                                                Container(
-                                                                                  decoration: BoxDecoration(
-                                                                                    border: Border.all(color: colorsConst.primary),
-                                                                                    color: Colors.white,
-                                                                                  ),
-                                                                                  width: 80,
-                                                                                  height: 30,
-                                                                                  child: ElevatedButton(
-                                                                                    style: ElevatedButton.styleFrom(
-                                                                                      shape: const RoundedRectangleBorder(
-                                                                                        borderRadius: BorderRadius.zero,
-                                                                                      ),
-                                                                                      backgroundColor: Colors.white,
-                                                                                      elevation: 0,
-                                                                                    ),
-                                                                                    onPressed: () {
-                                                                                      Navigator.pop(context);
-                                                                                    },
-                                                                                    child: CustomText(
-                                                                                      text: "Cancel",
-                                                                                      isCopy: false,
-                                                                                      colors: colorsConst.primary,
-                                                                                      size: 14,
-                                                                                    ),
-                                                                                  ),
-                                                                                ),
-
-                                                                                const SizedBox(width: 10),
-
                                                                                 /// PROMOTE BUTTON
                                                                                 CustomLoadingButton(
                                                                                   callback: () async {
@@ -508,6 +478,34 @@ void checkType(){
                                                                                   isImage: false,
                                                                                   text: "Promote",
                                                                                   textColor: Colors.white,
+                                                                                ),
+                                                                                const SizedBox(width: 10),
+                                                                                /// CANCEL
+                                                                                Container(
+                                                                                  decoration: BoxDecoration(
+                                                                                    border: Border.all(color: colorsConst.primary),
+                                                                                    color: Colors.white,
+                                                                                  ),
+                                                                                  width: 80,
+                                                                                  height: 30,
+                                                                                  child: ElevatedButton(
+                                                                                    style: ElevatedButton.styleFrom(
+                                                                                      shape: const RoundedRectangleBorder(
+                                                                                        borderRadius: BorderRadius.zero,
+                                                                                      ),
+                                                                                      backgroundColor: Colors.white,
+                                                                                      elevation: 0,
+                                                                                    ),
+                                                                                    onPressed: () {
+                                                                                      Navigator.pop(context);
+                                                                                    },
+                                                                                    child: CustomText(
+                                                                                      text: "Cancel",
+                                                                                      isCopy: false,
+                                                                                      colors: colorsConst.primary,
+                                                                                      size: 14,
+                                                                                    ),
+                                                                                  ),
                                                                                 ),
                                                                               ],
                                                                             )

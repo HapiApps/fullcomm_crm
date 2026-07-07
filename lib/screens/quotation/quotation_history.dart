@@ -18,6 +18,7 @@ import '../../common/utilities/utils.dart';
 import '../../components/Customtext.dart';
 import '../../components/custom_appbar.dart';
 import '../../components/custom_loading_button.dart';
+import '../../components/custom_no_data.dart';
 import '../../components/custom_search_textfield.dart';
 import '../../components/date_filter_bar.dart';
 import '../../components/pagination.dart';
@@ -1016,8 +1017,10 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                             Expanded(
                                               child: Obx(() {
                                                 if (productCtr.paginatedItems.isEmpty) {
-                                                  return const Center(
-                                                      child: Text("No Data Found"));
+                                                  return Center(
+                                                      child: SizedBox(
+                                                          height: 500,width: 500,
+                                                          child: CustomNoData()));
                                                 }
                                                 return ListView.builder(
                                                   controller: _controller,
@@ -2029,6 +2032,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                               ),
                             ),
                             20.height,
+                            productCtr.paginatedItems.isNotEmpty&&productCtr.paginatedItems.length>=20?
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: [
@@ -2042,7 +2046,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                   },
                                 ),
                               ],
-                            ),
+                            ):0.height,
                           ],
                         ),
                       )),

@@ -5655,8 +5655,8 @@ void appointmentStatus(context,String value){
       // "All"
     ];
     final storage = controllers.storage.read("selectedSortBy");
-    RxString selectedValue = "".obs;
-    selectedValue.value=storage ?? "All";
+    RxString selectedValue = "Today".obs;
+    selectedValue.value=storage ?? "Today";
     showDialog(
       context: context,
       builder: (context) {

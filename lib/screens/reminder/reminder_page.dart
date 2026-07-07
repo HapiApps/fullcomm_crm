@@ -1015,6 +1015,7 @@ class _ReminderPageState extends State<ReminderPage> {
                  ),
                ),
                20.height,
+               remController.paginatedRemItems.isNotEmpty&&remController.paginatedRemItems.length>=20?
                Row(
                  mainAxisAlignment: MainAxisAlignment.end,
                  children: [
@@ -1035,7 +1036,7 @@ class _ReminderPageState extends State<ReminderPage> {
                      },
                    ),
                  ],
-               ),
+               ):0.height,
              ],
            ),
          ),)

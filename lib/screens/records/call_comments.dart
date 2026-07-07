@@ -1482,6 +1482,7 @@ class _CallCommentsState extends State<CallComments> {
                                   }),
                                 ),
                                 20.height,
+                                remController.callFilteredList.isNotEmpty&&remController.callFilteredList.length>=20?
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
@@ -1502,7 +1503,7 @@ class _CallCommentsState extends State<CallComments> {
                                       },
                                     ),
                                   ],
-                                ),
+                                ):0.height,
                               ],
                             ),
                           ),

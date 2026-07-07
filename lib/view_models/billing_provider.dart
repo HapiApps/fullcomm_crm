@@ -1920,7 +1920,13 @@ class BillingProvider with ChangeNotifier{
     if (success) {
       Navigator.pop(context);
       clearProductForm();
-      productCtr.getProducts();
+      productCtr.products.removeWhere(
+            (item) => productCtr.selectedPrdIds.contains(item.id),
+      );
+      productCtr.products2.removeWhere(
+            (item) => productCtr.selectedPrdIds.contains(item.id),
+      );
+      // productCtr.getProducts();
       controllers.productCtr.reset();
       productCtr.selectedPrdIds.clear();
       utils.snackBar(context: context, msg: "Product Deleted Successfully", color: Colors.green);
@@ -1942,7 +1948,11 @@ class BillingProvider with ChangeNotifier{
     if (success) {
       Navigator.pop(context);
       clearProductForm();
-      productCtr.getProducts();
+      productCtr.products.firstWhere((e) => e.id == id).isSheet = active;
+      productCtr.products2.firstWhere((e) => e.id == id).isSheet = active;
+      productCtr.products.refresh();
+      productCtr.products2.refresh();
+      // productCtr.getProducts();
       controllers.productCtr.reset();
       productCtr.selectedPrdIds.clear();
       utils.snackBar(context: context, msg: "Product ${active=="1"?"Active":"Inactive"} Successfully", color: Colors.green);

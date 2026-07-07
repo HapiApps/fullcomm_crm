@@ -2654,6 +2654,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                     })
                 ),
                 20.height,
+                remController.paginatedAppItems.isNotEmpty&&remController.paginatedAppItems.length>=20?
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -2674,7 +2675,7 @@ class _MeetingCommentsState extends State<MeetingComments> {
                       },
                     ),
                   ],
-                ),
+                ):0.height,
               ],
             ),
           ),

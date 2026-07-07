@@ -43,6 +43,7 @@ class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   var isUpdateLoading=false.obs;
   var sharingLocation="".obs;
   TextEditingController notesController=TextEditingController();
+  String showData="20";
 
   Future<void> manageLead(BuildContext context,String id,int active) async {
     try {
@@ -655,7 +656,7 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   var currentPage = 1.obs;
   final itemsPerPage = 20; // Adjust based on your needs
   var currentProspectPage = 1.obs;
-  final itemsProspectPerPage = 20;
+  int itemsProspectPerPage = 20;
   bool isSameDate(DateTime d1, DateTime d2) {
     return d1.year == d2.year && d1.month == d2.month && d1.day == d2.day;
   }

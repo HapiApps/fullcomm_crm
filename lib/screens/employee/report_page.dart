@@ -124,6 +124,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                         ),
                       ),
                       DateFilterBar(
+                        isEmp: true,
                         selectedSortBy: repCtr.selectedSortBy,
                         selectedRange: repCtr.selectedRange,
                         selectedMonth: repCtr.selectedMonth,

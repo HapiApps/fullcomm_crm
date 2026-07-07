@@ -781,6 +781,7 @@ class _MailCommentsState extends State<MailComments> {
                     })
                 ),
                 20.height,
+                remController.mailFilteredList.isNotEmpty&&remController.mailFilteredList.length>=20?
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -801,7 +802,7 @@ class _MailCommentsState extends State<MailComments> {
                       },
                     ),
                   ],
-                ),
+                ):0.height,
               ],
             ),
           ),

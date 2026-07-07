@@ -142,7 +142,17 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
                             start: range.startDate!,
                             end: range.endDate!,
                           );
+                          dashController.selectedRange.value=tempRange;
                         });
+                        // print("range.startDate 1");
+                        // print(dashController.selectedRange);
+                      }else{
+                        dashController.selectedRange.value=DateTimeRange(
+                          start: range.startDate!,
+                          end: range.endDate!,
+                        );
+                        // print("range.startDate 2");
+                        // print(dashController.selectedRange);
                       }
                     }
                   },

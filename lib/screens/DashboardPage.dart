@@ -93,22 +93,23 @@ class _DashboardPageState extends State<DashboardPage>
     //   dashController.refreshTime.value++;
     // });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      var selectedMeetRange = Rxn<DateTimeRange>(
-        DateTimeRange(
-          start: DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().day,
-          ),
-          end: DateTime(
-            DateTime.now().year,
-            DateTime.now().month,
-            DateTime.now().day,
-          ),
-        ),
-      );
-      remController.selectedCallRange=selectedMeetRange;
-      remController.selectedReminderRange=selectedMeetRange;
+      dashController.selectedSortBy.value="${controllers.storage.read("selectedSortBy") ?? "Today"}";
+      // var selectedMeetRange = Rxn<DateTimeRange>(
+      //   DateTimeRange(
+      //     start: DateTime(
+      //       DateTime.now().year,
+      //       DateTime.now().month,
+      //       DateTime.now().day,
+      //     ),
+      //     end: DateTime(
+      //       DateTime.now().year,
+      //       DateTime.now().month,
+      //       DateTime.now().day,
+      //     ),
+      //   ),
+      // );
+      // remController.selectedCallRange=selectedMeetRange;
+      // remController.selectedReminderRange=selectedMeetRange;
       _focusNode.requestFocus();
       controllers.insertSeriesNo(context,true);
       if(controllers.leadCategoryList.isEmpty){
@@ -183,44 +184,39 @@ class _DashboardPageState extends State<DashboardPage>
       dashController.getCustomerReport(
           "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
           today);
-      // controllers.getRangeStatus();
-      // dashController.getDashboardReport();
-      // dashController.getLeadReport();
-      // dashController.getStatusWiseReport();
-      // dashController.getRatingReport();
       dashController.getWholeReport();
     });
 
-    _leadItemController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2200),
-    );
-
-    _leadItemAnimations = [
-      // Suspect
-      CurvedAnimation(
-        parent: _leadItemController,
-        curve: const Interval(0.0, 0.20, curve: Curves.easeOut),
-      ),
-
-      // Prospect
-      CurvedAnimation(
-        parent: _leadItemController,
-        curve: const Interval(0.35, 0.55, curve: Curves.easeOut),
-      ),
-
-      // Qualified
-      CurvedAnimation(
-        parent: _leadItemController,
-        curve: const Interval(0.70, 0.90, curve: Curves.easeOut),
-      ),
-
-      // Customer
-      CurvedAnimation(
-        parent: _leadItemController,
-        curve: const Interval(1.00, 1.0, curve: Curves.easeOut),
-      ),
-    ];
+    // _leadItemController = AnimationController(
+    //   vsync: this,
+    //   duration: const Duration(milliseconds: 2200),
+    // );
+    //
+    // _leadItemAnimations = [
+    //   // Suspect
+    //   CurvedAnimation(
+    //     parent: _leadItemController,
+    //     curve: const Interval(0.0, 0.20, curve: Curves.easeOut),
+    //   ),
+    //
+    //   // Prospect
+    //   CurvedAnimation(
+    //     parent: _leadItemController,
+    //     curve: const Interval(0.35, 0.55, curve: Curves.easeOut),
+    //   ),
+    //
+    //   // Qualified
+    //   CurvedAnimation(
+    //     parent: _leadItemController,
+    //     curve: const Interval(0.70, 0.90, curve: Curves.easeOut),
+    //   ),
+    //
+    //   // Customer
+    //   CurvedAnimation(
+    //     parent: _leadItemController,
+    //     curve: const Interval(1.00, 1.0, curve: Curves.easeOut),
+    //   ),
+    // ];
   }
 void checkDate(){
   DateTime now = DateTime.now();
@@ -278,29 +274,30 @@ void checkDate(){
   final statValues = [1596, 256, 65, 264, 6];
   late final maxValue = statValues.reduce((a, b) => a > b ? a : b);
   String selectedFilter = "Today";
-  late AnimationController _leadItemController;
-  late List<Animation<double>> _leadItemAnimations;
+  // late AnimationController _leadItemController;
+  // late List<Animation<double>> _leadItemAnimations;
   int? hoveredIndex;
 
   @override
   void dispose() {
-    _leadItemController.dispose();
+    // _leadItemController.dispose();
     super.dispose();
   }
 
   Widget _animatedLeadItem({required int index, required Widget child}) {
-    final anim = _leadItemAnimations[index];
+    // final anim = _leadItemAnimations[index];
 
-    return FadeTransition(
-      opacity: anim,
-      child: SlideTransition(
-        position: Tween<Offset>(
-          begin: const Offset(0, -1.2),
-          end: Offset.zero,
-        ).animate(anim),
-        child: child,
-      ),
-    );
+    // return FadeTransition(
+    //   opacity: anim,
+    //   child: SlideTransition(
+    //     position: Tween<Offset>(
+    //       begin: const Offset(0, -1.2),
+    //       end: Offset.zero,
+    //     ).animate(anim),
+    //     child: child,
+    //   ),
+    // );
+    return child;
   }
   int hoverIndex = -1;
   @override
@@ -785,7 +782,9 @@ void checkDate(){
                                     ),
                                     WaveStatCard(
                                       callback: () {
-                                        remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
+                                        remController.selectedMeetSortBy.value = dashController.selectedSortBy.value=="Last 7 Days"?
+                                        "Next 7 Days":dashController.selectedSortBy.value=="Last 30 Days"?
+                                        "Next 30 Days":dashController.selectedSortBy.value;
                                         controllers.changeTab(2);
                                         Navigator.push(
                                           context,
@@ -810,7 +809,9 @@ void checkDate(){
                                     ),
                                     WaveStatCard(
                                       callback: () {
-                                        remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
+                                        remController.selectedReminderSortBy.value = dashController.selectedSortBy.value=="Last 7 Days"?
+                                        "Next 7 Days":dashController.selectedSortBy.value=="Last 30 Days"?
+                                        "Next 30 Days":dashController.selectedSortBy.value;
                                         Navigator.push(
                                           context,
                                           PageRouteBuilder(
@@ -3501,7 +3502,7 @@ void checkDate(){
         setState(() {
           controllers.isRightOpen.value = !controllers.isRightOpen.value;
           if (controllers.isRightOpen.value) {
-            _leadItemController.forward(from: 0);
+            // _leadItemController.forward(from: 0);
           }
         });
       },
