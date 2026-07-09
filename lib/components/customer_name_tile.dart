@@ -558,7 +558,12 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                   String? selectedStage;
 
                                   TextEditingController reasonController = TextEditingController();
-
+                                  RxList<LeadStatusModel> categoryList=<LeadStatusModel>[].obs;
+                                  for(var i=0;i<controllers.leadCategoryList.length;i++){
+                                    if(controllers.leadCategoryList[i].value!=widget.pageName){
+                                      categoryList.add(controllers.leadCategoryList[i]);
+                                    }
+                                  }
                                   return StatefulBuilder(
                                     builder: (context, setState) {
                                       return AlertDialog(
@@ -593,7 +598,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                                 hint: const Text("New Stage"),
                                                 isExpanded: true,
                                                 underline: const SizedBox(),
-                                                items: controllers.leadCategoryList.map((item) {
+                                                items: categoryList.map((item) {
                                                   return DropdownMenuItem<String>(
                                                     value: item.leadStatus,
                                                     child: Text(item.value),
@@ -602,7 +607,7 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                                 onChanged: (value) {
                                                   setState(() {
                                                     stageId = value;
-                                                    selectedStage = controllers.leadCategoryList
+                                                    selectedStage = categoryList
                                                         .firstWhere((e) => e.leadStatus == value)
                                                         .value;
                                                   });

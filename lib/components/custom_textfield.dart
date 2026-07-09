@@ -33,6 +33,7 @@ class CustomTextField extends StatelessWidget {
   final VoidCallback? onEdit;
   final ValueChanged<String>? onFieldSubmitted;
   final bool autofocus;
+  final bool? readOnly;
 
   const CustomTextField({
     super.key,
@@ -60,7 +61,7 @@ class CustomTextField extends StatelessWidget {
     this.errorText,
     this.onFieldSubmitted,
     this.autofocus = false,
-    this.isOptional = false,
+    this.isOptional = false, this.readOnly=false,
   });
 
   @override
@@ -101,7 +102,7 @@ class CustomTextField extends StatelessWidget {
           height: 40,
 
           child: TextFormField(
-
+            readOnly: readOnly??false,
             key: ValueKey(text),
 
             controller: controller,

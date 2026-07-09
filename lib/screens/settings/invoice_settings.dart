@@ -111,7 +111,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 FocusScope.of(context).requestFocus(phone);
                               },
                               onChanged: (value) {
-                                controllers.firstCaps(value.toString(),controllers.iNo);
+                                controllers.firstCaps(value.toString(),controllers.comName);
                               }
                           ),
                           CustomTextField(text: "Phone Number",hintText: "Phone Number",
@@ -120,7 +120,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                             focusNode: phone,
                             inputFormatters: constInputFormatters.mobileNumberInput,
                             onChanged: (value) {
-                              controllers.firstCaps(value.toString(),controllers.iNo);
+                              controllers.firstCaps(value.toString(),controllers.comNumber);
                             },
                             onFieldSubmitted: (value){
                               FocusScope.of(context).requestFocus(email);
@@ -133,9 +133,6 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                               onFieldSubmitted: (value){
                                 FocusScope.of(context).requestFocus(gst);
                               },
-                              onChanged: (value) {
-                                controllers.firstCaps(value.toString(),controllers.iNo);
-                              }
                           ),
                           CustomTextField(text: "GSTIN Number",hintText: "GSTIN Number",
                               controller: controllers.comGSTNo,
@@ -150,7 +147,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 FocusScope.of(context).requestFocus(door);
                               },
                               onChanged: (value) {
-                                controllers.firstCaps(value.toString(),controllers.iNo);
+                                controllers.firstCaps(value.toString(),controllers.comGSTNo);
                               }
                           ),
                         ],
@@ -170,7 +167,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 FocusScope.of(context).requestFocus(street);
                               },
                               onChanged: (value) {
-                                controllers.firstCaps(value.toString(),controllers.iNo);
+                                controllers.firstCaps(value.toString(),controllers.comDoor);
                               }
                           ),
                           CustomTextField(text: "Street Name",hintText: "Street Name",
@@ -178,7 +175,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                             width: MediaQuery.of(context).size.width*0.2,
                             focusNode: street,
                             onChanged: (value) {
-                              controllers.firstCaps(value.toString(),controllers.iNo);
+                              controllers.firstCaps(value.toString(),controllers.comStreet);
                             },
                             onFieldSubmitted: (value){
                               FocusScope.of(context).requestFocus(city);
@@ -192,7 +189,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 FocusScope.of(context).requestFocus(state);
                               },
                               onChanged: (value) {
-                                controllers.firstCaps(value.toString(),controllers.iNo);
+                                controllers.firstCaps(value.toString(),controllers.comCity);
                               }
                           ),
                           CustomTextField(text: "State",hintText: "State",
@@ -203,7 +200,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 FocusScope.of(context).requestFocus(country);
                               },
                               onChanged: (value) {
-                                controllers.firstCaps(value.toString(),controllers.iNo);
+                                controllers.firstCaps(value.toString(),controllers.comState);
                               }
                           ),
                           CustomTextField(text: "Country",hintText: "Country",
@@ -214,7 +211,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 FocusScope.of(context).requestFocus(pincode);
                               },
                               onChanged: (value) {
-                                controllers.firstCaps(value.toString(),controllers.iNo);
+                                controllers.firstCaps(value.toString(),controllers.comCountry);
                               }
                           ),
                           CustomTextField(text: "Pincode",hintText: "Pincode",
@@ -226,7 +223,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 FocusScope.of(context).requestFocus(bank);
                               },
                               onChanged: (value) {
-                                controllers.firstCaps(value.toString(),controllers.iNo);
+                                controllers.firstCaps(value.toString(),controllers.comPincode);
                                 if (controllers.comPincode.text.trim().length ==6) {
                                   apiService.fetchPinCodeData2(controllers.comPincode.text.trim());
                                 }
@@ -248,7 +245,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 FocusScope.of(context).requestFocus(branch);
                               },
                               onChanged: (value) {
-                                controllers.firstCaps(value.toString(),controllers.iNo);
+                                controllers.firstCaps(value.toString(),controllers.bankName);
                               }
                           ),
                           CustomTextField(text: "Branch Name",hintText: "Branch Name",
@@ -259,7 +256,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 FocusScope.of(context).requestFocus(ifsc);
                               },
                               onChanged: (value) {
-                                controllers.firstCaps(value.toString(),controllers.iNo);
+                                controllers.firstCaps(value.toString(),controllers.branchName);
                               }
                           ),
                           CustomTextField(text: "IFSC Code",hintText: "IFSC Code",
@@ -275,7 +272,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 FocusScope.of(context).requestFocus(acc);
                               },
                               onChanged: (value) {
-                                controllers.fullCaps(value.toString(),controllers.iNo);
+                                controllers.fullCaps(value.toString(),controllers.ifscCode);
                               }
                           ),
                           CustomTextField(text: "Account Number",hintText: "Account Number",
@@ -291,7 +288,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 FocusScope.of(context).requestFocus(upi);
                               },
                               onChanged: (value) {
-                                controllers.fullCaps(value.toString(),controllers.iNo);
+                                controllers.fullCaps(value.toString(),controllers.accNo);
                               }
                           ),
                           CustomTextField(text: "UPI ID",hintText: "UPI ID",
@@ -365,7 +362,7 @@ class _InvoiceSettingState extends State<InvoiceSetting> {
                                 }
                               },
                               onChanged: (value) {
-                                controllers.firstCaps(value.toString(),controllers.iNo);
+                                controllers.firstCaps(value.toString(),controllers.upiNo);
                               }
                           ),
                           30.height,

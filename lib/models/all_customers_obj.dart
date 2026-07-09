@@ -4,10 +4,10 @@ import 'new_lead_obj.dart';
 
 class AllCustomersObj {
   final String id;
-  final String name;
-  final String companyName;
-  final String phoneNo;
-  final String email;
+  String name;
+  String companyName;
+  String phoneNo;
+  String email;
   final String category;
   final String leadStatus;
   String? message;

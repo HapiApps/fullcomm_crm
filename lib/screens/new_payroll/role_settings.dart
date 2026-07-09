@@ -218,7 +218,17 @@ class _RoleSettingState extends State<RoleSetting> {
             child:Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                CustomAppbar(text:"Payroll Settings"),
+                CustomAppbar(text:"Payroll Settings",
+                callback: (){
+                  if(pyrlCtr.isAdd.value==true){
+                    pyrlCtr.isAdd.value=false;
+                    if(pyrlCtr.settingList[pyrlCtr.editIndex.value].role==null){
+                      pyrlCtr.settingList.removeAt(pyrlCtr.editIndex.value);
+                    }
+                  }else{
+                    Get.back();
+                  }
+                },),
                 if(pyrlCtr.isAdd.value==false)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -1685,9 +1695,9 @@ class _RoleSettingState extends State<RoleSetting> {
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculateAmounts(),
                                         ),
-                                        CustomTextField(text: "Bonus",hintText: "Bonus",controller: data.bonus,
+                                        CustomTextField(text: "PT",hintText: "PT",controller: data.pt,
                                           width: screenWidth/5,
-                                          focusNode: f7,
+                                          focusNode: f14,
                                           onFieldSubmitted: (_){
                                             FocusScope.of(context).requestFocus(f8);
                                           },
@@ -1695,11 +1705,12 @@ class _RoleSettingState extends State<RoleSetting> {
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculateAmounts(),
                                         ),
-                                        CustomTextField(text: "PT",hintText: "PT",controller: data.pt,
+
+                                        CustomTextField(text: "Bonus",hintText: "Bonus",controller: data.bonus,
                                           width: screenWidth/5,
-                                          focusNode: f14,
+                                          focusNode: f7,
                                           onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f15);
+                                            FocusScope.of(context).requestFocus(f16);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
@@ -1732,16 +1743,17 @@ class _RoleSettingState extends State<RoleSetting> {
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculateAmounts(),
                                         ),
-                                        CustomTextField(text: "Others",hintText: "Others",controller: data.oH,
+                                        CustomTextField(text: "Deduction",hintText: "Deduction",controller: data.deduction,
                                           width: screenWidth/5,
-                                          focusNode: f15,
+                                          focusNode: f16,
                                           onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f16);
+                                            FocusScope.of(context).requestFocus(f17);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculateAmounts(),
                                         ),
+
                                       ],
                                     ),
                                     Row(
@@ -1769,43 +1781,6 @@ class _RoleSettingState extends State<RoleSetting> {
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculateAmounts(),
                                         ),
-                                        CustomTextField(text: "Deduction",hintText: "Deduction",controller: data.deduction,
-                                          width: screenWidth/5,
-                                          focusNode: f16,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f17);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculateAmounts(),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"HRA":"Holidays",hintText: controllers.storage.read("com_id")=="1"?"HRA":"Holidays",
-                                          controller: controllers.storage.read("com_id")=="1"?data.hra:data.oH,
-                                          width: screenWidth/5,
-                                          focusNode: f4,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f5);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculateAmounts(),
-                                        ),
-                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"LWF":"Admin Charges",hintText: controllers.storage.read("com_id")=="1"?"LWF":"Admin Charges",
-                                          controller: controllers.storage.read("com_id")=="1"?data.tds:data.adminCharges,
-                                          width: screenWidth/5,
-                                          focusNode: f11,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f12);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculateAmounts(),
-                                        ),
                                         CustomTextField(text: "Total Amount",hintText: "Total Amount",controller: data.totalAmt,
                                           width: screenWidth/5,
                                           focusNode: f17,
@@ -1816,30 +1791,33 @@ class _RoleSettingState extends State<RoleSetting> {
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculateAmounts(),
                                         ),
+
                                       ],
                                     ),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        CustomTextField(text: "PF",hintText: "PF",controller: data.pf,
+                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"HRA":"Holidays",hintText: controllers.storage.read("com_id")=="1"?"HRA":"Holidays",
+                                          controller: controllers.storage.read("com_id")=="1"?data.hra:data.oH,
                                           width: screenWidth/5,
-                                          focusNode: f5,
+                                          focusNode: f4,
                                           onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f6);
+                                            FocusScope.of(context).requestFocus(f12);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculatePFandESI(),
+                                          onChanged: (_) => calculateAmounts(),
                                         ),
-                                        CustomTextField(text: "PF wages (Amount / %)",hintText: "PF wages (Amount / %)",controller: data.pfWages,
+                                        CustomTextField(text: controllers.storage.read("com_id")=="1"?"LWF":"Admin Charges",hintText: controllers.storage.read("com_id")=="1"?"LWF":"Admin Charges",
+                                          controller: controllers.storage.read("com_id")=="1"?data.tds:data.adminCharges,
                                           width: screenWidth/5,
-                                          focusNode: f12,
+                                          focusNode: f11,
                                           onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f13);
+                                            FocusScope.of(context).requestFocus(f15);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_)=>calculatePFandESI(),
+                                          onChanged: (_) => calculateAmounts(),
                                         ),
                                         CustomTextField(text: "Net Pay",hintText: "Net Pay",controller: data.netPay,
                                           width: screenWidth/5,
@@ -1851,30 +1829,41 @@ class _RoleSettingState extends State<RoleSetting> {
                                           inputFormatters: constInputFormatters.decimalInput,
                                           onChanged: (_) => calculateAmounts(),
                                         ),
+
                                       ],
                                     ),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        CustomTextField(text: "ESI",hintText: "ESI",controller: data.esi,
+                                        Row(
+                                          children: [
+                                            CustomTextField(text: "PF",hintText: "PF",controller: data.pf,
+                                              width: screenWidth/20,readOnly: true,
+                                              keyboardType: TextInputType.number,
+                                              inputFormatters: constInputFormatters.decimalInput,
+                                              onChanged: (_) => calculatePFandESI(),
+                                            ),
+                                            CustomTextField(text: "PF wages (Amount / %)",hintText: "PF wages (Amount / %)",controller: data.pfWages,
+                                              width: screenWidth/6.6,
+                                              focusNode: f12,
+                                              onFieldSubmitted: (_){
+                                                FocusScope.of(context).requestFocus(f13);
+                                              },
+                                              keyboardType: TextInputType.number,
+                                              inputFormatters: constInputFormatters.decimalInput,
+                                              onChanged: (_)=>calculatePFandESI(),
+                                            ),
+                                          ],
+                                        ),
+                                        CustomTextField(text: "Others",hintText: "Others",controller: data.oH,
                                           width: screenWidth/5,
-                                          focusNode: f6,
+                                          focusNode: f15,
                                           onFieldSubmitted: (_){
                                             FocusScope.of(context).requestFocus(f7);
                                           },
                                           keyboardType: TextInputType.number,
                                           inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_) => calculatePFandESI(),
-                                        ),
-                                        CustomTextField(text: "ESI wages (Amount / %)",hintText: "ESI wages (Amount / %)",controller: data.esiWages,
-                                          width: screenWidth/5,
-                                          focusNode: f13,
-                                          onFieldSubmitted: (_){
-                                            FocusScope.of(context).requestFocus(f14);
-                                          },
-                                          keyboardType: TextInputType.number,
-                                          inputFormatters: constInputFormatters.decimalInput,
-                                          onChanged: (_)=>calculatePFandESI(),
+                                          onChanged: (_) => calculateAmounts(),
                                         ),
                                         SizedBox(
                                           width: screenWidth/5,
@@ -1882,279 +1871,305 @@ class _RoleSettingState extends State<RoleSetting> {
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
                                               if(isRole==true)
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      CustomText(
-                                                          text: "Role",
-                                                          size: 14,isCopy: false
-                                                      ),
-                                                      CustomText(
-                                                          text: "*",
-                                                          colors: Colors.red,
-                                                          size: 15,isCopy: false
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  // Container(
-                                                  //   width: screenWidth/5,
-                                                  //   height: 40,
-                                                  //   decoration: customDecoration.baseBackgroundDecoration(
-                                                  //       radius: 5,
-                                                  //       color: Colors.white,borderColor: Colors.grey
-                                                  //   ),
-                                                  //   child: DropdownButtonFormField<Map<String, dynamic>>(
-                                                  //     key: ValueKey(data.roleId), // 👈 forces dropdown to rebuild when reset
-                                                  //     decoration: InputDecoration(
-                                                  //       border: OutlineInputBorder(
-                                                  //         borderRadius: BorderRadius.circular(10),
-                                                  //       ),
-                                                  //       enabledBorder: OutlineInputBorder(
-                                                  //         borderRadius: BorderRadius.circular(10),
-                                                  //         borderSide: const BorderSide(
-                                                  //           color: Colors.white,
-                                                  //           width: 1,
-                                                  //         ),
-                                                  //       ),
-                                                  //       focusedBorder: OutlineInputBorder(
-                                                  //         borderRadius: BorderRadius.circular(10),
-                                                  //         borderSide: const BorderSide(
-                                                  //           color: Colors.white,
-                                                  //           width: 2,
-                                                  //         ),
-                                                  //       ),
-                                                  //       contentPadding:
-                                                  //       const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                                                  //     ),
-                                                  //     isExpanded: true,
-                                                  //     value: data.role,
-                                                  //     hint: CustomText(
-                                                  //       text: data.roleName==""?"Role":data.roleName.toString(),
-                                                  //       colors: Colors.grey, isCopy: false,
-                                                  //     ),
-                                                  //     items: settingsController.roleList
-                                                  //         .map<DropdownMenuItem<RoleModel>>>((item) {
-                                                  //       return DropdownMenuItem<RoleModel>>(
-                                                  //         value: item,
-                                                  //         child: CustomText(
-                                                  //           text: item.roleName,
-                                                  //           colors: Colors.black,isCopy: false,
-                                                  //         ),
-                                                  //       );
-                                                  //     }).toList(),
-                                                  //     onChanged: (value) {
-                                                  //       if (value == null) return;
-                                                  //
-                                                  //       final selectedRole = value;
-                                                  //       final selectedRoleId = selectedRole["u_id"].toString();
-                                                  //
-                                                  //       bool roleExists = pyrlCtr.settingList.any((item) =>
-                                                  //       item != data &&
-                                                  //           item.roleId.toString() == selectedRoleId);
-                                                  //
-                                                  //       if (roleExists) {
-                                                  //         utils.snackBar(context: context, msg: "This role is already added in another payroll setting.", color: Colors.red);
-                                                  //         setState(() {
-                                                  //           data.role = null;
-                                                  //           data.roleId = "";
-                                                  //           data.roleName = "";
-                                                  //         });
-                                                  //
-                                                  //         return;
-                                                  //       }
-                                                  //
-                                                  //       setState(() {
-                                                  //         data.role = selectedRole;
-                                                  //         data.roleId = selectedRoleId;
-                                                  //         data.roleName = selectedRole["role_name"].toString();
-                                                  //
-                                                  //         data.dep = null;
-                                                  //         data.dId = "";
-                                                  //         data.dName = "";
-                                                  //       });
-                                                  //     },
-                                                  //   ),
-                                                  // ),
-                                                  Container(
-                                                    width: screenWidth/5,
-                                                    height: 40,
-                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                        radius: 8,
-                                                        color: Colors.white,
-                                                        borderColor: Colors.grey.shade400),
-                                                    child: DropdownButtonHideUnderline(
-                                                      child: ButtonTheme(
-                                                        alignedDropdown: true,
-                                                        child: DropdownButton<RoleModel>(
-                                                          underline: const SizedBox(),
-                                                          isExpanded: true,
-                                                          value: data.role,
-                                                          iconEnabledColor: Colors.black,
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        CustomText(
+                                                            text: "Role",
+                                                            size: 14,isCopy: false
+                                                        ),
+                                                        CustomText(
+                                                            text: "*",
+                                                            colors: Colors.red,
+                                                            size: 15,isCopy: false
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    // Container(
+                                                    //   width: screenWidth/5,
+                                                    //   height: 40,
+                                                    //   decoration: customDecoration.baseBackgroundDecoration(
+                                                    //       radius: 5,
+                                                    //       color: Colors.white,borderColor: Colors.grey
+                                                    //   ),
+                                                    //   child: DropdownButtonFormField<Map<String, dynamic>>(
+                                                    //     key: ValueKey(data.roleId), // 👈 forces dropdown to rebuild when reset
+                                                    //     decoration: InputDecoration(
+                                                    //       border: OutlineInputBorder(
+                                                    //         borderRadius: BorderRadius.circular(10),
+                                                    //       ),
+                                                    //       enabledBorder: OutlineInputBorder(
+                                                    //         borderRadius: BorderRadius.circular(10),
+                                                    //         borderSide: const BorderSide(
+                                                    //           color: Colors.white,
+                                                    //           width: 1,
+                                                    //         ),
+                                                    //       ),
+                                                    //       focusedBorder: OutlineInputBorder(
+                                                    //         borderRadius: BorderRadius.circular(10),
+                                                    //         borderSide: const BorderSide(
+                                                    //           color: Colors.white,
+                                                    //           width: 2,
+                                                    //         ),
+                                                    //       ),
+                                                    //       contentPadding:
+                                                    //       const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                                                    //     ),
+                                                    //     isExpanded: true,
+                                                    //     value: data.role,
+                                                    //     hint: CustomText(
+                                                    //       text: data.roleName==""?"Role":data.roleName.toString(),
+                                                    //       colors: Colors.grey, isCopy: false,
+                                                    //     ),
+                                                    //     items: settingsController.roleList
+                                                    //         .map<DropdownMenuItem<RoleModel>>>((item) {
+                                                    //       return DropdownMenuItem<RoleModel>>(
+                                                    //         value: item,
+                                                    //         child: CustomText(
+                                                    //           text: item.roleName,
+                                                    //           colors: Colors.black,isCopy: false,
+                                                    //         ),
+                                                    //       );
+                                                    //     }).toList(),
+                                                    //     onChanged: (value) {
+                                                    //       if (value == null) return;
+                                                    //
+                                                    //       final selectedRole = value;
+                                                    //       final selectedRoleId = selectedRole["u_id"].toString();
+                                                    //
+                                                    //       bool roleExists = pyrlCtr.settingList.any((item) =>
+                                                    //       item != data &&
+                                                    //           item.roleId.toString() == selectedRoleId);
+                                                    //
+                                                    //       if (roleExists) {
+                                                    //         utils.snackBar(context: context, msg: "This role is already added in another payroll setting.", color: Colors.red);
+                                                    //         setState(() {
+                                                    //           data.role = null;
+                                                    //           data.roleId = "";
+                                                    //           data.roleName = "";
+                                                    //         });
+                                                    //
+                                                    //         return;
+                                                    //       }
+                                                    //
+                                                    //       setState(() {
+                                                    //         data.role = selectedRole;
+                                                    //         data.roleId = selectedRoleId;
+                                                    //         data.roleName = selectedRole["role_name"].toString();
+                                                    //
+                                                    //         data.dep = null;
+                                                    //         data.dId = "";
+                                                    //         data.dName = "";
+                                                    //       });
+                                                    //     },
+                                                    //   ),
+                                                    // ),
+                                                    Container(
+                                                      width: screenWidth/5,
+                                                      height: 40,
+                                                      decoration: customDecoration.baseBackgroundDecoration(
+                                                          radius: 8,
+                                                          color: Colors.white,
+                                                          borderColor: Colors.grey.shade400),
+                                                      child: DropdownButtonHideUnderline(
+                                                        child: ButtonTheme(
+                                                          alignedDropdown: true,
+                                                          child: DropdownButton<RoleModel>(
+                                                            underline: const SizedBox(),
+                                                            isExpanded: true,
+                                                            value: data.role,
+                                                            iconEnabledColor: Colors.black,
 
-                                                          hint: CustomText(
-                                                            text: "",
-                                                            colors: Colors.grey.shade400,
-                                                            size: 13,
-                                                            isBold: false,
-                                                            isStyle: true,
-                                                            isCopy: true,
-                                                          ),
+                                                            hint: CustomText(
+                                                              text: "",
+                                                              colors: Colors.grey.shade400,
+                                                              size: 13,
+                                                              isBold: false,
+                                                              isStyle: true,
+                                                              isCopy: true,
+                                                            ),
 
-                                                          items: settingsController.roleList
-                                                              .map<DropdownMenuItem<RoleModel>>((item) {
-                                                            return DropdownMenuItem<RoleModel>(
-                                                              value: item,
-                                                              child: CustomText(
-                                                                text: item.roleName,
-                                                                colors: Colors.black,
-                                                                size: 13,
-                                                                isCopy: false,
-                                                                isBold: false,
-                                                              ),
-                                                            );
-                                                          }).toList(),
+                                                            items: settingsController.roleList
+                                                                .map<DropdownMenuItem<RoleModel>>((item) {
+                                                              return DropdownMenuItem<RoleModel>(
+                                                                value: item,
+                                                                child: CustomText(
+                                                                  text: item.roleName,
+                                                                  colors: Colors.black,
+                                                                  size: 13,
+                                                                  isCopy: false,
+                                                                  isBold: false,
+                                                                ),
+                                                              );
+                                                            }).toList(),
 
-                                                          onChanged: (RoleModel? value) {
-                                                            // setState(() {
-                                                            //   employeeProvider.role = value;
-                                                            //   employeeProvider.roleId = value?.uId;
-                                                            // });
-                                                            if (value == null) return;
-                                                            final selectedRole = value;
-                                                            final selectedRoleId = selectedRole.id.toString();
+                                                            onChanged: (RoleModel? value) {
+                                                              // setState(() {
+                                                              //   employeeProvider.role = value;
+                                                              //   employeeProvider.roleId = value?.uId;
+                                                              // });
+                                                              if (value == null) return;
+                                                              final selectedRole = value;
+                                                              final selectedRoleId = selectedRole.id.toString();
 
-                                                            bool roleExists = pyrlCtr.settingList.any((item) =>
-                                                            item != data &&
-                                                                item.roleId.toString() == selectedRoleId);
-                                                            if (roleExists) {
-                                                              utils.snackBar(context: context, msg: "This role is already added in another payroll setting.", color: Colors.red);
+                                                              bool roleExists = pyrlCtr.settingList.any((item) =>
+                                                              item != data &&
+                                                                  item.roleId.toString() == selectedRoleId);
+                                                              if (roleExists) {
+                                                                utils.snackBar(context: context, msg: "This role is already added in another payroll setting.", color: Colors.red);
+                                                                setState(() {
+                                                                  data.role = null;
+                                                                  data.roleId = "";
+                                                                  data.roleName = "";
+                                                                });
+
+                                                                return;
+                                                              }
+
                                                               setState(() {
-                                                                data.role = null;
-                                                                data.roleId = "";
-                                                                data.roleName = "";
+                                                                data.role = selectedRole;
+                                                                data.roleId = selectedRoleId;
+                                                                data.roleName = selectedRole.roleName.toString();
+
+                                                                data.dep = null;
+                                                                data.dId = "";
+                                                                data.dName = "";
                                                               });
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              if(isDep==true)
+                                                Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        CustomText(
+                                                            text: "Department",
+                                                            size: 14,isCopy: false
+                                                        ),
+                                                        CustomText(
+                                                            text: "*",
+                                                            colors: Colors.red,
+                                                            size: 15,isCopy: false
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Container(
+                                                      width: screenWidth/5,
+                                                      height: 40,
+                                                      decoration: customDecoration.baseBackgroundDecoration(
+                                                          radius: 5,
+                                                          color: Colors.white,borderColor: Colors.grey
+                                                      ),
+                                                      child: DropdownButtonFormField<Map<String, dynamic>>(
+                                                        key: ValueKey(data.roleId), // 👈 forces dropdown to rebuild when reset
+                                                        decoration: InputDecoration(
+                                                          border: OutlineInputBorder(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                          ),
+                                                          enabledBorder: OutlineInputBorder(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            borderSide: const BorderSide(
+                                                              color: Colors.white,
+                                                              width: 1,
+                                                            ),
+                                                          ),
+                                                          focusedBorder: OutlineInputBorder(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            borderSide: const BorderSide(
+                                                              color: Colors.white,
+                                                              width: 2,
+                                                            ),
+                                                          ),
+                                                          contentPadding:
+                                                          const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+                                                        ),
+                                                        isExpanded: true,
+                                                        value: data.dep,
+                                                        hint: CustomText(
+                                                          text: data.dName==""?"Department":data.dName.toString(),
+                                                          colors: Colors.grey, isCopy: false,
+                                                        ),
+                                                        items: employeeProvider.depList
+                                                            .map<DropdownMenuItem<Map<String, dynamic>>>((item) {
+                                                          return DropdownMenuItem<Map<String, dynamic>>(
+                                                            value: item,
+                                                            child: CustomText(
+                                                              text: item["department"],
+                                                              colors: Colors.black,isCopy: false,
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                        onChanged: (value) {
+                                                          if (value == null) return;
 
-                                                              return;
-                                                            }
+                                                          final selectedRole = value;
+                                                          final selectedRoleId = selectedRole["id"].toString();
 
+                                                          bool roleExists = pyrlCtr.settingList.any((item) =>
+                                                          item != data &&
+                                                              item.dId.toString() == selectedRoleId);
+
+                                                          if (roleExists) {
+                                                            utils.snackBar(context: context, msg: "This department is already added in another payroll setting.", color: Colors.red);
                                                             setState(() {
-                                                              data.role = selectedRole;
-                                                              data.roleId = selectedRoleId;
-                                                              data.roleName = selectedRole.roleName.toString();
-
                                                               data.dep = null;
                                                               data.dId = "";
                                                               data.dName = "";
                                                             });
-                                                          },
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              if(isDep==true)
-                                              Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      CustomText(
-                                                          text: "Department",
-                                                          size: 14,isCopy: false
-                                                      ),
-                                                      CustomText(
-                                                          text: "*",
-                                                          colors: Colors.red,
-                                                          size: 15,isCopy: false
-                                                      ),
-                                                    ],
-                                                  ),
-                                                  Container(
-                                                    width: screenWidth/5,
-                                                    height: 40,
-                                                    decoration: customDecoration.baseBackgroundDecoration(
-                                                      radius: 5,
-                                                      color: Colors.white,borderColor: Colors.grey
-                                                    ),
-                                                    child: DropdownButtonFormField<Map<String, dynamic>>(
-                                                      key: ValueKey(data.roleId), // 👈 forces dropdown to rebuild when reset
-                                                      decoration: InputDecoration(
-                                                        border: OutlineInputBorder(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                        ),
-                                                        enabledBorder: OutlineInputBorder(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          borderSide: const BorderSide(
-                                                            color: Colors.white,
-                                                            width: 1,
-                                                          ),
-                                                        ),
-                                                        focusedBorder: OutlineInputBorder(
-                                                          borderRadius: BorderRadius.circular(10),
-                                                          borderSide: const BorderSide(
-                                                            color: Colors.white,
-                                                            width: 2,
-                                                          ),
-                                                        ),
-                                                        contentPadding:
-                                                        const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                                                      ),
-                                                      isExpanded: true,
-                                                      value: data.dep,
-                                                      hint: CustomText(
-                                                        text: data.dName==""?"Department":data.dName.toString(),
-                                                        colors: Colors.grey, isCopy: false,
-                                                      ),
-                                                      items: employeeProvider.depList
-                                                          .map<DropdownMenuItem<Map<String, dynamic>>>((item) {
-                                                        return DropdownMenuItem<Map<String, dynamic>>(
-                                                          value: item,
-                                                          child: CustomText(
-                                                            text: item["department"],
-                                                            colors: Colors.black,isCopy: false,
-                                                          ),
-                                                        );
-                                                      }).toList(),
-                                                      onChanged: (value) {
-                                                        if (value == null) return;
 
-                                                        final selectedRole = value;
-                                                        final selectedRoleId = selectedRole["id"].toString();
+                                                            return;
+                                                          }
 
-                                                        bool roleExists = pyrlCtr.settingList.any((item) =>
-                                                        item != data &&
-                                                            item.dId.toString() == selectedRoleId);
-
-                                                        if (roleExists) {
-                                                          utils.snackBar(context: context, msg: "This department is already added in another payroll setting.", color: Colors.red);
                                                           setState(() {
-                                                            data.dep = null;
-                                                            data.dId = "";
-                                                            data.dName = "";
+                                                            data.dep = selectedRole;
+                                                            data.dId = selectedRoleId;
+                                                            data.dName = selectedRole["department"].toString();
+
+                                                            data.role = null;
+                                                            data.roleId = "";
+                                                            data.roleName = "";
                                                           });
-
-                                                          return;
-                                                        }
-
-                                                        setState(() {
-                                                          data.dep = selectedRole;
-                                                          data.dId = selectedRoleId;
-                                                          data.dName = selectedRole["department"].toString();
-
-                                                          data.role = null;
-                                                          data.roleId = "";
-                                                          data.roleName = "";
-                                                        });
-                                                      },
+                                                        },
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
+                                                  ],
+                                                ),
                                             ],
                                           ),
+                                        ),
+
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            CustomTextField(text: "ESI",hintText: "ESI",controller: data.esi,
+                                              width: screenWidth/20,readOnly: true,
+                                              keyboardType: TextInputType.number,
+                                              inputFormatters: constInputFormatters.decimalInput,
+                                              onChanged: (_) => calculatePFandESI(),
+                                            ),
+                                            CustomTextField(text: "ESI wages (Amount / %)",hintText: "ESI wages (Amount / %)",controller: data.esiWages,
+                                              width: screenWidth/6.6,
+                                              focusNode: f13,
+                                              onFieldSubmitted: (_){
+                                                FocusScope.of(context).requestFocus(f14);
+                                              },
+                                              keyboardType: TextInputType.number,
+                                              inputFormatters: constInputFormatters.decimalInput,
+                                              onChanged: (_)=>calculatePFandESI(),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),

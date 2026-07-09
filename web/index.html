@@ -1,173 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html>-->
-<!--<head>-->
-<!--    <base href="$FLUTTER_BASE_HREF">-->
-
-<!--    <meta charset="UTF-8">-->
-<!--    <meta content="IE=Edge" http-equiv="X-UA-Compatible">-->
-<!--    <meta name="description" content="ARUU’s EasyCRM CRM">-->
-
-<!--    <meta name="cache-control" content="no-cache, no-store, must-revalidate">-->
-<!--    <meta http-equiv="Pragma" content="no-cache">-->
-<!--    <meta http-equiv="Expires" content="0">-->
-
-<!--    <link rel="icon" type="image/png" href="favicon.png"/>-->
-<!--    <title>ARUU’s EasyCRM CRM</title>-->
-<!--    <link rel="manifest" href="manifest.json">-->
-<!--&lt;!&ndash;    <script>&ndash;&gt;-->
-<!--&lt;!&ndash;        window.flutterConfiguration = {&ndash;&gt;-->
-<!--&lt;!&ndash;          renderer: "html"&ndash;&gt;-->
-<!--&lt;!&ndash;        };&ndash;&gt;-->
-<!--&lt;!&ndash;    </script>&ndash;&gt;-->
-<!--</head>-->
-
-<!--<body>-->
-
-<!--<div id="splash-screen">-->
-<!--&lt;!&ndash;    <img id="splash-gif" src="crm_splash.mp4" alt="Installing..." />&ndash;&gt;-->
-<!--    <video id="splash-gif" autoplay muted loop playsinline>-->
-<!--        <source src="crm_splash.mp4" type="video/mp4">-->
-<!--        Your browser does not support the video tag.-->
-<!--    </video>-->
-<!--</div>-->
-
-<!--<div id="screenshot-popup" style="-->
-<!--    display:none;-->
-<!--    position: fixed;-->
-<!--    top: 50%;-->
-<!--    left: 50%;-->
-<!--    transform: translate(-50%, -50%);-->
-<!--    background: white;-->
-<!--    color: black;-->
-<!--    padding: 20px 40px;-->
-<!--    border: 2px solid red;-->
-<!--    border-radius: 10px;-->
-<!--    box-shadow: 0 0 10px rgba(0,0,0,0.5);-->
-<!--    z-index: 10000;-->
-<!--    font-family: sans-serif;-->
-<!--    text-align: center;-->
-<!--">-->
-<!--    Screenshots are disabled!-->
-<!--</div>-->
-
-<!--<style>-->
-<!--    /* full page splash background + prevent scrolling */-->
-<!--    html, body {-->
-<!--      height: 100%;-->
-<!--      margin: 0;-->
-<!--    }-->
-
-<!--    body {-->
-<!--      background: #fcfbf2; /* requested background color */-->
-<!--      overflow: hidden;    /* prevent page scroll while splash shown */-->
-<!--    }-->
-
-<!--    #splash-screen {-->
-<!--      position: fixed;-->
-<!--      inset: 0;-->
-<!--      background: #fcfbf2; /* ensure whole viewport uses the color */-->
-<!--      display: flex;-->
-<!--      justify-content: center;-->
-<!--      align-items: center;-->
-<!--      z-index: 9999;-->
-<!--    }-->
-
-<!--    /* Make GIF cover the viewport while preserving aspect ratio.-->
-<!--       object-fit: contain will letterbox if aspect ratios differ. */-->
-<!--    #splash-gif {-->
-<!--      width: 100vw;-->
-<!--      height: 100vh;-->
-<!--      object-fit: contain;-->
-<!--      display: block;-->
-<!--      user-select: none;-->
-<!--      -webkit-user-drag: none;-->
-<!--      pointer-events: none; /* allow clicks to pass if ever needed */-->
-<!--    }-->
-
-<!--    /* Optional: small screens tweak to avoid tiny gaps on some browsers */-->
-<!--    @supports (object-fit: contain) {-->
-<!--      /* nothing extra required */-->
-<!--    }-->
-<!--</style>-->
-<!--<script>-->
-<!--    // 🚫 Disable Flutter service worker (prevents caching issues like CanvasKit mismatch)-->
-<!--    if ('serviceWorker' in navigator) {-->
-<!--      navigator.serviceWorker.getRegistrations().then(function (registrations) {-->
-<!--        for (let registration of registrations) {-->
-<!--          registration.unregister();-->
-<!--        }-->
-<!--      });-->
-
-<!--      // Also kill future auto-registration attempts-->
-<!--      window.addEventListener('load', function () {-->
-<!--        navigator.serviceWorker.getRegistrations().then(function (registrations) {-->
-<!--          registrations.forEach(r => r.unregister());-->
-<!--        });-->
-<!--      });-->
-<!--    }-->
-<!--</script>-->
-<!--<script src="flutter_bootstrap.js" async></script>-->
-<!--&lt;!&ndash;<script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>&ndash;&gt;-->
-<!--&lt;!&ndash;<script src="ocr.js"></script>&ndash;&gt;-->
-
-
-<!--&lt;!&ndash;<script>&ndash;&gt;-->
-<!--&lt;!&ndash;    if ('serviceWorker' in navigator) {&ndash;&gt;-->
-<!--&lt;!&ndash;      navigator.serviceWorker.register('/firebase-messaging-sw.js');&ndash;&gt;-->
-<!--&lt;!&ndash;    }&ndash;&gt;-->
-<!--&lt;!&ndash;</script>&ndash;&gt;-->
-
-<!--<script>-->
-<!--    window.addEventListener('flutter-first-frame', function () {-->
-<!--      const splash = document.getElementById('splash-screen');-->
-<!--      if (splash) {-->
-<!--        // restore scrolling before removing-->
-<!--        document.body.style.overflow = '';-->
-<!--        splash.remove();-->
-<!--      }-->
-<!--    });-->
-
-<!--    // Safety: if flutter-first-frame never fires (rare), remove splash after timeout-->
-<!--    // (you can remove these lines if you don't want an automatic fallback)-->
-<!--    setTimeout(() => {-->
-<!--      const splash = document.getElementById('splash-screen');-->
-<!--      if (splash) {-->
-<!--        document.body.style.overflow = '';-->
-<!--        splash.remove();-->
-<!--      }-->
-<!--    }, 15000); // 15s fallback-->
-<!--</script>-->
-
-<!--<script>-->
-<!--    document.addEventListener("keyup", function (e) {-->
-<!--      if (e.key === "PrintScreen") {-->
-<!--        navigator.clipboard.writeText("");-->
-<!--        const popup = document.getElementById('screenshot-popup');-->
-<!--        if (popup) {-->
-<!--          popup.style.display = 'block';-->
-<!--          setTimeout(() => { popup.style.display = 'none'; }, 3000);-->
-<!--        }-->
-<!--      }-->
-<!--    });-->
-<!--</script>-->
-
-<!--<script>-->
-<!--    document.addEventListener('keydown', function(e) {-->
-<!--      if ((e.ctrlKey || e.metaKey) && e.key === 'p') {-->
-<!--        e.preventDefault();-->
-<!--        const popup = document.getElementById('screenshot-popup');-->
-<!--        if (popup) {-->
-<!--          popup.style.display = 'block';-->
-<!--          setTimeout(() => { popup.style.display = 'none'; }, 3000);-->
-<!--        }-->
-<!--      }-->
-<!--    });-->
-<!--</script>-->
-
-<!--</body>-->
-<!--</html>-->
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -187,17 +17,17 @@
     <link rel="manifest" href="manifest.json">
 
     <!-- 🚫 Disable Flutter Service Worker (IMPORTANT FIX) -->
-    <script>
-        if ('serviceWorker' in navigator) {
-          window.addEventListener('load', function () {
-            navigator.serviceWorker.getRegistrations().then(function (registrations) {
-              registrations.forEach(function (registration) {
-                registration.unregister();
-              });
-            });
-          });
-        }
-    </script>
+<!--    <script>-->
+<!--        if ('serviceWorker' in navigator) {-->
+<!--          window.addEventListener('load', function () {-->
+<!--            navigator.serviceWorker.getRegistrations().then(function (registrations) {-->
+<!--              registrations.forEach(function (registration) {-->
+<!--                registration.unregister();-->
+<!--              });-->
+<!--            });-->
+<!--          });-->
+<!--        }-->
+<!--    </script>-->
 </head>
 
 <body>
@@ -263,7 +93,7 @@
 </style>
 
 <!-- 🚀 Flutter App Loader -->
-<script src="flutter_bootstrap.js" async></script>
+<script src="flutter_bootstrap.js"></script>
 
 <!-- Splash hide after Flutter loads -->
 <script>

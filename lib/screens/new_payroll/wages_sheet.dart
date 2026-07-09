@@ -62,6 +62,7 @@ class _UnitSlipState extends State<UnitSlip> {
     70,  // pf
     130,  // ded
     130,  // net
+    130,  // net
   ];
   @override
   void initState() {
@@ -944,7 +945,7 @@ class _UnitSlipState extends State<UnitSlip> {
                                                   ),
                                                 ],
                                               ),),
-                                              headerCell(16, Row(
+                                              headerCell(17, Row(
                                                 children: [
                                                   CustomText(
                                                     textAlign: TextAlign.center,
@@ -962,6 +963,43 @@ class _UnitSlipState extends State<UnitSlip> {
                                                         controllers.sortOrderCallActivity.value='asc';
                                                       }
                                                       controllers.sortFieldCallActivity.value='net';
+                                                      pyrlCtr.filterAndSort(
+                                                        searchText: controllers.searchText.value.toLowerCase(),
+                                                        sortField: controllers.sortFieldCallActivity.value,
+                                                        sortOrder: controllers.sortOrderCallActivity.value,
+                                                      );
+                                                    },
+                                                    child: Obx(() => Image.asset(
+                                                      controllers.sortFieldCallActivity.value.isEmpty
+                                                          ? "assets/images/arrow.png"
+                                                          : controllers.sortOrderCallActivity.value == 'asc'
+                                                          ? "assets/images/arrow_up.png"
+                                                          : "assets/images/arrow_down.png",
+                                                      width: 15,
+                                                      height: 15,
+                                                    ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),),
+                                              headerCell(18, Row(
+                                                children: [
+                                                  CustomText(
+                                                    textAlign: TextAlign.center,
+                                                    text: "Updated On",
+                                                    isCopy: true,
+                                                    size: 15,
+                                                    isBold: true,
+                                                    colors: Colors.white,
+                                                  ),3.width,
+                                                  GestureDetector(
+                                                    onTap: (){
+                                                      if(controllers.sortFieldCallActivity.value=='time' && controllers.sortOrderCallActivity.value=='asc'){
+                                                        controllers.sortOrderCallActivity.value='desc';
+                                                      }else{
+                                                        controllers.sortOrderCallActivity.value='asc';
+                                                      }
+                                                      controllers.sortFieldCallActivity.value='time';
                                                       pyrlCtr.filterAndSort(
                                                         searchText: controllers.searchText.value.toLowerCase(),
                                                         sortField: controllers.sortFieldCallActivity.value,
@@ -1017,21 +1055,7 @@ class _UnitSlipState extends State<UnitSlip> {
                                             var totalList = pyrlCtr.unitPayrollList[0].total.toString().split(',');
                                             var bonus2List = pyrlCtr.unitPayrollList[0].bonus2.toString().split(',');
                                             var foodList = pyrlCtr.unitPayrollList[0].food.toString().split(',');
-                                            print("namesList   : ${namesList.length}");
-                                            print("roleList    : ${roleList.length}");
-                                            print("dutyList    : ${dutyList.length}");
-                                            print("otList      : ${otList.length}");
-                                            print("basicList   : ${basicList.length}");
-                                            print("hraList     : ${hraList.length}");
-                                            print("daList      : ${daList.length}");
-                                            print("netAmtList  : ${netAmtList.length}");
-                                            print("advanceList : ${advanceList.length}");
-                                            print("uniformList : ${uniformList.length}");
-                                            print("penaltyList : ${penaltyList.length}");
-                                            print("esiList     : ${esiList.length}");
-                                            print("pfList      : ${pfList.length}");
-                                            print("deductionList : ${deductionList.length}");
-                                            print("totalList   : ${totalList.length}");
+                                            var timeList = pyrlCtr.unitPayrollList[0].updatedTs.toString().split(',');
                                             return  Table(
                                               columnWidths: {
                                                 for (int i = 0; i < colWidths.length; i++)
@@ -1137,7 +1161,8 @@ class _UnitSlipState extends State<UnitSlip> {
                                                           isCopy: true,
                                                           colors: colorsConst.textColor,
                                                         ),
-                                                      ),Padding(
+                                                      ),
+                                                      Padding(
                                                         padding: const EdgeInsets.all(10.0),
                                                         child: CustomText(
                                                           textAlign: TextAlign.left,
@@ -1146,7 +1171,8 @@ class _UnitSlipState extends State<UnitSlip> {
                                                           isCopy: true,
                                                           colors: colorsConst.textColor,
                                                         ),
-                                                      ),Padding(
+                                                      ),
+                                                      Padding(
                                                         padding: const EdgeInsets.all(10.0),
                                                         child: CustomText(
                                                           textAlign: TextAlign.left,
@@ -1155,7 +1181,8 @@ class _UnitSlipState extends State<UnitSlip> {
                                                           isCopy: true,
                                                           colors: colorsConst.textColor,
                                                         ),
-                                                      ),Padding(
+                                                      ),
+                                                      Padding(
                                                         padding: const EdgeInsets.all(10.0),
                                                         child: CustomText(
                                                           textAlign: TextAlign.left,
@@ -1164,7 +1191,8 @@ class _UnitSlipState extends State<UnitSlip> {
                                                           isCopy: true,
                                                           colors: colorsConst.textColor,
                                                         ),
-                                                      ),Padding(
+                                                      ),
+                                                      Padding(
                                                         padding: const EdgeInsets.all(10.0),
                                                         child: CustomText(
                                                           textAlign: TextAlign.left,
@@ -1173,7 +1201,8 @@ class _UnitSlipState extends State<UnitSlip> {
                                                           isCopy: true,
                                                           colors: colorsConst.textColor,
                                                         ),
-                                                      ),Padding(
+                                                      ),
+                                                      Padding(
                                                         padding: const EdgeInsets.all(10.0),
                                                         child: CustomText(
                                                           textAlign: TextAlign.left,
@@ -1182,7 +1211,8 @@ class _UnitSlipState extends State<UnitSlip> {
                                                           isCopy: true,
                                                           colors: colorsConst.textColor,
                                                         ),
-                                                      ),Padding(
+                                                      ),
+                                                      Padding(
                                                         padding: const EdgeInsets.all(10.0),
                                                         child: CustomText(
                                                           textAlign: TextAlign.left,
@@ -1191,7 +1221,8 @@ class _UnitSlipState extends State<UnitSlip> {
                                                           isCopy: true,
                                                           colors: colorsConst.textColor,
                                                         ),
-                                                      ),Padding(
+                                                      ),
+                                                      Padding(
                                                         padding: const EdgeInsets.all(10.0),
                                                         child: CustomText(
                                                           textAlign: TextAlign.left,
@@ -1200,7 +1231,8 @@ class _UnitSlipState extends State<UnitSlip> {
                                                           isCopy: true,
                                                           colors: colorsConst.textColor,
                                                         ),
-                                                      ),Padding(
+                                                      ),
+                                                      Padding(
                                                         padding: const EdgeInsets.all(10.0),
                                                         child: CustomText(
                                                           textAlign: TextAlign.left,
@@ -1209,11 +1241,22 @@ class _UnitSlipState extends State<UnitSlip> {
                                                           isCopy: true,
                                                           colors: colorsConst.textColor,
                                                         ),
-                                                      ),Padding(
+                                                      ),
+                                                      Padding(
                                                         padding: const EdgeInsets.all(10.0),
                                                         child: CustomText(
                                                           textAlign: TextAlign.left,
                                                           text:netAmtList[index],
+                                                          size: 14,
+                                                          isCopy: true,
+                                                          colors: colorsConst.textColor,
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding: const EdgeInsets.all(10.0),
+                                                        child: CustomText(
+                                                          textAlign: TextAlign.left,
+                                                          text:DateFormat('dd-mm-yyyy hh:mm a').format(DateTime.parse(timeList[index])),
                                                           size: 14,
                                                           isCopy: true,
                                                           colors: colorsConst.textColor,

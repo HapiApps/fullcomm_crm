@@ -819,10 +819,10 @@ var isSelectAll=false.obs;
       }
     }
 
-    debugPrint("========== FILTER START ==========");
-    debugPrint("selectedDateFilter : $selectedDateFilter");
-    debugPrint("selectedMonth      : $selectedMonth");
-    debugPrint("selectedRange      : $selectedRange");
+    // debugPrint("========== FILTER START ==========");
+    // debugPrint("selectedDateFilter : $selectedDateFilter");
+    // debugPrint("selectedMonth      : $selectedMonth");
+    // debugPrint("selectedRange      : $selectedRange");
 
     final now = DateTime.now();
     final todayStart = DateTime(now.year, now.month, now.day);
@@ -915,14 +915,14 @@ var isSelectAll=false.obs;
                         const Duration(days: 1)));
       }
 
-      debugPrint(
-          "Date : $activityDate => Match : $matchesDate");
+      // debugPrint(
+      //     "Date : $activityDate => Match : $matchesDate");
 
       return matchesSearch && matchesDate;
     }).toList();
 
-    debugPrint(
-        "Filtered Count Before Sort : ${filtered.length}");
+    // debugPrint(
+    //     "Filtered Count Before Sort : ${filtered.length}");
 
     /// SORTING
     switch (sortField) {

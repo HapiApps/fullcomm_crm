@@ -211,19 +211,31 @@ class _NewLeadPageState extends State<NewLeadPage> {
                             int currentIndex = int.parse(widget.index.toString());
                             int nextIndex = currentIndex + 1;
 
-                            // Safe default selection
-                            if (controllers.leadCategoryList.isNotEmpty) {
-                              if (nextIndex <
-                                  controllers.leadCategoryList.length) {
-                                stageId = controllers
-                                    .leadCategoryList[nextIndex].leadStatus;
-                                selectedStage = controllers
-                                    .leadCategoryList[nextIndex].value;
+                            RxList<LeadStatusModel> categoryList=<LeadStatusModel>[].obs;
+                            for(var i=0;i<controllers.leadCategoryList.length;i++){
+                              if(controllers.leadCategoryList[i].value!=widget.name){
+                                categoryList.add(controllers.leadCategoryList[i]);
+                              }
+                            }
+
+                            // // Safe default selection
+                            // if (controllers.leadCategoryList.isNotEmpty) {
+                            //   if (nextIndex <controllers.leadCategoryList.length) {
+                            //     stageId = controllers.leadCategoryList[nextIndex].leadStatus;
+                            //     selectedStage = controllers.leadCategoryList[nextIndex].value;
+                            //   } else {
+                            //     stageId =controllers.leadCategoryList[0].leadStatus;
+                            //     selectedStage =controllers.leadCategoryList[0].value;
+                            //   }
+                            // }
+
+                            if (categoryList.isNotEmpty) {
+                              if (nextIndex <categoryList.length) {
+                                stageId = categoryList[nextIndex].leadStatus;
+                                selectedStage = categoryList[nextIndex].value;
                               } else {
-                                stageId =
-                                    controllers.leadCategoryList[0].leadStatus;
-                                selectedStage =
-                                    controllers.leadCategoryList[0].value;
+                                stageId =categoryList[0].leadStatus;
+                                selectedStage =categoryList[0].value;
                               }
                             }
 
@@ -263,16 +275,14 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                         ),
                                         child: DropdownButton<String>(
                                           focusColor: Colors.transparent,
-                                          value: controllers
-                                              .leadCategoryList
-                                              .any((e) =>
+                                          value: categoryList.any((e) =>
                                           e.leadStatus ==
                                               stageId)
                                               ? stageId
                                               : null,
                                           isExpanded: true,
                                           underline: const SizedBox(),
-                                          items: controllers.leadCategoryList.map((item) {
+                                          items: categoryList.map((item) {
                                             return DropdownMenuItem<String>(
                                               value: item.leadStatus,
                                               child: Text(item.value),
@@ -281,9 +291,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                           onChanged: (value) {
                                             setState(() {
                                               stageId = value;
-                                              selectedStage = controllers
-                                                  .leadCategoryList
-                                                  .firstWhere((e) =>
+                                              selectedStage = categoryList.firstWhere((e) =>
                                               e.leadStatus ==
                                                   value)
                                                   .value;
@@ -404,19 +412,36 @@ class _NewLeadPageState extends State<NewLeadPage> {
                             int currentIndex = int.parse(widget.index.toString());
                             int nextIndex = currentIndex + 1;
 
-                            // Safe default selection
-                            if (controllers.leadCategoryList.isNotEmpty) {
-                              if (nextIndex <
-                                  controllers.leadCategoryList.length) {
-                                stageId = controllers
-                                    .leadCategoryList[nextIndex].leadStatus;
-                                selectedStage = controllers
-                                    .leadCategoryList[nextIndex].value;
+                            // // Safe default selection
+                            // if (controllers.leadCategoryList.isNotEmpty) {
+                            //   if (nextIndex <
+                            //       controllers.leadCategoryList.length) {
+                            //     stageId = controllers
+                            //         .leadCategoryList[nextIndex].leadStatus;
+                            //     selectedStage = controllers
+                            //         .leadCategoryList[nextIndex].value;
+                            //   } else {
+                            //     stageId =
+                            //         controllers.leadCategoryList[0].leadStatus;
+                            //     selectedStage =
+                            //         controllers.leadCategoryList[0].value;
+                            //   }
+                            // }
+
+                            RxList<LeadStatusModel> categoryList=<LeadStatusModel>[].obs;
+                            for(var i=0;i<controllers.leadCategoryList.length;i++){
+                              if(controllers.leadCategoryList[i].value!=widget.name){
+                                categoryList.add(controllers.leadCategoryList[i]);
+                              }
+                            }
+
+                            if (categoryList.isNotEmpty) {
+                              if (nextIndex <categoryList.length) {
+                                stageId = categoryList[nextIndex].leadStatus;
+                                selectedStage = categoryList[nextIndex].value;
                               } else {
-                                stageId =
-                                    controllers.leadCategoryList[0].leadStatus;
-                                selectedStage =
-                                    controllers.leadCategoryList[0].value;
+                                stageId =categoryList[0].leadStatus;
+                                selectedStage =categoryList[0].value;
                               }
                             }
 
@@ -455,18 +480,14 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                           BorderRadius.circular(4),
                                         ),
                                         child: DropdownButton<String>(
-                                          value: controllers
-                                              .leadCategoryList
-                                              .any((e) =>
+                                          value: categoryList.any((e) =>
                                           e.leadStatus ==
                                               stageId)
                                               ? stageId
                                               : null,
                                           isExpanded: true,
                                           underline: const SizedBox(),
-                                          items: controllers
-                                              .leadCategoryList
-                                              .map((item) {
+                                          items: categoryList.map((item) {
                                             return DropdownMenuItem<String>(
                                               value: item.leadStatus,
                                               child: Text(item.value),
@@ -475,9 +496,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                           onChanged: (value) {
                                             setState(() {
                                               stageId = value;
-                                              selectedStage = controllers
-                                                  .leadCategoryList
-                                                  .firstWhere((e) =>
+                                              selectedStage = categoryList.firstWhere((e) =>
                                               e.leadStatus ==
                                                   value)
                                                   .value;

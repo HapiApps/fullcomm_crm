@@ -196,34 +196,6 @@ class NewPayrollApiServices{
               esiWages: TextEditingController(text: unitList[i].esiWages),
               monthlyWages: unitList[i].salary=="0"||unitList[i].salary==""||unitList[i].salary=="null"?false:true
           ));
-          pyrlCtr.settingList.add(RolePayrollSetting(
-            id: unitList[i].id.toString(),role: match,
-              roleId: unitList[i].type=="1"?unitList[i].roleId:"",
-              roleName: unitList[i].type=="1"?unitList[i].roleName:"",
-              dName: unitList[i].type=="2"?unitList[i].roleName:"",
-              dep: match2,
-              dId: unitList[i].type=="2"?unitList[i].roleId:"",
-
-              salary: TextEditingController(text: unitList[i].salary),
-              perDay: TextEditingController(text: unitList[i].perDay),
-              basic: TextEditingController(text: unitList[i].basicDa),
-              hra: TextEditingController(text: unitList[i].hra),
-              da: TextEditingController(text: unitList[i].basicDa),
-              nH: TextEditingController(text: unitList[i].nHolidays),
-              sH: TextEditingController(text: unitList[i].sHolidays),
-              oH: TextEditingController(text: unitList[i].oHolidays),
-              bonus: TextEditingController(text: unitList[i].bonus),
-              esi: TextEditingController(text: unitList[i].esi),
-              pf: TextEditingController(text: unitList[i].pf),
-              tds: TextEditingController(text: unitList[i].tds),
-              pt: TextEditingController(text: unitList[i].pt),
-              deduction: TextEditingController(text: unitList[i].deduction),
-              totalAmt: TextEditingController(text: unitList[i].totalAmt),
-              netPay: TextEditingController(text: unitList[i].netAmt),
-              pfWages: TextEditingController(text: unitList[i].pfWages),
-              esiWages: TextEditingController(text: unitList[i].esiWages),
-              monthlyWages: unitList[i].salary=="0"||unitList[i].salary==""||unitList[i].salary=="null"?false:true
-          ));
           pyrlCtr.settingList.sort(
                 (a, b) => a.roleName.toString().compareTo(b.roleName.toString()),
           );

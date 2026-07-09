@@ -1144,7 +1144,45 @@ class _AttendanceDutyState extends State<AttendanceDuty> {
       pyrlCtr.users[index].total.text = earned.round().toString();
       pyrlCtr.users[index].deduction.text = deduction.round().toString();
       pyrlCtr.users[index].netAmount = netSalary.round().toString();
+      setState(() {
+        totalDuty.value = 0;
+        totalOT.value = 0;
+        totalAdvance.value = 0;
+        totalPenalty.value = 0;
+        totalBonus2.value = 0;
+        totalFood.value = 0;
+        totalDed.value = 0;
+        totalUniform.value = 0;
+        total.value = 0;   // Net
+        totalBasic.value = 0;
+        totalHra.value = 0;
+        totalDa.value = 0;
+        tEsi.value = 0;
+        tPf.value = 0;
+        totalEarned.value = 0;
 
+        for (var i = 0; i < pyrlCtr.users.length; i++) {
+          double duty = parseIntOrZero(pyrlCtr.users[i].duty.text);
+          double ot = parseIntOrZero(pyrlCtr.users[i].ot.text);
+
+          totalDuty.value += duty;
+          totalOT.value +=ot;
+          totalAdvance.value += parseDoubleOrZero(pyrlCtr.users[i].advance.text);
+          totalPenalty.value += parseDoubleOrZero(pyrlCtr.users[i].penalty.text);
+          totalBonus2.value += parseDoubleOrZero(pyrlCtr.users[i].bonus2.text);
+          totalFood.value += parseDoubleOrZero(pyrlCtr.users[i].food.text);
+          totalUniform.value += parseDoubleOrZero(pyrlCtr.users[i].uniform.text);
+          totalDed.value += parseDoubleOrZero(pyrlCtr.users[i].deduction.text);
+          total.value += parseDoubleOrZero(pyrlCtr.users[i].netAmount);
+
+          totalBasic.value += parseDoubleOrZero(pyrlCtr.users[i].basic);
+          totalHra.value += parseDoubleOrZero(pyrlCtr.users[i].hra);
+          totalDa.value += parseDoubleOrZero(pyrlCtr.users[i].da);
+          tEsi.value += parseDoubleOrZero(pyrlCtr.users[i].esi);
+          tPf.value += parseDoubleOrZero(pyrlCtr.users[i].pf);
+          totalEarned.value += parseDoubleOrZero(pyrlCtr.users[i].total.text);
+        }
+      });
       print("========== END PAYROLL ==========");
     });
   }

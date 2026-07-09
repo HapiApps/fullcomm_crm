@@ -491,49 +491,246 @@ void addListValues(){
                               radius: 3,
                               width: 160),
                           10.width,
+                          // CustomLoadingButton(
+                          //   callback: () {
+                          //
+                          //     bool isMistake = false;
+                          //     Set<String> uniqueNumbers = {};
+                          //     bool isMistake2 = false;
+                          //     Set<String> uniqueNumbers2 = {};
+                          //     for (var i = 0; i < controllers.numberList.length; i++) {
+                          //       String number = controllers.numberList[i].text.trim();
+                          //       if (number.isEmpty || number.length != 10) {
+                          //         isMistake = true;
+                          //         utils.snackBar(
+                          //           context: context,
+                          //           msg: "Enter valid 10 digit ${_formatHeading(
+                          //               controllers.getUserHeading(
+                          //                   "mobile_name") ??
+                          //                   "Mobile No")}",
+                          //           color: Colors.red,
+                          //         );
+                          //         break;
+                          //       }
+                          //       if (uniqueNumbers.contains(number)) {
+                          //         isMistake = true;
+                          //         utils.snackBar(
+                          //           context: context,
+                          //           msg: "Same ${_formatHeading(
+                          //               controllers.getUserHeading(
+                          //                   "mobile_name") ??
+                          //                   "Mobile No")} already added",
+                          //           color: Colors.red,
+                          //         );
+                          //         break;
+                          //       }
+                          //       uniqueNumbers.add(number);
+                          //     }
+                          //     if (isMistake) {
+                          //       controllers.leadCtr.reset();
+                          //       return;
+                          //     }
+                          //     if(controllers.infoNumberList[0].text.isNotEmpty){
+                          //       for (var i = 0; i < controllers.infoNumberList.length; i++) {
+                          //         String number = controllers.infoNumberList[i].text.trim();
+                          //         if (number.isEmpty || number.length != 10) {
+                          //           isMistake2 = true;
+                          //           utils.snackBar(
+                          //             context: context,
+                          //             msg: "Enter valid 10 digit mobile number",
+                          //             color: Colors.red,
+                          //           );
+                          //           break;
+                          //         }
+                          //         if (uniqueNumbers2.contains(number)) {
+                          //           isMistake2 = true;
+                          //           utils.snackBar(
+                          //             context: context,
+                          //             msg: "Same company phone number already added",
+                          //             color: Colors.red,
+                          //           );
+                          //           break;
+                          //         }
+                          //         uniqueNumbers2.add(number);
+                          //       }
+                          //       if (isMistake2) {
+                          //         controllers.leadCtr.reset();
+                          //         return;
+                          //       }
+                          //     }
+                          //     if (controllers.leadLinkedinCrt.text.trim().isNotEmpty&&!utils.isValidLinkedInId(controllers.leadLinkedinCrt.text.trim())) {
+                          //       utils.snackBar(
+                          //         context: context,
+                          //         msg: "Enter valid LinkedIn ID",
+                          //         color: Colors.red,
+                          //       );
+                          //       controllers.leadCtr.reset();
+                          //       return;
+                          //     }
+                          //     if (controllers.leadWebsite.text.trim().isNotEmpty&&!utils.validateWebsite(controllers.leadWebsite.text.trim())) {
+                          //       utils.snackBar(
+                          //         context: context,
+                          //         msg: "Enter valid Website",
+                          //         color: Colors.red,
+                          //       );
+                          //       controllers.leadCtr.reset();
+                          //       return;
+                          //     }
+                          //     if (controllers.leadXCrt.text.trim().isNotEmpty&&!utils.isValidXId(controllers.leadXCrt.text.trim())) {
+                          //       utils.snackBar(
+                          //         context: context,
+                          //         msg: "Enter valid X ID",
+                          //         color: Colors.red,
+                          //       );
+                          //       controllers.leadCtr.reset();
+                          //       return;
+                          //     }
+                          //
+                          //     if (controllers.leadNameCrt[0].text.isEmpty) {
+                          //       utils.snackBar(
+                          //           msg: "Please add ${_formatHeading(
+                          //               controllers.getUserHeading(
+                          //                   "name") ??
+                          //                   "Name")}",
+                          //           color: Colors.red,
+                          //           context: context);
+                          //       controllers.leadCtr.reset();
+                          //     }
+                          //     else if (controllers
+                          //         .leadWhatsCrt[0].text.isNotEmpty &&
+                          //         controllers.leadWhatsCrt[0].text.length != 10) {
+                          //       utils.snackBar(
+                          //           msg: "Invalid WhatsApp No",
+                          //           color: Colors.red,
+                          //           context: context);
+                          //       controllers.leadCtr.reset();
+                          //     } else if (controllers.visitType == null ||
+                          //         controllers.visitType.toString().isEmpty) {
+                          //       utils.snackBar(
+                          //           msg: "Please Select Incoming Source",
+                          //           color: Colors.red,
+                          //           context: context);
+                          //       controllers.leadCtr.reset();
+                          //     } else if (controllers
+                          //         .leadWhatsCrt[0].text.isNotEmpty &&
+                          //         controllers.leadWhatsCrt[0].text.length != 10) {
+                          //       utils.snackBar(
+                          //           msg: "Invalid Whats No",
+                          //           color: Colors.red,
+                          //           context: context);
+                          //       controllers.leadCtr.reset();
+                          //     }
+                          //     else if (controllers.leadCoEmailCrt.text.isNotEmpty &&
+                          //         !controllers.leadCoEmailCrt.text.isEmail) {
+                          //       utils.snackBar(
+                          //           msg: "Please add valid Company Email",
+                          //           color: Colors.red,
+                          //           context: context);
+                          //       controllers.leadCtr.reset();
+                          //     } else {
+                          //       if (controllers.leadEmailCrt[0].text.isNotEmpty) {
+                          //         if (controllers.leadEmailCrt[0].text.isEmail) {
+                          //           if (controllers.pinCodeController.text.isEmpty) {
+                          //             apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                          //                 type:widget.type.toString(),addressId:widget.addressId.toString(),
+                          //                 list:widget.list,list2:widget.list2, addList: widget.additional);
+                          //           } else {
+                          //             if (controllers.pinCodeController.text.length ==
+                          //                 6) {
+                          //               apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                          //                   type:widget.type.toString(),addressId:widget.addressId.toString(),
+                          //                   list:widget.list,list2:widget.list2, addList: widget.additional);
+                          //             } else {
+                          //               utils.snackBar(
+                          //                   msg: "Please add 6 digits pin code",
+                          //                   color: Colors.red,
+                          //                   context: context);
+                          //               controllers.leadCtr.reset();
+                          //             }
+                          //           }
+                          //         } else {
+                          //           ///Santhiya
+                          //           utils.snackBar(
+                          //               msg: "Please add valid email",
+                          //               color: Colors.red,
+                          //               context: context);
+                          //           controllers.leadCtr.reset();
+                          //         }
+                          //       }
+                          //       else {
+                          //         if (controllers.pinCodeController.text.isEmpty) {
+                          //           apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                          //               type:widget.type.toString(),addressId:widget.addressId.toString(),
+                          //               list:widget.list,list2:widget.list2, addList: widget.additional);
+                          //         } else {
+                          //           if (controllers.pinCodeController.text.length ==
+                          //               6) {
+                          //             apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                          //                 type:widget.type.toString(),addressId:widget.addressId.toString(),
+                          //                 list:widget.list,list2:widget.list2, addList: widget.additional);
+                          //           } else {
+                          //             utils.snackBar(
+                          //                 msg: "Please add 6 digits pin code",
+                          //                 color: colorsConst.primary,
+                          //                 context: context);
+                          //             controllers.leadCtr.reset();
+                          //           }
+                          //         }
+                          //       }
+                          //     }
+                          //   },
+                          //   text: "Save ${widget.pageName}",
+                          //   height: 45,
+                          //   controller: controllers.leadCtr,
+                          //   isLoading: true,
+                          //   textColor: Colors.white,
+                          //   backgroundColor: colorsConst.third,
+                          //   radius: 10,
+                          //   width: 160,
+                          // )
                           CustomLoadingButton(
-                            callback: () {
-
-                              bool isMistake = false;
-                              Set<String> uniqueNumbers = {};
-                              bool isMistake2 = false;
-                              Set<String> uniqueNumbers2 = {};
-                              for (var i = 0; i < controllers.numberList.length; i++) {
-                                String number = controllers.numberList[i].text.trim();
-                                if (number.isEmpty || number.length != 10) {
-                                  isMistake = true;
-                                  utils.snackBar(
-                                    context: context,
-                                    msg: "Enter valid 10 digit ${_formatHeading(
-                                        controllers.getUserHeading(
-                                            "mobile_name") ??
-                                            "Mobile No")}",
-                                    color: Colors.red,
-                                  );
-                                  break;
+                              callback: (){
+                                print("Before validation");
+                                print(controllers.leadCtr.currentState);
+                                bool isMistake = false;
+                                Set<String> uniqueNumbers = {};
+                                bool isMistake2 = false;
+                                Set<String> uniqueNumbers2 = {};
+                                for (var i = 0; i < controllers.numberList.length; i++) {
+                                  String number = controllers.numberList[i].text.trim();
+                                  if (number.isNotEmpty&&number.length != 10) {
+                                    isMistake = true;
+                                    utils.snackBar(
+                                      context: context,
+                                      msg: "Enter valid 10 digit ${_formatHeading(
+                                          controllers.getUserHeading(
+                                              "mobile_name") ??
+                                              "Mobile No")}",
+                                      color: Colors.red,
+                                    );
+                                    break;
+                                  }
+                                  if (uniqueNumbers.contains(number)) {
+                                    isMistake = true;
+                                    utils.snackBar(
+                                      context: context,
+                                      msg: "Same ${_formatHeading(
+                                          controllers.getUserHeading(
+                                              "mobile_name") ??
+                                              "Mobile No")} already added",
+                                      color: Colors.red,
+                                    );
+                                    break;
+                                  }
+                                  uniqueNumbers.add(number);
                                 }
-                                if (uniqueNumbers.contains(number)) {
-                                  isMistake = true;
-                                  utils.snackBar(
-                                    context: context,
-                                    msg: "Same ${_formatHeading(
-                                        controllers.getUserHeading(
-                                            "mobile_name") ??
-                                            "Mobile No")} already added",
-                                    color: Colors.red,
-                                  );
-                                  break;
+                                if (isMistake) {
+                                  controllers.leadCtr.reset();
+                                  return;
                                 }
-                                uniqueNumbers.add(number);
-                              }
-                              if (isMistake) {
-                                controllers.leadCtr.reset();
-                                return;
-                              }
-                              if(controllers.infoNumberList[0].text.isNotEmpty){
                                 for (var i = 0; i < controllers.infoNumberList.length; i++) {
                                   String number = controllers.infoNumberList[i].text.trim();
-                                  if (number.isEmpty || number.length != 10) {
+                                  if (number.isNotEmpty&&number.length != 10) {
                                     isMistake2 = true;
                                     utils.snackBar(
                                       context: context,
@@ -557,137 +754,97 @@ void addListValues(){
                                   controllers.leadCtr.reset();
                                   return;
                                 }
-                              }
-                              if (controllers.leadLinkedinCrt.text.trim().isNotEmpty&&!utils.isValidLinkedInId(controllers.leadLinkedinCrt.text.trim())) {
-                                utils.snackBar(
-                                  context: context,
-                                  msg: "Enter valid LinkedIn ID",
-                                  color: Colors.red,
-                                );
-                                controllers.leadCtr.reset();
-                                return;
-                              }
-                              if (controllers.leadWebsite.text.trim().isNotEmpty&&!utils.validateWebsite(controllers.leadWebsite.text.trim())) {
-                                utils.snackBar(
-                                  context: context,
-                                  msg: "Enter valid Website",
-                                  color: Colors.red,
-                                );
-                                controllers.leadCtr.reset();
-                                return;
-                              }
-                              if (controllers.leadXCrt.text.trim().isNotEmpty&&!utils.isValidXId(controllers.leadXCrt.text.trim())) {
-                                utils.snackBar(
-                                  context: context,
-                                  msg: "Enter valid X ID",
-                                  color: Colors.red,
-                                );
-                                controllers.leadCtr.reset();
-                                return;
-                              }
-
-                              if (controllers.leadNameCrt[0].text.isEmpty) {
-                                utils.snackBar(
-                                    msg: "Please add ${_formatHeading(
-                                        controllers.getUserHeading(
-                                            "name") ??
-                                            "Name")}",
+                                if (controllers.leadLinkedinCrt.text.trim().isNotEmpty&&!utils.isValidLinkedInId(controllers.leadLinkedinCrt.text.trim())) {
+                                  utils.snackBar(
+                                    context: context,
+                                    msg: "Enter valid LinkedIn ID",
                                     color: Colors.red,
-                                    context: context);
-                                controllers.leadCtr.reset();
-                              }
-                              else if (controllers
-                                  .leadWhatsCrt[0].text.isNotEmpty &&
-                                  controllers.leadWhatsCrt[0].text.length != 10) {
-                                utils.snackBar(
-                                    msg: "Invalid WhatsApp No",
+                                  );
+                                  controllers.leadCtr.reset();
+                                  return;
+                                }
+                                if (controllers.leadXCrt.text.trim().isNotEmpty&&!utils.isValidXId(controllers.leadXCrt.text.trim())) {
+                                  utils.snackBar(
+                                    context: context,
+                                    msg: "Enter valid X ID",
                                     color: Colors.red,
-                                    context: context);
-                                controllers.leadCtr.reset();
-                              } else if (controllers.visitType == null ||
-                                  controllers.visitType.toString().isEmpty) {
-                                utils.snackBar(
-                                    msg: "Please Select Incoming Source",
+                                  );
+                                  controllers.leadCtr.reset();
+                                  return;
+                                }
+                                if (controllers.leadWebsite.text.trim().isNotEmpty&&!utils.validateWebsite(controllers.leadWebsite.text.trim())) {
+                                  utils.snackBar(
+                                    context: context,
+                                    msg: "Enter valid Website",
                                     color: Colors.red,
-                                    context: context);
-                                controllers.leadCtr.reset();
-                              } else if (controllers
-                                  .leadWhatsCrt[0].text.isNotEmpty &&
-                                  controllers.leadWhatsCrt[0].text.length != 10) {
-                                utils.snackBar(
-                                    msg: "Invalid Whats No",
-                                    color: Colors.red,
-                                    context: context);
-                                controllers.leadCtr.reset();
-                              }
-                              else if (controllers.leadCoEmailCrt.text.isNotEmpty &&
-                                  !controllers.leadCoEmailCrt.text.isEmail) {
-                                utils.snackBar(
-                                    msg: "Please add valid Company Email",
-                                    color: Colors.red,
-                                    context: context);
-                                controllers.leadCtr.reset();
-                              } else {
-                                if (controllers.leadEmailCrt[0].text.isNotEmpty) {
-                                  if (controllers.leadEmailCrt[0].text.isEmail) {
-                                    if (controllers.pinCodeController.text.isEmpty) {
-                                      apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
-                                          type:widget.type.toString(),addressId:widget.addressId.toString(),
-                                          list:widget.list,list2:widget.list2, addList: widget.additional);
-                                    } else {
-                                      if (controllers.pinCodeController.text.length ==
-                                          6) {
+                                  );
+                                  controllers.leadCtr.reset();
+                                  return;
+                                }
+                                if (controllers.leadNameCrt[0].text.isEmpty) {
+                                  utils.snackBar(
+                                      msg: "Please add ${_formatHeading(
+                                          controllers.getUserHeading(
+                                              "name") ??
+                                              "Name")}",
+                                      color: Colors.red,
+                                      context: context);
+                                  controllers.leadCtr.reset();
+                                } else if (controllers.leadMobileCrt[0].text.isEmpty) {
+                                  utils.snackBar(
+                                      msg: "Please Add Mobile Number",
+                                      color: Colors.red,
+                                      context: context);
+                                  controllers.leadCtr.reset();
+                                }else if (controllers.visitType == null || controllers.visitType.toString().isEmpty) {
+                                  utils.snackBar(
+                                      msg: "Please Select Incoming Source",
+                                      color: Colors.red,
+                                      context: context);
+                                  controllers.leadCtr.reset();
+                                } else {
+                                  if(controllers.leadEmailCrt[0].text.isNotEmpty){
+                                    if (controllers.leadEmailCrt[0].text.isEmail) {
+                                      if(controllers.pinCodeController.text.isEmpty){
                                         apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
-                                            type:widget.type.toString(),addressId:widget.addressId.toString(),
-                                            list:widget.list,list2:widget.list2, addList: widget.additional);
-                                      } else {
-                                        utils.snackBar(
-                                            msg: "Please add 6 digits pin code",
-                                            color: Colors.red,
-                                            context: context);
+                                            type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2, addList: widget.additional);                                            }else{
+                                        if(controllers.pinCodeController.text.length==6){
+                                          apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                              type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2, addList: widget.additional);                                              }else{
+                                          utils.snackBar(msg: "Please add 6 digits pin code",
+                                              color: Colors.red,context:context);
+                                          controllers.leadCtr.reset();
+                                        }
+                                      }
+                                    }else{
+                                      utils.snackBar(msg: "Please add valid email",
+                                          color: Colors.red,context:context);
+                                      controllers.leadCtr.reset();
+                                    }
+                                  }else{
+                                    if(controllers.pinCodeController.text.isEmpty||controllers.pinCodeController.text==""){
+                                      apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                          type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2, addList: widget.additional);
+                                    }else{
+                                      if(controllers.pinCodeController.text.length==6){
+                                        apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
+                                            type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2, addList: widget.additional);
+                                      }else{
+                                        utils.snackBar(msg: "Please add 6 digits pin code",
+                                            color: Colors.red,context:context);
                                         controllers.leadCtr.reset();
                                       }
                                     }
-                                  } else {
-                                    ///Santhiya
-                                    utils.snackBar(
-                                        msg: "Please add valid email",
-                                        color: Colors.red,
-                                        context: context);
-                                    controllers.leadCtr.reset();
-                                  }
-                                }
-                                else {
-                                  if (controllers.pinCodeController.text.isEmpty) {
-                                    apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
-                                        type:widget.type.toString(),addressId:widget.addressId.toString(),
-                                        list:widget.list,list2:widget.list2, addList: widget.additional);
-                                  } else {
-                                    if (controllers.pinCodeController.text.length ==
-                                        6) {
-                                      apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
-                                          type:widget.type.toString(),addressId:widget.addressId.toString(),
-                                          list:widget.list,list2:widget.list2, addList: widget.additional);
-                                    } else {
-                                      utils.snackBar(
-                                          msg: "Please add 6 digits pin code",
-                                          color: colorsConst.primary,
-                                          context: context);
-                                      controllers.leadCtr.reset();
-                                    }
-                                  }
-                                }
-                              }
-                            },
-                            text: "Save ${widget.pageName}",
-                            height: 45,
-                            controller: controllers.leadCtr,
-                            isLoading: true,
-                            textColor: Colors.white,
-                            backgroundColor: colorsConst.third,
-                            radius: 10,
-                            width: 160,
-                          )
+                                  }}
+                              },
+                              text: "Save ${widget.pageName}",
+                              height: 45,
+                              controller: controllers.leadCtr,
+                              isLoading:true,
+                              textColor: Colors.white,
+                              backgroundColor: colorsConst.third,
+                              radius: 10,
+                              width: 180),
                         ],
                       ),
                     ),
@@ -1978,7 +2135,7 @@ void addListValues(){
                                                   }
                                                 }else{
                                                   utils.snackBar(msg: "Please add valid email",
-                                                      color: colorsConst.primary,context:context);
+                                                      color: Colors.red,context:context);
                                                   controllers.leadCtr.reset();
                                                 }
                                               }else{
@@ -2103,162 +2260,6 @@ void addListValues(){
                                         controller: info.controller!);
                                   },
                                 ),
-                                20.height,
-                                CustomLoadingButton(
-                                    callback: (){
-                                      bool isMistake = false;
-                                      Set<String> uniqueNumbers = {};
-                                      bool isMistake2 = false;
-                                      Set<String> uniqueNumbers2 = {};
-                                      for (var i = 0; i < controllers.numberList.length; i++) {
-                                        String number = controllers.numberList[i].text.trim();
-                                        if (number.isNotEmpty&&number.length != 10) {
-                                          isMistake = true;
-                                          utils.snackBar(
-                                            context: context,
-                                            msg: "Enter valid 10 digit ${_formatHeading(
-                                                controllers.getUserHeading(
-                                                    "mobile_name") ??
-                                                    "Mobile No")}",
-                                            color: Colors.red,
-                                          );
-                                          break;
-                                        }
-                                        if (uniqueNumbers.contains(number)) {
-                                          isMistake = true;
-                                          utils.snackBar(
-                                            context: context,
-                                            msg: "Same ${_formatHeading(
-                                                controllers.getUserHeading(
-                                                    "mobile_name") ??
-                                                    "Mobile No")} already added",
-                                            color: Colors.red,
-                                          );
-                                          break;
-                                        }
-                                        uniqueNumbers.add(number);
-                                      }
-                                      if (isMistake) {
-                                        controllers.leadCtr.reset();
-                                        return;
-                                      }
-                                      for (var i = 0; i < controllers.infoNumberList.length; i++) {
-                                        String number = controllers.infoNumberList[i].text.trim();
-                                        if (number.isNotEmpty&&number.length != 10) {
-                                          isMistake2 = true;
-                                          utils.snackBar(
-                                            context: context,
-                                            msg: "Enter valid 10 digit mobile number",
-                                            color: Colors.red,
-                                          );
-                                          break;
-                                        }
-                                        if (uniqueNumbers2.contains(number)) {
-                                          isMistake2 = true;
-                                          utils.snackBar(
-                                            context: context,
-                                            msg: "Same company phone number already added",
-                                            color: Colors.red,
-                                          );
-                                          break;
-                                        }
-                                        uniqueNumbers2.add(number);
-                                      }
-                                      if (isMistake2) {
-                                        controllers.leadCtr.reset();
-                                        return;
-                                      }
-                                      if (controllers.leadLinkedinCrt.text.trim().isNotEmpty&&!utils.isValidLinkedInId(controllers.leadLinkedinCrt.text.trim())) {
-                                        utils.snackBar(
-                                          context: context,
-                                          msg: "Enter valid LinkedIn ID",
-                                          color: Colors.red,
-                                        );
-                                        controllers.leadCtr.reset();
-                                        return;
-                                      }
-                                      if (controllers.leadXCrt.text.trim().isNotEmpty&&!utils.isValidXId(controllers.leadXCrt.text.trim())) {
-                                        utils.snackBar(
-                                          context: context,
-                                          msg: "Enter valid X ID",
-                                          color: Colors.red,
-                                        );
-                                        controllers.leadCtr.reset();
-                                        return;
-                                      }
-                                      if (controllers.leadWebsite.text.trim().isNotEmpty&&!utils.validateWebsite(controllers.leadWebsite.text.trim())) {
-                                        utils.snackBar(
-                                          context: context,
-                                          msg: "Enter valid Website",
-                                          color: Colors.red,
-                                        );
-                                        controllers.leadCtr.reset();
-                                        return;
-                                      }
-                                      if (controllers.leadNameCrt[0].text.isEmpty) {
-                                        utils.snackBar(
-                                            msg: "Please add ${_formatHeading(
-                                                controllers.getUserHeading(
-                                                    "name") ??
-                                                    "Name")}",
-                                            color: Colors.red,
-                                            context: context);
-                                        controllers.leadCtr.reset();
-                                      } else if (controllers.leadMobileCrt[0].text.isEmpty) {
-                                        utils.snackBar(
-                                            msg: "Please Add Mobile Number",
-                                            color: Colors.red,
-                                            context: context);
-                                        controllers.leadCtr.reset();
-                                      }else if (controllers.visitType == null || controllers.visitType.toString().isEmpty) {
-                                        utils.snackBar(
-                                            msg: "Please Select Incoming Source",
-                                            color: Colors.red,
-                                            context: context);
-                                        controllers.leadCtr.reset();
-                                      } else {
-                                        if(controllers.leadEmailCrt[0].text.isNotEmpty){
-                                          if (controllers.leadEmailCrt[0].text.isEmail) {
-                                            if(controllers.pinCodeController.text.isEmpty){
-                                              apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
-                                                  type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2, addList: widget.additional);                                            }else{
-                                              if(controllers.pinCodeController.text.length==6){
-                                                apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
-                                                    type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2, addList: widget.additional);                                              }else{
-                                                utils.snackBar(msg: "Please add 6 digits pin code",
-                                                    color: Colors.red,context:context);
-                                                controllers.leadCtr.reset();
-                                              }
-                                            }
-                                          }else{
-                                            utils.snackBar(msg: "Please add valid email",
-                                                color: colorsConst.primary,context:context);
-                                            controllers.leadCtr.reset();
-                                          }
-                                        }else{
-                                          if(controllers.pinCodeController.text.isEmpty||controllers.pinCodeController.text==""){
-                                            apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
-                                                type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2, addList: widget.additional);
-                                          }else{
-                                            if(controllers.pinCodeController.text.length==6){
-                                              apiService.updateLeadAPI(context,index:widget.index,name:widget.pageName.toString(),leadId:widget.id.toString(),
-                                                  type:widget.type.toString(),addressId:widget.addressId.toString(),list:widget.list,list2:widget.list2, addList: widget.additional);
-                                            }else{
-                                              utils.snackBar(msg: "Please add 6 digits pin code",
-                                                  color: Colors.red,context:context);
-                                              controllers.leadCtr.reset();
-                                            }
-                                          }
-                                        }}
-                                    },
-                                    text: "Save ${widget.pageName}",
-                                    height: 60,
-                                    controller: controllers.leadCtr,
-                                    isLoading:true,
-                                    textColor: Colors.white,
-                                    backgroundColor: colorsConst.third,
-                                    radius: 10,
-                                    width: 180),
                                 50.height,
                               ],
                             ),

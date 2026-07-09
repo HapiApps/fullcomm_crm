@@ -892,8 +892,8 @@ class OrderInvoiceDialog extends StatelessWidget {
                         cell("${index + 1}"),
                         cell(p.name ?? ""),
                         cell(p.qty.toString()),
-                        cell(productCtr.formatAmount(p.price)),
                         cell(productCtr.formatAmount(p.amount)),
+                        cell(productCtr.formatAmount(p.price)),
                       ],
                     );
                   }),
@@ -1066,14 +1066,16 @@ class OrderInvoiceDialog extends StatelessWidget {
                     0: const pw.FlexColumnWidth(1),
                     1: const pw.FlexColumnWidth(4),
                     2: const pw.FlexColumnWidth(1),
-                    3: const pw.FlexColumnWidth(2),
+                    3: const pw.FlexColumnWidth(1),
+                    4: const pw.FlexColumnWidth(2),
                   },
                   children: [
                     pw.TableRow(
                       children: [
                         tableCell("S. No.", isHeader: true),
                         tableCell("Particulars", isHeader: true),
-                        tableCell("Qty.", isHeader: true),
+                        tableCell("Qty", isHeader: true),
+                        tableCell("Price", isHeader: true),
                         tableCell("Amount INR", isHeader: true),
                       ],
                     ),
@@ -1086,6 +1088,7 @@ class OrderInvoiceDialog extends StatelessWidget {
                           tableCell("${index + 1}"),
                           tableCell(p.name),
                           tableCell("${p.qty}"),
+                          tableCell("${p.price}"),
                           tableCell("Rs. ${p.price}"),
                         ],
                       );
@@ -1243,7 +1246,8 @@ class OrderInvoiceDialog extends StatelessWidget {
                     0: const pw.FlexColumnWidth(1),
                     1: const pw.FlexColumnWidth(4),
                     2: const pw.FlexColumnWidth(1),
-                    3: const pw.FlexColumnWidth(2),
+                    3: const pw.FlexColumnWidth(1),
+                    4: const pw.FlexColumnWidth(2),
                   },
                   children: [
 
@@ -1252,7 +1256,8 @@ class OrderInvoiceDialog extends StatelessWidget {
                       children: [
                         tableCell("S. No.", isHeader: true),
                         tableCell("Particulars", isHeader: true),
-                        tableCell("Qty.", isHeader: true),
+                        tableCell("Qty", isHeader: true),
+                        tableCell("Price", isHeader: true),
                         tableCell("Amount INR", isHeader: true),
                       ],
                     ),
@@ -1266,6 +1271,7 @@ class OrderInvoiceDialog extends StatelessWidget {
                           tableCell("${index + 1}"),
                           tableCell(p.name),
                           tableCell(p.qty.toString()),
+                          tableCell(p.amount.toString()),
                           tableCell("Rs. ${p.price}"),
                         ],
                       );

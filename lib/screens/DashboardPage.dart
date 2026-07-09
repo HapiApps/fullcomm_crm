@@ -3450,7 +3450,7 @@ void checkDate(){
                                         ),
                                       ),
                                       CustomText(
-                                        text: controllers.leadCategoryList[i].list.length.toString(),
+                                        text: controllers.leadCategoryList[i].list2.length.toString(),
                                         isCopy: false,
                                         size: 14,
                                         isBold: true,

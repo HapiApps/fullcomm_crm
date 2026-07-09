@@ -43,6 +43,7 @@ class UnitPayroll {
   String op;
   String bonus2;
   String food;
+  String? updatedTs;
 
   UnitPayroll({
     this.id = "",
@@ -89,6 +90,7 @@ class UnitPayroll {
     this.op = "",
     this.bonus2 = "",
     this.food = "",
+    this.updatedTs = "",
   });
 
   factory UnitPayroll.fromJson(Map<String, dynamic> json) {
@@ -137,11 +139,13 @@ class UnitPayroll {
       op: json['op']?.toString() ?? "",
       bonus2: json['bonus2']?.toString() ?? "",
       food: json['food']?.toString() ?? "",
+      updatedTs: json['updated_ts']?.toString() ?? "",
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      "updated_ts": updatedTs,
       "id": id,
       "emp_id": empId,
       "name": name,

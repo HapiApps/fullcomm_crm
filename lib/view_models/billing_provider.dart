@@ -592,6 +592,7 @@ class BillingProvider with ChangeNotifier{
     calculateTotalItems();
     calculateTotalDiscount();
     calculatedGrandTotal();
+    controllers.productCtr.reset();
     notifyListeners();
   }
   Future<void> saveLastBillToPrefs(OrderData order) async {

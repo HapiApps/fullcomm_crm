@@ -377,6 +377,12 @@ void checkType(){
 
                                                                     TextEditingController reasonController = TextEditingController();
 
+                                                                    RxList<LeadStatusModel> categoryList=<LeadStatusModel>[].obs;
+                                                                    for(var i=0;i<controllers.leadCategoryList.length;i++){
+                                                                      if(controllers.leadCategoryList[i].value!=widget.name){
+                                                                        categoryList.add(controllers.leadCategoryList[i]);
+                                                                      }
+                                                                    }
                                                                     return StatefulBuilder(
                                                                       builder: (context, setState) {
                                                                         return AlertDialog(

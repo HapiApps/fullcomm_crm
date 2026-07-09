@@ -9,7 +9,8 @@ class CustomAppbar extends StatelessWidget {
   final String? subText;
   final Widget? actionsWidget;
   final bool? isDivider;
-  const CustomAppbar({super.key, required this.text, this.subText="", this.actionsWidget, this.isDivider=true});
+  final VoidCallback? callback;
+  const CustomAppbar({super.key, required this.text, this.subText="", this.actionsWidget, this.isDivider=true, this.callback});
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +24,13 @@ class CustomAppbar extends StatelessWidget {
             Row(
               children: [
                 InkWell(
-                    onTap: (){
-                  Get.back();
-                }, child: Icon(Icons.arrow_back)),10.width,
+                    onTap: () {
+                      if (callback != null) {
+                        callback!();
+                      } else {
+                        Get.back();
+                      }
+                    },child: Icon(Icons.arrow_back)),10.width,
                 CustomText(
                   text: text,
                   colors: colorsConst.textColor,

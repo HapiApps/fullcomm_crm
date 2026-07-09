@@ -4985,66 +4985,14 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                                   IconButton(
                                                                     icon: const Icon(Icons.delete_forever, color: Colors.black),
                                                                     onPressed: () {
-                                                                      showDialog(
-                                                                          context: context,
-                                                                          barrierDismissible: false,
-                                                                          builder: (context) {
-                                                                            return AlertDialog(
-                                                                              content: CustomText(
-                                                                                text: "Are you sure delete this product?",
-                                                                                size: 16,
-                                                                                isCopy: false,
-                                                                                isBold: true,
-                                                                                colors: colorsConst.textColor,
-                                                                              ),
-                                                                              actions: [
-                                                                                Row(
-                                                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                                                  children: [
-                                                                                    Container(
-                                                                                      decoration: BoxDecoration(
-                                                                                          border: Border.all(color: colorsConst.primary),
-                                                                                          color: Colors.white),
-                                                                                      width: 80,
-                                                                                      height: 25,
-                                                                                      child: ElevatedButton(
-                                                                                          style: ElevatedButton.styleFrom(
-                                                                                            shape: const RoundedRectangleBorder(
-                                                                                              borderRadius: BorderRadius.zero,
-                                                                                            ),
-                                                                                            backgroundColor: Colors.white,
-                                                                                          ),
-                                                                                          onPressed: () {
-                                                                                            Navigator.pop(context);
-                                                                                          },
-                                                                                          child: CustomText(
-                                                                                            text: "Cancel",
-                                                                                            isCopy: false,
-                                                                                            colors: colorsConst.primary,
-                                                                                            size: 14,
-                                                                                          )),
-                                                                                    ),
-                                                                                    10.width,
-                                                                                    CustomLoadingButton(
-                                                                                      callback: (){
-                                                                                        billingProvider.removeBillingItem(index: index);
-                                                                                        Navigator.pop(context);
-                                                                                      },
-                                                                                      height: 35,
-                                                                                      isLoading: false,
-                                                                                      backgroundColor: colorsConst.primary,
-                                                                                      radius: 2,
-                                                                                      width: 80,
-                                                                                      isImage: false,
-                                                                                      text: "Delete",
-                                                                                      textColor: Colors.white,
-                                                                                    ),
-                                                                                    5.width
-                                                                                  ],
-                                                                                ),
-                                                                              ],
-                                                                            );
-                                                                          });
+                                                                      utils.showDeleteDialog(
+                                                                          context: context, name: 'delete this product',
+                                                                          isDelete: true,
+                                                                          callBack: (){
+                                                                            billingProvider.removeBillingItem(index: index);
+                                                                            Navigator.pop(context);
+                                                                          },
+                                                                          controller: controllers.productCtr);
                                                                     },
                                                                   ),
                                                                 ],
@@ -5357,6 +5305,14 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
     // print(".......printInvoice");
     final pdf = pw.Document();
 
+    // var amt=0;
+    // var disc=0;
+    // for (var i=0;i<billingPvr.billingItems.length;i++){
+    //   amt+=int.parse(billingPvr.billingItems[i].p_out_price);
+    //   disc+=int.parse(billingPvr.billingItems[i].p_out_price);
+    // }
+
+
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
@@ -5463,7 +5419,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                           tableCell("${index + 1}"),
                           tableCell(p.productTitle.toString()),
                           tableCell(p.quantity.toString()),
-                          tableCell(p.p_mrp.toString()),
+                          tableCell(p.p_out_price.toString()),
                           tableCell("Rs. ${TextFormat.formattedAmount(billProduct.calculateSubtotal())}"),
                         ],
                       );
@@ -5529,10 +5485,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                       pw.Row(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                          pw.Container(
-                              width:30,
-                            child:pw.Text("${i+1}. "),
-                          ),
+                          pw.Text("${i+1}. "),
                           pw.Text(productCtr.termsAndConditionsList[i]["name"])
                         ],
                       );

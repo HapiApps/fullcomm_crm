@@ -475,6 +475,20 @@ class ApiService {
 
           updatedTs: DateTime.now().toString(), additional: controllers.addList,
         );
+
+        final indexValue = controllers.customers.indexWhere((e) => e.id == leadId);
+
+        if (index != -1) {
+          controllers.customers[indexValue].name = controllers.leadNameCrt[0].text.trim();
+          controllers.customers[indexValue].companyName = controllers.leadCoNameCrt.text.trim();
+          controllers.customers[indexValue].phoneNo = controllers.numberList
+              .map((e) => e.text.trim())
+              .where((e) => e.isNotEmpty)
+              .join("||");
+          controllers.customers[indexValue].email=controllers.leadEmailCrt[0].text.trim();
+
+         controllers.customers.refresh();
+        }
         if(controllers.selectedQualifiedSortBy.value==""){
           controllers.selectedQualifiedSortBy.value="All";
         }

@@ -160,8 +160,8 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                     ],
                   ),
                   20.height,
-                  repCtr.refreshData.value==false?
-                  CircularProgressIndicator():
+                  // repCtr.refreshData.value==false?
+                  // CircularProgressIndicator():
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

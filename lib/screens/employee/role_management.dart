@@ -808,6 +808,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         IconButton(
+                                            tooltip:'Edit Role Detail',
                                             onPressed: (){
                                               settingsController.updateRoleController.text = role.roleName.toString();
                                               settingsController.upDescriptionController.text = role.description.toString();
@@ -820,6 +821,7 @@ class _RoleManagementState extends State<RoleManagement> {
                                               height: 16,
                                             )),
                                         IconButton(
+                                            tooltip:'Delete Role',
                                             onPressed: (){
                                               utils.showDeleteDialog(
                                                   context: context, name: 'delete this role',
