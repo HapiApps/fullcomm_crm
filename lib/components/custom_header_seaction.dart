@@ -143,22 +143,22 @@ class _HeaderSectionState extends State<HeaderSection> {
         ),
         widget.isAction?Row(
           children: [
-            CustomLoadingButton(
-              // callback: pickImageAndReadText,
-              callback: (){
-                Get.to(VisitingCardPage(), duration: Duration.zero);
-                // VisitingCardScan
-              },
-              isLoading: false,
-              height: 35,
-              backgroundColor: Colors.white,
-              radius: 2,
-              width: 100,
-              isImage: false,
-              text: "V CARD",
-              textColor: colorsConst.primary,
-            ),
-            15.width,
+            // CustomLoadingButton(
+            //   // callback: pickImageAndReadText,
+            //   callback: (){
+            //     Get.to(VisitingCardPage(), duration: Duration.zero);
+            //     // VisitingCardScan
+            //   },
+            //   isLoading: false,
+            //   height: 35,
+            //   backgroundColor: Colors.white,
+            //   radius: 2,
+            //   width: 100,
+            //   isImage: false,
+            //   text: "V CARD",
+            //   textColor: colorsConst.primary,
+            // ),
+            // 15.width,
             // ---- Export button ----
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()

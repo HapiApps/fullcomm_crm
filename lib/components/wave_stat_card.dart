@@ -186,14 +186,32 @@ class _WaveStatCardState extends State<WaveStatCard>
                 borderRadius: const BorderRadius.vertical(
                   bottom: Radius.circular(20),
                 ),
+
+                // child: AnimatedBuilder(
+                //   animation: _controller,
+                //   builder: (context, child) {
+                //     return CustomPaint(
+                //       painter: AnimatedWavePainter(
+                //         color: widget.valueColor,
+                //         percentage: percentage,
+                //         waveShift: _controller.value,
+                //       ),
+                //     );
+                //   },
+                // ),
+                // child: Container(
+                //   color: widget.valueColor.withOpacity(0.15),
+                // ),
                 child: AnimatedBuilder(
                   animation: _controller,
-                  builder: (context, child) {
-                    return CustomPaint(
-                      painter: AnimatedWavePainter(
-                        color: widget.valueColor,
-                        percentage: percentage,
-                        waveShift: _controller.value,
+                  builder: (_, __) {
+                    return RepaintBoundary(
+                      child: CustomPaint(
+                        painter: AnimatedWavePainter(
+                          color: widget.valueColor,
+                          percentage: percentage,
+                          waveShift: _controller.value,
+                        ),
                       ),
                     );
                   },

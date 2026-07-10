@@ -886,10 +886,10 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                 child: Text("Promote",
                                     style:
                                     TextStyle(color: colorsConst.textColor))),
-                            PopupMenuItem(
-                                value: "edit",
-                                child: Text("Edit ${widget.pageName}",
-                                    style: TextStyle(color: colorsConst.textColor))),
+                            // PopupMenuItem(
+                            //     value: "edit",
+                            //     child: Text("Edit ${widget.pageName}",
+                            //         style: TextStyle(color: colorsConst.textColor))),
                             PopupMenuItem(
                                 value: "mail",
                                 child: Text("Send Email",
@@ -900,14 +900,14 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                                 child: Text("Create Quotation",
                                     style:
                                     TextStyle(color: colorsConst.textColor))),
-                            PopupMenuItem(
-                                value: "Set a Reminder",
-                                child: Text("Set a Reminder",
-                                    style: TextStyle(color: colorsConst.textColor))),
-                            PopupMenuItem(
-                                value: "call log",
-                                child: Text("Add Call Log",
-                                    style: TextStyle(color: colorsConst.textColor))),
+                            // PopupMenuItem(
+                            //     value: "Set a Reminder",
+                            //     child: Text("Set a Reminder",
+                            //         style: TextStyle(color: colorsConst.textColor))),
+                            // PopupMenuItem(
+                            //     value: "call log",
+                            //     child: Text("Add Call Log",
+                            //         style: TextStyle(color: colorsConst.textColor))),
                             PopupMenuItem(
                                 value: "View appointment",
                                 child: Text("View appointment",
@@ -1102,4 +1102,52 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
   //   }
   // }
 
+}
+
+
+class ReasonTile extends StatefulWidget {
+  final String history;
+  final int? index;
+
+  const ReasonTile(
+      {super.key,required this.history, this.index});
+
+  @override
+  State<ReasonTile> createState() => _ReasonTileState();
+}
+
+class _ReasonTileState extends State<ReasonTile> {
+
+  @override
+  Widget build(BuildContext context) {
+    final Map<int, TableColumnWidth> columnWidths = {
+      0: FlexColumnWidth(0.6),
+    };
+    return Obx(()=>tableController.isTableLoading.value?CircularProgressIndicator():Table(
+      columnWidths: columnWidths,
+      border: TableBorder(
+          horizontalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
+          verticalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
+          bottom: BorderSide(width: 0.5, color: Colors.grey.shade400),
+          right: BorderSide(width: 0.5, color: Colors.grey.shade400)
+      ),
+      children: [
+        TableRow(
+            decoration: BoxDecoration(
+              color: int.parse(widget.index.toString()) % 2 == 0
+                  ? Colors.white
+                  : colorsConst.backgroundColor,
+            ),
+            children: [
+              Container(
+                height: 45,
+                // color: Colors.yellow,
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: CustomText(text:"Reason", isCopy: false,textAlign: TextAlign.start,),
+              )
+            ]),
+      ],
+    ));
+  }
 }

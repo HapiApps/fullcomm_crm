@@ -492,8 +492,8 @@ var isSelectAll=false.obs;
         }),
       );
 
-      // debugPrint("STATUS CODE add_values: ${response.statusCode}");
-      // debugPrint("get_products...: ${response.body}");
+      debugPrint("STATUS CODE add_values: ${response.statusCode}");
+      debugPrint("get_products...: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1127,13 +1127,13 @@ var isSelectAll=false.obs;
       }
 
       return matchesSearch && matchesDate;
-    }).toList()
-      ..sort((a, b) {
-        final aDate = DateTime.tryParse(a.createdTs ?? "") ?? DateTime(1970);
-        final bDate = DateTime.tryParse(b.createdTs ?? "") ?? DateTime(1970);
-
-        return bDate.compareTo(aDate); // 🔥 latest first
-      });
+    }).toList();
+      // ..sort((a, b) {
+      //   final aDate = DateTime.tryParse(a.createdTs ?? "") ?? DateTime(1970);
+      //   final bDate = DateTime.tryParse(b.createdTs ?? "") ?? DateTime(1970);
+      //
+      //   return bDate.compareTo(aDate); // 🔥 latest first
+      // });
   }
 ///
   void filterSortProducts({
@@ -1269,6 +1269,12 @@ var isSelectAll=false.obs;
           return compareValue(
             int.tryParse(a.outPrice.toString()) ?? 0,
             int.tryParse(b.outPrice.toString()) ?? 0,
+          );
+
+        case 'inprice':
+          return compareValue(
+            int.tryParse(a.inPrice.toString()) ?? 0,
+            int.tryParse(b.inPrice.toString()) ?? 0,
           );
 
         case 'sku':

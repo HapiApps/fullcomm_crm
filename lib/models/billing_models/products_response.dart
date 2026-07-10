@@ -66,9 +66,11 @@ class ProductData {
   String? category;
   String? subCategory;
   String? isSheet;
+  String? inPrice;
 
   ProductData({
     this.id,
+    this.inPrice,
     this.skuId,
     this.hsnCode,
     this.barcode,
@@ -140,6 +142,7 @@ class ProductData {
     batchNo: json["batch_no"],
     mrp: json["mrp"]?.toString(),
     outPrice: json["out_price"]?.toString(),
+    inPrice: json["in_price"]?.toString(),
     qtyLeft: json["qty_left"]?.toString(),
     stockQty: json["stockqty"]?.toString(),
     pricePerG: json["per_g"]?.toString(),
@@ -189,6 +192,7 @@ class ProductData {
     "batch_no": batchNo,
     "mrp": mrp,
     "out_price": outPrice,
+    "in_price": inPrice,
     "qty_left": qtyLeft,
     "stockqty": stockQty,
     "per_g": pricePerG,

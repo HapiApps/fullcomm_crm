@@ -833,8 +833,8 @@ class ApiService {
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
-      // debugPrint("No Matches request.body");
-      // debugPrint(request.body);
+      debugPrint("No Matches request.body");
+      debugPrint(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -1574,18 +1574,18 @@ class ApiService {
         // prospectsList.clear();
         // qualifiedList.clear();
         // customerList.clear();
-        debugPrint("Before remove list length: ${list.length}");
-        debugPrint("Before remove list2 length: ${list2.length}");
-        debugPrint("Before remove allLeadList length: ${controllers.allLeadList.length}");
-        debugPrint("Initial list length: ${list.length}");
-        debugPrint("Initial list2 length: ${list2.length}");
-        debugPrint("SendList: $sendList");
+        // debugPrint("Before remove list length: ${list.length}");
+        // debugPrint("Before remove list2 length: ${list2.length}");
+        // debugPrint("Before remove allLeadList length: ${controllers.allLeadList.length}");
+        // debugPrint("Initial list length: ${list.length}");
+        // debugPrint("Initial list2 length: ${list2.length}");
+        // debugPrint("SendList: $sendList");
 
         list.removeWhere((item) => sendList.contains(item.userId));
         list2.removeWhere((item) => sendList.contains(item.userId));
 
-        debugPrint("Final list length: ${list.length}");
-        debugPrint("Final list2 length: ${list2.length}");
+        // debugPrint("Final list length: ${list.length}");
+        // debugPrint("Final list2 length: ${list2.length}");
 
         for(var i=0;i<sendList.length;i++){
           for(var j=0;j<controllers.allLeadList.length;j++){
@@ -1595,12 +1595,13 @@ class ApiService {
           }
         }
 
-        debugPrint("After remove list length: ${list.length}");
-        debugPrint("After remove list2 length: ${list2.length}");
-        debugPrint("After remove allLeadList length: ${controllers.allLeadList.length}");
+        // debugPrint("After remove list length: ${list.length}");
+        // debugPrint("After remove list2 length: ${list2.length}");
+        // debugPrint("After remove allLeadList length: ${controllers.allLeadList.length}");
         dashController.getWholeReport();
         controllers.idList.clear();
         Navigator.pop(context);
+        utils.snackBar(context: context, msg: "Deleted Successfully", color: Colors.green);
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);

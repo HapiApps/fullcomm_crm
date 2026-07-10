@@ -575,6 +575,7 @@ final ScrollController scrollController=ScrollController();
         }
         apiService.getCustomFields();
         utils.snackBar(context: context, msg: "Heading added successfully", color: Colors.green);
+        tableController.applyChanges();
         controllers.productCtr.reset();
       } else {
         apiService.errorDialog(Get.context!,request.body);

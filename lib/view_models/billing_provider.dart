@@ -660,6 +660,11 @@ class BillingProvider with ChangeNotifier{
 
     return totalDiscount.toStringAsFixed(2);   // ⭐ TWO DECIMAL POINTS
   }
+  String calculateTotalGst() {
+    final totalGst = billingItems.fold(0.0,
+            (total, item) => total + item.calculateGst());
+    return totalGst.toStringAsFixed(2);   // ⭐ TWO DECIMAL POINTS
+  }
 
 
   // Grand Total of Billing Items :
@@ -1758,7 +1763,14 @@ class BillingProvider with ChangeNotifier{
   final mrp = TextEditingController();
   final outPrice = TextEditingController();
   final inPrice = TextEditingController();
-
+  List gstList=['0','5','18','28'];
+  String gst='0';
+  void setGst(String value,int value2){
+    gst = value == '14'? "28"
+        : value == '2.5'? "5": value == '9'? "18": "0";
+    isLoose=value2;
+    notifyListeners();
+  }
   Future<void> insertProduct(BuildContext context) async {
     final catProv = context.read<BillingProvider>();
 
@@ -1799,6 +1811,9 @@ class BillingProvider with ChangeNotifier{
       "mrp": mrpVal,
       "out_price": outPriceVal,
       "in_price": inPriceVal,
+      "gst": gst,
+      "sgst": (int.parse(gst)/2),
+      "cgst": (int.parse(gst)/2),
       "cos_id": controllers.storage.read("cos_id").toString(),
     });
 
@@ -1900,6 +1915,9 @@ class BillingProvider with ChangeNotifier{
       "out_price": outPriceVal,
       "in_price": inPriceVal,
       "cos_id": controllers.storage.read("cos_id").toString(),
+      "gst": gst,
+      "sgst": (int.parse(gst)/2),
+      "cgst": (int.parse(gst)/2),
     });
 
     loading = false;

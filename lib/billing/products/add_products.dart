@@ -6,6 +6,7 @@ import 'package:get/get_navigation/src/root/parse_route.dart';
 import 'package:provider/provider.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
 
+import '../../components/Customtext.dart';
 import '../../models/billing_models/category_model.dart';
 
 class AddProductDialog extends StatefulWidget {
@@ -59,6 +60,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final p = context.read<BillingProvider>();
+      p.gst = '0';
       p.selectedCategoryId = null;
       p.selectedSubCategoryId = null;
       if (p.categories.isEmpty) p.fetchCategories();
@@ -310,6 +312,34 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        "GST %",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      Wrap(
+                        spacing: 10,
+                        children: p.gstList.map<Widget>((type) {
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Radio<String>(
+                                value: type,
+                                groupValue: p.gst,
+                                onChanged: (v) {
+                                  setState(() {
+                                    p.gst = v!;
+                                  });
+                                },
+                              ),
+                              CustomText(text: type, isCopy: false),
+                            ],
+                          );
+                        }).toList(),
+                      ),
 
                       const SizedBox(height: 12),
                       const Text(
@@ -478,8 +508,9 @@ class EditProductDialog extends StatefulWidget {
   final String mrp;
   final String outPrice;
   final String inPrice;
+  final String gst;
   const EditProductDialog({super.key, required this.id, required this.title, required this.category,
-    required this.subCategory, required this.sku, required this.barcode, required this.units, required this.isLoose, required this.variations, required this.qty, required this.mrp, required this.outPrice, required this.inPrice});
+    required this.subCategory, required this.sku, required this.barcode, required this.units, required this.isLoose, required this.variations, required this.qty, required this.mrp, required this.outPrice, required this.inPrice, required this.gst});
 
   @override
   State<EditProductDialog> createState() => _EditProductDialogState();
@@ -531,6 +562,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
       final p = context.read<BillingProvider>();
       // p.selectedCategoryId = null;
       // p.selectedSubCategoryId = null;
+      p.setGst(widget.gst,widget.isLoose);
       p.title.text=widget.title;
       p.sku.text=widget.sku;
       p.barcode.text=widget.barcode;
@@ -789,7 +821,34 @@ class _EditProductDialogState extends State<EditProductDialog> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 12),
+                      const Text(
+                        "GST %",
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
 
+                      const SizedBox(height: 6),
+
+                      Wrap(
+                        spacing: 10,
+                        children: p.gstList.map<Widget>((type) {
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Radio<String>(
+                                value: type,
+                                groupValue: p.gst,
+                                onChanged: (v) {
+                                  setState(() {
+                                    p.gst = v!;
+                                  });
+                                },
+                              ),
+                              CustomText(text: type, isCopy: false),
+                            ],
+                          );
+                        }).toList(),
+                      ),
                       const SizedBox(height: 12),
                       const Text(
                         "Loose Product",

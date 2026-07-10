@@ -5254,7 +5254,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                 isBold: false),
                                             BottomWidgets.valueCard(context: context,
                                                 title: 'GST',
-                                                value: '0.0%',
+                                                value: '${billingProvider.calculateTotalGst()}%',
                                                 isBold: false),
                                             BottomWidgets.valueRight(
                                               context: context,
@@ -5312,7 +5312,19 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
     //   disc+=int.parse(billingPvr.billingItems[i].p_out_price);
     // }
 
+    final taxable = billingPvr.calculatedGrandTotal();
+    final gst = double.tryParse(billingPvr.calculateTotalGst()) ?? 0.0;
 
+    final cgst = taxable * (gst / 100);
+    final sgst = taxable * (gst / 100);
+    // Before Round Off
+    final grandTotal = taxable + cgst + sgst;
+
+    // Rounded Total
+    final finalTotal = grandTotal.roundToDouble();
+
+    // Round Off Value
+    final roundOff = finalTotal - grandTotal;
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
@@ -5459,10 +5471,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                         pw.BoxDecoration(border: pw.Border.all()),
                         child: pw.Column(
                           children: [
-                            totalRows("Total Before Tax SGST", "15,000"),
-                            totalRows("CGST 9%", "1,350"),
-                            totalRows("Round Off 9%", "1,350"),
-                            totalRows("Total After", "1,350"),
+                            totalRows("Total Before Tax", TextFormat.formattedAmount(billingPvr.calculatedGrandTotal())),
+                            totalRows("CGST ${billingPvr.calculateTotalGst()}%", TextFormat.formattedAmount(cgst)),
+                            totalRows("SGST ${billingPvr.calculateTotalGst()}%", TextFormat.formattedAmount(sgst)),
+                            totalRows("Round Off", "$roundOff"),
+                            totalRows("Total After", TextFormat.formattedAmount(finalTotal)),
                             // totalRows("Tax for HapiApps", data.totalAmt,isBold: true),
                             pw.SizedBox(height: 20),
                             pw.Text("Signature"),

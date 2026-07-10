@@ -1,3 +1,4 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
@@ -10,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/screens/leads/update_lead.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import '../../billing/billing_view/new_billing_screen.dart';
+import '../../common/constant/assets_constant.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../common/utilities/reminder_utils.dart';
 import '../../common/utilities/utils.dart';
@@ -18,6 +20,7 @@ import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../controller/image_controller.dart';
 import '../../controller/product_controller.dart';
+import '../../controller/settings_controller.dart';
 import '../../models/all_customers_obj.dart';
 import '../../models/customer_full_obj.dart';
 import '../../models/new_lead_obj.dart';
@@ -229,6 +232,12 @@ void checkType(){
                           // debugPrint("primaryPerson?.name ${primaryPerson?.name}");
                           // debugPrint("cust?.companyName ${cust?.companyName}");
                           // debugPrint("widget.name ${widget.name}");
+                          controllers.emailSubjectCtr.clear();
+                          controllers.emailMessageCtr.clear();
+                          imageController.images.clear();
+                          imageController.photo1.value = "";
+                          controllers.emailToCtr.text =
+                          displayEmail.isEmpty ? "" : displayEmail;
                           return GestureDetector(
                             onTap: () {
                               _focusNode.requestFocus();
@@ -1346,14 +1355,16 @@ void checkType(){
                                                                         Row(
                                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                           children: [
-                                                                            Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                                              children: [
-                                                                                Padding(
-                                                                                  padding: const EdgeInsets.all(5),
-                                                                                  child: CustomText(text:controllers.leadCategoryList.first.value,isCopy: false,),
-                                                                                ),
-                                                                              ],
+                                                                            Padding(
+                                                                              padding: const EdgeInsets.all(5),
+                                                                              child: Container(
+                                                                                  decoration: customDecoration.baseBackgroundDecoration(
+                                                                                      color: colorsConst.primary.withOpacity(0.1),radius: 10
+                                                                                  ),
+                                                                                  child: Padding(
+                                                                                    padding: const EdgeInsets.all(5),
+                                                                                    child: CustomText(text:controllers.leadCategoryList.first.value,isCopy: false,),
+                                                                                  )),
                                                                             ),
                                                                             CustomText(
                                                                               text: cust?.createdTs == null
@@ -1365,21 +1376,37 @@ void checkType(){
                                                                             ),
                                                                           ],
                                                                         ),
+                                                                        if(i==0)
+                                                                        Padding(
+                                                                          padding: const EdgeInsets.fromLTRB(8, 0, 0, 10),
+                                                                          child: Container(
+                                                                            color: Colors.grey.shade500,width: 1,height: 15,
+                                                                          ),
+                                                                        ),
                                                                         Row(
                                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                           children: [
-                                                                            Column(
-                                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                                            Row(
                                                                               children: [
-                                                                                Padding(
-                                                                                  padding: const EdgeInsets.all(5),
-                                                                                  child: CustomText(text:dataValue["category"] ?? "",isCopy: false,),
-                                                                                ),
-                                                                                if(dataValue["reason"].toString()!="null"&&dataValue["reason"].toString()!="")
-                                                                                CustomText(text:"Reason : ${dataValue["reason"] ?? ""}",isCopy: false),
+                                                                                Column(
+                                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                                  children: [
+                                                                                    Container(
+                                                                                      decoration: customDecoration.baseBackgroundDecoration(
+                                                                                          color: colorsConst.primary.withOpacity(0.1),radius: 10
+                                                                                      ),
+                                                                                      child: Padding(
+                                                                                        padding: const EdgeInsets.all(5),
+                                                                                        child: CustomText(text:dataValue["category"] ?? "",isCopy: false,),
+                                                                                      ),
+                                                                                    ),
+                                                                                    if(dataValue["reason"].toString()!="null"&&dataValue["reason"].toString()!="")
+                                                                                    CustomText(text:"Reason : ${dataValue["reason"] ?? ""}",isCopy: false),
+                                                                                  ],
+                                                                                ),10.width,
+                                                                                CustomText(text:dataValue["created_by"] ?? "",isCopy: false,),
                                                                               ],
                                                                             ),
-                                                                            CustomText(text:dataValue["created_by"] ?? "",isCopy: false,),
                                                                             CustomText(
                                                                               text: dataValue["created_ts"] == null
                                                                                   ? ""
@@ -1392,9 +1419,9 @@ void checkType(){
                                                                         ),
                                                                         i!=data.history.length-1?
                                                                         Padding(
-                                                                          padding: const EdgeInsets.fromLTRB(20, 5, 0, 5),
+                                                                          padding: const EdgeInsets.fromLTRB(8, 5, 0, 5),
                                                                           child: Container(
-                                                                            color: Colors.grey.shade500,width: 1,height: 25,
+                                                                            color: Colors.grey.shade500,width: 1,height: 15,
                                                                           ),
                                                                         ):20.height
                                                                       ],
@@ -2489,16 +2516,329 @@ void checkType(){
                                       ],
                                     ),
                                   ),
-                                  Container(
-                                    decoration: customDecoration.baseBackgroundDecoration(
-                                        color: Colors.white,radius: 10,borderColor: Colors.grey.shade200
-                                    ),
-                                    width: screenWidth/3.5,
-                                    child: ChatScreen(
-                                      key: ValueKey(widget.id),
-                                      customerName: widget.name.toString(),
-                                      number: widget.mobileNumber.toString(),
-                                      id: widget.id.toString(),
+                                  DefaultTabController(
+                                    length: controllers.customerChatDetails.isEmpty?1:2,
+                                    child: Container(
+                                      width: screenWidth / 3.5,
+                                      decoration: customDecoration.baseBackgroundDecoration(
+                                        color: Colors.white,
+                                        radius: 10,
+                                        borderColor: Colors.grey.shade200,
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.shade100,
+                                              borderRadius: const BorderRadius.vertical(
+                                                top: Radius.circular(10),
+                                              ),
+                                            ),
+                                            child: TabBar(
+                                              labelColor: Colors.blue,
+                                              unselectedLabelColor: Colors.black54,
+                                              indicatorColor: Colors.blue,
+                                              tabs: [
+                                                if(controllers.customerChatDetails.isNotEmpty)
+                                                Tab(text: "Chat"),
+                                                Tab(text: "Mail"),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: TabBarView(
+                                              children: [
+                                                if(controllers.customerChatDetails.isNotEmpty)
+                                                  ChatScreen(
+                                                  key: ValueKey(widget.id),
+                                                  customerName: widget.name.toString(),
+                                                  number: widget.mobileNumber.toString(),
+                                                  id: widget.id.toString(),
+                                                ),
+
+                                                SizedBox(
+                                                    width: screenWidth / 3.5,
+                                                    height: 400,
+                                                    child: SingleChildScrollView(
+                                                      child: Column(
+                                                        children: [
+                                                          20.height,
+                                                          SizedBox(
+                                                            width: screenWidth/3.8,
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                              children: [
+                                                                TextButton(
+                                                                    onPressed: () {
+                                                                      settingsController.showAddTemplateDialog(context);
+                                                                    },
+                                                                    child: CustomText(
+                                                                      text: "Create Template",
+                                                                      isCopy: false,
+                                                                      colors: colorsConst.third,
+                                                                      size: 18,
+                                                                      isBold: true,
+                                                                    )),
+                                                                Align(
+                                                                  alignment: Alignment.topRight,
+                                                                  child: TextButton(
+                                                                      onPressed: () {
+                                                                        if(settingsController.templateList.isEmpty){
+                                                                          utils.showToast("No templates found",Colors.red);
+                                                                        }else{
+                                                                          controllers.isTemplate.value = !controllers.isTemplate.value;
+                                                                        }
+                                                                      },
+                                                                      child: CustomText(
+                                                                        text: "Get From Template",
+                                                                        colors: colorsConst.third,
+                                                                        size: 18,
+                                                                        isCopy: false,
+                                                                        isBold: true,
+                                                                      )),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: screenWidth/4,
+                                                            child: TextField(
+                                                              controller: controllers.emailToCtr,
+                                                              style: TextStyle(
+                                                                  fontSize: 15, color: colorsConst.textColor),
+                                                              decoration: const InputDecoration(
+                                                                hintText: 'To',
+                                                                hintStyle: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontFamily: "Lato",
+                                                                  fontStyle: FontStyle.normal,
+                                                                ),
+                                                                border: UnderlineInputBorder(),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: screenWidth/4,
+                                                            child: TextField(
+                                                              controller: controllers.emailSubjectCtr,
+                                                              onChanged: (value){
+                                                                controllers.firstCaps(value, controllers.emailSubjectCtr);
+                                                              },
+                                                              style: TextStyle(
+                                                                  fontSize: 15, color: colorsConst.textColor),
+                                                              decoration: const InputDecoration(
+                                                                hintText: 'Subject',
+                                                                hintStyle: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontFamily: "Lato",
+                                                                  fontStyle: FontStyle.normal,
+                                                                ),
+                                                                border: UnderlineInputBorder(),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          SizedBox(
+                                                            width: screenWidth/4,
+                                                            child: TextField(
+                                                              controller: controllers.emailMessageCtr,
+                                                              onChanged: (value){
+                                                                controllers.firstCaps(value, controllers.emailMessageCtr);
+                                                              },
+                                                              style: TextStyle(
+                                                                  fontSize: 15, color: colorsConst.textColor),
+                                                              decoration: const InputDecoration(
+                                                                hintText: 'Message',
+                                                                hintStyle: TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontFamily: "Lato",
+                                                                  fontStyle: FontStyle.normal,
+                                                                ),
+                                                                border: UnderlineInputBorder(),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Obx(() => imageController.images.isEmpty
+                                                                ? 0.height
+                                                                : ListView.builder(
+                                                              shrinkWrap: true,
+                                                              physics: NeverScrollableScrollPhysics(),
+                                                              itemCount: imageController.images.length,
+                                                              itemBuilder: (context, index) {
+
+                                                                final item = imageController.images[index];
+
+                                                                return Container(
+                                                                  margin: EdgeInsets.only(bottom: 8),
+                                                                  padding: const EdgeInsets.symmetric(
+                                                                    horizontal: 10,
+                                                                    vertical: 8,
+                                                                  ),
+                                                                  decoration: BoxDecoration(
+                                                                    color: const Color(0xff86BAE3FF),
+                                                                    borderRadius: BorderRadius.circular(20),
+                                                                  ),
+                                                                  child: Row(
+                                                                    children: [
+
+                                                                      Expanded(
+                                                                        child: CustomText(
+                                                                          text: item["fileName"],
+                                                                          isCopy: false,
+                                                                        ),
+                                                                      ),
+
+                                                                      IconButton(
+                                                                        padding: EdgeInsets.zero,
+                                                                        constraints: const BoxConstraints(),
+                                                                        onPressed: () {
+                                                                          imageController.images.removeAt(index);
+                                                                        },
+                                                                        icon: const Icon(
+                                                                          Icons.close,
+                                                                          size: 14,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                );
+                                                              },
+                                                            ),),
+                                                          Obx(() => controllers.isTemplate.value == true
+                                                              ? Container(
+                                                            width: 500,
+                                                            alignment: Alignment.center,
+                                                            decoration: BoxDecoration(
+                                                              color: colorsConst.secondary,
+                                                              borderRadius: BorderRadius.circular(10),
+                                                            ),
+                                                            child: Padding(
+                                                              padding: const EdgeInsets.all(8.0),
+                                                              child: SizedBox(
+                                                                width: 500,
+                                                                child: Table(
+                                                                  defaultColumnWidth: const FixedColumnWidth(120.0),
+                                                                  border: TableBorder.all(
+                                                                    color: Colors.grey.shade300,
+                                                                    style: BorderStyle.solid,
+                                                                    borderRadius: BorderRadius.circular(10),
+                                                                    width: 1,
+                                                                  ),
+                                                                  children: [
+                                                                    // Header Row
+                                                                    TableRow(
+                                                                      children: [
+                                                                        CustomText(
+                                                                          textAlign: TextAlign.center,
+                                                                          text: "\nTemplate Name\n",
+                                                                          colors: colorsConst.textColor,
+                                                                          size: 15,
+                                                                          isBold: true,
+                                                                          isCopy: false,
+                                                                        ),
+                                                                        CustomText(
+                                                                          textAlign: TextAlign.center,
+                                                                          text: "\nSubject\n",
+                                                                          colors: colorsConst.textColor,
+                                                                          size: 15,
+                                                                          isBold: true,
+                                                                          isCopy: false,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    // Dynamic Rows
+                                                                    for (var item in settingsController.templateList)
+                                                                      utils.emailRow(
+                                                                          context,
+                                                                          isCheck: controllers.isAdd,
+                                                                          templateName: item.templateName,
+                                                                          msg: item.message,
+                                                                          subject: item.subject,
+                                                                          id: item.id
+                                                                      ),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ):SizedBox()),
+                                                          50.height,
+                                                          Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                            children: [
+                                                              if(controllers.planType.value!="Business Essential")
+                                                                IconButton(
+                                                                    onPressed: () async {
+                                                                      FilePickerResult? result =
+                                                                      await FilePicker.platform.pickFiles(
+                                                                        allowMultiple: true,
+
+                                                                        /// ALL TYPES
+                                                                        type: FileType.any,
+
+                                                                        withData: true,
+                                                                      );
+
+                                                                      if (result != null) {
+
+                                                                        for (var file in result.files) {
+                                                                          imageController.images.add({
+                                                                            "fileName": file.name,
+                                                                            "bytes": file.bytes,
+                                                                          });
+                                                                        }
+
+                                                                      } else {
+                                                                      }
+                                                                    },
+                                                                    icon: SvgPicture.asset(assets.file)),
+                                                              CustomLoadingButton(
+                                                                callback: () {
+                                                                  if(controllers.emailToCtr.text.trim().isEmpty){
+                                                                    utils.snackBar(context: context, msg: "To is empty!", color: Colors.red);
+                                                                    controllers.emailCtr.reset();
+                                                                    return;
+                                                                  }
+                                                                  if(!controllers.emailToCtr.text.trim().isEmail){
+                                                                    utils.snackBar(
+                                                                      context: context,
+                                                                      msg: "Invalid mail!",
+                                                                      color: Colors.red,
+                                                                    );
+                                                                    controllers.emailCtr.reset();
+                                                                    return;
+                                                                  }
+                                                                  if(controllers.emailSubjectCtr.text.trim().isEmpty){
+                                                                    utils.snackBar(context: context, msg: "Subject is empty!", color: Colors.red);
+                                                                    controllers.emailCtr.reset();
+                                                                    return;
+                                                                  }
+                                                                  if(controllers.emailMessageCtr.text.trim().isEmpty){
+                                                                    utils.snackBar(context: context, msg: "Message is empty!", color: Colors.red);
+                                                                    controllers.emailCtr.reset();
+                                                                    return;
+                                                                  }
+                                                                  apiService.insertEmailAPI(context, widget.id.toString(),
+                                                                      imageController.photo1.value);
+                                                                },
+                                                                controller: controllers.emailCtr,
+                                                                isImage: false,
+                                                                isLoading: true,
+                                                                backgroundColor: colorsConst.primary,
+                                                                radius: 5,
+                                                                width: 100,
+                                                                height: 50,
+                                                                text: "Send",
+                                                                textColor: Colors.white,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    )),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   )
                                 ],
@@ -2853,5 +3193,6 @@ void checkType(){
         }
     );
   }
+
 
 }

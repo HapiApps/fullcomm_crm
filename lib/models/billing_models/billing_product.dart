@@ -254,6 +254,10 @@ class BillingItem {
     double discount = safeQuantity * discountPerUnit;
     return double.parse(discount.toStringAsFixed(2));
   }
+  double calculateGst() {
+    final price = double.tryParse(product.cgst.toString()) ?? 0.0;
+    return double.parse(price.toStringAsFixed(2));
+  }
 
 
   Map<String, dynamic> toJson() {

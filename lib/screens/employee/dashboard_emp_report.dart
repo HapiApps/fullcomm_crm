@@ -58,8 +58,14 @@ class _EmployeePerformanceTableState extends State<EmployeePerformanceTable> {
           ),
           12.height,
           Container(
-            color: colorsConst.primary,
             height: 40,
+            decoration: BoxDecoration(
+              color: colorsConst.primary,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(5),
+                topRight: Radius.circular(5),
+              ),
+            ),
             child: Row(
               children: const [
 

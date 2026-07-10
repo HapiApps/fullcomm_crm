@@ -586,12 +586,7 @@ class _ChatScreenState extends State<ChatScreen> {
               onPressed: () {
                 sendMessage();
               },
-              icon: Icon(
-                messageController.text
-                    .trim()
-                    .isEmpty
-                    ? Icons.mic
-                    : Icons.send,
+              icon: Icon(Icons.send,
                 color: Colors.white,
               ),
             ),

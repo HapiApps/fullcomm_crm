@@ -276,79 +276,98 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: screenWidth/8,
-                                      child: CustomText(
-                                        text: "Comparison Report",
-                                        isCopy: false,
-                                        isBold: true,textAlign: TextAlign.start,
+                                Container(
+                                  decoration: BoxDecoration(
+                                    color: colorsConst.primary,
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(8),
+                                      topRight: Radius.circular(8)
+                                    )
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: screenWidth/8,
+                                              child: CustomText(size: 15,
+                                                text: "Comparison Report",
+                                                isCopy: false,colors: Colors.white,
+                                                isBold: true,textAlign: TextAlign.start,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: screenWidth/7,
+                                              child: CustomText(size: 15,
+                                                text: "Last Week",
+                                                isCopy: false,colors: Colors.white,
+                                                isBold: true,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: screenWidth/7,
+                                              child: CustomText(size: 15,
+                                                text: "This Week",colors: Colors.white,
+                                                isCopy: false,
+                                                isBold: true,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth/7,
-                                      child: CustomText(
-                                        text: "Last Week",
-                                        isCopy: false,
-                                        isBold: true,
+                                      10.height,
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Row(
+                                          children: [
+                                            SizedBox(
+                                              width: screenWidth/8,
+                                              child: CustomText(size: 15,
+                                                text: "Activity",
+                                                isCopy: false,colors: Colors.white,
+                                                isBold: true,textAlign: TextAlign.start,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: screenWidth/7,
+                                              child: CustomText(size: 15,
+                                                text: "${DateFormat('dd/MM/yyyy').format(repCtr.lastWeekStart)} to ${DateFormat('dd/MM/yyyy').format(repCtr.lastWeekEnd)}",
+                                                isCopy: false,colors: Colors.white,
+                                                isBold: true,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: screenWidth/7,
+                                              child: CustomText(size: 15,
+                                                text: "${DateFormat('dd/MM/yyyy').format(repCtr.thisWeekStart)} to ${DateFormat('dd/MM/yyyy').format(repCtr.thisWeekEnd)}",
+                                                isCopy: false,colors: Colors.white,
+                                                isBold: true,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: screenWidth/8,
+                                              child: CustomText(size: 15,
+                                                text: "Change",
+                                                isCopy: false,colors: Colors.white,
+                                                isBold: true,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: screenWidth/7,
+                                              child: CustomText(size: 15,
+                                                text: "Change %",colors: Colors.white,
+                                                isCopy: false,
+                                                isBold: true,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth/7,
-                                      child: CustomText(
-                                        text: "This Week",
-                                        isCopy: false,
-                                        isBold: true,
-                                      ),
-                                    ),
-                                  ],
-                                ),10.height,
-                                Row(
-                                  children: [
-                                    SizedBox(
-                                      width: screenWidth/8,
-                                      child: CustomText(
-                                        text: "Activity",
-                                        isCopy: false,
-                                        isBold: true,textAlign: TextAlign.start,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth/7,
-                                      child: CustomText(
-                                        text: "${DateFormat('dd/MM/yyyy').format(repCtr.lastWeekStart)} to ${DateFormat('dd/MM/yyyy').format(repCtr.lastWeekEnd)}",
-                                        isCopy: false,
-                                        isBold: true,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth/7,
-                                      child: CustomText(
-                                        text: "${DateFormat('dd/MM/yyyy').format(repCtr.thisWeekStart)} to ${DateFormat('dd/MM/yyyy').format(repCtr.thisWeekEnd)}",
-                                        isCopy: false,
-                                        isBold: true,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth/8,
-                                      child: CustomText(
-                                        text: "Change",
-                                        isCopy: false,
-                                        isBold: true,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: screenWidth/6.5,
-                                      child: CustomText(
-                                        text: "Change %",
-                                        isCopy: false,
-                                        isBold: true,
-                                      ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
-
                                 const Divider(),
 
                                 ListView.separated(
@@ -424,7 +443,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                                           ),
 
                                           SizedBox(
-                                            width: screenWidth/6.5,
+                                            width: screenWidth/7,
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
@@ -457,6 +476,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                           ),
                           Container(
                             width: screenWidth/6,
+                            height: 390,
                             padding: const EdgeInsets.all(18),
                             decoration: customDecoration.baseBackgroundDecoration(
                               color: Colors.white,
@@ -472,6 +492,13 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                                   isBold: true,
                                   size: 15,
                                 ),
+                                10.height,
+                                const CustomText(
+                                  text: "Employee Status Overview",
+                                  isCopy: false,
+                                  size: 14,
+                                ),
+                                const Divider(height: 75),
 
                                 45.height,
 

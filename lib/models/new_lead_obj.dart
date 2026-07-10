@@ -68,6 +68,7 @@ class NewLeadObj {
   final String? x;
   final String? designation;
   final String? department;
+  final String? historyInfo;
   final List<AdditionalInfo>? additional;
   bool? select;
 
@@ -124,6 +125,7 @@ class NewLeadObj {
       this.createdTs,
       this.accountManager,
       this.prospectGrading,
+      this.historyInfo,
       this.detailsOfServiceRequired,
         this.additionalInfo,
         this.whatsapp,this.industry,this.product,this.x, this.additional
@@ -197,11 +199,13 @@ class NewLeadObj {
       product: json["product"]?.toString() ?? '',
       industry: json["industry"]?.toString() ?? '',
       x: json["x"]?.toString() ?? '',
+      historyInfo: json["history_info"]?.toString() ?? '',
     );
   }
 
   Map<String, dynamic> asMap() {
     return {
+      "history_info": historyInfo,
       "select": select,
       "user_id": userId,
       "additional_info": additional,
@@ -270,6 +274,7 @@ class NewLeadObj {
 
   Map<String, dynamic> toJson() {
     return {
+      "history_info": historyInfo,
       "id": userId,
       "mainName": firstname,
       "mainMobile": mobileNumber,

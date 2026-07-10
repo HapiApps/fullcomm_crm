@@ -13,6 +13,7 @@ import '../common/constant/colors_constant.dart';
 import '../common/constant/dashboard_assets.dart';
 import '../common/styles/decoration.dart';
 import '../common/utilities/reminder_utils.dart';
+import '../common/utilities/test_download.dart';
 import '../common/utilities/utils.dart';
 import '../components/activity_over_time_chart.dart';
 import '../components/custom_sidebar.dart';
@@ -27,7 +28,6 @@ import '../controller/reminder_controller.dart';
 import '../models/all_customers_obj.dart';
 import '../provider/employee_provider.dart';
 import '../services/api_services.dart';
-import 'dart:html' as html;
 import '../services/new_payroll_api_services.dart';
 import '../view_models/billing_provider.dart';
 import 'employee/dashboard_emp_report.dart';
@@ -84,32 +84,147 @@ class _DashboardPageState extends State<DashboardPage>
     }
   }
   @override
+  // void initState() {
+  //   super.initState();
+  //   _focusNode = FocusNode();
+  //   dashController.getToken();
+  //   apiService.getHeading();
+  //   // Timer.periodic(const Duration(seconds: 30), (timer) {
+  //   //   dashController.refreshTime.value++;
+  //   // });
+  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+  //     dashController.selectedSortBy.value="${controllers.storage.read("selectedSortBy") ?? "Today"}";
+  //     // var selectedMeetRange = Rxn<DateTimeRange>(
+  //     //   DateTimeRange(
+  //     //     start: DateTime(
+  //     //       DateTime.now().year,
+  //     //       DateTime.now().month,
+  //     //       DateTime.now().day,
+  //     //     ),
+  //     //     end: DateTime(
+  //     //       DateTime.now().year,
+  //     //       DateTime.now().month,
+  //     //       DateTime.now().day,
+  //     //     ),
+  //     //   ),
+  //     // );
+  //     // remController.selectedCallRange=selectedMeetRange;
+  //     // remController.selectedReminderRange=selectedMeetRange;
+  //     _focusNode.requestFocus();
+  //     controllers.insertSeriesNo(context,true);
+  //     if(controllers.leadCategoryList.isEmpty){
+  //       apiService.getLeadCategories();
+  //     }
+  //     if(controllers.allLeadList.isEmpty){
+  //       apiService.getCustomLeads();
+  //     }
+  //     if(controllers.allLeadCategoryList.isEmpty){
+  //       apiService.getAllLeadCategories();
+  //     }
+  //     apiService.getAllEmployees();
+  //     if(Provider.of<BillingProvider>(context, listen: false).productsList.isEmpty){
+  //       Provider.of<BillingProvider>(context, listen: false).getProducts();
+  //     }
+  //     if(productCtr.products.isEmpty){
+  //       productCtr.getProducts();
+  //     }
+  //     final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
+  //     employeeData.staffRoleDetailsData(context: context);
+  //     if(controllers.hCallStatusList.isEmpty){
+  //       controllers.getCallStatus();
+  //     }
+  //     if(controllers.industriesList.isEmpty){
+  //       controllers.getIndustries();
+  //     }
+  //     if(productCtr.ordersList.isEmpty){
+  //       productCtr.getOrderDetails();
+  //     }
+  //     if(productCtr.quotationsList.isEmpty){
+  //       productCtr.getQuotationDetails();
+  //     }
+  //     if(productCtr.termsAndConditionsList.isEmpty){
+  //       productCtr.getTermsAndConditions();
+  //     }
+  //     if(pyrlCtr.settingList.isEmpty){
+  //       services.getRoleSettings(context);
+  //     }
+  //     apiService.currentVersion();
+  //     controllers.selectedIndex.value = 100;
+  //     DateTime now = DateTime.now();
+  //     checkDate();
+  //     remController.selectedMeetSortBy.value=dashController.selectedSortBy.value;
+  //     remController.selectedCallSortBy.value=dashController.selectedSortBy.value;
+  //     remController.selectedReminderSortBy.value=dashController.selectedSortBy.value;
+  //     remController.dashboardMeetings(
+  //       searchText: controllers.searchText.value.toLowerCase(),
+  //       callType: controllers.selectMeetingType.value,
+  //       sortField: controllers.sortFieldMeetingActivity.value,
+  //       sortOrder: controllers.sortOrderMeetingActivity.value,
+  //     );
+  //     if(remController.reminderList.isEmpty){
+  //       remController.allReminders("2");
+  //     }
+  //     if(remController.callMailsDetailsList.isEmpty){
+  //       apiService.getMailCallActivity();
+  //     }
+  //     remController.dashboardSortReminders();
+  //     remController.dashboardCommunicationFilterList(
+  //       dataList: remController.callMailsDetailsList2,
+  //       searchText: controllers.searchText.value.toLowerCase(),
+  //       callType: controllers.selectCallType.value,
+  //       sortField: controllers.sortFieldCallActivity.value,
+  //       sortOrder: controllers.sortOrderCallActivity.value,
+  //       selectedMonth: remController.selectedCallMonth.value,
+  //       selectedRange: remController.selectedCallRange.value,
+  //       selectedDateFilter: remController.selectedCallSortBy.value,
+  //     );
+  //     String today =
+  //         "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
+  //     var last7days = DateTime.now().subtract(Duration(days: 7));
+  //     dashController.getCustomerReport(
+  //         "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
+  //         today);
+  //     dashController.getWholeReport();
+  //   });
+  //
+  //   // _leadItemController = AnimationController(
+  //   //   vsync: this,
+  //   //   duration: const Duration(milliseconds: 2200),
+  //   // );
+  //   //
+  //   // _leadItemAnimations = [
+  //   //   // Suspect
+  //   //   CurvedAnimation(
+  //   //     parent: _leadItemController,
+  //   //     curve: const Interval(0.0, 0.20, curve: Curves.easeOut),
+  //   //   ),
+  //   //
+  //   //   // Prospect
+  //   //   CurvedAnimation(
+  //   //     parent: _leadItemController,
+  //   //     curve: const Interval(0.35, 0.55, curve: Curves.easeOut),
+  //   //   ),
+  //   //
+  //   //   // Qualified
+  //   //   CurvedAnimation(
+  //   //     parent: _leadItemController,
+  //   //     curve: const Interval(0.70, 0.90, curve: Curves.easeOut),
+  //   //   ),
+  //   //
+  //   //   // Customer
+  //   //   CurvedAnimation(
+  //   //     parent: _leadItemController,
+  //   //     curve: const Interval(1.00, 1.0, curve: Curves.easeOut),
+  //   //   ),
+  //   // ];
+  // }
   void initState() {
     super.initState();
     _focusNode = FocusNode();
     dashController.getToken();
     apiService.getHeading();
-    // Timer.periodic(const Duration(seconds: 30), (timer) {
-    //   dashController.refreshTime.value++;
-    // });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       dashController.selectedSortBy.value="${controllers.storage.read("selectedSortBy") ?? "Today"}";
-      // var selectedMeetRange = Rxn<DateTimeRange>(
-      //   DateTimeRange(
-      //     start: DateTime(
-      //       DateTime.now().year,
-      //       DateTime.now().month,
-      //       DateTime.now().day,
-      //     ),
-      //     end: DateTime(
-      //       DateTime.now().year,
-      //       DateTime.now().month,
-      //       DateTime.now().day,
-      //     ),
-      //   ),
-      // );
-      // remController.selectedCallRange=selectedMeetRange;
-      // remController.selectedReminderRange=selectedMeetRange;
       _focusNode.requestFocus();
       controllers.insertSeriesNo(context,true);
       if(controllers.leadCategoryList.isEmpty){
@@ -186,37 +301,6 @@ class _DashboardPageState extends State<DashboardPage>
           today);
       dashController.getWholeReport();
     });
-
-    // _leadItemController = AnimationController(
-    //   vsync: this,
-    //   duration: const Duration(milliseconds: 2200),
-    // );
-    //
-    // _leadItemAnimations = [
-    //   // Suspect
-    //   CurvedAnimation(
-    //     parent: _leadItemController,
-    //     curve: const Interval(0.0, 0.20, curve: Curves.easeOut),
-    //   ),
-    //
-    //   // Prospect
-    //   CurvedAnimation(
-    //     parent: _leadItemController,
-    //     curve: const Interval(0.35, 0.55, curve: Curves.easeOut),
-    //   ),
-    //
-    //   // Qualified
-    //   CurvedAnimation(
-    //     parent: _leadItemController,
-    //     curve: const Interval(0.70, 0.90, curve: Curves.easeOut),
-    //   ),
-    //
-    //   // Customer
-    //   CurvedAnimation(
-    //     parent: _leadItemController,
-    //     curve: const Interval(1.00, 1.0, curve: Curves.easeOut),
-    //   ),
-    // ];
   }
 void checkDate(){
   DateTime now = DateTime.now();
@@ -252,24 +336,6 @@ void checkDate(){
     end: DateTime.parse(dashController.date2.value),
   );
 }
-  void showWebNotification() {
-    // Ask permission
-    html.Notification.requestPermission().then((permission) {
-      if (permission == "granted") {
-        try {
-          html.Notification(
-            "Hello from Flutter Web 🚀",
-            body: "This is a local notification example.",
-            icon: "icons/Icon-192.png", // optional, must be in web/icons/
-          );
-        } catch (e) {
-          // debugPrint("Error showing notification: $e");
-        }
-      } else {
-        // debugPrint("Permission not granted for notifications");
-      }
-    });
-  }
   DateTime? selectedDate;
   final statValues = [1596, 256, 65, 264, 6];
   late final maxValue = statValues.reduce((a, b) => a > b ? a : b);
@@ -281,7 +347,10 @@ void checkDate(){
   @override
   void dispose() {
     // _leadItemController.dispose();
-    super.dispose();
+    _focusNode.dispose();
+    _appScroll.dispose();
+    _remScroll.dispose();
+    _comScroll.dispose();
   }
 
   Widget _animatedLeadItem({required int index, required Widget child}) {
@@ -319,9 +388,6 @@ void checkDate(){
                 screenWidth - 120:screenWidth - 60;
                 return controllers.isCrmData.value==false?Center(child: CircularProgressIndicator()):
                 Container(
-                  // width: controllers.isLeftOpen.value==false&&controllers.isRightOpen.value==false?
-                  // screenWidth:controllers.isLeftOpen.value==true?
-                  // screenWidth - 170:screenWidth - 170,
                   width:width,
                   height: MediaQuery.of(context).size.height,
                   alignment: Alignment.topLeft,
@@ -753,6 +819,29 @@ void checkDate(){
                                     //       controllers.selectedIndex.value = 101;
                                     //     }
                                     // ),
+                                    ///
+                                    // IconButton(onPressed: ()async{
+                                    //   final expenses = <Expense>[
+                                    //     Expense(
+                                    //       expenseDate: DateTime.now(),
+                                    //       debitLedger: "Office Expenses",
+                                    //       debitGroup: "Indirect Expenses",
+                                    //       creditLedger: "Cash",
+                                    //       amount: 1000,
+                                    //       gstApplicable: true,
+                                    //       gstAmount: 180,
+                                    //       voucherType: "Payment",
+                                    //       voucherNo: "PV001",
+                                    //       narration: "Office Stationery",
+                                    //     ),
+                                    //   ];
+                                    //   final path = await TallyXmlExportService().exportToXml(
+                                    //     expenses,
+                                    //     companyName: "ABC Pvt Ltd",
+                                    //   );
+                                    //
+                                    //   print(path);
+                                    // }, icon: Icon(Icons.add),),
                                     WaveStatCard(
                                       callback: () {
                                         controllers.selectedQualifiedSortBy.value = dashController.selectedSortBy.value;
@@ -2579,8 +2668,14 @@ void checkDate(){
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Container(
-                                                    color: colorsConst.primary,
-                                                    height: 50,
+                                                    decoration: BoxDecoration(
+                                                      color: colorsConst.primary,
+                                                      borderRadius: BorderRadius.only(
+                                                        topLeft: Radius.circular(5),
+                                                        topRight: Radius.circular(5),
+                                                      ),
+                                                    ),
+                                                    height: 40,
                                                     child: Padding(
                                                       padding: const EdgeInsets.all(8.0),
                                                       child: Row(

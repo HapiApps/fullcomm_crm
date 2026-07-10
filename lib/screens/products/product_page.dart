@@ -39,7 +39,8 @@ class _ProductPageState extends State<ProductPage> {
     300,  // Name
     120,  // Variation
     100,  // MRP
-    100,  // Price
+    100,  // in Price
+    120,  // out Price
     100,  // Brand
     150,  // Cat
     150,  // Subcat
@@ -151,12 +152,12 @@ class _ProductPageState extends State<ProductPage> {
     );
   }
 
-  Widget _dataCell(int index, String text, {Alignment align = Alignment.centerLeft}) {
+  Widget _dataCell(int index, String text, {Alignment align = Alignment.centerLeft,TextAlign textAlign = TextAlign.start}) {
     return Container(
       width: colWidths[index],
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
       alignment: align,
-      child: CustomText(text: text, size: 13, colors: colorsConst.textColor, isCopy: true),
+      child: CustomText(text: text, size: 13, colors: colorsConst.textColor, isCopy: true,textAlign: textAlign,),
     );
   }
 
@@ -679,7 +680,47 @@ class _ProductPageState extends State<ProductPage> {
                                             children: [
                                               CustomText(
                                                 textAlign: TextAlign.left,
-                                                text: "Price",
+                                                text: "In Price",
+                                                size: 15,
+                                                isBold: true,
+                                                isCopy: true,
+                                                colors: Colors.white,
+                                              ),
+                                              3.width,
+                                              GestureDetector(
+                                                onTap: (){
+                                                  if(controllers.sortFieldCallActivity.value=='inprice' && controllers.sortOrderCallActivity.value=='asc'){
+                                                    controllers.sortOrderCallActivity.value='desc';
+                                                  }else{
+                                                    controllers.sortOrderCallActivity.value='asc';
+                                                  }
+                                                  controllers.sortFieldCallActivity.value='inprice';
+                                                  productCtr.filterProducts(
+                                                    value: controllers.searchText.value.toLowerCase(),
+                                                    selectedRangeStart: remController.selectedCallRange.value?.start,
+                                                    selectedRangeEnd: remController.selectedCallRange.value?.end,
+                                                    selectedMonth: productCtr.selectedCallMonth.value,
+                                                    selectedDateFilter: productCtr.selectedCallSortBy.value,
+                                                  );
+                                                },
+                                                child: Obx(() => Image.asset(
+                                                  controllers.sortFieldCallActivity.value.isEmpty
+                                                      ? "assets/images/arrow.png"
+                                                      : controllers.sortOrderCallActivity.value == 'asc'
+                                                      ? "assets/images/arrow_up.png"
+                                                      : "assets/images/arrow_down.png",
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),),//in Price
+                                          headerCell(10, Row(
+                                            children: [
+                                              CustomText(
+                                                textAlign: TextAlign.left,
+                                                text: "Out Price",
                                                 size: 15,
                                                 isBold: true,
                                                 isCopy: true,
@@ -714,8 +755,8 @@ class _ProductPageState extends State<ProductPage> {
                                                 ),
                                               ),
                                             ],
-                                          ),),//Price
-                                          headerCell(10, Row(
+                                          ),),//out Price
+                                          headerCell(11, Row(
                                             children: [
                                               CustomText(//2
                                                 textAlign: TextAlign.left,
@@ -755,7 +796,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//brand
-                                          headerCell(11, Row(
+                                          headerCell(12, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -795,7 +836,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//Cat
-                                          headerCell(12, Row(
+                                          headerCell(13, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -835,7 +876,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//Sub Cat
-                                          headerCell(13, Row(
+                                          headerCell(14, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -875,7 +916,7 @@ class _ProductPageState extends State<ProductPage> {
                                               ),
                                             ],
                                           ),),//GST
-                                          headerCell(14, Row(
+                                          headerCell(15, Row(
                                             children: [
                                               CustomText(//4
                                                 textAlign: TextAlign.left,
@@ -968,8 +1009,8 @@ class _ProductPageState extends State<ProductPage> {
                                                               barrierDismissible: true,
                                                               builder: (_) => EditProductDialog(
                                                                 id: p.id, title: p.pTitle, category: p.category, subCategory: p.subCategory, sku: p.hsnCode,
-                                                                barcode: p.barcode, units: p.unit, isLoose: int.parse(p.isLoose.toString().runtimeType==String?"1":"0"),
-                                                                variations: p.pVariation, qty: '', mrp: p.mrp, outPrice: p.outPrice, inPrice: '',),
+                                                                barcode: p.barcode, units: p.unit, isLoose: int.parse(p.isLoose.toString()),
+                                                                variations: p.pVariation, qty: '', mrp: p.mrp, outPrice: p.outPrice, inPrice: p.inPrice, gst: p.cgst,),
                                                             );
                                                           },
                                                           icon: SvgPicture.asset(
@@ -1013,13 +1054,14 @@ class _ProductPageState extends State<ProductPage> {
                                                   _dataCell(3, p.barcode ?? "-"),
                                                   _dataCell(4, p.pTitle ?? "-"),
                                                   _dataCell(5, p.pVariation ?? "-"),
-                                                  _dataCell(6, p.mrp.toString()),
-                                                  _dataCell(7, p.outPrice.toString()),
-                                                  _dataCell(8, p.brand ?? "-"),
-                                                  _dataCell(9, p.category ?? "-"),
-                                                  _dataCell(10, p.subCategory ?? "-"),
-                                                  _dataCell(11, "${p.cgst}%"),
-                                                  _dataCell(12, p.createdTs.toString().split(' ')[0]),
+                                                  _dataCell(6, productCtr.formatAmount(p.mrp.toString()),textAlign: TextAlign.end),
+                                                  _dataCell(7, productCtr.formatAmount(p.inPrice.toString()),textAlign: TextAlign.end),
+                                                  _dataCell(8, productCtr.formatAmount(p.outPrice.toString()),textAlign: TextAlign.end),
+                                                  _dataCell(9, p.brand ?? "-"),
+                                                  _dataCell(10, p.category ?? "-"),
+                                                  _dataCell(11, p.subCategory ?? "-"),
+                                                  _dataCell(12, "${p.cgst}%"),
+                                                  _dataCell(13, p.createdTs.toString().split(' ')[0]),
                                                 ],
                                               )
                                             ],

@@ -266,3 +266,136 @@ class _CustomerNameHeaderState extends State<CustomerNameHeader> {
   }
 }
 
+
+class ReasonHeader extends StatefulWidget {
+
+  const ReasonHeader({
+    super.key,
+  });
+
+  @override
+  State<ReasonHeader> createState() => _ReasonHeaderState();
+}
+
+class _ReasonHeaderState extends State<ReasonHeader> {
+  bool isEditing = false;
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    return Obx(() {
+
+      final headerChildren = <Widget>[
+        _buildResizableHeader("Promote Reason"),
+      ];
+
+      final Map<int, TableColumnWidth> columnWidths = {
+       0: FixedColumnWidth(150),
+      };
+
+      return Table(
+        columnWidths: columnWidths,
+        border: TableBorder(
+          horizontalInside:
+          BorderSide(width: 0.5, color: Colors.grey.shade400),
+          verticalInside:
+          BorderSide(width: 0.5, color: Colors.grey.shade400),
+          right: BorderSide(width: 0.5, color: Colors.grey.shade400),
+        ),
+        children: [
+          TableRow(
+            decoration: BoxDecoration(
+              color: colorsConst.primary,
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(5),
+              ),
+            ),
+            children: headerChildren,
+          ),
+        ],
+      );
+    });
+  }
+
+  // ----------------------------------------------------------------
+
+  Widget _buildResizableHeader(String heading) {
+    bool hasValue = heading.isNotEmpty;
+
+    return Stack(
+      children: [
+        Container(
+          height: 45,
+          width: tableController.colWidth[heading] ?? 150,
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.symmetric(horizontal: 5),
+          child: Row(
+            children: [
+              Expanded(
+                child: hasValue
+                    ? GestureDetector(
+                  onDoubleTap: () {
+                    setState(() {
+                      isEditing = true;
+                    });
+                  },
+                  onTap: () {
+                    setState(() {
+                      isEditing = false;
+                    });
+                  },
+                  child: Text(
+                    heading,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      color: Colors.white,
+                      fontFamily: "Lato",
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                )
+                    : const Text(
+                  "No Heading",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                    fontFamily: "Lato",
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        Positioned(
+          right: 0,
+          top: 0,
+          bottom: 0,
+          width: 10,
+          child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onHorizontalDragUpdate: (details) {
+              final current =
+                  tableController.colWidth[heading] ?? 150.0;
+
+              final newWidth =
+              (current + details.delta.dx).clamp(80.0, 400.0);
+
+              tableController.colWidth[heading] = newWidth;
+
+              tableController.colWidth.refresh();
+            },
+            child: MouseRegion(
+              cursor: SystemMouseCursors.resizeColumn,
+              child: Container(color: Colors.transparent),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+
