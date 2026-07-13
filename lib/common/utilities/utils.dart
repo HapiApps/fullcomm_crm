@@ -33,7 +33,7 @@ import '../constant/assets_constant.dart';
 import '../constant/colors_constant.dart';
 import 'package:http/http.dart' as http;
 import 'dart:html' as html;
-
+import 'dart:ui_web' as ui;
 import '../styles/styles.dart';
 final Utils utils = Utils._();
 
@@ -536,6 +536,31 @@ class Utils {
   //       });
   // }
 
+  void showPdfDialog(BuildContext context, String url) {
+    final viewId = 'pdf-view-${DateTime.now().millisecondsSinceEpoch}';
+
+    ui.platformViewRegistry.registerViewFactory(
+      viewId,
+          (int viewId) => html.IFrameElement()
+        ..src = url
+        ..style.border = 'none'
+        ..width = '100%'
+        ..height = '100%',
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: SizedBox(
+            width: 800,
+            height: 600,
+            child: HtmlElementView(viewType: viewId),
+          ),
+        );
+      },
+    );
+  }
 
   void sendEmailDialog(
       {required String id,

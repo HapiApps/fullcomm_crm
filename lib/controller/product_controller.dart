@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/common/utilities/jwt_storage.dart';
+import 'package:fullcomm_crm/controller/reminder_controller.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -492,8 +493,8 @@ var isSelectAll=false.obs;
         }),
       );
 
-      debugPrint("STATUS CODE add_values: ${response.statusCode}");
-      debugPrint("get_products...: ${response.body}");
+      // debugPrint("STATUS CODE add_values: ${response.statusCode}");
+      // debugPrint("get_products...: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -598,8 +599,8 @@ var isSelectAll=false.obs;
         }),
       );
 
-      // debugPrint("STATUS CODE add_values: ${response.statusCode}");
-      // debugPrint("get_order_details..: ${response.body}");
+      debugPrint("STATUS CODE add_values: ${response.statusCode}");
+      debugPrint("get_order_details..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -811,6 +812,11 @@ var isSelectAll=false.obs;
     required DateTime? selectedMonth,
     required DateTimeRange? selectedRange,
   }) {
+    // print(searchText);
+    // print(selectedDateFilter);
+    // print(selectedMonth);
+    // print(selectedRange);
+
     DateTime parseDate(String dateStr) {
       try {
         return DateTime.parse(dateStr);
@@ -834,14 +840,9 @@ var isSelectAll=false.obs;
       /// SEARCH
       bool matchesSearch =
           searchText.isEmpty ||
-              activity.customerName
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase()) ||
-              activity.totalAmt
-                  .toString()
-                  .toLowerCase()
-                  .contains(searchText.toLowerCase());
+              activity.creator.toString().toLowerCase().contains(searchText.toLowerCase()) ||
+              activity.customerName.toString().toLowerCase().contains(searchText.toLowerCase()) ||
+              activity.totalAmt.toString().toLowerCase().contains(searchText.toLowerCase());
 
       /// DATE FILTER
       bool matchesDate = true;
@@ -1766,6 +1767,7 @@ var isSelectAll=false.obs;
 
       final matchesSearch =
           searchText.isEmpty ||
+              activity.creator.toString().toLowerCase().contains(searchText.toLowerCase()) ||
               activity.number.toString().toLowerCase().contains(searchText.toLowerCase()) ||
               activity.totalAmt.toString().toLowerCase().contains(searchText.toLowerCase()) ||
               activity.number.toString().toLowerCase().contains(searchText.toLowerCase());
@@ -1808,8 +1810,8 @@ var isSelectAll=false.obs;
       matchesDate = activityDate.isAfter(start) &&
       activityDate.isBefore(todayStart.add(const Duration(days: 1)));
       }
-      debugPrint("activityDate ${activityDate}");
-      debugPrint("selectedRange ${selectedRange}");
+      // debugPrint("activityDate ${activityDate}");
+      // debugPrint("selectedRange ${selectedRange}");
 
       /// Date Range Filter (same date issue fixed)
       if (selectedRange != null) {
@@ -1905,6 +1907,12 @@ var isSelectAll=false.obs;
         a.status.toLowerCase().compareTo(b.status.toLowerCase());
         return sortOrder == 'asc' ? comparison : -comparison;
       });
+    }else if (sortField == 'sent') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.creator.toLowerCase().compareTo(b.creator.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
     }
     quotationsList.assignAll(filtered);
   }
@@ -1932,6 +1940,40 @@ var isSelectAll=false.obs;
     // } else {
     //   return DateFormat('dd MMM yyyy').format(dt); // 14 Apr 2025
     // }
+  }
+  // String showDate(String dateStr) {
+  //   if (dateStr == "null" || dateStr.trim().isEmpty) return "";
+  //
+  //   final DateTime dt = DateTime.parse(dateStr);
+  //   final DateTime now = DateTime.now();
+  //
+  //   if (dt.year == now.year) {
+  //     return DateFormat('dd MMM').format(dt); // 14 Jun
+  //   } else {
+  //     return DateFormat('dd MMM yyyy').format(dt); // 14 Jun 2025
+  //   }
+  // }
+
+  String showDate(String dateStr) {
+    if (dateStr == "null" || dateStr.trim().isEmpty) return "";
+
+    DateTime dt;
+
+    try {
+      // yyyy-MM-dd அல்லது yyyy-MM-dd HH:mm:ss
+      dt = DateTime.parse(dateStr);
+    } catch (_) {
+      // dd-MM-yyyy
+      dt = DateFormat('dd-MM-yyyy').parse(dateStr);
+    }
+
+    final now = DateTime.now();
+
+    if (dt.year == now.year) {
+      return DateFormat('dd MMM').format(dt); // 13 Jul
+    } else {
+      return DateFormat('dd MMM yyyy').format(dt); // 13 Jul 2025
+    }
   }
   @override
   void onClose() {

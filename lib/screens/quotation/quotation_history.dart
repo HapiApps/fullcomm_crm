@@ -26,8 +26,7 @@ import '../../controller/controller.dart';
 import '../../controller/image_controller.dart';
 import '../../controller/product_controller.dart';
 // ignore: avoid_web_libraries_in_flutter
-import 'dart:html' as html;
-import 'dart:ui_web' as ui;
+
 import '../../controller/reminder_controller.dart';
 import '../../controller/settings_controller.dart';
 import '../../models/billing_models/billing_product.dart';
@@ -52,8 +51,8 @@ class _QuotationHistoryState extends State<QuotationHistory> {
     100,//prd
     100,//ite
     100,//amt
-    // 170,//date
     100,//vali
+    170,//date
     100,//quo
   ];
   final ScrollController _controller = ScrollController();
@@ -1002,7 +1001,79 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                           ),
                                                         ],
                                                       ),),
-                                                      headerCell(11, CustomText(
+                                                      headerCell(11, Row(
+                                                        children: [
+                                                          CustomText( //4
+                                                            textAlign: TextAlign.left,
+                                                            text: "Sent By",
+                                                            size: 15,
+                                                            isBold: true,
+                                                            isCopy: true,
+                                                            colors: Colors.white,
+                                                          ),
+                                                          3.width,
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              if (controllers
+                                                                  .sortFieldCallActivity
+                                                                  .value ==
+                                                                  'sent' &&
+                                                                  controllers
+                                                                      .sortOrderCallActivity
+                                                                      .value ==
+                                                                      'asc') {
+                                                                controllers
+                                                                    .sortOrderCallActivity
+                                                                    .value = 'desc';
+                                                              } else {
+                                                                controllers
+                                                                    .sortOrderCallActivity
+                                                                    .value = 'asc';
+                                                              }
+                                                              controllers
+                                                                  .sortFieldCallActivity
+                                                                  .value = 'sent';
+                                                              productCtr
+                                                                  .filterAndSortQuotations(
+                                                                searchText: controllers
+                                                                    .searchText.value
+                                                                    .toLowerCase(),
+                                                                sortField: controllers
+                                                                    .sortFieldCallActivity
+                                                                    .value,
+                                                                sortOrder: controllers
+                                                                    .sortOrderCallActivity
+                                                                    .value,
+                                                                selectedMonth: productCtr
+                                                                    .selectedCallMonth
+                                                                    .value,
+                                                                selectedRange: productCtr
+                                                                    .selectedCallRange
+                                                                    .value,
+                                                                selectedDateFilter: productCtr
+                                                                    .selectedCallSortBy
+                                                                    .value,
+                                                              );
+                                                            },
+                                                            child: Obx(() =>
+                                                                Image.asset(
+                                                                  controllers
+                                                                      .sortFieldCallActivity
+                                                                      .value.isEmpty
+                                                                      ? "assets/images/arrow.png"
+                                                                      : controllers
+                                                                      .sortOrderCallActivity
+                                                                      .value == 'asc'
+                                                                      ? "assets/images/arrow_up.png"
+                                                                      : "assets/images/arrow_down.png",
+                                                                  width: 15,
+                                                                  height: 15,
+                                                                ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),),
+                                                      headerCell(12, CustomText(
                                                         textAlign: TextAlign.left,
                                                         text: "Quotation",
                                                         size: 15,
@@ -1994,13 +2065,31 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                   ),
                                                                 ),
                                                               ),
+                                                              InkWell(
+                                                                onTap:(){
+                                                                  Get.to(ViewQuotationDetails(id:data.id.toString(), list: data,));
+                                                                },
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets
+                                                                      .all(10.0),
+                                                                  child: CustomText(
+                                                                    textAlign: TextAlign
+                                                                        .left,
+                                                                    text: data.creator.toString(),
+                                                                    size: 14,
+                                                                    isCopy: true,
+                                                                    colors: colorsConst
+                                                                        .textColor,
+                                                                  ),
+                                                                ),
+                                                              ),
                                                               Padding(
                                                                 padding: const EdgeInsets
                                                                     .all(10.0),
                                                                 child: InkWell(
                                                                   onTap: () {
                                                                     String url = "$getImage?path=${Uri.encodeComponent(data.invoicePdf)}";
-                                                                    showPdfDialog(
+                                                                    utils.showPdfDialog(
                                                                         context, url);
                                                                   },
                                                                   child: Padding(
@@ -2055,31 +2144,6 @@ class _QuotationHistoryState extends State<QuotationHistory> {
             ),
           );
         }
-    );
-  }
-  void showPdfDialog(BuildContext context, String url) {
-    final viewId = 'pdf-view-${DateTime.now().millisecondsSinceEpoch}';
-
-    ui.platformViewRegistry.registerViewFactory(
-      viewId,
-          (int viewId) => html.IFrameElement()
-        ..src = url
-        ..style.border = 'none'
-        ..width = '100%'
-        ..height = '100%',
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          child: SizedBox(
-            width: 800,
-            height: 600,
-            child: HtmlElementView(viewType: viewId),
-          ),
-        );
-      },
     );
   }
   // /// 🔴 HEADER CELL

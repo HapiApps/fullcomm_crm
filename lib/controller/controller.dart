@@ -3206,8 +3206,8 @@ debugPrint("sortField ${sortField}");
         }),
       );
 
-      debugPrint("STATUS CODE insert_series: ${response.statusCode}");
-      debugPrint("RAW RESPONSE: ${response.body}");
+      // debugPrint("STATUS CODE insert_series: ${response.statusCode}");
+      // debugPrint("RAW RESPONSE: ${response.body}");
       controllers.leadCtr.reset();
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -3518,7 +3518,8 @@ var otp = "".obs,sentOtp = "".obs;
   RxString radioSortBy = "All".obs;
   var idList = [].obs,dateList = [].obs,
       isMainPersonList = [].obs,
-      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,customerChatDetails=<ChatModel>[].obs,allLeadList=<NewLeadObj>[].obs,ratingList=<NewLeadObj>[].obs,ratingList2=<NewLeadObj>[].obs,
+      isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,customerChatDetails=<ChatModel>[].obs,
+      allLeadList=<NewLeadObj>[].obs,allEmpList=<NewLeadObj>[].obs,ratingList=<NewLeadObj>[].obs,ratingList2=<NewLeadObj>[].obs,
       newLeadList=<NewLeadObj>[].obs,searchNewLeadList=<NewLeadObj>[].obs,
       isLeadsList = [].obs,
       isGoodLeadList = [].obs,

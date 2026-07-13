@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart'as http;
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/controller/product_controller.dart';
 import 'package:fullcomm_crm/screens/quotation/quotation_history.dart';
@@ -888,6 +890,7 @@ void checkDate(){
                                         );
                                         controllers.oldIndex.value = controllers.selectedIndex.value;
                                         controllers.selectedIndex.value = 101;
+                                        // verifyPan("FQTPB9709M");
                                       },
                                       title: "Appointments",
                                       // numericValue: int.parse(dashController.totalMeetings.value.toString()),
@@ -3318,6 +3321,33 @@ void checkDate(){
       ),
     );
   }
+  // Future<void> verifyPan(String pan) async {
+  //   String panToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc0MTMzMDYzOSwianRpIjoiZWMwZGM3NWYtMDEzZi00ZTExLTg3MDMtOTNmNDY0NzUwZjMxIiwidHlwZSI6ImFjY2VzcyIsImlkZW50aXR5IjoiZGV2LnZvaWNldGVjaGNvbW1Ac3VyZXBhc3MuaW8iLCJuYmYiOjE3NDEzMzA2MzksImV4cCI6MjM3MjA1MDYzOSwiZW1haWwiOiJ2b2ljZXRlY2hjb21tQHN1cmVwYXNzLmlvIiwidGVuYW50X2lkIjoibWFpbiIsInVzZXJfY2xhaW1zIjp7InNjb3BlcyI6WyJ1c2VyIl19fQ.JKES9uWu3Cz4iFwgJ6t9MHMZXCOzsWUnGr4XRI4jU3w";
+  //
+  //   final response = await http.post(
+  //     Uri.parse(
+  //         "https://kyc-api.surepass.app/api/v1/pan/pan"
+  //     ),
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Authorization": "Bearer $panToken",
+  //     },
+  //     body: jsonEncode({
+  //       "id_number": pan
+  //     }),
+  //   );
+  //   print("verifyPan");
+  //   print(response.body);
+  //   if (response.statusCode == 200) {
+  //     final data = jsonDecode(response.body);
+  //     String fullName = data['data']['full_name'] ?? '';
+  //     print(fullName);
+  //
+  //   }else {
+  //
+  //     throw Exception('Failed to load album');
+  //   }
+  // }
 
   Widget headerCell(int index, Widget child) {
     return Stack(

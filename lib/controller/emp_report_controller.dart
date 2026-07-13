@@ -170,10 +170,12 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
     thisMonthTitle = DateFormat('MMMM yyyy').format(thisMonthStart);
   }
 
+  var selectFilter       = "".obs;
   var totalMails       = "0".obs;
   var totalMeetings       = "0".obs;
   var totalCalls       = "0".obs;
   var totalQuotations   = "0".obs;
+  var totalOrders   = "0".obs;
   var totalSuspects    = "0".obs;
   var leadReport    = [].obs;
   var comparisonReport    = [].obs;
@@ -324,6 +326,7 @@ var refreshData=true.obs;
         totalCalls.value =dashboardReport["total_calls"].toString();
         totalSuspects.value = dashboardReport['new_customers'].toString();
         totalQuotations.value = dashboardReport["total_quotations"].toString();
+        totalOrders.value = dashboardReport["total_orders"].toString();
         totalMeetings.value = dashboardReport["total_meetings"].toString();
         /// =====================================================
         /// Activity Customer REPORT

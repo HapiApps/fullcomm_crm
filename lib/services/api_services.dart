@@ -5837,9 +5837,9 @@ class ApiService {
 
         body: jsonEncode(data),
       );
-      // debugPrint("all_leads");
-      // debugPrint(data.toString());
-      // log(response.body);
+      debugPrint("all_leads");
+      debugPrint(data.toString());
+      log(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5883,6 +5883,67 @@ class ApiService {
       controllers.allLeadList.clear();
       controllers.isCrmData.value=true;
       controllers.newLeadList.clear();
+      throw Exception('Unexpected error: ${e.toString()}');
+    }
+  }
+  Future<void> getEmpLeads(String startDate,String endDate) async {
+    controllers.isCustomer.value=false;
+    controllers.allEmpList.clear();
+    final url = Uri.parse(scriptApi);
+    try {
+      String from = DateFormat('yyyy-MM-dd').format(DateFormat('dd-MM-yyyy').parse(startDate));
+      String to = DateFormat('yyyy-MM-dd').format(DateFormat('dd-MM-yyyy').parse(endDate));
+      Map data={
+        "search_type": "emp_leads",
+        "cos_id": controllers.storage.read("cos_id"),
+        "role": controllers.storage.read("role"),
+        "id": controllers.storage.read("id"),
+        "stDate": from,
+        "enDate": to,
+        "action": "get_data"
+      };
+      final response = await http.post(
+        url,
+        headers: {
+          'X-API-TOKEN': "${TokenStorage().readToken()}",
+          'Content-Type': 'application/json',
+        },
+
+        body: jsonEncode(data),
+      );
+      debugPrint("emp_leads");
+      debugPrint(data.toString());
+      log(response.body);
+      if (response.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getEmpLeads(startDate,endDate);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body) as List;
+        controllers.allEmpList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        debugPrint("controllers.allEmpList.value");
+        debugPrint(controllers.allEmpList.value.length.toString());
+        controllers.isCustomer.value=true;
+        dashController.getWholeReport();
+      } else {
+        controllers.allEmpList.clear();
+        throw Exception('Failed to load leads: Status code ${response.body}');
+      }
+    } on SocketException {
+      controllers.allEmpList.clear();
+      controllers.isCustomer.value=true;
+      throw Exception('No internet connection');
+    } on HttpException catch (e) {
+      controllers.allEmpList.clear();
+      controllers.isCustomer.value=true;
+      throw Exception('Server error: ${e.toString()}');
+    } catch (e) {
+      controllers.allEmpList.clear();
+      controllers.isCustomer.value=true;
       throw Exception('Unexpected error: ${e.toString()}');
     }
   }

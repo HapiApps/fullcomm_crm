@@ -1656,6 +1656,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
       final matchesSearch =
           searchText.isEmpty ||
+              activity.name.toLowerCase().contains(searchText.toLowerCase()) ||
               activity.customerName.toLowerCase().contains(searchText.toLowerCase()) ||
               activity.companyName.toLowerCase().contains(searchText.toLowerCase()) ||
               activity.sentDate.toLowerCase().contains(searchText.toLowerCase());
@@ -1872,11 +1873,14 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     }
 
     callFilteredList.assignAll(filtered);
-
+// print("callFilteredList.length");
+// print(callFilteredList.length);
     // if(controllers.selectCallType.value=="All"){
     // }
     // apiService.mergeStatusWithCount();
   }
+
+
 
   // void dashboardCommunicationFilterList({
   //   required List<CustomerActivity> dataList,
@@ -2999,7 +3003,19 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required String sortField,
     required String sortOrder,
   }) {
+    print("allCalls");
+    print(searchText);
+    print(remController.selectedMeetSortBy.value);
+    print(remController.selectedMeetMonth.value);
+    print(remController.selectedCallRange.value);
     var filtered = [...controllers.meetingActivity];
+    print("meetingFilteredList 1 ${controllers.meetingActivity.length}");
+
+    // var filtered = controllers.meetingActivity.where((activity) {
+    //   final matchesSearch = searchText.isEmpty ||
+    //       (activity.employeeName.toString().toLowerCase().contains(searchText));
+    //   return matchesSearch;
+    // }).toList();
 
     final now = DateTime.now();
 
@@ -3186,7 +3202,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     filtered.sort((a, b) => b.dates.compareTo(a.dates));
 
     meetingFilteredList.assignAll(filtered);
-
+    print("meetingFilteredList 2 ${meetingFilteredList.length}");
   }
 
   var sortBy = ''.obs;
@@ -4150,10 +4166,20 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //   mailFilteredList.assignAll(filteredList);
   //
   // }
+
   void sortMails() {
     mailFilteredList.clear();
-    var filteredList = [...controllers.mailActivity];
-
+    // var filteredList = [...controllers.mailActivity];
+    final searchText = remController.searchText.value.toLowerCase();
+    var filteredList = controllers.mailActivity.where((activity) {
+      final matchesSearch = searchText.isEmpty ||
+          (activity.name.toString().toLowerCase().contains(searchText)) ||
+          (activity.customerName.toString().toLowerCase().contains(searchText)) ||
+          (activity.companyName.toString().toLowerCase().contains(searchText)) ||
+          (activity.toData.toString().toLowerCase().contains(searchText)) ||
+          (activity.subject.toString().toLowerCase().contains(searchText));
+      return matchesSearch;
+    }).toList();
     final dateFormatter = DateFormat("dd-MM-yyyy hh:mm a");
 
     final now = DateTime.now();
@@ -4191,16 +4217,16 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
 
           filteredList = filteredList.where((mail) {
 
-            print("RAW DATE => ${mail.sentDate}");
+            // print("RAW DATE => ${mail.sentDate}");
 
             final date = _parseMailDate(mail.sentDate, dateFormatter);
 
-            print("PARSED DATE => $date");
-            print("LAST30 => $last30");
+            // print("PARSED DATE => $date");
+            // print("LAST30 => $last30");
 
             final result = date.isAfter(last30);
 
-            print("MATCH => $result");
+            // print("MATCH => $result");
 
             return result;
 

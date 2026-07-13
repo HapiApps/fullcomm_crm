@@ -81,6 +81,7 @@ class CustomLeadTile extends StatefulWidget {
   final RxList<NewLeadObj> list;
   final RxList<NewLeadObj> list2;
   final List additional;
+  final String promoteReason;
   const CustomLeadTile(
       {super.key,
       this.showCheckbox = true,
@@ -143,7 +144,7 @@ class CustomLeadTile extends StatefulWidget {
       this.visitType,
       this.points,
       this.detailsOfServiceReq,
-      required this.pageName, required this.list, required this.list2, required this.listIndex, required this.leadIndex, required this.additional});
+      required this.pageName, required this.list, required this.list2, required this.listIndex, required this.leadIndex, required this.additional, required this.promoteReason});
 
   @override
   State<CustomLeadTile> createState() => _CustomLeadTileState();
@@ -652,6 +653,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
       "points": widget.points,
       "details_of_service_required": widget.detailsOfServiceReq,
       "updatedTs": widget.updatedTs,
+      "Promote Reason": widget.promoteReason,
     };
 
     /// additional_info dynamic add
@@ -710,7 +712,30 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
     statusController.dispose();
     super.dispose();
   }
+  String formatShortDateTime(String dateTime) {
+    final dt = DateTime.parse(dateTime);
+    final now = DateTime.now();
 
+    if (dt.year == now.year) {
+      return DateFormat("d MMM, hh:mm a").format(dt);
+    } else {
+      return DateFormat("d MMM yyyy, hh:mm a").format(dt);
+    }
+  }
+
+  String getCategoryReason(String jsonString) {
+    final List data = jsonDecode(jsonString);
+
+    return data.map((e) {
+      final category = e["category"] ?? "";
+      final reason = e["reason"] ?? "";
+      final date = formatShortDateTime(e["created_ts"] ?? "");
+
+      return reason.toString().trim().isEmpty
+          ? "$category ($date)"
+          : "$category - $reason ($date)";
+    }).join("\n");
+  }
   @override
   Widget build(BuildContext context) {
     // final int totalColumns = tableController.tableHeadings.length + 1 + (widget.showCheckbox ? 1 : 0);
@@ -719,7 +744,13 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
     //   columnWidths[i] = const FlexColumnWidth(2);
     // }
     return Obx((){
-      final headings = tableController.tableHeadings;
+      // final headings = tableController.tableHeadings;
+      // headings.add("Promote Reason");
+      final headings = List<String>.from(tableController.tableHeadings);
+
+      if (!headings.contains("Promote Reason")) {
+        headings.add("Promote Reason");
+      }
       final displayHeadings = headings.skip(1).toList();
       final Map<int, TableColumnWidth> columnWidths = {};
       int idx = 0;
@@ -783,7 +814,100 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                       : colorsConst.backgroundColor,
                 ),
                 children: [
-                  ...displayHeadings.map((heading) {
+                  // ...displayHeadings.map((heading) {
+                  //   if (heading.toLowerCase() == "added date" ||
+                  //       heading.toLowerCase() == "prospect enrollment date") {
+                  //     return Container(
+                  //       height: 45,
+                  //       alignment: Alignment.centerLeft,
+                  //       padding: const EdgeInsets.symmetric(horizontal: 5),
+                  //       child: CustomText(
+                  //       textAlign: TextAlign.start,
+                  //       text: formatDate(widget.updatedTs.toString()),
+                  //         size: 14,
+                  //         colors: colorsConst.textColor,
+                  //         isCopy: false,
+                  //       ),
+                  //     );
+                  //   }
+                  //   else {
+                  //     String normalize(String s) =>
+                  //         s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+                  //     final key = controllers.fields
+                  //         .firstWhereOrNull((f) => normalize(f.userHeading) == normalize(heading))
+                  //         ?.systemField;
+                  //
+                  //     final controller = key != null ? fieldControllers[key] : null;
+                  //
+                  //     if (controller != null && controller.text == "null") {
+                  //       controller.text = "";
+                  //     }
+                  //     // print(key);
+                  //     return Container(
+                  //       height: 45,
+                  //       alignment: Alignment.centerLeft,
+                  //       padding:const EdgeInsets.only(left: 5, right: 5),
+                  //       // child: TextField(
+                  //       //   readOnly: true,
+                  //       //   controller: controller,
+                  //       //   cursorColor: colorsConst.textColor,
+                  //       //   style: TextStyle(
+                  //       //     color: colorsConst.textColor,
+                  //       //     fontSize: 14,
+                  //       //     fontFamily: "Lato",
+                  //       //   ),
+                  //       //   decoration: const InputDecoration(
+                  //       //     filled: true,
+                  //       //       fillColor: Colors.red,
+                  //       //       border: InputBorder.none
+                  //       //   ),
+                  //       //   onSubmitted: (value) async {
+                  //       //     var send="";
+                  //       //     for (var i=0;i<controllers.defaultFields.length;i++){
+                  //       //       if(column==controllers.defaultFields[i]["system_field"]){
+                  //       //         send=controllers.defaultFields[i]["system_field"].toString();
+                  //       //         break;
+                  //       //       }
+                  //       //     }
+                  //       //         if(controller!.text.isNotEmpty){
+                  //       //           // apiService.updateInstantChanges(
+                  //       //           //   context,
+                  //       //           //   leadId: widget.id.toString(),
+                  //       //           //   column: column.toString(),
+                  //       //           //   value:
+                  //       //           //   controller.text,
+                  //       //           // );
+                  //       //           updateLeadAPI(context);
+                  //       //         }else{
+                  //       //           utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
+                  //       //         }
+                  //       //
+                  //       //   },
+                  //       // ),
+                  //       child: CustomText(text: controller?.text.trim() ?? "", isCopy: false,textAlign: TextAlign.start,),
+                  //     );
+                  //   }
+                  // }),
+
+                  ...displayHeadings.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final heading = entry.value;
+
+                    final isLastColumn = index == displayHeadings.length - 1;
+
+                    if (isLastColumn) {
+                      return Container(
+                        height: 45,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        child: CustomText(
+                          text: getCategoryReason(widget.promoteReason),
+                          isCopy: false,
+                          textAlign: TextAlign.start,
+                        ),
+                      );
+                    }
+
                     if (heading.toLowerCase() == "added date" ||
                         heading.toLowerCase() == "prospect enrollment date") {
                       return Container(
@@ -791,71 +915,36 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: CustomText(
-                        textAlign: TextAlign.start,
-                        text: formatDate(widget.updatedTs.toString()),
+                          text: formatDate(widget.updatedTs.toString()),
                           size: 14,
                           colors: colorsConst.textColor,
                           isCopy: false,
+                          textAlign: TextAlign.start,
                         ),
                       );
                     }
-                    else {
-                      String normalize(String s) =>
-                          s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
-                      final key = controllers.fields
-                          .firstWhereOrNull((f) => normalize(f.userHeading) == normalize(heading))
-                          ?.systemField;
 
-                      final controller = key != null ? fieldControllers[key] : null;
+                    // Existing code...
+                    String normalize(String s) =>
+                        s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
 
-                      if (controller != null && controller.text == "null") {
-                        controller.text = "";
-                      }
-                      // print(key);
-                      return Container(
-                        height: 45,
-                        alignment: Alignment.centerLeft,
-                        padding:const EdgeInsets.only(left: 5, right: 5),
-                        // child: TextField(
-                        //   readOnly: true,
-                        //   controller: controller,
-                        //   cursorColor: colorsConst.textColor,
-                        //   style: TextStyle(
-                        //     color: colorsConst.textColor,
-                        //     fontSize: 14,
-                        //     fontFamily: "Lato",
-                        //   ),
-                        //   decoration: const InputDecoration(
-                        //     filled: true,
-                        //       fillColor: Colors.red,
-                        //       border: InputBorder.none
-                        //   ),
-                        //   onSubmitted: (value) async {
-                        //     var send="";
-                        //     for (var i=0;i<controllers.defaultFields.length;i++){
-                        //       if(column==controllers.defaultFields[i]["system_field"]){
-                        //         send=controllers.defaultFields[i]["system_field"].toString();
-                        //         break;
-                        //       }
-                        //     }
-                        //         if(controller!.text.isNotEmpty){
-                        //           // apiService.updateInstantChanges(
-                        //           //   context,
-                        //           //   leadId: widget.id.toString(),
-                        //           //   column: column.toString(),
-                        //           //   value:
-                        //           //   controller.text,
-                        //           // );
-                        //           updateLeadAPI(context);
-                        //         }else{
-                        //           utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
-                        //         }
-                        //
-                        //   },
-                        // ),
-                        child: CustomText(text: controller?.text.trim() ?? "", isCopy: false,textAlign: TextAlign.start,),
-                      );
-                    }
+                    final key = controllers.fields
+                        .firstWhereOrNull(
+                            (f) => normalize(f.userHeading) == normalize(heading))
+                        ?.systemField;
+
+                    final controller = key != null ? fieldControllers[key] : null;
+
+                    return Container(
+                      height: 45,
+                      alignment: Alignment.centerLeft,
+                      padding: const EdgeInsets.symmetric(horizontal: 5),
+                      child: CustomText(
+                        text: controller?.text.trim() ?? "",
+                        isCopy: false,
+                        textAlign: TextAlign.start,
+                      ),
+                    );
                   }),
                 ]),
           ],

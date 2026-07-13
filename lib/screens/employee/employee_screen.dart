@@ -560,7 +560,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                                   tooltip:'Employee Report',
                                                   onPressed: (){
                                                     controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
-                                                    Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                                    Get.to(EmployeeReportPage(id:staffData.id.toString(),name:staffData.sName.toString()));
                                                   },
                                                   icon: Icon(Icons.report_gmailerrorred_rounded)),
                                             ],
@@ -569,7 +569,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                         InkWell(
                                           onTap:(){
                                             controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
-                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString(), name: staffData.sName.toString(),));
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
@@ -585,7 +585,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                         InkWell(
                                           onTap:(){
                                             controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
-                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString(), name: staffData.sName.toString(),));
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
@@ -602,7 +602,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                         InkWell(
                                           onTap:(){
                                             controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
-                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString(), name: staffData.sName.toString(),));
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
@@ -618,7 +618,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                         InkWell(
                                           onTap:(){
                                             controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
-                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString(), name: staffData.sName.toString(),));
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
@@ -634,7 +634,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                         InkWell(
                                           onTap:(){
                                             controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
-                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString(), name: staffData.sName.toString(),));
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
@@ -650,7 +650,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                         InkWell(
                                           onTap:(){
                                             controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
-                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString(), name: staffData.sName.toString(),));
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
@@ -666,7 +666,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                         InkWell(
                                           onTap:(){
                                             controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
-                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString(), name: staffData.sName.toString(),));
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),
@@ -682,7 +682,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                         InkWell(
                                           onTap:(){
                                             controllers.cusController.text="${staffData.sName.toString()} - ${staffData.sMobile.toString()} - ${staffData.roleTitle.toString()}";
-                                            Get.to(EmployeeReportPage(id:staffData.id.toString()));
+                                            Get.to(EmployeeReportPage(id:staffData.id.toString(), name: staffData.sName.toString(),));
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.all(10.0),

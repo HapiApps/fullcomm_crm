@@ -43,10 +43,14 @@ class _DynamicTableHeaderState extends State<DynamicTableHeader> {
     // debugPrint("FINAL HEADING ${tableController.headingFields.value}");
     // debugPrint("controllers.fields ${controllers.fields.toJson()}");
     return Obx(() {
-      final headings = tableController.tableHeadings;
+      // final headings = tableController.tableHeadings;
+      // final headerChildren = <Widget>[];
+      final headings = List<String>.from(tableController.tableHeadings);
 
+      if (!headings.contains("Promote Reason")) {
+        headings.add("Promote Reason");
+      }
       final headerChildren = <Widget>[];
-
       // ---------------------------------------------
       // 🚀 BUILD DRAGGABLE HEADER COLUMNS
       // ---------------------------------------------

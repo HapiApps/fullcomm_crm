@@ -902,6 +902,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                             itemBuilder: (context, index) {
                                               NewLeadObj data = widget.list[index];
                                               return CustomLeadTile(
+                                                promoteReason: data.historyInfo.toString(),
                                                 leadIndex: widget.index,
                                                 key: ValueKey(data.userId),
                                                 listIndex: index,

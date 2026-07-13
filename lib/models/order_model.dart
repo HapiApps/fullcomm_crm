@@ -10,11 +10,13 @@ class Order {
   final String mobile;
   final String subtotal;
   final String companyName;
+  final String creator;
   final List<Product> products;
 
   Order({
     required this.id,
     required this.orderId,
+    required this.creator,
     required this.customerName,
     required this.totalAmt,
     required this.createdBy,
@@ -30,6 +32,7 @@ class Order {
   factory Order.fromJson(Map<String, dynamic> json) {
     return Order(
       id: json['id']?.toString() ?? "",
+      creator: json['creator']?.toString() ?? "",
       orderId: json['invoice_no']?.toString() ?? "",
       customerName: json['name'] ?? "",
       companyName: json['company_name'] ?? "",
@@ -106,6 +109,7 @@ class Quotations {
   final String iNo;
   final String invoiceDate;
   final String poNumber;
+  final String creator;
 
   Quotations({
     required this.id,
@@ -135,6 +139,7 @@ class Quotations {
     required this.poDate,
     required this.poNumber,
     required this.invoiceDate,
+    required this.creator,
     this.dropValue,
   });
 
@@ -164,6 +169,7 @@ class Quotations {
       poDate: json['po_date'] ?? '',
       iNo: json['i_no'] ?? '',
       invoiceDate: json['invoice_date'] ?? '',
+      creator: json['creator'] ?? '',
       dropValue: 'Create Invoice',
       totalAmt: int.tryParse(json['total_amt']?.toString() ?? "0") ?? 0,
       totalProduct: int.tryParse(json['total_product']?.toString() ?? "0") ?? 0,

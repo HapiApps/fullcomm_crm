@@ -76,4 +76,28 @@ class CustomerActivity {
       'name':name
     };
   }
+
+  @override
+  String toString() {
+    return '''
+CustomerActivity(
+  id: $id,
+  sentId: $sentId,
+  toData: $toData,
+  fromData: $fromData,
+  subject: $subject,
+  sentDate: $sentDate,
+  message: $message,
+  sentCount: $sentCount,
+  quotationName: $quotationName,
+  customerName: $customerName,
+  companyName: $companyName,
+  callType: $callType,
+  callStatus: $callStatus,
+  leadStatus: $leadStatus,
+  attachment: $attachment,
+  name: $name
+)
+''';
+  }
 }
