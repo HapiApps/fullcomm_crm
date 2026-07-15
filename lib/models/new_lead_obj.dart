@@ -69,6 +69,7 @@ class NewLeadObj {
   final String? designation;
   final String? department;
   final String? historyInfo;
+  final String? category;
   final List<AdditionalInfo>? additional;
   bool? select;
 
@@ -128,12 +129,13 @@ class NewLeadObj {
       this.historyInfo,
       this.detailsOfServiceRequired,
         this.additionalInfo,
-        this.whatsapp,this.industry,this.product,this.x, this.additional
+        this.whatsapp,this.industry,this.product,this.x, this.additional, this.category
       });
   factory NewLeadObj.fromJson(Map<String, dynamic> json) {
     return NewLeadObj(
       select: false,
       additional: listParser(json['additional_info'], AdditionalInfo.fromJson),
+      category: json["category"]?.toString() ?? '',
       designation: json["designation"]?.toString() ?? '',
       department: json["department"]?.toString() ?? '',
       userId: json["user_id"]?.toString() ?? '',
@@ -205,6 +207,7 @@ class NewLeadObj {
 
   Map<String, dynamic> asMap() {
     return {
+      "category": category,
       "history_info": historyInfo,
       "select": select,
       "user_id": userId,
@@ -274,6 +277,7 @@ class NewLeadObj {
 
   Map<String, dynamic> toJson() {
     return {
+      "category": category,
       "history_info": historyInfo,
       "id": userId,
       "mainName": firstname,

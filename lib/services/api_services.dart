@@ -3119,7 +3119,7 @@ class ApiService {
         controllers.mailActivity.assignAll(activities);
         controllers.allSentMails.value = controllers.mailActivity.length.toString();
         // remController.selectedMailSortBy.value=dashController.selectedSortBy.value;
-        remController.sortMails();
+        remController.sortMails('');
         // remController.sortMails();
         // remController.dashboardCommunicationFilterList(
         //   dataList: controllers.mailActivity,
@@ -3244,8 +3244,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      // debugPrint(data.toString());
-      // debugPrint(request.body);
+      debugPrint(data.toString());
+      debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3824,8 +3824,8 @@ class ApiService {
       });
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      print(request.fields);
-      print(body);
+      // print(request.fields);
+      // print(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5837,9 +5837,9 @@ class ApiService {
 
         body: jsonEncode(data),
       );
-      debugPrint("all_leads");
-      debugPrint(data.toString());
-      log(response.body);
+      // debugPrint("all_leads");
+      // debugPrint(data.toString());
+      // log(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5888,7 +5888,9 @@ class ApiService {
   }
   Future<void> getEmpLeads(String startDate,String endDate) async {
     controllers.isCustomer.value=false;
-    controllers.allEmpList.clear();
+    controllers.empLeadList.clear();
+    controllers.mainCus.value=0;
+    controllers.pendingCus.value=0;
     final url = Uri.parse(scriptApi);
     try {
       String from = DateFormat('yyyy-MM-dd').format(DateFormat('dd-MM-yyyy').parse(startDate));
@@ -5924,25 +5926,32 @@ class ApiService {
       }
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
-        controllers.allEmpList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        controllers.empLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         debugPrint("controllers.allEmpList.value");
-        debugPrint(controllers.allEmpList.value.length.toString());
+        debugPrint(controllers.empLeadList.value.length.toString());
+        for(var i=0;i<controllers.empLeadList.length;i++){
+          if(controllers.empLeadList[i].leadStatus==controllers.leadCategoryList.last.value){
+            controllers.mainCus.value++;
+          }else{
+            controllers.pendingCus.value++;
+          }
+        }
         controllers.isCustomer.value=true;
         dashController.getWholeReport();
       } else {
-        controllers.allEmpList.clear();
+        controllers.empLeadList.clear();
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
     } on SocketException {
-      controllers.allEmpList.clear();
+      controllers.empLeadList.clear();
       controllers.isCustomer.value=true;
       throw Exception('No internet connection');
     } on HttpException catch (e) {
-      controllers.allEmpList.clear();
+      controllers.empLeadList.clear();
       controllers.isCustomer.value=true;
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
-      controllers.allEmpList.clear();
+      controllers.empLeadList.clear();
       controllers.isCustomer.value=true;
       throw Exception('Unexpected error: ${e.toString()}');
     }

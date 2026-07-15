@@ -2318,6 +2318,47 @@ class Utils {
       ),
     );
   }
+  Widget selectHeatingType2(
+      String text,
+      bool isSelected,
+      VoidCallback onTap,
+      Color selectedColor,
+      RxString count,
+      {double? width=100}
+      ) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: width,
+        decoration: customDecoration.baseBackgroundDecoration(
+          borderColor: isSelected ? selectedColor : colorsConst.secondary,
+          radius: 5,color:selectedColor.withOpacity(0.1)
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CustomText(
+                text: text,
+                colors: selectedColor,
+                isBold: true,
+                size: 17,
+                isCopy: false,
+              ),
+              Obx(() => CustomText(
+                    text: count.value,
+                    colors: selectedColor,
+                    size: 17,
+                    isCopy: false,
+                  ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
   Widget leadText({String? text, Color? color}) {
     return CustomText(
       textAlign: TextAlign.start,

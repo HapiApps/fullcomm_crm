@@ -1077,17 +1077,17 @@ class _MeetingCommentsState extends State<MeetingComments> {
                       },
                       onSelectMonth: () {
                         remController.selectMonth(
-                          context,
-                          remController.selectedMeetSortBy,
-                          remController.selectedMeetMonth,
-                              () {
-                            remController.sortMeetings(
-                              searchText: controllers.searchText.value.toLowerCase(),
-                              callType: controllers.selectMeetingType.value,
-                              sortField: controllers.sortFieldMeetingActivity.value,
-                              sortOrder: controllers.sortOrderMeetingActivity.value,
-                            );
-                          },true
+                            context,
+                            remController.selectedMeetSortBy,
+                            remController.selectedMeetMonth,
+                                () {
+                              remController.sortMeetings(
+                                searchText: controllers.searchText.value.toLowerCase(),
+                                callType: controllers.selectMeetingType.value,
+                                sortField: controllers.sortFieldMeetingActivity.value,
+                                sortOrder: controllers.sortOrderMeetingActivity.value,
+                              );
+                            },true
                         );
                       },
                       onSelectDateRange: (ctx) {
@@ -1672,9 +1672,9 @@ class _MeetingCommentsState extends State<MeetingComments> {
                                                                       child: TextField(
                                                                         controller: controllers.meetingVenueCrt,
                                                                         // onChanged: (value) {
-                                                                          // if (value.toString().isNotEmpty) {
-                                                                          //   setState(() => venueError = null);
-                                                                          // }
+                                                                        // if (value.toString().isNotEmpty) {
+                                                                        //   setState(() => venueError = null);
+                                                                        // }
                                                                         // },
                                                                         decoration: InputDecoration(
                                                                             border: OutlineInputBorder(),

@@ -27,6 +27,7 @@ import '../provider/reminder_provider.dart';
 import 'controller.dart';
 import 'dashboard_controller.dart';
 import 'emp_report_controller.dart';
+import 'dart:html' as html;
 
 class AddReminderModel {
   final TextEditingController titleController = TextEditingController();
@@ -565,6 +566,137 @@ void showMailImageDialog(
                           },
                         );
                       },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
+    },
+  );
+}
+
+void downloadImage(String imageUrl, String fileName) {
+  final anchor = html.AnchorElement(href: imageUrl)
+    ..setAttribute("download", fileName)
+    ..target = "_blank";
+
+  html.document.body?.append(anchor);
+  anchor.click();
+  anchor.remove();
+}
+void showImageDialog(
+    BuildContext context,
+    List<String> images,
+    int index,
+    ) {
+  if (images.isEmpty) return;
+
+  final PageController controller = PageController(initialPage: index);
+
+  showDialog(
+    context: context,
+    barrierColor: Colors.black87,
+    builder: (context) {
+      int currentPage = index;
+
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Dialog(
+            backgroundColor: Colors.black,
+            insetPadding: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * .9,
+              height: MediaQuery.of(context).size.height * .8,
+              child: Stack(
+                children: [
+
+                  /// Images
+                  PageView.builder(
+                    controller: controller,
+                    itemCount: images.length,
+                    onPageChanged: (i) {
+                      setState(() {
+                        currentPage = i;
+                      });
+                    },
+                    itemBuilder: (context, i) {
+                      return InteractiveViewer(
+                        minScale: 1,
+                        maxScale: 5,
+                        child: Center(
+                          child: Image.network(
+                            "$getImage?path=${Uri.encodeComponent(images[i])}",
+                            fit: BoxFit.contain,
+                            loadingBuilder:
+                                (context, child, progress) {
+                              if (progress == null) return child;
+
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            },
+                            errorBuilder:
+                                (context, error, stackTrace) {
+                              return const Center(
+                                child: Icon(
+                                  Icons.broken_image,
+                                  color: Colors.white,
+                                  size: 70,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  /// Close Button
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: CircleAvatar(
+                      backgroundColor: Colors.black54,
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                      ),
+                    ),
+                  ),
+
+                  /// Image Count
+                  Positioned(
+                    bottom: 15,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.black54,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          "${currentPage + 1} / ${images.length}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -2803,7 +2935,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required String sortField,
     required String sortOrder,
   }) {
-    // debugPrint("Calling dMeetings.......");
+    // debugPrint("Calling dMeetings.......${controllers.meetingActivity}");
 
     var filtered = [...controllers.meetingActivity];
 
@@ -4167,10 +4299,10 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   //
   // }
 
-  void sortMails() {
+  void sortMails(String searchValue) {
     mailFilteredList.clear();
     // var filteredList = [...controllers.mailActivity];
-    final searchText = remController.searchText.value.toLowerCase();
+    final searchText = searchValue.toLowerCase();
     var filteredList = controllers.mailActivity.where((activity) {
       final matchesSearch = searchText.isEmpty ||
           (activity.name.toString().toLowerCase().contains(searchText)) ||
@@ -4183,7 +4315,6 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     final dateFormatter = DateFormat("dd-MM-yyyy hh:mm a");
 
     final now = DateTime.now();
-
     if (selectedMailSortBy.value.isNotEmpty) {
 
       switch (selectedMailSortBy.value) {

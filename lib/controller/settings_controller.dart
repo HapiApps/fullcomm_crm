@@ -397,12 +397,13 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       };
       final request = await http.post(Uri.parse(scriptApi),
           headers: {
-            "Accept": "application/text",
-            "Content-Type": "application/x-www-form-urlencoded"
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8")
       );
+      debugPrint("request $data");
       debugPrint("request ${request.body}");
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {

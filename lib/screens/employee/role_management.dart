@@ -583,8 +583,8 @@ class _RoleManagementState extends State<RoleManagement> {
                 CustomAppbar(
                   text:"Role Management",subText: "Define what each user can access",
                   actionsWidget: CustomLoadingButton(callback: (){
-                    print(">>>>>");
                     String plan = controllers.planType.value.toLowerCase();
+                    print(">>>>> $plan");
 
                     if(plan=="business essential"&&(settingsController.roleList.length ?? 0) < 2){
                       _showAddRoleDialog();

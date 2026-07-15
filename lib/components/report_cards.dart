@@ -34,7 +34,7 @@ class DashboardCard extends StatelessWidget {
             color: Colors.white,radius: 14,borderColor: selectedColor
         ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Row(
               children: [
@@ -45,12 +45,13 @@ class DashboardCard extends StatelessWidget {
                 ),
                 10.width,
                 CustomText(
-                  text: title,
+                  text: title,size: 17,
                   isCopy: false,
                   colors: Colors.grey,
                 ),
               ],
             ),
+            18.width,
             CustomText(
               text: value,
               isCopy: false,

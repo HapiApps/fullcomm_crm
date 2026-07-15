@@ -3443,6 +3443,25 @@ var refreshValue=true.obs;
   List<String?> allCities = [];
   List<String?> allCountry = [];
   List<String?> allStates = [];
+  final List<Color> callColors = [
+    Colors.red,
+    Colors.blue,
+    Colors.green,
+    Colors.orange,
+    Colors.purple,
+    Colors.teal,
+    Colors.pink,
+    Colors.indigo,
+    Colors.cyan,
+    Colors.brown,
+    Colors.deepOrange,
+    Colors.deepPurple,
+    Colors.lightBlue,
+    Colors.amber,
+    Colors.lime,
+    Colors.blueGrey,
+  ];
+  final Map<String, Color> callStatusColors = {};
   var allLeadsLength = 0.obs,
       allNewLeadsLength = 0.obs,
       allDisqualifiedLength=0.obs,
@@ -3451,7 +3470,7 @@ var refreshValue=true.obs;
       allCustomerLength = 0.obs,
       allTargetLength=0.obs,
       allProductLength = 0.obs,
-      allEmployeeLength = 0.obs, selectCallType = "All".obs,selectMeetingType = "".obs;
+      allEmployeeLength = 0.obs, selectCallType = "All".obs,selectMeetingType = "".obs,sortOrderType = "".obs;
   AllCustomersObj? highlightedOption;
   var states,
       upState,
@@ -3516,10 +3535,11 @@ var otp = "".obs,sentOtp = "".obs;
       isAllSelected = false.obs,
       isLeadLoading = false.obs;
   RxString radioSortBy = "All".obs;
+  var mainCus=0.obs,pendingCus=0.obs;
   var idList = [].obs,dateList = [].obs,
       isMainPersonList = [].obs,
       isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,customerChatDetails=<ChatModel>[].obs,
-      allLeadList=<NewLeadObj>[].obs,allEmpList=<NewLeadObj>[].obs,ratingList=<NewLeadObj>[].obs,ratingList2=<NewLeadObj>[].obs,
+      allLeadList=<NewLeadObj>[].obs,empLeadList=<NewLeadObj>[].obs,ratingList=<NewLeadObj>[].obs,ratingList2=<NewLeadObj>[].obs,
       newLeadList=<NewLeadObj>[].obs,searchNewLeadList=<NewLeadObj>[].obs,
       isLeadsList = [].obs,
       isGoodLeadList = [].obs,

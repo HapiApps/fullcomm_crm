@@ -19,6 +19,7 @@ import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../controller/image_controller.dart';
 import '../../controller/product_controller.dart';
+import '../../controller/reminder_controller.dart';
 import '../../models/customer_full_obj.dart';
 import '../../models/new_lead_obj.dart';
 import '../../models/order_model.dart';
@@ -37,12 +38,24 @@ class ViewQuotationDetails extends StatefulWidget {
 }
 
 class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
-
+  final List<String> statusOrder = [
+    "Quotation Sent",
+    "PO Sent",
+    "Proforma Invoice Sent",
+    "Invoice Sent",
+    "Order Confirmed",
+    "Payment Received",
+    "Closed",
+  ];
+  int currentStep=0;
   @override
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
       productCtr.getQuotationFullDetails(widget.id);
+      currentStep = statusOrder.indexOf(widget.list.status);
+
+      if (currentStep == -1) currentStep = 0;
     });
   }
 
@@ -57,7 +70,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
           children: [
             SideBar(),
             Container(
-              width: screenWidth - 150,
+              width: screenWidth - 160,
               height: MediaQuery.of(context).size.height,
               alignment: Alignment.center,
               padding: EdgeInsets.all(20),
@@ -109,28 +122,28 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                             children: [
                               20.height,
                               Row(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      Get.back();
-                                    },
-                                    child: Icon(
-                                      Icons.arrow_back,
-                                      color: colorsConst.third,
-                                    ),
-                                  ),
-                                  CustomText(
-                                    text: "View Quotation Details",
-                                    isCopy: true,
-                                    colors: colorsConst.textColor,
-                                    size: 20,
-                                    isBold: true,
-                                  ),
-                                ],
-                              ),
-                              Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
+                                  Row(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Get.back();
+                                        },
+                                        child: Icon(
+                                          Icons.arrow_back,
+                                          color: colorsConst.third,
+                                        ),
+                                      ),10.width,
+                                      CustomText(
+                                        text: "View Quotation Details",
+                                        isCopy: true,
+                                        colors: colorsConst.textColor,
+                                        size: 20,
+                                        isBold: true,
+                                      ),
+                                    ],
+                                  ),
                                   CustomText(
                                     text: widget.list.quotationNo,
                                     isCopy: true,
@@ -172,7 +185,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                               20.height,
                               Center(
                                 child: Container(
-                                    width: screenWidth/1.5,
+                                    width: screenWidth/1,
                                     decoration: BoxDecoration(
                                       color: Colors.white,
                                       borderRadius: BorderRadius.only(
@@ -185,7 +198,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                     children: [
                                       Center(
                                         child: Container(
-                                          width: screenWidth/1.5,
+                                          width: screenWidth/1,
                                           height: 8,
                                           decoration: BoxDecoration(
                                             color: colorsConst.primary,
@@ -204,58 +217,69 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                             CustomText(text: "QUOTATION LIFECYCLE", isCopy: true,isBold: true,size: 16,),
                                             10.height,
                                             Row(
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              // crossAxisAlignment: CrossAxisAlignment.center,
+                                              // mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 expandedStep(
                                                   width: screenWidth/9.5,
                                                   title: "Quotation Sent",
                                                   subTitle: DateFormat("dd MMM yyyy").format(DateTime.parse(widget.list.createdTs)),
-                                                  isCompleted: true,
+                                                  isCompleted: currentStep >= 0,
                                                   isLast: false,
                                                 ),
                                                 expandedStep(
                                                   width: screenWidth/9.5,
                                                   title: "PO Received",
                                                   subTitle: widget.list.poDate==""?"-":widget.list.poDate,
-                                                  isCompleted: widget.list.poDate==""?false:true,
+                                                  isCompleted: currentStep >= 1,
+                                                  isPending: currentStep == 0,
                                                   isLast: false,
-                                                  isPending: widget.list.status=="Quotation Sent"?true:false,
                                                   stepNumber: "2",
                                                 ),
                                                 expandedStep(
                                                   width: screenWidth/9.5,
                                                   title: "Proforma Invoice",
                                                   subTitle: "Optional",
-                                                  isCompleted: widget.list.status=="Invoice Sent"||widget.list.status=="Proforma Invoice Sent"?true:false,
+                                                  isCompleted: currentStep >= 2,
+                                                  isPending: currentStep == 1,
                                                   isLast: false,
                                                   stepNumber: "3",
-                                                  isPending: widget.list.status=="PO Received"&&
-                                                      widget.list.status!="Invoice Sent"?true:false,
                                                 ),
                                                 expandedStep(
                                                   width: screenWidth/9.5,
                                                   title: "Invoice Sent",
                                                   subTitle: widget.list.status=="PO Received"?"In Progress":"-",
-                                                  isCompleted: widget.list.status=="Invoice Sent"?true:false,
+                                                  isCompleted: currentStep >= 3,
+                                                  isPending: currentStep == 2,
                                                   isLast: false,
                                                   stepNumber: "4",
                                                 ),
                                                 expandedStep(
                                                   width: screenWidth/9.5,
-                                                  title: "Payment Received",
-                                                  subTitle: "",
-                                                  isCompleted: widget.list.status=="Payment Received"?true:false,
+                                                  title: "Order Placed",
+                                                  subTitle: widget.list.status=="Order Confirmed"?"In Progress":"-",
+                                                  isCompleted: currentStep >= 4,
+                                                  isPending: currentStep == 3,
                                                   isLast: false,
                                                   stepNumber: "5",
                                                 ),
                                                 expandedStep(
                                                   width: screenWidth/9.5,
+                                                  title: "Payment Received",
+                                                  subTitle: "",
+                                                  isCompleted: currentStep >= 5,
+                                                  isPending: currentStep == 4,
+                                                  isLast: false,
+                                                  stepNumber: "6",
+                                                ),
+                                                expandedStep(
+                                                  width: screenWidth/9.5,
                                                   title: "Closed",
                                                   subTitle: "",
-                                                  isCompleted: widget.list.status=="Closed"?true:false,
+                                                  isCompleted: currentStep >= 6,
+                                                  isPending: currentStep == 5,
                                                   isLast: true,
-                                                  stepNumber: "6",
+                                                  stepNumber: "7",
                                                 ),
                                               ],
                                             ),
@@ -269,7 +293,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                               20.height,
                               Center(
                                 child: Container(
-                                  width: screenWidth/1.5,
+                                  width: screenWidth/1,
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: colorsConst.primary,
@@ -281,7 +305,8 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                   child: Row(
                                     children: [
                                       20.width,
-                                      Image.asset("assets/images/company.png",width: 20,height: 20,),20.width,
+                                      // Image.asset("assets/images/lead_stage.png",width: 20,height: 20,),20.width,
+                                      // Icon(Icons.com),20.width,
                                       CustomText(text: "Company & Customer Details", isCopy: true,isBold: true,size: 16,colors: Colors.white,),
                                     ],
                                   ),
@@ -289,7 +314,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                               ),
                               Center(
                                 child: Container(
-                                  width: screenWidth/1.5,
+                                  width: screenWidth/1,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.only(
@@ -302,25 +327,25 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Column(
+                                        Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            CustomText(text: "COMPANY NAME", isCopy: true),10.height,
-                                            CustomText(text: widget.list.company, isCopy: true,isBold: true,),
+                                            CustomText(text: "COMPANY NAME", isCopy: true,size: 16),10.width,
+                                            CustomText(text: widget.list.company, isCopy: true,isBold: true,size: 16),
                                           ],
                                         ),
-                                        Column(
+                                        Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            CustomText(text: "CUSTOMER NAME", isCopy: true),10.height,
-                                            CustomText(text: widget.list.name, isCopy: true,isBold: true,),
+                                            CustomText(text: "CUSTOMER NAME", isCopy: true,size: 16),10.width,
+                                            CustomText(text: widget.list.name, isCopy: true,isBold: true,size: 16),
                                           ],
                                         ),
-                                        Column(
+                                        Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            CustomText(text: "PHONE NUMBER", isCopy: true),10.height,
-                                            CustomText(text: widget.list.number, isCopy: true,isBold: true,),
+                                            CustomText(text: "PHONE NUMBER", isCopy: true,size: 16,),10.width,
+                                            CustomText(text: widget.list.number, isCopy: true,isBold: true,size: 16),
                                           ],
                                         )
                                       ],
@@ -331,7 +356,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                               10.height,
                               Center(
                                 child: Container(
-                                  width: screenWidth/1.5,
+                                  width: screenWidth/1,
                                   height: 40,
                                   decoration: BoxDecoration(
                                     color: colorsConst.primary,
@@ -343,7 +368,8 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                   child: Row(
                                     children: [
                                       20.width,
-                                      Image.asset("assets/images/document.png",width: 20,height: 20,),20.width,
+                                      // SvgPicture.asset("assets/images/paper.svg",width: 20,height: 20,),20.width,
+                                      // Image.asset("assets/images/document.png",width: 20,height: 20,),20.width,
                                       CustomText(text: "Quotation Details", isCopy: true,isBold: true,size: 16,colors: Colors.white,),
                                     ],
                                   ),
@@ -351,7 +377,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                               ),
                               Center(
                                 child: Container(
-                                  width: screenWidth/1.5,
+                                  width: screenWidth/1,
                                   decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.only(
@@ -366,25 +392,25 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                         Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Column(
+                                            Row(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                CustomText(text: "Quotation No", isCopy: true),10.height,
-                                                CustomText(text: widget.list.quotationNo, isCopy: true,isBold: true,),
+                                                CustomText(text: "Quotation No", isCopy: true,size: 16),10.width,
+                                                CustomText(text: widget.list.quotationNo, isCopy: true,isBold: true,size: 16),
                                               ],
                                             ),
-                                            Column(
+                                            Row(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                CustomText(text: "Date", isCopy: true),10.height,
-                                                CustomText(text: controllers.formatDateTime(widget.list.createdTs), isCopy: true,isBold: true,),
+                                                CustomText(text: "Date", isCopy: true,size: 16),10.width,
+                                                CustomText(text: controllers.formatDateTime(widget.list.createdTs), isCopy: true,isBold: true,size: 16),
                                               ],
                                             ),
-                                            Column(
+                                            Row(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                CustomText(text: "Sent By", isCopy: true),10.height,
-                                                CustomText(text: data.name, isCopy: true,isBold: true,),
+                                                CustomText(text: "Sent By", isCopy: true,size: 16),10.width,
+                                                CustomText(text: data.name, isCopy: true,isBold: true,size: 16),
                                               ],
                                             )
                                           ],
@@ -488,7 +514,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                 children: [
                                   Center(
                                     child: Container(
-                                      width: screenWidth/1.5,
+                                      width: screenWidth/1,
                                       height: 40,
                                       decoration: BoxDecoration(
                                         color: colorsConst.primary,
@@ -500,7 +526,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                       child: Row(
                                         children: [
                                           20.width,
-                                          Image.asset("assets/images/document.png",width: 20,height: 20,),20.width,
+                                          // Image.asset("assets/images/document.png",width: 20,height: 20,),20.width,
                                           CustomText(text: "Purchase Order Details", isCopy: true,isBold: true,size: 16,colors: Colors.white,),
                                         ],
                                       ),
@@ -508,7 +534,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                   ),
                                   Center(
                                     child: Container(
-                                      width: screenWidth/1.5,
+                                      width: screenWidth/1,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.only(
@@ -524,92 +550,115 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Column(
+                                                Row(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    CustomText(text: "PO No", isCopy: true),10.height,
-                                                    CustomText(text: widget.list.poNumber, isCopy: true,isBold: true,),
+                                                    CustomText(text: "PO No", isCopy: true,size: 16),10.width,
+                                                    CustomText(text: widget.list.poNumber, isCopy: true,isBold: true,size: 16),
                                                   ],
                                                 ),
-                                                Column(
+                                                Row(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    CustomText(text: "PO Date", isCopy: true),10.height,
-                                                    CustomText(text: widget.list.poDate, isCopy: true,isBold: true,),
+                                                    CustomText(text: "PO Date", isCopy: true,size: 16),10.width,
+                                                    CustomText(text: widget.list.poDate, isCopy: true,isBold: true,size: 16),
                                                   ],
                                                 ),
                                               ],
                                             ),
-                                            Divider(color: Colors.grey.shade300,),
-                                            10.height,
-                                            CustomText(text: "ATTACHED DOCUMENTS", isCopy: true,isBold: true,),
-                                            10.height,
-                                            Container(
-                                              decoration: customDecoration.baseBackgroundDecoration(
-                                                color: Colors.grey.shade50,
-                                                borderColor: Colors.grey.shade200,radius: 10
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.all(15),
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Image.asset("assets/images/pdf.png",width: 35,height: 35,),10.width,
-                                                        Column(
-                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                            if(widget.list.poDoc.toString()!=""&&widget.list.poDoc.toString()!="null")
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Divider(color: Colors.grey.shade300,),
+                                                10.height,
+                                                CustomText(text: "ATTACHED DOCUMENTS", isCopy: true,isBold: true,),
+                                                10.height,
+                                                InkWell(
+                                                    onTap:(){
+                                                      showImageDialog(context, [widget.list.poDoc],0);
+                                                    },
+                                                    child: Container(
+                                                      decoration: customDecoration.baseBackgroundDecoration(
+                                                          color: Colors.grey.shade50,
+                                                          borderColor: Colors.grey.shade200,radius: 10
+                                                      ),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.all(15),
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
-                                                            CustomText(text: "PO_MTP_0031_Meridian_Jan_2026.pdf ", isCopy: true,isBold: true,),
                                                             Row(
                                                               children: [
-                                                                CustomText(text: "2.4 MB", isCopy: true),5.width,
-                                                                CircleAvatar(backgroundColor: Colors.black,radius: 2,),5.width,
-                                                                CustomText(text: "Uploaded on 18 Jan 2026", isCopy: true),
+                                                                Image.asset("assets/images/pdf.png",width: 35,height: 35,),10.width,
+                                                                Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    CustomText(text: widget.list.poDoc.split('/').last, isCopy: true,isBold: true,),
+                                                                    Row(
+                                                                      children: [
+                                                                        // CustomText(text: "2.4 MB", isCopy: true),5.width,
+                                                                        CircleAvatar(backgroundColor: Colors.black,radius: 2,),5.width,
+                                                                        CustomText(text: "Uploaded on ${DateFormat("dd MMM yyyy").format(DateTime.parse(widget.list.poCreatedTs))}", isCopy: true),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
                                                               ],
                                                             ),
+                                                            Row(
+                                                              children: [
+                                                                InkWell(
+                                                                  onTap:(){
+                                                                    showImageDialog(context, [widget.list.poDoc],0);
+                                                                  },
+                                                                  child: Container(
+                                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                                        color: Colors.grey.shade50,
+                                                                        borderColor: Colors.grey.shade200,radius: 10
+                                                                    ),
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.all(5),
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Icon(Icons.remove_red_eye_outlined,color: colorsConst.primary,),5.width,
+                                                                          CustomText(text: "View", isCopy: false,isBold: true,colors: colorsConst.primary,)
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),20.width,
+                                                                InkWell(
+                                                                  onTap:(){
+                                                                    downloadImage(
+                                                                      "$getImage?path=${Uri.encodeComponent(widget.list.poDoc)}",
+                                                                      widget.list.poDoc.split('/').last,
+                                                                    );
+                                                                  },
+                                                                  child: Container(
+                                                                    decoration: customDecoration.baseBackgroundDecoration(
+                                                                        color: colorsConst.primary,radius: 10
+                                                                    ),
+                                                                    child: Padding(
+                                                                      padding: const EdgeInsets.all(5),
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Icon(Icons.file_download_outlined,color: Colors.white,),5.width,
+                                                                          CustomText(text: "Download", isCopy: false,isBold: true,colors: Colors.white),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            )
                                                           ],
                                                         ),
-                                                      ],
+                                                      ),
                                                     ),
-                                                    Row(
-                                                      children: [
-                                                        Container(
-                                                          decoration: customDecoration.baseBackgroundDecoration(
-                                                              color: Colors.grey.shade50,
-                                                              borderColor: Colors.grey.shade200,radius: 10
-                                                          ),
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.all(5),
-                                                            child: Row(
-                                                              children: [
-                                                                Icon(Icons.remove_red_eye_outlined,color: Colors.grey,),5.width,
-                                                                CustomText(text: "View", isCopy: true,isBold: true,colors: Colors.grey),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),20.width,
-                                                        Container(
-                                                          decoration: customDecoration.baseBackgroundDecoration(
-                                                              color: Colors.grey.shade50,
-                                                              borderColor: Colors.grey.shade200,radius: 10
-                                                          ),
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.all(5),
-                                                            child: Row(
-                                                              children: [
-                                                                Icon(Icons.file_download_outlined,color: Colors.grey,),5.width,
-                                                                CustomText(text: "Download", isCopy: true,isBold: true,colors: Colors.grey),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            )
+                                                  )
+                                              ],
+                                            ),
                                           ],
                                         ),
                                       ),
@@ -624,7 +673,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                 children: [
                                   Center(
                                     child: Container(
-                                      width: screenWidth/1.5,
+                                      width: screenWidth/1,
                                       height: 40,
                                       decoration: BoxDecoration(
                                         color: colorsConst.primary,
@@ -636,7 +685,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                       child: Row(
                                         children: [
                                           20.width,
-                                          Image.asset("assets/images/document.png",width: 20,height: 20,),20.width,
+                                          // Image.asset("assets/images/document.png",width: 20,height: 20,),20.width,
                                           CustomText(text: "Invoice Details", isCopy: true,isBold: true,size: 16,colors: Colors.white,),
                                         ],
                                       ),
@@ -644,7 +693,7 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                   ),
                                   Center(
                                     child: Container(
-                                      width: screenWidth/1.5,
+                                      width: screenWidth/1,
                                       decoration: BoxDecoration(
                                         color: Colors.white,
                                         borderRadius: BorderRadius.only(
@@ -659,18 +708,18 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                             Row(
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
-                                                Column(
+                                                Row(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    CustomText(text: "Invoice No", isCopy: true),10.height,
-                                                    CustomText(text: widget.list.iNo, isCopy: true,isBold: true,),
+                                                    CustomText(text: "Invoice No", isCopy: true,size: 16,),10.width,
+                                                    CustomText(text: widget.list.iNo, isCopy: true,isBold: true,size: 16),
                                                   ],
                                                 ),
-                                                Column(
+                                                Row(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    CustomText(text: "Invoice Date", isCopy: true),10.height,
-                                                    CustomText(text: controllers.formatDateTime(widget.list.invoiceDate), isCopy: true,isBold: true,),
+                                                    CustomText(text: "Invoice Date", isCopy: true,size: 16),10.width,
+                                                    CustomText(text: controllers.formatDateTime(widget.list.invoiceDate), isCopy: true,isBold: true,size: 16),
                                                   ],
                                                 ),
                                               ],

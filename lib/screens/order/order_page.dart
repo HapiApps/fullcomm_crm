@@ -60,8 +60,8 @@ class _OrderPageState extends State<OrderPage> {
       "width": 150.0,
     },
     {
-      "key": "status",
-      "title": "Status",
+      "key": "date",
+      "title": "Order Date",
       "width": 200.0,
     },
     {
@@ -80,13 +80,13 @@ class _OrderPageState extends State<OrderPage> {
       "width": 150.0,
     },
     {
-      "key": "date",
-      "title": "Order Date",
+      "key": "details",
+      "title": "Order Details",
       "width": 200.0,
     },
     {
-      "key": "details",
-      "title": "Order Details",
+      "key": "status",
+      "title": "Status",
       "width": 200.0,
     },
   ];
@@ -609,93 +609,149 @@ class _OrderPageState extends State<OrderPage> {
                                                   switch (key) {
 
                                                     case "sno":
-                                                      return Padding(
+                                                      return InkWell(
+                                                        onTap:(){
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (_) => OrderInvoiceDialog(order: data),
+                                                          );
+                                                        },
+                                                        child: Padding(
+                                                            padding: const EdgeInsets.all(10.0),
+                                                            child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: (index+1).toString(),
+                                                            size: 14,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                            ),
+                                                          ),
+                                                      );
+                                                      case "order_no":
+                                                      return InkWell(
+                                                        onTap:(){
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (_) => OrderInvoiceDialog(order: data),
+                                                          );
+                                                        },
+                                                        child: Padding(
                                                           padding: const EdgeInsets.all(10.0),
                                                           child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text: (index+1).toString(),
-                                                          size: 14,
-                                                          isCopy: true,
-                                                          colors: colorsConst.textColor,
+                                                            textAlign: TextAlign.left,
+                                                            text: data.orderId.toString() == "null"
+                                                                ? ""
+                                                                : data.orderId.toString(),
+                                                            size: 14,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
                                                           ),
-                                                        );
-                                                      case "order_no":
-                                                      return Padding(
-                                                        padding: const EdgeInsets.all(10.0),
-                                                        child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text: data.orderId.toString() == "null"
-                                                              ? ""
-                                                              : data.orderId.toString(),
-                                                          size: 14,
-                                                          isCopy: true,
-                                                          colors: colorsConst.textColor,
                                                         ),
                                                       );
 
                                                     case "status":
-                                                      return Padding(
-                                                        padding: const EdgeInsets.all(10.0),
-                                                        child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text: data.status.toString(),
-                                                          size: 14,
-                                                          isCopy: true,
-                                                          colors: data.status.toString() == "Completed"
-                                                              ? Colors.green
-                                                              : colorsConst.textColor,
+                                                      return InkWell(
+                                                        onTap:(){
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (_) => OrderInvoiceDialog(order: data),
+                                                          );
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(10.0),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: data.status.toString(),
+                                                            size: 14,
+                                                            isCopy: true,
+                                                            colors: data.status.toString() == "Completed"
+                                                                ? Colors.green
+                                                                : colorsConst.textColor,
+                                                          ),
                                                         ),
                                                       );
 
                                                     case "company":
-                                                      return Padding(
-                                                        padding: const EdgeInsets.all(10.0),
-                                                        child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text: data.companyName.toString(),
-                                                          size: 14,
-                                                          isCopy: true,
-                                                          colors: colorsConst.textColor,
+                                                      return InkWell(
+                                                        onTap:(){
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (_) => OrderInvoiceDialog(order: data),
+                                                          );
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(10.0),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: data.companyName.toString(),
+                                                            size: 14,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
                                                         ),
                                                       );
 
                                                     case "customer":
-                                                      return Padding(
-                                                        padding: const EdgeInsets.all(10.0),
-                                                        child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text: data.customerName.toString(),
-                                                          size: 14,
-                                                          isCopy: true,
-                                                          colors: colorsConst.textColor,
+                                                      return InkWell(
+                                                        onTap:(){
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (_) => OrderInvoiceDialog(order: data),
+                                                          );
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(10.0),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: data.customerName.toString(),
+                                                            size: 14,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
+                                                          ),
                                                         ),
                                                       );
 
                                                     case "amount":
-                                                      return Padding(
-                                                        padding: const EdgeInsets.all(10.0),
-                                                        child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text: productCtr.formatAmount(
-                                                            data.totalAmt.toString(),
+                                                      return InkWell(
+                                                        onTap:(){
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (_) => OrderInvoiceDialog(order: data),
+                                                          );
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(10.0),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: productCtr.formatAmount(
+                                                              data.totalAmt.toString(),
+                                                            ),
+                                                            size: 14,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
                                                           ),
-                                                          size: 14,
-                                                          isCopy: true,
-                                                          colors: colorsConst.textColor,
                                                         ),
                                                       );
 
                                                     case "date":
-                                                      return Padding(
-                                                        padding: const EdgeInsets.all(10.0),
-                                                        child: CustomText(
-                                                          textAlign: TextAlign.left,
-                                                          text: productCtr.fixedDateTime(
-                                                            data.createdTs.toString(),
+                                                      return InkWell(
+                                                        onTap:(){
+                                                          showDialog(
+                                                            context: context,
+                                                            builder: (_) => OrderInvoiceDialog(order: data),
+                                                          );
+                                                        },
+                                                        child: Padding(
+                                                          padding: const EdgeInsets.all(10.0),
+                                                          child: CustomText(
+                                                            textAlign: TextAlign.left,
+                                                            text: productCtr.fixedDateTime(
+                                                              data.createdTs.toString(),
+                                                            ),
+                                                            size: 14,
+                                                            isCopy: true,
+                                                            colors: colorsConst.textColor,
                                                           ),
-                                                          size: 14,
-                                                          isCopy: true,
-                                                          colors: colorsConst.textColor,
                                                         ),
                                                       );
 

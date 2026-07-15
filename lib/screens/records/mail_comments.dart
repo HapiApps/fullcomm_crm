@@ -87,7 +87,7 @@ class _MailCommentsState extends State<MailComments> {
       _focusNode.requestFocus();
     });
     Future.delayed(Duration.zero,(){
-      remController.sortMails();
+      remController.sortMails('');
       apiService.currentVersion();
     });
   }
@@ -308,14 +308,14 @@ class _MailCommentsState extends State<MailComments> {
                       selectedMonth: remController.selectedMailMonth,
                       focusNode: _focusNode,
                       onDaysSelected: () {
-                        remController.sortMails();
+                        remController.sortMails('');
                       },
                       onSelectMonth: () {
                         remController.selectMonth(
                           context,
                           remController.selectedMailSortBy,
                           remController.selectedMailMonth, () {
-                          remController.sortMails();
+                          remController.sortMails('');
                         },false
                         );
                       },
@@ -323,7 +323,7 @@ class _MailCommentsState extends State<MailComments> {
                         remController.showDatePickerDialog(ctx, (pickedRange) {
                           remController.selectedMailSortBy.value = 'Custom Range';
                           remController.selectedCallRange.value = pickedRange;
-                          remController.sortMails();
+                          remController.sortMails('');
                         },false);
                       },
                     )
@@ -368,7 +368,7 @@ class _MailCommentsState extends State<MailComments> {
                                       remController.sortOrderCallActivity.value='asc';
                                     }
                                     remController.sortFieldCallActivity.value='name';
-                                    remController.sortMails();
+                                    remController.sortMails('');
                                   },
                                   child: Obx(() => Image.asset(
                                     controllers.sortFieldCallActivity.value.isEmpty
@@ -402,7 +402,7 @@ class _MailCommentsState extends State<MailComments> {
                                       remController.sortOrderCallActivity.value='asc';
                                     }
                                     remController.sortFieldCallActivity.value='company';
-                                    remController.sortMails();
+                                    remController.sortMails('');
                                   },
                                   child: Obx(() => Image.asset(
                                     controllers.sortFieldCallActivity.value.isEmpty
@@ -436,7 +436,7 @@ class _MailCommentsState extends State<MailComments> {
                                       remController.sortOrderCallActivity.value='asc';
                                     }
                                     remController.sortFieldCallActivity.value='mail';
-                                    remController.sortMails();
+                                    remController.sortMails('');
                                   },
                                   child: Obx(() => Image.asset(
                                     controllers.sortFieldCallActivity.value.isEmpty
@@ -470,7 +470,7 @@ class _MailCommentsState extends State<MailComments> {
                                       remController.sortOrderCallActivity.value='asc';
                                     }
                                     remController.sortFieldCallActivity.value='subject';
-                                    remController.sortMails();
+                                    remController.sortMails('');
                                   },
                                   child: Obx(() => Image.asset(
                                     controllers.sortFieldCallActivity.value.isEmpty
@@ -504,7 +504,7 @@ class _MailCommentsState extends State<MailComments> {
                                       remController.sortOrderCallActivity.value='asc';
                                     }
                                     remController.sortFieldCallActivity.value='msg';
-                                    remController.sortMails();
+                                    remController.sortMails('');
                                   },
                                   child: Obx(() => Image.asset(
                                     controllers.sortFieldCallActivity.value.isEmpty
@@ -551,7 +551,7 @@ class _MailCommentsState extends State<MailComments> {
                                             remController.sortOrderCallActivity.value='asc';
                                           }
                                           remController.sortFieldCallActivity.value='date';
-                                          remController.sortMails();
+                                          remController.sortMails('');
                                         },
                                         child: Obx(() => Image.asset(
                                           controllers.sortFieldCallActivity.value.isEmpty

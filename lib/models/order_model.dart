@@ -110,6 +110,8 @@ class Quotations {
   final String invoiceDate;
   final String poNumber;
   final String creator;
+  final String poDoc;
+  final String poCreatedTs;
 
   Quotations({
     required this.id,
@@ -140,6 +142,8 @@ class Quotations {
     required this.poNumber,
     required this.invoiceDate,
     required this.creator,
+    required this.poDoc,
+    required this.poCreatedTs,
     this.dropValue,
   });
 
@@ -148,6 +152,8 @@ class Quotations {
       id: int.tryParse(json['id']?.toString() ?? "0") ?? 0,
       cusId: int.tryParse(json['cus_id']?.toString() ?? "0") ?? 0,
       quotationNo: json['q_no'] ?? '',
+      poCreatedTs: json['po_created_ts'] ?? '',
+      poDoc: json['po_doc'] ?? '',
       invoicePdf: json['invoice_pdf'] ?? '',
       name: json['name'] ?? '',
       company: json['company_name'] ?? '',

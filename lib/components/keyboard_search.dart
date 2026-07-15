@@ -133,6 +133,9 @@ class _KeyboardDropdownFieldState<T extends Object>
                   ),
                 ),
                 suffixIcon: IconButton(
+                    splashColor: Colors.transparent,
+                    highlightColor: Colors.transparent,
+                    hoverColor: Colors.transparent,
                     onPressed: () {
                       // setState(() {
                       //   ctrl.clear();

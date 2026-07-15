@@ -599,8 +599,8 @@ var isSelectAll=false.obs;
         }),
       );
 
-      debugPrint("STATUS CODE add_values: ${response.statusCode}");
-      debugPrint("get_order_details..: ${response.body}");
+      // debugPrint("STATUS CODE add_values: ${response.statusCode}");
+      // debugPrint("get_order_details..: ${response.body}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -1029,15 +1029,19 @@ var isSelectAll=false.obs;
         break;
     }
 
-    debugPrint(
-        "Filtered Count After Sort : ${filtered.length}");
+    // debugPrint(
+    //     "Filtered Count After Sort : ${filtered.length}");
 
     ordersList.assignAll(filtered);
-
-    debugPrint(
-        "ordersList Count : ${ordersList.length}");
-
-    debugPrint("========== FILTER END ==========");
+    orderValue.value=0;
+    for(var i=0;i<ordersList.value.length;i++){
+      var value=int.parse(ordersList[i].totalAmt);
+      orderValue.value+=value;
+    }
+    // debugPrint(
+    //     "ordersList Count : ${ordersList.length}");
+    //
+    // debugPrint("========== FILTER END ==========");
   }
   ///
   void filterProducts({
@@ -1760,11 +1764,12 @@ var isSelectAll=false.obs;
       return DateTime(1900);
     }
   }
-
+print("controllers.sortOrderType.value ${controllers.sortOrderType.value}");
     // final now = DateTime.now();
 
     final filtered = quotationsList2.where((activity) {
-
+      final matchesOrderType = controllers.sortOrderType.value.isEmpty ||
+          activity.status == controllers.sortOrderType.value;
       final matchesSearch =
           searchText.isEmpty ||
               activity.creator.toString().toLowerCase().contains(searchText.toLowerCase()) ||
@@ -1837,7 +1842,7 @@ var isSelectAll=false.obs;
             activityDate.year == selectedMonth.year;
       }
 
-      return matchesSearch && matchesDate;
+      return matchesOrderType && matchesSearch && matchesDate;
 
     }).toList();
 
@@ -1915,7 +1920,18 @@ var isSelectAll=false.obs;
       });
     }
     quotationsList.assignAll(filtered);
-  }
+    fullOrder.value=0;
+    completedOrder.value=0;
+    pendingOrder.value=0;
+    for(var i=0;i<quotationsList.value.length;i++){
+        if(quotationsList[i].status=="Order Confirmed"){
+          completedOrder.value++;
+        }else{
+          pendingOrder.value++;
+        }
+        fullOrder++;
+      }
+    }
   late TabController productTab;
   // void changeTab(int index) {
   //   productCtr.productTab.index=index;
@@ -1980,12 +1996,15 @@ var isSelectAll=false.obs;
     productTab.dispose();
     super.onClose();
   }
-
+  var fullOrder=0.obs,completedOrder=0.obs,pendingOrder=0.obs,orderValue=0.obs;
   RxList<Quotations> quotationsList=<Quotations>[].obs;
   RxList<Quotations> quotationsList2=<Quotations>[].obs;
   RxList<QuotationsDetails> quotationsListDetail=<QuotationsDetails>[].obs;
   Future<List<Quotations>> getQuotationDetails() async {
     try {
+      fullOrder.value=0;
+      completedOrder.value=0;
+      pendingOrder.value=0;
       // quotationsList.clear();
       // quotationsList2.clear();
       final response = await http.post(
@@ -2017,6 +2036,14 @@ var isSelectAll=false.obs;
         final List data = jsonDecode(response.body);
         quotationsList.value =data.map((e) => Quotations.fromJson(e)).toList();
         quotationsList2.value =data.map((e) => Quotations.fromJson(e)).toList();
+        for(var i=0;i<quotationsList.value.length;i++){
+          if(quotationsList[i].status=="Order Confirmed"){
+            completedOrder.value++;
+          }else{
+            pendingOrder.value++;
+          }
+          fullOrder++;
+        }
         // debugPrint("get_quotations..: ${quotationsList.length}");
         // debugPrint("get_quotations..: ${quotationsList2.length}");
         return quotationsList;

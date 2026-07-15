@@ -64,4 +64,17 @@ class MeetingObj {
       'employee': employee,
     };
   }
+  @override
+  String toString() {
+    return '''
+MeetingObj(
+  id: $id,
+  cusName: $cusName,
+  comName: $comName,
+  title: $title,
+  dates: $dates,
+  status: $status,
+  employeeName: $employeeName
+)''';
+  }
 }
