@@ -2011,6 +2011,261 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     // }
     // apiService.mergeStatusWithCount();
   }
+  void empCalls({
+    required List<CustomerActivity> allCalls,
+    required String searchText,
+    required String callType,
+    required String sortField,
+    required String sortOrder,
+    required String selectedDateFilter,
+    required DateTime? selectedMonth,
+    required DateTimeRange? selectedRange,
+  }) {
+    DateTime parseDate(String dateStr) {
+      try {
+        return DateFormat("dd-MM-yyyy hh.mm a").parse(dateStr);
+      } catch (e) {
+        // debugPrint("❌ Date parse error: $dateStr");
+        return DateTime(1900);
+      }
+    }
+
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+
+    final filtered = allCalls.where((activity) {
+
+      final matchesCallType =controllers.selectCallType.value == "All" || controllers.selectCallType.value==activity.callStatus;
+
+      final matchesFilterType =
+          filterCall.value == "All" ||
+              (filterCall.value == "Mine" &&
+                  activity.name == controllers.storage.read("f_name")) ||
+              (filterCall.value == "Team" &&
+                  activity.name != controllers.storage.read("f_name"));
+
+      final matchesSearch =
+          searchText.isEmpty ||
+              activity.name.toLowerCase().contains(searchText.toLowerCase());
+
+      final activityDate = parseDate(activity.sentDate);
+
+      bool matchesDate = true;
+
+      /// Today
+      if (selectedDateFilter == "Today") {
+        matchesDate = activityDate.year == now.year &&
+            activityDate.month == now.month &&
+            activityDate.day == now.day;
+      }
+
+      /// Yesterday
+      else if (selectedDateFilter == "Yesterday") {
+        final yesterday = today.subtract(const Duration(days: 1));
+        matchesDate = activityDate.isAfter(yesterday.subtract(const Duration(seconds: 1))) &&
+            activityDate.isBefore(today);
+      }
+
+      /// Last 7 Days
+      else if (selectedDateFilter == "Last 7 Days") {
+        final sevenDaysAgo = today.subtract(const Duration(days: 7));
+        matchesDate = activityDate.isAfter(sevenDaysAgo.subtract(const Duration(seconds: 1)));
+      }
+
+      /// Last 30 Days
+      else if (selectedDateFilter == "Last 30 Days") {
+        final thirtyDaysAgo = today.subtract(const Duration(days: 30));
+        matchesDate = activityDate.isAfter(thirtyDaysAgo.subtract(const Duration(seconds: 1)));
+      }
+
+      /// Date Range Filter (same date issue fixed)
+      if (selectedRange != null) {
+
+        final start = DateTime(
+          selectedRange.start.year,
+          selectedRange.start.month,
+          selectedRange.start.day,
+        );
+
+        final end = DateTime(
+          selectedRange.end.year,
+          selectedRange.end.month,
+          selectedRange.end.day,
+          23, 59, 59,
+        );
+
+        matchesDate = activityDate.isAfter(start.subtract(const Duration(seconds: 1))) &&
+            activityDate.isBefore(end.add(const Duration(seconds: 1)));
+      }
+
+      /// Month Filter
+      if (selectedMonth != null) {
+        matchesDate = activityDate.month == selectedMonth.month &&
+            activityDate.year == selectedMonth.year;
+      }
+      final list = allCalls.where((activity) {
+
+        final activityDate = parseDate(activity.sentDate);
+
+        bool matchesDate = true;
+
+        /// Today
+        if (selectedDateFilter == "Today") {
+          matchesDate = activityDate.year == now.year &&
+              activityDate.month == now.month &&
+              activityDate.day == now.day;
+        }
+
+        /// Yesterday
+        else if (selectedDateFilter == "Yesterday") {
+          final yesterday = today.subtract(const Duration(days: 1));
+          matchesDate = activityDate.isAfter(yesterday.subtract(const Duration(seconds: 1))) &&
+              activityDate.isBefore(today);
+        }
+
+        /// Last 7 Days
+        else if (selectedDateFilter == "Last 7 Days") {
+          final sevenDaysAgo = today.subtract(const Duration(days: 7));
+          matchesDate = activityDate.isAfter(sevenDaysAgo.subtract(const Duration(seconds: 1)));
+        }
+
+        /// Last 30 Days
+        else if (selectedDateFilter == "Last 30 Days") {
+          final thirtyDaysAgo = today.subtract(const Duration(days: 30));
+          matchesDate = activityDate.isAfter(thirtyDaysAgo.subtract(const Duration(seconds: 1)));
+        }
+
+        /// Date Range Filter (same date issue fixed)
+        if (selectedRange != null) {
+
+          final start = DateTime(
+            selectedRange.start.year,
+            selectedRange.start.month,
+            selectedRange.start.day,
+          );
+
+          final end = DateTime(
+            selectedRange.end.year,
+            selectedRange.end.month,
+            selectedRange.end.day,
+            23, 59, 59,
+          );
+
+          matchesDate = activityDate.isAfter(start.subtract(const Duration(seconds: 1))) &&
+              activityDate.isBefore(end.add(const Duration(seconds: 1)));
+        }
+
+        /// Month Filter
+        if (selectedMonth != null) {
+          matchesDate = activityDate.month == selectedMonth.month &&
+              activityDate.year == selectedMonth.year;
+        }
+
+        return matchesDate;
+
+      }).toList();
+
+
+      final Map<String, int> statusCountMap = {};
+
+      for (var item in list) {
+        final status = item.callStatus.trim();
+        if (status.isEmpty) continue;
+        statusCountMap[status] = (statusCountMap[status] ?? 0) + 1;
+      }
+      controllers.hCallStatusList.value =
+          controllers.hCallStatusList.map((item) {
+            final statusValue = item["value"]?.toString();
+
+            return {
+              ...item,
+              "count": statusCountMap[statusValue] ?? 0,
+            };
+          }).toList();
+
+      // 🔹 Total count calculate
+      int totalCount = controllers.hCallStatusList.fold(
+          0, (sum, item) => sum + ((item["count"] ?? 0) as int));
+
+
+      controllers.allCalls.value = list.length.toString();
+
+      return matchesCallType && matchesSearch && matchesDate && matchesFilterType;
+
+    }).toList();
+    /// Sorting
+    if (sortField == 'customerName') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.customerName.toLowerCase().compareTo(b.customerName.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'mobile') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.toData.toLowerCase().compareTo(b.toData.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'type') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.callType.toLowerCase().compareTo(b.callType.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'status') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.callStatus.toLowerCase().compareTo(b.callStatus.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'message') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.message.toLowerCase().compareTo(b.message.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'leadStatus') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.leadStatus.toLowerCase().compareTo(b.leadStatus.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'addedBy') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.name.toLowerCase().compareTo(b.name.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'company') {
+      filtered.sort((a, b) {
+        final comparison =
+        a.companyName.toLowerCase().compareTo(b.companyName.toLowerCase());
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+    else if (sortField == 'date') {
+      filtered.sort((a, b) {
+        final dateA = parseDate(a.sentDate);
+        final dateB = parseDate(b.sentDate);
+        final comparison = dateA.compareTo(dateB);
+        return sortOrder == 'asc' ? comparison : -comparison;
+      });
+    }
+
+    callFilteredList.assignAll(filtered);
+// print("callFilteredList.length");
+// print(callFilteredList.length);
+    // if(controllers.selectCallType.value=="All"){
+    // }
+    // apiService.mergeStatusWithCount();
+  }
 
 
 
@@ -3135,20 +3390,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
     required String sortField,
     required String sortOrder,
   }) {
-    print("allCalls");
-    print(searchText);
-    print(remController.selectedMeetSortBy.value);
-    print(remController.selectedMeetMonth.value);
-    print(remController.selectedCallRange.value);
     var filtered = [...controllers.meetingActivity];
-    print("meetingFilteredList 1 ${controllers.meetingActivity.length}");
-
-    // var filtered = controllers.meetingActivity.where((activity) {
-    //   final matchesSearch = searchText.isEmpty ||
-    //       (activity.employeeName.toString().toLowerCase().contains(searchText));
-    //   return matchesSearch;
-    // }).toList();
-
     final now = DateTime.now();
 
     // ✅ Normalize date (remove time)
@@ -3331,6 +3573,171 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
         return order == 'asc' ? comparison : -comparison;
       });
     }
+    filtered.sort((a, b) => b.dates.compareTo(a.dates));
+
+    meetingFilteredList.assignAll(filtered);
+    print("meetingFilteredList 2 ${meetingFilteredList.length}");
+  }
+
+  void empMeetings({
+    required String searchText,
+    required String callType,
+    required String sortField,
+    required String sortOrder,
+  }) {
+    print("sortMeetings");
+    print("searchText $searchText");
+    print(selectedMeetSortBy);
+    // print(remController.selectedMeetMonth.value);
+    // print(remController.selectedCallRange.value);
+    // var filtered = [...controllers.meetingActivity];
+    print("meetingFilteredList 1 ${controllers.meetingActivity.length}");
+
+    var filtered = controllers.meetingActivity.where((activity) {
+      print("activity.employeeName ${activity.employeeName}");
+      print("activity.dates ${activity.dates}");
+
+      final matchesSearch = searchText.isEmpty ||
+          (activity.employeeName.toString().toLowerCase().contains(searchText));
+      return matchesSearch;
+    }).toList();
+    List<DateTime> _parseMeetingDateRange(String input) {
+      return input
+          .split("||")
+          .where((e) => e.trim().isNotEmpty)
+          .map((e) {
+        try {
+          return DateFormat("dd-MM-yyyy").parseStrict(e.trim());
+        } catch (e) {
+          print("Parse Error : $e");
+          return DateTime(2000);
+        }
+      })
+          .toList();
+    }
+    final now = DateTime.now();
+
+    // ✅ Normalize date (remove time)
+    DateTime normalize(DateTime d) {
+      return DateTime(d.year, d.month, d.day);
+    }
+
+    // ✅ Safe Date Parsing
+    // ✅ DATE FILTER
+    if (selectedMeetSortBy.value.isNotEmpty) {
+      filtered = filtered.where((activity) {
+
+        final dates = _parseMeetingDateRange(activity.dates ?? '');
+
+        print("Raw : ${activity.dates}");
+        print("Parsed : $dates");
+        final today = normalize(now);
+
+        bool match = false;
+
+        for (var rawDate in dates) {
+          final date = normalize(rawDate);
+
+          switch (selectedMeetSortBy.value) {
+
+            case 'Today':
+              if (date == today) match = true;
+              break;
+
+            case 'Yesterday':
+              final yesterday = normalize(now.subtract(const Duration(days: 1)));
+              if (date == yesterday) match = true;
+              break;
+
+          /// ✅ FUTURE 7 DAYS
+            case 'Next 7 Days':
+              final start = today;
+              final end = normalize(now.add(const Duration(days: 7)));
+
+              if (!date.isBefore(start) && !date.isAfter(end)) {
+                match = true;
+              }
+              break;
+
+          /// ✅ FUTURE 30 DAYS
+            case 'Next 30 Days':
+              final start = today;
+              final end = normalize(now.add(const Duration(days: 30)));
+
+              if (!date.isBefore(start) && !date.isAfter(end)) {
+                match = true;
+              }
+              break;
+
+            case 'Custom Month':
+              if (selectedMeetMonth.value != null) {
+                final selected = selectedMeetMonth.value!;
+                if (date.year == selected.year &&
+                    date.month == selected.month) {
+                  match = true;
+                }
+              }
+              break;
+
+            case 'Custom Range':
+              if (selectedCallRange.value != null) {
+                final range = selectedCallRange.value!;
+                final start = normalize(range.start);
+                final end = normalize(range.end);
+
+                if (!date.isBefore(start) && !date.isAfter(end)) {
+                  match = true;
+                }
+              }
+              break;
+
+            default:
+              match = true;
+          }
+
+          if (match) break; // ✅ stop early if matched
+        }
+
+        return match;
+
+      }).toList();
+    }
+    else{
+      print("selectedMeetSortBy empty");
+    }
+
+    final scheduled = filtered.where((e) => e.status.isNotEmpty && e.status.trim() == "Scheduled").toList();
+    final completed = filtered.where((e) => e.status.isNotEmpty && e.status.trim() == "Completed").toList();
+    final cancelled = filtered.where((e) => e.status.isNotEmpty && e.status.trim() == "Cancelled").toList();
+
+    controllers.allScheduleMeet.value = scheduled.length.toString();
+    controllers.allCompletedMeet.value = completed.length.toString();
+    controllers.allCancelled.value = cancelled.length.toString();
+    // 🔍 SEARCH + FILTER
+    filtered = filtered.where((activity) {
+      final matchesCallType = controllers.selectMeetingType.value.isEmpty ||
+          activity.status == controllers.selectMeetingType.value;
+
+      final matchesFilterType =
+          filterApp.value == "All" ||
+              (filterApp.value == "Mine" &&
+                  (activity.employeeName ?? '')
+                      .toLowerCase()
+                      .contains((controllers.storage.read("f_name") ?? '')
+                      .toLowerCase())) ||
+              (filterApp.value == "Team" &&
+                  !(activity.employeeName ?? '')
+                      .toLowerCase()
+                      .contains((controllers.storage.read("f_name") ?? '')
+                      .toLowerCase()));
+
+      final search = searchText.toLowerCase();
+
+      final matchesSearch = search.isEmpty ||
+          (activity.employeeName ?? '').toLowerCase().contains(search);
+
+      return matchesCallType && matchesSearch && matchesFilterType;
+    }).toList();
     filtered.sort((a, b) => b.dates.compareTo(a.dates));
 
     meetingFilteredList.assignAll(filtered);
@@ -4310,6 +4717,162 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
           (activity.companyName.toString().toLowerCase().contains(searchText)) ||
           (activity.toData.toString().toLowerCase().contains(searchText)) ||
           (activity.subject.toString().toLowerCase().contains(searchText));
+      return matchesSearch;
+    }).toList();
+    final dateFormatter = DateFormat("dd-MM-yyyy hh:mm a");
+
+    final now = DateTime.now();
+    if (selectedMailSortBy.value.isNotEmpty) {
+
+      switch (selectedMailSortBy.value) {
+
+        case 'Today':
+          filteredList = filteredList.where((mail) {
+            final date = _parseMailDate(mail.sentDate, dateFormatter);
+            return _isSameDay(date, now);
+          }).toList();
+          break;
+
+        case 'Yesterday':
+          final yesterday = now.subtract(const Duration(days: 1));
+          filteredList = filteredList.where((mail) {
+            final date = _parseMailDate(mail.sentDate, dateFormatter);
+            return _isSameDay(date, yesterday);
+          }).toList();
+          break;
+
+        case 'Last 7 Days':
+          final last7 = now.subtract(const Duration(days: 7));
+          filteredList = filteredList.where((mail) {
+            final date = _parseMailDate(mail.sentDate, dateFormatter);
+            return date.isAfter(last7);
+          }).toList();
+          break;
+
+        case 'Last 30 Days':
+
+          final last30 = now.subtract(const Duration(days: 30));
+
+          filteredList = filteredList.where((mail) {
+
+            // print("RAW DATE => ${mail.sentDate}");
+
+            final date = _parseMailDate(mail.sentDate, dateFormatter);
+
+            // print("PARSED DATE => $date");
+            // print("LAST30 => $last30");
+
+            final result = date.isAfter(last30);
+
+            // print("MATCH => $result");
+
+            return result;
+
+          }).toList();
+
+          break;
+
+        case 'Custom Month':
+          if (selectedMailMonth.value != null) {
+            final selected = selectedMailMonth.value!;
+
+            filteredList = filteredList.where((mail) {
+              final date = _parseMailDate(mail.sentDate, dateFormatter);
+              return date.year == selected.year &&
+                  date.month == selected.month;
+            }).toList();
+          }
+          break;
+
+        case 'Custom Range':
+          if (selectedCallRange.value != null) {
+
+            final range = selectedCallRange.value!;
+
+            filteredList = filteredList.where((mail) {
+
+              final date = _parseMailDate(mail.sentDate, dateFormatter);
+
+              return date.isAfter(range.start.subtract(const Duration(days: 1))) &&
+                  date.isBefore(range.end.add(const Duration(days: 1)));
+
+            }).toList();
+          }
+          break;
+      }
+    }
+
+    filteredList.sort((a, b) {
+
+      dynamic aValue;
+      dynamic bValue;
+
+      switch (sortFieldCallActivity.value) {
+
+        case 'name':
+          aValue = (a.customerName ?? '').toLowerCase();
+          bValue = (b.customerName ?? '').toLowerCase();
+          break;
+
+        case 'company':
+          aValue = (a.companyName ?? '').toLowerCase();
+          bValue = (b.companyName ?? '').toLowerCase();
+          break;
+
+        case 'mail':
+          aValue = (a.toData ?? '').toLowerCase();
+          bValue = (b.toData ?? '').toLowerCase();
+          break;
+
+        case 'subject':
+          aValue = (a.subject ?? '').toLowerCase();
+          bValue = (b.subject ?? '').toLowerCase();
+          break;
+
+        case 'msg':
+          aValue = (a.message ?? '').toLowerCase();
+          bValue = (b.message ?? '').toLowerCase();
+          break;
+
+        case 'date':
+          aValue = _parseMailDate(a.sentDate, dateFormatter);
+          bValue = _parseMailDate(b.sentDate, dateFormatter);
+          break;
+
+        default:
+          aValue = '';
+          bValue = '';
+      }
+
+      int result;
+
+      if (aValue is String && bValue is String) {
+        result = aValue.compareTo(bValue);
+      }
+      else if (aValue is DateTime && bValue is DateTime) {
+        result = aValue.compareTo(bValue);
+      }
+      else {
+        result = 0;
+      }
+
+      return sortOrderCallActivity.value == 'asc' ? result : -result;
+
+    });
+    filteredList.sort((a, b) => b.sentDate.compareTo(a.sentDate));
+    mailFilteredList.assignAll(filteredList);
+
+ // debugPrint("remController.selectedMailSortBy.value ${remController.selectedMailSortBy.value}");
+ // debugPrint("controllers.mailActivity ${controllers.mailActivity}");
+ // debugPrint("mailFilteredList ${mailFilteredList.length}");
+  }
+  void empMails(String searchValue) {
+    mailFilteredList.clear();
+    // var filteredList = [...controllers.mailActivity];
+    final searchText = searchValue.toLowerCase();
+    var filteredList = controllers.mailActivity.where((activity) {
+      final matchesSearch = searchText.isEmpty ||
+          (activity.name.toString().toLowerCase().contains(searchText));
       return matchesSearch;
     }).toList();
     final dateFormatter = DateFormat("dd-MM-yyyy hh:mm a");

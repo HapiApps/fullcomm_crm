@@ -30,6 +30,7 @@ import '../common/utilities/reminder_utils.dart';
 import '../common/utilities/utils.dart';
 import '../components/custom_text.dart';
 import '../controller/controller.dart';
+import '../controller/emp_report_controller.dart';
 import '../controller/image_controller.dart';
 import '../controller/product_controller.dart';
 import '../controller/reminder_controller.dart';
@@ -5889,6 +5890,8 @@ class ApiService {
   Future<void> getEmpLeads(String startDate,String endDate) async {
     controllers.isCustomer.value=false;
     controllers.empLeadList.clear();
+    controllers.empLeadList2.clear();
+    controllers.allCus.value=0;
     controllers.mainCus.value=0;
     controllers.pendingCus.value=0;
     final url = Uri.parse(scriptApi);
@@ -5899,7 +5902,7 @@ class ApiService {
         "search_type": "emp_leads",
         "cos_id": controllers.storage.read("cos_id"),
         "role": controllers.storage.read("role"),
-        "id": controllers.storage.read("id"),
+        "id": repCtr.empId.value,
         "stDate": from,
         "enDate": to,
         "action": "get_data"
@@ -5913,9 +5916,9 @@ class ApiService {
 
         body: jsonEncode(data),
       );
-      debugPrint("emp_leads");
-      debugPrint(data.toString());
-      log(response.body);
+      // debugPrint("emp_leads");
+      // debugPrint(data.toString());
+      // log(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5927,31 +5930,37 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
         controllers.empLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-        debugPrint("controllers.allEmpList.value");
-        debugPrint(controllers.empLeadList.value.length.toString());
+        controllers.empLeadList2.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
+        // debugPrint("controllers.allEmpList.value");
+        // debugPrint(controllers.empLeadList.value.length.toString());
         for(var i=0;i<controllers.empLeadList.length;i++){
-          if(controllers.empLeadList[i].leadStatus==controllers.leadCategoryList.last.value){
+          if(controllers.empLeadList[i].category==controllers.leadCategoryList.last.value){
             controllers.mainCus.value++;
           }else{
             controllers.pendingCus.value++;
           }
+          controllers.allCus.value++;
         }
         controllers.isCustomer.value=true;
         dashController.getWholeReport();
       } else {
         controllers.empLeadList.clear();
+        controllers.empLeadList2.clear();
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
     } on SocketException {
       controllers.empLeadList.clear();
+      controllers.empLeadList2.clear();
       controllers.isCustomer.value=true;
       throw Exception('No internet connection');
     } on HttpException catch (e) {
       controllers.empLeadList.clear();
+      controllers.empLeadList2.clear();
       controllers.isCustomer.value=true;
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
       controllers.empLeadList.clear();
+      controllers.empLeadList2.clear();
       controllers.isCustomer.value=true;
       throw Exception('Unexpected error: ${e.toString()}');
     }

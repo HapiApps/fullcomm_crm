@@ -3470,7 +3470,7 @@ var refreshValue=true.obs;
       allCustomerLength = 0.obs,
       allTargetLength=0.obs,
       allProductLength = 0.obs,
-      allEmployeeLength = 0.obs, selectCallType = "All".obs,selectMeetingType = "".obs,sortOrderType = "".obs;
+      allEmployeeLength = 0.obs, selectCallType = "All".obs,selectMeetingType = "".obs,sortOrderType = "".obs,sortLead = "".obs;
   AllCustomersObj? highlightedOption;
   var states,
       upState,
@@ -3535,11 +3535,11 @@ var otp = "".obs,sentOtp = "".obs;
       isAllSelected = false.obs,
       isLeadLoading = false.obs;
   RxString radioSortBy = "All".obs;
-  var mainCus=0.obs,pendingCus=0.obs;
+  var allCus=0.obs,mainCus=0.obs,pendingCus=0.obs;
   var idList = [].obs,dateList = [].obs,
       isMainPersonList = [].obs,
       isNewLeadList = [].obs,isDisqualifiedList=[].obs,isCustomerList=[].obs,isTargetLeadList=[].obs,customerChatDetails=<ChatModel>[].obs,
-      allLeadList=<NewLeadObj>[].obs,empLeadList=<NewLeadObj>[].obs,ratingList=<NewLeadObj>[].obs,ratingList2=<NewLeadObj>[].obs,
+      allLeadList=<NewLeadObj>[].obs,empLeadList=<NewLeadObj>[].obs,empLeadList2=<NewLeadObj>[].obs,ratingList=<NewLeadObj>[].obs,ratingList2=<NewLeadObj>[].obs,
       newLeadList=<NewLeadObj>[].obs,searchNewLeadList=<NewLeadObj>[].obs,
       isLeadsList = [].obs,
       isGoodLeadList = [].obs,
@@ -4401,5 +4401,35 @@ var otp = "".obs,sentOtp = "".obs;
       apiService.errorDialog(context, e.toString());
     }
   }
+  void filterEmpLeads() {
+    mainCus.value=0;
+    pendingCus.value=0;
+    allCus.value=0;
+    for(var i=0;i<controllers.empLeadList2.length;i++){
+      if(controllers.empLeadList2[i].category==controllers.leadCategoryList.last.value){
+        controllers.mainCus.value++;
+      }else{
+        controllers.pendingCus.value++;
+      }
+      controllers.allCus.value++;
+    }
+    // final now = DateTime.now();
 
+    final filtered = empLeadList2.where((activity) {
+      // print(controllers.sortLead.value.isEmpty);
+      // print(controllers.sortLead.value=="Pending"&&activity.leadStatus != controllers.leadCategoryList.last.value);
+      // print(controllers.sortLead.value=="Completed"&&activity.leadStatus == controllers.leadCategoryList.last.value);
+      // print("controllers.leadCategoryList.last.value");
+      // print(controllers.leadCategoryList.last.value);
+      // print(activity.category);
+      // print(controllers.sortLead.value);
+      final matchesOrderType = controllers.sortLead.value.isEmpty ||
+          (controllers.sortLead.value=="Pending"&&activity.category != controllers.leadCategoryList.last.value)
+          ||(controllers.sortLead.value=="Completed"&&activity.category == controllers.leadCategoryList.last.value);
+
+      return matchesOrderType;
+
+    }).toList();
+    empLeadList.assignAll(filtered);
+  }
 }

@@ -65,6 +65,7 @@ class DateFilterBar extends StatelessWidget {
         10.width,
         SizedBox(
           height: 35,
+          width: MediaQuery.of(context).size.width*0.09    ,
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: colorsConst.secondary,
@@ -89,7 +90,7 @@ class DateFilterBar extends StatelessWidget {
             selectedSortBy.value = "";
           },
           child: Container(
-            width: 200,
+            width: MediaQuery.of(context).size.width*0.12,
             height: 30,
             decoration: BoxDecoration(
               color: colorsConst.secondary,
@@ -119,7 +120,7 @@ class DateFilterBar extends StatelessWidget {
                 }),
                 const SizedBox(width: 5),
                 const Icon(Icons.calendar_today, color: Colors.black, size: 17),
-                const SizedBox(width: 10),
+                const SizedBox(width: 5),
               ],
             ),
           ),

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -17,13 +18,20 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
   RxString selectedSortBy = "Today".obs;
   var selectedRange = Rxn<DateTimeRange>();
   final Rxn<DateTime> selectedMonth = Rxn<DateTime>();
+  String formatDate(DateTime date) {
+    final currentYear = DateTime.now().year;
 
+    return date.year == currentYear
+        ? DateFormat('dd/MM').format(date)
+        : DateFormat('dd/MM/yyyy').format(date);
+  }
   PickerDateRange? selectedDate;
   List<DateTime> datesBetween = [];
   String betweenDates="";
   var stDate="".obs;
   var enDate="".obs;
   var empId="".obs;
+  var empName="".obs;
   void showDatePickerDialog(BuildContext context) {
     DateTime today = DateTime.now();
     selectedDate = PickerDateRange(today, today);
@@ -97,6 +105,7 @@ class RepController extends GetxController with GetSingleTickerProviderStateMixi
                     betweenDates = formattedDates.join(' || ');
                     if(empId.value!=""){
                       getWholeReport(empId.value);
+                      apiService.getEmpLeads(repCtr.stDate.value,repCtr.enDate.value);
                     }
                     Navigator.of(context).pop();
                   },
@@ -270,10 +279,10 @@ var refreshData=true.obs;
         "thisMonthTo": thisMonthTo,
       };
 
-      debugPrint("================================================");
-      debugPrint("REQUEST DATA");
-      debugPrint("================================================");
-      debugPrint(data.toString());
+      // debugPrint("================================================");
+      // debugPrint("REQUEST DATA");
+      // debugPrint("================================================");
+      // debugPrint(data.toString());
 
       final request = await http.post(
         Uri.parse(scriptApi),
@@ -284,10 +293,10 @@ var refreshData=true.obs;
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      debugPrint("================================================");
-      debugPrint("RAW RESPONSE");
-      debugPrint("================================================");
-      log(request.body);
+      // debugPrint("================================================");
+      // debugPrint("RAW RESPONSE");
+      // debugPrint("================================================");
+      // log(request.body);
 
       if (request.statusCode == 401) {
 

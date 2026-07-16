@@ -426,13 +426,13 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                           //       color: Colors.grey.shade400),
                                           // ),
                                           columnWidths: const {
-                                            0: FixedColumnWidth(60),
-                                            1: FlexColumnWidth(),
-                                            2: FixedColumnWidth(80),
-                                            3: FixedColumnWidth(80),
-                                            4: FixedColumnWidth(80),
-                                            5: FixedColumnWidth(80),
-                                            6: FixedColumnWidth(100),
+                                            0: FlexColumnWidth(1),
+                                            1: FlexColumnWidth(3),
+                                            2: FlexColumnWidth(1),
+                                            3: FlexColumnWidth(1),
+                                            4: FlexColumnWidth(1),
+                                            5: FlexColumnWidth(1),
+                                            6: FlexColumnWidth(1),
                                           },
                                           children: [
 
@@ -735,13 +735,13 @@ class _ViewQuotationDetailsState extends State<ViewQuotationDetails> {
                                               //       color: Colors.grey.shade400),
                                               // ),
                                               columnWidths: const {
-                                                0: FixedColumnWidth(60),
-                                                1: FlexColumnWidth(),
-                                                2: FixedColumnWidth(80),
-                                                3: FixedColumnWidth(80),
-                                                4: FixedColumnWidth(80),
-                                                5: FixedColumnWidth(80),
-                                                6: FixedColumnWidth(100),
+                                                0: FlexColumnWidth(1),
+                                                1: FlexColumnWidth(3),
+                                                2: FlexColumnWidth(1),
+                                                3: FlexColumnWidth(1),
+                                                4: FlexColumnWidth(1),
+                                                5: FlexColumnWidth(1),
+                                                6: FlexColumnWidth(1),
                                               },
                                               children: [
 

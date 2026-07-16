@@ -826,7 +826,7 @@ var isSelectAll=false.obs;
     }
 
     // debugPrint("========== FILTER START ==========");
-    // debugPrint("selectedDateFilter : $selectedDateFilter");
+    // debugPrint("searchText : $searchText");
     // debugPrint("selectedMonth      : $selectedMonth");
     // debugPrint("selectedRange      : $selectedRange");
 
@@ -836,6 +836,7 @@ var isSelectAll=false.obs;
     final filtered = ordersList2.where((activity) {
       final activityDate =
       parseDate(activity.createdTs.toString());
+      debugPrint("activity.creator.toString() : ${activity.creator.toString()}");
 
       /// SEARCH
       bool matchesSearch =
@@ -1029,6 +1030,136 @@ var isSelectAll=false.obs;
         break;
     }
 
+    // debugPrint(
+    //     "Filtered Count After Sort : ${filtered.length}");
+
+    ordersList.assignAll(filtered);
+    orderValue.value=0;
+    for(var i=0;i<ordersList.value.length;i++){
+      var value=int.parse(ordersList[i].totalAmt);
+      orderValue.value+=value;
+    }
+    // debugPrint(
+    //     "ordersList Count : ${ordersList.length}");
+    //
+    // debugPrint("========== FILTER END ==========");
+  }
+
+  void empOrders({
+    required String searchText,
+    required String sortField,
+    required String sortOrder,
+    required String selectedDateFilter,
+    required DateTime? selectedMonth,
+    required DateTimeRange? selectedRange,
+  }) {
+    // print(searchText);
+    // print(selectedDateFilter);
+    // print(selectedMonth);
+    // print(selectedRange);
+
+    DateTime parseDate(String dateStr) {
+      try {
+        return DateTime.parse(dateStr);
+      } catch (e) {
+        return DateTime(1900);
+      }
+    }
+
+    // debugPrint("========== FILTER START ==========");
+    // debugPrint("searchText : $searchText");
+    // debugPrint("selectedMonth      : $selectedMonth");
+    // debugPrint("selectedRange      : $selectedRange");
+
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+
+    final filtered = ordersList2.where((activity) {
+      final activityDate =
+      parseDate(activity.createdTs.toString());
+
+      /// SEARCH
+      bool matchesSearch =
+          searchText.isEmpty ||
+              activity.creator.toString().toLowerCase().contains(searchText.toLowerCase());
+
+      /// DATE FILTER
+      bool matchesDate = true;
+
+      if (selectedRange != null) {
+        final start = DateTime(
+          selectedRange.start.year,
+          selectedRange.start.month,
+          selectedRange.start.day,
+        );
+
+        final end = DateTime(
+          selectedRange.end.year,
+          selectedRange.end.month,
+          selectedRange.end.day,
+          23,
+          59,
+          59,
+        );
+
+        matchesDate =
+            !activityDate.isBefore(start) &&
+                !activityDate.isAfter(end);
+      }
+
+      else if (selectedMonth != null) {
+        matchesDate =
+            activityDate.month ==
+                selectedMonth.month &&
+                activityDate.year ==
+                    selectedMonth.year;
+      }
+
+      else if (selectedDateFilter == "Today") {
+        final tomorrow =
+        todayStart.add(const Duration(days: 1));
+
+        matchesDate =
+            !activityDate.isBefore(todayStart) &&
+                activityDate.isBefore(tomorrow);
+      }
+
+      else if (selectedDateFilter == "Yesterday") {
+        final yesterday =
+        todayStart.subtract(const Duration(days: 1));
+
+        matchesDate =
+            !activityDate.isBefore(yesterday) &&
+                activityDate.isBefore(todayStart);
+      }
+
+      else if (selectedDateFilter == "Last 7 Days") {
+        final start =
+        todayStart.subtract(const Duration(days: 6));
+
+        matchesDate =
+            !activityDate.isBefore(start) &&
+                activityDate.isBefore(
+                    todayStart.add(
+                        const Duration(days: 1)));
+      }
+
+      else if (selectedDateFilter == "Last 30 Days") {
+        final start =
+        todayStart.subtract(const Duration(days: 29));
+
+        matchesDate =
+            !activityDate.isBefore(start) &&
+                activityDate.isBefore(
+                    todayStart.add(
+                        const Duration(days: 1)));
+      }
+
+      // debugPrint(
+      //     "Date : $activityDate => Match : $matchesDate");
+
+      return matchesSearch && matchesDate;
+    }).toList();
     // debugPrint(
     //     "Filtered Count After Sort : ${filtered.length}");
 
@@ -1764,12 +1895,27 @@ var isSelectAll=false.obs;
       return DateTime(1900);
     }
   }
-print("controllers.sortOrderType.value ${controllers.sortOrderType.value}");
+  fullOrder.value=0;
+  completedOrder.value=0;
+  pendingOrder.value=0;
+  quotationValue.value=0;
+
+  for(var i=0;i<quotationsList2.value.length;i++){
+    var value=quotationsList2[i].totalAmt;
+    quotationValue.value+=value;
+    if(quotationsList2[i].status=="Order Confirmed"){
+      completedOrder.value++;
+    }else{
+      pendingOrder.value++;
+    }
+    fullOrder++;
+  }
     // final now = DateTime.now();
 
     final filtered = quotationsList2.where((activity) {
       final matchesOrderType = controllers.sortOrderType.value.isEmpty ||
-          activity.status == controllers.sortOrderType.value;
+          (controllers.sortOrderType.value=="Pending"&&activity.status != "Order Confirmed")
+          ||activity.status == controllers.sortOrderType.value;
       final matchesSearch =
           searchText.isEmpty ||
               activity.creator.toString().toLowerCase().contains(searchText.toLowerCase()) ||
@@ -1920,17 +2066,6 @@ print("controllers.sortOrderType.value ${controllers.sortOrderType.value}");
       });
     }
     quotationsList.assignAll(filtered);
-    fullOrder.value=0;
-    completedOrder.value=0;
-    pendingOrder.value=0;
-    for(var i=0;i<quotationsList.value.length;i++){
-        if(quotationsList[i].status=="Order Confirmed"){
-          completedOrder.value++;
-        }else{
-          pendingOrder.value++;
-        }
-        fullOrder++;
-      }
     }
   late TabController productTab;
   // void changeTab(int index) {
@@ -1996,7 +2131,7 @@ print("controllers.sortOrderType.value ${controllers.sortOrderType.value}");
     productTab.dispose();
     super.onClose();
   }
-  var fullOrder=0.obs,completedOrder=0.obs,pendingOrder=0.obs,orderValue=0.obs;
+  var quotationValue=0.obs,fullOrder=0.obs,completedOrder=0.obs,pendingOrder=0.obs,orderValue=0.obs;
   RxList<Quotations> quotationsList=<Quotations>[].obs;
   RxList<Quotations> quotationsList2=<Quotations>[].obs;
   RxList<QuotationsDetails> quotationsListDetail=<QuotationsDetails>[].obs;

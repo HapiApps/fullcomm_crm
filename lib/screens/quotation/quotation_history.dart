@@ -42,7 +42,8 @@ class _QuotationHistoryState extends State<QuotationHistory> {
   var sizeInKB=0.0.obs;
   List<double> colWidths = [
     60,//s no
-    150,//Action
+    100,//Action
+    150,//ops
     270,//q no
     110,//status
     220,//cus
@@ -53,7 +54,6 @@ class _QuotationHistoryState extends State<QuotationHistory> {
     100,//amt
     100,//vali
     170,//date
-    100,//quo
   ];
   final ScrollController _controller = ScrollController();
   final ScrollController _horizontalController = ScrollController();
@@ -350,13 +350,21 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                       ),),
                                                       headerCell(1, CustomText(
                                                         textAlign: TextAlign.left,
-                                                        text: "Action",
+                                                        text: "Actions",
                                                         size: 15,
                                                         isBold: true,
                                                         isCopy: true,
                                                         colors: Colors.white,
                                                       ),),
-                                                      headerCell(2, Row(
+                                                      headerCell(2, CustomText(
+                                                        textAlign: TextAlign.left,
+                                                        text: "Operations",
+                                                        size: 15,
+                                                        isBold: true,
+                                                        isCopy: true,
+                                                        colors: Colors.white,
+                                                      ),),
+                                                      headerCell(3, Row(
                                                         children: [
                                                           CustomText(
                                                             textAlign: TextAlign.left,
@@ -428,7 +436,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
 
                                                         ],
                                                       ),),
-                                                      headerCell(3, Row(
+                                                      headerCell(4, Row(
                                                         children: [
                                                           CustomText( //4
                                                             textAlign: TextAlign.left,
@@ -500,7 +508,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                           ),
                                                         ],
                                                       ),),
-                                                      headerCell(4, Row(
+                                                      headerCell(5, Row(
                                                         children: [
                                                           CustomText( //2
                                                             textAlign: TextAlign.left,
@@ -571,7 +579,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                           ),
                                                         ],
                                                       ),),
-                                                      headerCell(5, Row(
+                                                      headerCell(6, Row(
                                                         children: [
                                                           CustomText( //2
                                                             textAlign: TextAlign.left,
@@ -643,7 +651,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                           ),
                                                         ],
                                                       ),),
-                                                      headerCell(6, Row(
+                                                      headerCell(7, Row(
                                                         children: [
                                                           CustomText(
                                                             textAlign: TextAlign.left,
@@ -715,7 +723,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                           ),
                                                         ],
                                                       ),),
-                                                      headerCell(7, Row(
+                                                      headerCell(8, Row(
                                                         children: [
                                                           CustomText(
                                                             textAlign: TextAlign.left,
@@ -787,7 +795,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                           ),
                                                         ],
                                                       ),),
-                                                      headerCell(8, Row(
+                                                      headerCell(9, Row(
                                                         children: [
                                                           CustomText(
                                                             textAlign: TextAlign.left,
@@ -858,7 +866,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                           ),
                                                         ],
                                                       ),),
-                                                      headerCell(9, Row(
+                                                      headerCell(10, Row(
                                                         children: [
                                                           CustomText(
                                                             textAlign: TextAlign.left,
@@ -929,7 +937,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                           ),
                                                         ],
                                                       ),),
-                                                      headerCell(10, Row(
+                                                      headerCell(11, Row(
                                                         children: [
                                                           CustomText( //4
                                                             textAlign: TextAlign.left,
@@ -1001,7 +1009,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                           ),
                                                         ],
                                                       ),),
-                                                      headerCell(11, Row(
+                                                      headerCell(12, Row(
                                                         children: [
                                                           CustomText( //4
                                                             textAlign: TextAlign.left,
@@ -1073,14 +1081,14 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                           ),
                                                         ],
                                                       ),),
-                                                      headerCell(12, CustomText(
-                                                        textAlign: TextAlign.left,
-                                                        text: "Quotation",
-                                                        size: 15,
-                                                        isBold: true,
-                                                        isCopy: true,
-                                                        colors: Colors.white,
-                                                      ),),
+                                                      // headerCell(12, CustomText(
+                                                      //   textAlign: TextAlign.left,
+                                                      //   text: "Quotation",
+                                                      //   size: 15,
+                                                      //   isBold: true,
+                                                      //   isCopy: true,
+                                                      //   colors: Colors.white,
+                                                      // ),),
                                                     ]),
                                               ],
                                             ),
@@ -1141,6 +1149,26 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                     colors: colorsConst
                                                                         .textColor,
                                                                   ),
+                                                                ),
+                                                              ),
+                                                              Padding(
+                                                                padding: const EdgeInsets.all(10.0),
+                                                                child: Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                                  children: [
+                                                                    InkWell(
+                                                                        onTap:(){
+                                                                          Get.to(ViewQuotationDetails(id:data.id.toString(), list: data,));
+                                                                        },
+                                                                        child: Icon(Icons.remove_red_eye,color: Colors.lightGreen)),
+                                                                    InkWell(
+                                                                        onTap: () {
+                                                                          String url = "$getImage?path=${Uri.encodeComponent(data.invoicePdf)}";
+                                                                          utils.showPdfDialog(
+                                                                              context, url);
+                                                                        },
+                                                                        child: Icon(Icons.picture_as_pdf_outlined,color: colorsConst.primary,)),
+                                                                  ],
                                                                 ),
                                                               ),
                                                               InkWell(
@@ -2080,27 +2108,6 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                     isCopy: true,
                                                                     colors: colorsConst
                                                                         .textColor,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              Padding(
-                                                                padding: const EdgeInsets
-                                                                    .all(10.0),
-                                                                child: InkWell(
-                                                                  onTap: () {
-                                                                    String url = "$getImage?path=${Uri.encodeComponent(data.invoicePdf)}";
-                                                                    utils.showPdfDialog(
-                                                                        context, url);
-                                                                  },
-                                                                  child: Padding(
-                                                                    padding: const EdgeInsets
-                                                                        .fromLTRB(
-                                                                        8, 10, 8, 10),
-                                                                    child: CustomText(
-                                                                      text: "View Quotation",
-                                                                      isCopy: false,
-                                                                      colors: colorsConst
-                                                                          .primary,),
                                                                   ),
                                                                 ),
                                                               ),

@@ -13,23 +13,23 @@ class DashboardCard extends StatelessWidget {
   final Color color;
   final Color selectedColor;
   final VoidCallback callback;
+  final double width;
 
   const DashboardCard({
     super.key,
     required this.title,
     required this.value,
     required this.icon,
-    required this.color, required this.callback, required this.selectedColor,
+    required this.color, required this.callback, required this.selectedColor, required this.width,
   });
 
   @override
   Widget build(BuildContext context) {
-
     return InkWell(
       onTap: callback,
       child: Container(
-        width: 240,
-        padding: const EdgeInsets.all(18),
+        // width: width,
+        padding: EdgeInsets.all(15),
         decoration: customDecoration.baseBackgroundDecoration(
             color: Colors.white,radius: 14,borderColor: selectedColor
         ),
@@ -39,7 +39,7 @@ class DashboardCard extends StatelessWidget {
             Row(
               children: [
                 CircleAvatar(
-                  radius: 24,
+                  radius: 20,
                   backgroundColor: color.withOpacity(.12),
                   child: Icon(icon, color: color),
                 ),

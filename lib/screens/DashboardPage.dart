@@ -1022,9 +1022,9 @@ void checkDate(){
                                                       final futureDate = DateTime.now().add(const Duration(days: 3));
                                                       final adjustedDate = futureDate.weekday == DateTime.sunday?futureDate.add(const Duration(days: 1)):futureDate;
                                                       controllers.fDate.value = DateFormat('dd-MM-yyyy').format(adjustedDate);
-                                                      controllers.fTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 15)));
+                                                      controllers.fTime.value = DateFormat('hh:mm a').format(DateTime.now().add(const Duration(minutes: 15)));
                                                       controllers.toDate.value = DateFormat('dd-MM-yyyy').format(adjustedDate);
-                                                      controllers.toTime.value = DateFormat('hh.mm a').format(DateTime.now().add(const Duration(minutes: 30)));
+                                                      controllers.toTime.value = DateFormat('hh:mm a').format(DateTime.now().add(const Duration(minutes: 30)));
 
                                                       setState(() {
                                                         controllers.clearSelectedCustomer();

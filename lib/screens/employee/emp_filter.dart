@@ -60,6 +60,7 @@ class _EmployeeFilterState extends State<EmployeeFilter> {
                     textEditingController: controllers.cusController,
                     onSelected: (value) {
                       repCtr.empId.value=value.id;
+                      repCtr.empName.value=value.name;
                       repCtr.getWholeReport(repCtr.empId.value);
                     },
                     onClear: () {

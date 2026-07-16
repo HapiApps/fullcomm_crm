@@ -85,7 +85,8 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                                 color: Colors.red,
                               );
                             }
-                          }, isLoading: false, backgroundColor: colorsConst.primary, radius: 5, width: MediaQuery.of(context).size.width*0.08,height: 40,isImage: false,text: "Add Employee",)
+                          }, isLoading: false, backgroundColor: colorsConst.primary, radius: 5,
+                            width: MediaQuery.of(context).size.width*0.1,height: 40,isImage: false,text: "Add Employee",)
                         ),
                         Row(
                           children: [
@@ -179,7 +180,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                   Table(
                     columnWidths: const {
                       0: FlexColumnWidth(2),//S.No
-                      1: FlexColumnWidth(2),//action
+                      1: FlexColumnWidth(2.5),//action
                       2: FlexColumnWidth(4),//emp
                       3: FlexColumnWidth(2),//role
                       4: FlexColumnWidth(2),//dep
@@ -490,7 +491,7 @@ class _EmployeeScreenState extends State<EmployeeScreen> {
                               child: Table(
                                 columnWidths:const {
                                   0: FlexColumnWidth(2),//S.No
-                                  1: FlexColumnWidth(2),//action
+                                  1: FlexColumnWidth(2.5),//action
                                   2: FlexColumnWidth(4),//emp
                                   3: FlexColumnWidth(2),//role
                                   4: FlexColumnWidth(2),//dep

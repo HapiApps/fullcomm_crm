@@ -1868,7 +1868,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                               height: 35,
                                               backgroundColor: colorsConst.primary,
                                               radius: 2,
-                                              width: MediaQuery.of(context).size.width*0.09,
+                                              width: MediaQuery.of(context).size.width*0.1,
                                               isImage: false,
                                               text: "Add Product",
                                               textColor: Colors.white,
