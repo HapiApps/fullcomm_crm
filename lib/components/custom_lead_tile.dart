@@ -724,7 +724,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
   }
 
   String getCategoryReason(String jsonString) {
-    final List data = jsonDecode(jsonString);
+    final List data = jsonString!="null"&&jsonString!=""?jsonDecode(jsonString):[];
 
     return data.map((e) {
       final category = e["category"] ?? "";

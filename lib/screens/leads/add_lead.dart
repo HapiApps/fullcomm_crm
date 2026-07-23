@@ -2468,7 +2468,7 @@ class _AddLeadState extends State<AddLead> {
                         crossAxisCount: 2, // 2 items per row
                         crossAxisSpacing: 50,
                         mainAxisSpacing: 10,
-                        childAspectRatio: 3,
+                        childAspectRatio: 10,
                       ),
                       itemBuilder: (context, index) {
                         final info = controllers.addList[index];

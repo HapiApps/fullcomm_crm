@@ -2049,6 +2049,7 @@ class ApiService {
             debugPrint("dataaaa: ${controllers.leadCategoryList[i].list.length}");
             debugPrint("dataaaa: ${controllers.leadCategoryList[i].list2.length}");
             controllers.leadCategoryList[i].list.add(NewLeadObj(
+              additionalInfo: controllers.addList.toString(),
               select: false,
               userId:customerId.toString(),
               addressId: addressId.toString(),
@@ -2120,6 +2121,7 @@ class ApiService {
               updatedTs: DateTime.now().toString(), additional: controllers.addList,
             ));
             controllers.leadCategoryList[i].list2.add(NewLeadObj(
+              additionalInfo: controllers.addList.toString(),
               select: false,
               userId:customerId.toString(),
               addressId: addressId.toString(),
@@ -3495,8 +3497,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      // debugPrint("Api headings");
-      // debugPrint(request.body);
+      debugPrint("Api headings");
+      debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
