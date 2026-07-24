@@ -4,17 +4,17 @@ import 'package:get/get.dart';
 import '../../components/Customtext.dart';
 import '../../components/custom_sidebar.dart';
 import '../../controller/controller.dart';
-import 'chat_list.dart';
-import 'chat_screen.dart';
+import 'i_chat_list.dart';
+import 'i_chat_screen.dart';
 
-class ChatDashboard extends StatefulWidget {
-  const ChatDashboard({super.key});
+class InstaDashBoard extends StatefulWidget {
+  const InstaDashBoard({super.key});
 
   @override
-  State<ChatDashboard> createState() => _ChatDashboardState();
+  State<InstaDashBoard> createState() => _InstaDashBoardState();
 }
 
-class _ChatDashboardState extends State<ChatDashboard> {
+class _InstaDashBoardState extends State<InstaDashBoard> {
 
   int selectedIndex = 0;
 
@@ -31,7 +31,7 @@ class _ChatDashboardState extends State<ChatDashboard> {
               padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
               child: Row(
                 children: [
-                  ChatList(
+                  InstaList(
                     chats: controllers.chatCustomers,
                     selectedIndex: selectedIndex,
                     onSelect: (index) {
@@ -47,7 +47,7 @@ class _ChatDashboardState extends State<ChatDashboard> {
                     child: controllers.chatCustomers.isEmpty
                         ? Center(
                           child: CustomText(text: "No Customers Found", isCopy: false,),
-                        ): ChatScreen(
+                        ): InstaChatScreen(
                       key: ValueKey(controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].id),
                       customerName: controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].name,
                       number: controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].phoneNo,

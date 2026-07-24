@@ -14,7 +14,7 @@ import '../controller/new_payroll_controller.dart';
 import '../controller/product_controller.dart';
 import '../controller/reminder_controller.dart';
 import '../screens/DashboardPage.dart';
-import '../screens/chat/chat_dashboard.dart';
+import '../screens/instagram/i_chat_dashboard.dart';
 import '../screens/leads/new_lead_page.dart';
 import '../screens/employee/employee_screen.dart';
 import '../screens/employee/role_management.dart';
@@ -32,6 +32,7 @@ import '../screens/reminder/reminder_page.dart';
 import '../screens/report_tables_screen.dart';
 import '../screens/settings/general_settings.dart';
 import '../screens/settings/quotation_settings.dart';
+import '../screens/whatsapp/w_chat_dashboard.dart';
 
 class SideBar extends StatelessWidget {
 
@@ -288,11 +289,22 @@ class SideBar extends StatelessWidget {
               controllers: controllers,
               colorsConst: colorsConst,
               selectedImage: assets.whatsapp2,
-              unSelectedImage: assets.whatsapp3,
+              unSelectedImage: assets.whatsapp,
               index: 109,
               icon: Icons.logout,
               label: "Chat",
-              page: const ChatDashboard(),
+              page: const WhatsAppDashboard(),
+            ),
+            SidebarItem(
+              context: context,
+              controllers: controllers,
+              colorsConst: colorsConst,
+              selectedImage: assets.whatsapp2,
+              unSelectedImage: assets.whatsapp,
+              index: 400,
+              icon: Icons.logout,
+              label: "Instagram",
+              page: const InstaDashBoard(),
             ),
             SidebarItem(
               context: context,

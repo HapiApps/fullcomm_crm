@@ -24,7 +24,7 @@ import '../../controller/settings_controller.dart';
 import '../../models/all_customers_obj.dart';
 import '../../models/customer_full_obj.dart';
 import '../../models/new_lead_obj.dart';
-import '../chat/chat_screen.dart';
+import '../whatsapp/w_chat_screen.dart';
 
 class ViewLead extends StatefulWidget {
   final int listIndex;
@@ -2549,7 +2549,7 @@ void checkType(){
                                             child: TabBarView(
                                               children: [
                                                 if(controllers.customerChatDetails.isNotEmpty)
-                                                  ChatScreen(
+                                                  WhatsAppChatScreen(
                                                   key: ValueKey(widget.id),
                                                   customerName: widget.name.toString(),
                                                   number: widget.mobileNumber.toString(),

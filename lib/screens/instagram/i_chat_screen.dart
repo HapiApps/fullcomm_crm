@@ -9,21 +9,21 @@ import '../../components/Customtext.dart';
 import '../../controller/controller.dart';
 import '../../models/customer_chat_obj.dart';
 
-class ChatScreen extends StatefulWidget {
+class InstaChatScreen extends StatefulWidget {
   final String id;
   final String customerName;
   final String number;
 
-  const ChatScreen({
+  const InstaChatScreen({
     super.key,
     required this.customerName, required this.number, required this.id,
   });
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
+  State<InstaChatScreen> createState() => _InstaChatScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _InstaChatScreenState extends State<InstaChatScreen> {
   final TextEditingController messageController =
   TextEditingController();
 

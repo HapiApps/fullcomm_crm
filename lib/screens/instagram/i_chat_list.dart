@@ -5,13 +5,13 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../../controller/controller.dart';
 
-class ChatList extends StatelessWidget {
+class InstaList extends StatelessWidget {
 
   final List chats;
   final int selectedIndex;
   final Function(int) onSelect;
 
-  ChatList({
+  const InstaList({
     super.key,
     required this.chats,
     required this.selectedIndex,
@@ -49,7 +49,7 @@ class ChatList extends StatelessWidget {
                     Get.back();
                   },
                     child: const Icon(Icons.arrow_back_rounded,size: 22,)),10.width,
-                const CustomText(text: "All", isCopy: false,size: 22,isBold: true,)
+                const CustomText(text: "Instagram Chats", isCopy: false,size: 22,isBold: true,)
               ],
             ),
           ),
