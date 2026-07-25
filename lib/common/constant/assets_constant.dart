@@ -5,6 +5,8 @@ class Assets {
 
   final String whatsapp = "assets/images/whatsapp.png";
   final String whatsapp2 = "assets/images/whatsapp2.png";
+  final String instaGram = "assets/images/instagram.png";
+  final String instaGram2 = "assets/images/instagram2.png";
   final String emp1 = "assets/images/emp1.png";
   final String emp2 = "assets/images/emp2.png";
   final String add = "assets/images/add.svg";

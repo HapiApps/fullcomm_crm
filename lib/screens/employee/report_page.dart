@@ -2285,7 +2285,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                                                               child: CustomText(
                                                                 textAlign: TextAlign
                                                                     .left,
-                                                                text: data.number
+                                                                text: data.instaId
                                                                     .toString(),
                                                                 size: 14,
                                                                 isCopy: true,

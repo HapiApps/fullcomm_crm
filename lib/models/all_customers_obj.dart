@@ -13,6 +13,8 @@ class AllCustomersObj {
   String? message;
   String? createdTs;
   String? type;
+  String? instaId;
+  String? instaRecipientId;
 
   AllCustomersObj({
     required this.id,
@@ -25,6 +27,8 @@ class AllCustomersObj {
     this.message,
     this.createdTs,
     this.type,
+    this.instaId,
+    this.instaRecipientId,
   });
 
   factory AllCustomersObj.fromJson(Map<String, dynamic> json) {
@@ -44,12 +48,16 @@ class AllCustomersObj {
       message: json['message']?.toString() ?? '',
       createdTs: json['created_ts']?.toString() ?? '',
       type: json['type']?.toString() ?? '',
+      instaId: json['insta_id']?.toString() ?? '',
+      instaRecipientId: json['insta_recipient_id']?.toString() ?? '',
     );
   }
 
 
   Map<String, dynamic> toJson() {
     return {
+      'insta_recipient_id': instaRecipientId,
+      'insta_id': instaId,
       'id': id,
       'name': name,
       'company_name': companyName,

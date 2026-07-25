@@ -32,7 +32,7 @@ class _InstaDashBoardState extends State<InstaDashBoard> {
               child: Row(
                 children: [
                   InstaList(
-                    chats: controllers.chatCustomers,
+                    chats: controllers.instagramCustomers,
                     selectedIndex: selectedIndex,
                     onSelect: (index) {
                       setState(() {
@@ -44,14 +44,15 @@ class _InstaDashBoardState extends State<InstaDashBoard> {
                   const VerticalDivider(width: 1),
 
                   Expanded(
-                    child: controllers.chatCustomers.isEmpty
+                    child: controllers.instagramCustomers.isEmpty
                         ? Center(
                           child: CustomText(text: "No Customers Found", isCopy: false,),
                         ): InstaChatScreen(
-                      key: ValueKey(controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].id),
-                      customerName: controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].name,
-                      number: controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].phoneNo,
-                      id: controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].id,
+                      key: ValueKey(controllers.instagramCustomers[selectedIndex >= controllers.instagramCustomers.length? 0: selectedIndex].id),
+                      customerName: controllers.instagramCustomers[selectedIndex >= controllers.instagramCustomers.length? 0: selectedIndex].name,
+                      instaId: controllers.instagramCustomers[selectedIndex >= controllers.instagramCustomers.length? 0: selectedIndex].instaId.toString(),
+                      id: controllers.instagramCustomers[selectedIndex >= controllers.instagramCustomers.length? 0: selectedIndex].id,
+                      recipientId: controllers.instagramCustomers[selectedIndex >= controllers.instagramCustomers.length? 0: selectedIndex].instaRecipientId.toString(),
                     ),
                   ),
                 ],

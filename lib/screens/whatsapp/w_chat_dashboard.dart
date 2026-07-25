@@ -32,7 +32,7 @@ class _WhatsAppDashboardState extends State<WhatsAppDashboard> {
               child: Row(
                 children: [
                   WhatsAppList(
-                    chats: controllers.chatCustomers,
+                    chats: controllers.whatsAppCustomers,
                     selectedIndex: selectedIndex,
                     onSelect: (index) {
                       setState(() {
@@ -44,14 +44,14 @@ class _WhatsAppDashboardState extends State<WhatsAppDashboard> {
                   const VerticalDivider(width: 1),
 
                   Expanded(
-                    child: controllers.chatCustomers.isEmpty
+                    child: controllers.whatsAppCustomers.isEmpty
                         ? Center(
                           child: CustomText(text: "No Customers Found", isCopy: false,),
                         ): WhatsAppChatScreen(
-                      key: ValueKey(controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].id),
-                      customerName: controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].name,
-                      number: controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].phoneNo,
-                      id: controllers.chatCustomers[selectedIndex >= controllers.chatCustomers.length? 0: selectedIndex].id,
+                      key: ValueKey(controllers.whatsAppCustomers[selectedIndex >= controllers.whatsAppCustomers.length? 0: selectedIndex].id),
+                      customerName: controllers.whatsAppCustomers[selectedIndex >= controllers.whatsAppCustomers.length? 0: selectedIndex].name,
+                      number: controllers.whatsAppCustomers[selectedIndex >= controllers.whatsAppCustomers.length? 0: selectedIndex].phoneNo,
+                      id: controllers.whatsAppCustomers[selectedIndex >= controllers.whatsAppCustomers.length? 0: selectedIndex].id,
                     ),
                   ),
                 ],

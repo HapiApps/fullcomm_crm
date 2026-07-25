@@ -49,7 +49,7 @@ class WhatsAppList extends StatelessWidget {
                     Get.back();
                   },
                     child: const Icon(Icons.arrow_back_rounded,size: 22,)),10.width,
-                const CustomText(text: "WhatsApp List", isCopy: false,size: 22,isBold: true,)
+                const CustomText(text: "WhatsApp Chats", isCopy: false,size: 22,isBold: true,)
               ],
             ),
           ),
@@ -59,12 +59,12 @@ class WhatsAppList extends StatelessWidget {
             child: TextField(
               onChanged: (value){
                 final input = value.toString().toLowerCase().trim();
-                controllers.chatCustomers.value = controllers.chatCustomers2.where((user) {
+                controllers.whatsAppCustomers.value = controllers.whatsAppCustomers2.where((user) {
                   return user.name.toString().toLowerCase().contains(input) ||
                       user.phoneNo.toString().toLowerCase().contains(input) ||
                       user.companyName.toString().toLowerCase().contains(input);
                 }).toList();
-                if (controllers.chatCustomers.isNotEmpty) {
+                if (controllers.whatsAppCustomers.isNotEmpty) {
                   onSelect(0);
                 }
               },
@@ -82,10 +82,10 @@ class WhatsAppList extends StatelessWidget {
 
           Expanded(
             child: ListView.builder(
-              itemCount: controllers.chatCustomers.length,
+              itemCount: controllers.whatsAppCustomers.length,
               itemBuilder: (_, index) {
 
-                final item = controllers.chatCustomers[index];
+                final item = controllers.whatsAppCustomers[index];
 
                 return InkWell(
                   onTap: () {

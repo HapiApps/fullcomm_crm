@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/billing_utils/sized_box.dart';
-import 'package:get/get.dart';
-
 import '../common/styles/decoration.dart';
 import 'Customtext.dart';
 

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fullcomm_crm/controller/reminder_controller.dart';
 import 'package:http/http.dart' as http;
@@ -8,7 +7,6 @@ import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-
 import '../common/constant/api.dart';
 import '../common/utilities/jwt_storage.dart';
 import '../components/month_calender.dart';

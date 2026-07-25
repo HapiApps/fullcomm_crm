@@ -1226,10 +1226,10 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                             controllers.qId.value="";
                                                                             data.dropValue = value;
                                                                             if ((data.invoiceDate=="null"||data.invoiceDate=="")&& data.dropValue == "Create Invoice") {
-                                                                              controllers.cusController.text="${data.name} - ${data.company}- ${data.number}";
+                                                                              controllers.cusController.text="${data.name} - ${data.company}- ${data.instaId}";
                                                                               controllers.selectCustomer(AllCustomersObj(
                                                                                   id: data.cusId.toString(), name: data.name,
-                                                                                  companyName: data.company, phoneNo: data.number,
+                                                                                  companyName: data.company, phoneNo: data.instaId,
                                                                                   email: data.email, leadStatus: "", category: ""));
                                                                               var idList=data.pId.split("||");
                                                                               var nameList=data.pName.split("||");
@@ -1821,7 +1821,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                                   isDelete: false,
                                                                                   callBack: (){
                                                                                     apiService.confirmOrderAPI(context,data.iNo.toString(),data.id.toString(),data.cusId.toString(),
-                                                                                        data.totalAmt.toString(),data.name.toString(),data.number.toString());
+                                                                                        data.totalAmt.toString(),data.name.toString(),data.instaId.toString());
                                                                                   },
                                                                                   controller: controllers.productCtr);
                                                                             }
@@ -2003,7 +2003,7 @@ class _QuotationHistoryState extends State<QuotationHistory> {
                                                                   child: CustomText(
                                                                     textAlign: TextAlign
                                                                         .left,
-                                                                    text: data.number
+                                                                    text: data.instaId
                                                                         .toString(),
                                                                     size: 14,
                                                                     isCopy: true,

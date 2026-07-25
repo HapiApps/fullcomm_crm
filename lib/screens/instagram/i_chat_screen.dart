@@ -12,11 +12,12 @@ import '../../models/customer_chat_obj.dart';
 class InstaChatScreen extends StatefulWidget {
   final String id;
   final String customerName;
-  final String number;
+  final String instaId;
+  final String recipientId;
 
   const InstaChatScreen({
     super.key,
-    required this.customerName, required this.number, required this.id,
+    required this.customerName, required this.instaId, required this.id, required this.recipientId,
   });
 
   @override
@@ -41,9 +42,9 @@ class _InstaChatScreenState extends State<InstaChatScreen> {
     if (text.isEmpty) return;
     setState(() {
       controllers.customerChatDetails.add(ChatModel(id: '', type: '0', message: text, isRead: '0', createdTs: DateTime.now().toString()));
-      for (int i = 0; i < controllers.chatCustomers.length; i++) {
-        if (controllers.chatCustomers[i].id == widget.id) {
-          controllers.chatCustomers[i] = controllers.chatCustomers[i].copyWith(
+      for (int i = 0; i < controllers.instagramCustomers.length; i++) {
+        if (controllers.instagramCustomers[i].id == widget.id) {
+          controllers.instagramCustomers[i] = controllers.instagramCustomers[i].copyWith(
             message: text,
             createdTs: DateTime.now().toString(),
             type: "0",
@@ -52,7 +53,7 @@ class _InstaChatScreenState extends State<InstaChatScreen> {
         }
       }
     });
-    apiService.sendWhatAppMessage(context,text,widget.number,widget.id);
+    apiService.sendInstagramMessage(context,text,widget.recipientId,widget.id);
 
     messageController.clear();
 
@@ -168,7 +169,7 @@ class _InstaChatScreenState extends State<InstaChatScreen> {
     loadChats();
   }
   Future<void> loadChats() async {
-    await apiService.getCustomerChats(widget.id);
+    await apiService.getCustomerChats(widget.id,'2');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollToBottom();
@@ -473,7 +474,7 @@ class _InstaChatScreenState extends State<InstaChatScreen> {
             MainAxisAlignment.center,
             children: [
               CustomText(text: widget.customerName, isCopy: true,isBold: true,),
-              CustomText(text: widget.number, isCopy: true,)
+              CustomText(text: widget.instaId, isCopy: true,)
             ],
           ),
 

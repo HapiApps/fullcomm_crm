@@ -2737,7 +2737,7 @@ class ApiService {
         getRoles();
         getSheet();
         getAllCustomers();
-        getAllChatCustomers();
+        getWhatsAppCustomers();
         getOpenedMailActivity(true);
         getReplyMailActivity(true);
         remController.allReminders("2");
@@ -3004,12 +3004,12 @@ class ApiService {
       throw Exception('Failed to load album');
     }
   }
-  Future getAllChatCustomers() async {
+  Future getWhatsAppCustomers() async {
     try {
-      controllers.chatCustomers.clear();
-      controllers.chatCustomers2.clear();
+      controllers.whatsAppCustomers.clear();
+      controllers.whatsAppCustomers2.clear();
       Map data = {
-        "search_type": "chat_clients",
+        "search_type": "whatsapp_customers",
         "cos_id": controllers.storage.read("cos_id"),
         "action": "get_data"
       };
@@ -3025,25 +3025,57 @@ class ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return getAllChatCustomers();
+          return getWhatsAppCustomers();
         } else {
           controllers.setLogOut();
         }
       }
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
-        controllers.chatCustomers.clear();
-        controllers.chatCustomers2.clear();
-        controllers.chatCustomers.value = response.map((e) => AllCustomersObj.fromJson(e)).toList();
-        controllers.chatCustomers2.value = response.map((e) => AllCustomersObj.fromJson(e)).toList();
+        controllers.whatsAppCustomers.value = response.map((e) => AllCustomersObj.fromJson(e)).toList();
+        controllers.whatsAppCustomers2.value = response.map((e) => AllCustomersObj.fromJson(e)).toList();
       } else {
-        controllers.chatCustomers.clear();
-        controllers.chatCustomers2.clear();
         throw Exception('Failed to load album');
       }
     } catch (e) {
-      controllers.chatCustomers.clear();
-      controllers.chatCustomers2.clear();
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future getInstagramCustomers() async {
+    try {
+      controllers.instagramCustomers.clear();
+      controllers.instagramCustomers2.clear();
+      Map data = {
+        "search_type": "instagram_customers",
+        "cos_id": controllers.storage.read("cos_id"),
+        "action": "get_data"
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      debugPrint("insta_clients");
+      debugPrint(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return getInstagramCustomers();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200) {
+        List response = json.decode(request.body);
+        controllers.instagramCustomers.value = response.map((e) => AllCustomersObj.fromJson(e)).toList();
+        controllers.instagramCustomers2.value = response.map((e) => AllCustomersObj.fromJson(e)).toList();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
       throw Exception('Failed to load album');
     }
   }
@@ -5448,7 +5480,8 @@ class ApiService {
         getRoles();
         getSheet();
         getAllCustomers();
-        getAllChatCustomers();
+        getWhatsAppCustomers();
+        getInstagramCustomers();
         getOpenedMailActivity(true);
         getReplyMailActivity(true);
         remController.allReminders("2");
@@ -5597,6 +5630,44 @@ class ApiService {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
           return sendWhatAppMessage(context,message,phone,companyId);
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200 && response["message"]=="Message sent successfully"){
+
+      } else {
+      }
+    }catch(e){
+      // apiService.errorDialog(Get.context!,e.toString());
+      // controllers.productCtr.reset();
+    }
+  }
+  Future sendInstagramMessage(BuildContext context,String message,String recipientId,String companyId) async {
+    try{
+      Map data = {
+        "action": "send_instagram_message",
+        "message": message,
+        "recipient_id": recipientId,
+        "company_id": companyId,
+        "cos_id": controllers.storage.read("cos_id"),
+        "send_by": controllers.storage.read("id")
+      };
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8")
+      );
+      debugPrint("request ${data}");
+      debugPrint("request ${request.body}");
+      Map<String, dynamic> response = json.decode(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return sendInstagramMessage(context,message,recipientId,companyId);
         } else {
           controllers.setLogOut();
         }
@@ -5759,7 +5830,7 @@ class ApiService {
     }
 
   }
-  Future<void> getCustomerChats(String id) async {
+  Future<void> getCustomerChats(String id,String metaType) async {
     controllers.chatLoading.value = false;
     controllers.customerChatDetails.clear();
     final url = Uri.parse(scriptApi);
@@ -5768,6 +5839,7 @@ class ApiService {
         "search_type": "customer_chats",
         "cos_id": controllers.storage.read("cos_id"),
         "id": id,
+        "meta_type": metaType,
         "action": "get_data"
       };
       final response = await http.post(
@@ -5785,7 +5857,7 @@ class ApiService {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return getCustomerChats(id);
+          return getCustomerChats(id,metaType);
         } else {
           controllers.setLogOut();
         }

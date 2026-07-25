@@ -7,7 +7,6 @@ import '../common/constant/assets_constant.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/constant/dashboard_assets.dart';
 import '../common/constant/default_constant.dart';
-import '../common/utilities/excel_export_service.dart';
 import '../common/widgets/log_in.dart';
 import '../controller/controller.dart';
 import '../controller/new_payroll_controller.dart';
@@ -292,15 +291,15 @@ class SideBar extends StatelessWidget {
               unSelectedImage: assets.whatsapp,
               index: 109,
               icon: Icons.logout,
-              label: "Chat",
+              label: "WhatsApp",
               page: const WhatsAppDashboard(),
             ),
             SidebarItem(
               context: context,
               controllers: controllers,
               colorsConst: colorsConst,
-              selectedImage: assets.whatsapp2,
-              unSelectedImage: assets.whatsapp,
+              selectedImage: assets.instaGram2,
+              unSelectedImage: assets.instaGram,
               index: 400,
               icon: Icons.logout,
               label: "Instagram",

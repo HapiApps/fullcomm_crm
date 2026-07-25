@@ -10,14 +10,12 @@ import 'package:fullcomm_crm/controller/table_controller.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/colors_constant.dart';
-import '../common/styles/styles.dart';
 import '../common/utilities/mobile_snackbar.dart';
 import '../common/utilities/utils.dart';
 import '../controller/controller.dart';
 import '../models/new_lead_obj.dart';
 import '../models/user_heading_obj.dart';
 import '../screens/leads/add_lead.dart';
-import '../screens/leads/visitingCard_scan.dart';
 import 'custom_loading_button.dart';
 import 'custom_text.dart';
 

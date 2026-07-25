@@ -59,17 +59,17 @@ class InstaList extends StatelessWidget {
             child: TextField(
               onChanged: (value){
                 final input = value.toString().toLowerCase().trim();
-                controllers.chatCustomers.value = controllers.chatCustomers2.where((user) {
+                controllers.instagramCustomers.value = controllers.instagramCustomers2.where((user) {
                   return user.name.toString().toLowerCase().contains(input) ||
-                      user.phoneNo.toString().toLowerCase().contains(input) ||
+                      user.instaId.toString().toLowerCase().contains(input) ||
                       user.companyName.toString().toLowerCase().contains(input);
                 }).toList();
-                if (controllers.chatCustomers.isNotEmpty) {
+                if (controllers.instagramCustomers.isNotEmpty) {
                   onSelect(0);
                 }
               },
               decoration: InputDecoration(
-                hintText: "Search Name Or Phone Number",
+                hintText: "Search Name Or Instagram Id",
                 prefixIcon:
                 const Icon(Icons.search),
                 border: OutlineInputBorder(
@@ -82,10 +82,10 @@ class InstaList extends StatelessWidget {
 
           Expanded(
             child: ListView.builder(
-              itemCount: controllers.chatCustomers.length,
+              itemCount: controllers.instagramCustomers.length,
               itemBuilder: (_, index) {
 
-                final item = controllers.chatCustomers[index];
+                final item = controllers.instagramCustomers[index];
 
                 return InkWell(
                   onTap: () {

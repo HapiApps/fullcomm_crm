@@ -41,9 +41,9 @@ class _WhatsAppChatScreenState extends State<WhatsAppChatScreen> {
     if (text.isEmpty) return;
     setState(() {
       controllers.customerChatDetails.add(ChatModel(id: '', type: '0', message: text, isRead: '0', createdTs: DateTime.now().toString()));
-      for (int i = 0; i < controllers.chatCustomers.length; i++) {
-        if (controllers.chatCustomers[i].id == widget.id) {
-          controllers.chatCustomers[i] = controllers.chatCustomers[i].copyWith(
+      for (int i = 0; i < controllers.whatsAppCustomers.length; i++) {
+        if (controllers.whatsAppCustomers[i].id == widget.id) {
+          controllers.whatsAppCustomers[i] = controllers.whatsAppCustomers[i].copyWith(
             message: text,
             createdTs: DateTime.now().toString(),
             type: "0",
@@ -168,7 +168,7 @@ class _WhatsAppChatScreenState extends State<WhatsAppChatScreen> {
     loadChats();
   }
   Future<void> loadChats() async {
-    await apiService.getCustomerChats(widget.id);
+    await apiService.getCustomerChats(widget.id,'1');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollToBottom();
