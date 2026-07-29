@@ -169,9 +169,9 @@ class _InstaChatScreenState extends State<InstaChatScreen> {
     loadChats();
   }
   Future<void> loadChats() async {
-    await apiService.getCustomerChats(widget.id,'2');
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      apiService.getCustomerChats(widget.id,'2');
       scrollToBottom();
     });
   }

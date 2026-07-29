@@ -3020,8 +3020,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      // debugPrint("chat_clients");
-      // debugPrint(request.body);
+      debugPrint("chat_clients");
+      debugPrint(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

@@ -168,9 +168,8 @@ class _WhatsAppChatScreenState extends State<WhatsAppChatScreen> {
     loadChats();
   }
   Future<void> loadChats() async {
-    await apiService.getCustomerChats(widget.id,'1');
-
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      apiService.getCustomerChats(widget.id,'1');
       scrollToBottom();
     });
   }
@@ -450,6 +449,7 @@ class _WhatsAppChatScreenState extends State<WhatsAppChatScreen> {
   }
 
   Widget buildHeader() {
+    print("widget.number ${widget.number}");
     return Container(
       height: 70,
       padding:

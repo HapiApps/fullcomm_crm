@@ -265,6 +265,9 @@ class _DashboardPageState extends State<DashboardPage>
       if(pyrlCtr.settingList.isEmpty){
         services.getRoleSettings(context);
       }
+      if(controllers.instagramCustomers.isEmpty){
+        apiService.getInstagramCustomers();
+      }
       apiService.currentVersion();
       controllers.selectedIndex.value = 100;
       DateTime now = DateTime.now();
