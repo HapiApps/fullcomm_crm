@@ -135,9 +135,17 @@ class ExcelExportService {
       sheet.getRangeByIndex(r, 1).setText(row['date']?.toString() ?? '');
       sheet.getRangeByIndex(r, 2).setText(row['invoiceNo']?.toString() ?? '');
       sheet.getRangeByIndex(r, 3).setText(row['customer']?.toString() ?? '');
-      sheet.getRangeByIndex(r, 4).setNumber((row['amount'] ?? 0).toDouble());
-      sheet.getRangeByIndex(r, 5).setNumber((row['gst'] ?? 0).toDouble());
-      sheet.getRangeByIndex(r, 6).setNumber((row['total'] ?? 0).toDouble());
+      sheet.getRangeByIndex(r, 4).setNumber(
+        double.tryParse(row['amount']?.toString() ?? '0') ?? 0.0,
+      );
+
+      sheet.getRangeByIndex(r, 5).setNumber(
+        double.tryParse(row['gst']?.toString() ?? '0') ?? 0.0,
+      );
+
+      sheet.getRangeByIndex(r, 6).setNumber(
+        double.tryParse(row['total']?.toString() ?? '0') ?? 0.0,
+      );
       r++;
     }
     _autoFit(sheet, headers.length);
@@ -152,9 +160,9 @@ class ExcelExportService {
       sheet.getRangeByIndex(r, 1).setText(row['date']?.toString() ?? '');
       sheet.getRangeByIndex(r, 2).setText(row['billNo']?.toString() ?? '');
       sheet.getRangeByIndex(r, 3).setText(row['supplier']?.toString() ?? '');
-      sheet.getRangeByIndex(r, 4).setNumber((row['amount'] ?? 0).toDouble());
-      sheet.getRangeByIndex(r, 5).setNumber((row['gst'] ?? 0).toDouble());
-      sheet.getRangeByIndex(r, 6).setNumber((row['total'] ?? 0).toDouble());
+      sheet.getRangeByIndex(r, 4).setNumber(double.tryParse(row['amount']?.toString() ?? '0') ?? 0.0);
+      sheet.getRangeByIndex(r, 5).setNumber(double.tryParse(row['gst']?.toString() ?? '0') ?? 0.0);
+      sheet.getRangeByIndex(r, 6).setNumber(double.tryParse(row['total']?.toString() ?? '0') ?? 0.0);
       r++;
     }
     _autoFit(sheet, headers.length);
