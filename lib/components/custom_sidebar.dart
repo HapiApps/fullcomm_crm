@@ -527,26 +527,26 @@ class SideBar extends StatelessWidget {
                 ],
               );
             }),
-            SidebarItem(
-              context: context,
-              controllers: controllers,
-              colorsConst: colorsConst,
-              selectedImage: "assets/images/product1.png",
-              unSelectedImage: "assets/images/product.png",
-              index: 201,
-              icon: Icons.logout,
-              label: "Report",
-              onTap: (){
-                Navigator.push(
-                  context,
-                  PageRouteBuilder(
-                    pageBuilder: (context, animation1, animation2) => ReportTablesScreen(),
-                    transitionDuration: Duration.zero,
-                    reverseTransitionDuration: Duration.zero,
-                  ),
-                );
-              },
-            ),
+            // SidebarItem(
+            //   context: context,
+            //   controllers: controllers,
+            //   colorsConst: colorsConst,
+            //   selectedImage: "assets/images/product1.png",
+            //   unSelectedImage: "assets/images/product.png",
+            //   index: 201,
+            //   icon: Icons.logout,
+            //   label: "Report",
+            //   onTap: (){
+            //     Navigator.push(
+            //       context,
+            //       PageRouteBuilder(
+            //         pageBuilder: (context, animation1, animation2) => ReportTablesScreen(),
+            //         transitionDuration: Duration.zero,
+            //         reverseTransitionDuration: Duration.zero,
+            //       ),
+            //     );
+            //   },
+            // ),
             // Logout item (special because it shows dialog)
             SidebarItem(
               context: context,
