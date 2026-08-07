@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/components/custom_loading_button.dart';
 import 'package:fullcomm_crm/components/custom_textfield.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
+import 'package:fullcomm_crm/controller/settings_controller.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'package:rounded_loading_button_plus/rounded_loading_button.dart';
 import '../billing_utils/sized_box.dart';
@@ -718,6 +720,175 @@ class EmployeeProvider with ChangeNotifier {
     }
   }
 
+  void addRoleDialog(BuildContext context) {
+    String? roleError;
+    String? descriptionError;
+    String? permissionError;
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              child: Container(
+                width: 420,
+                // height: 400,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    /// 🔵 HEADER
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                      decoration: BoxDecoration(
+                        color: colorsConst.primary,
+                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: CustomText(
+                              text: "Add Role",
+                              size: 16,
+                              isBold: true,
+                              colors: Colors.white,
+                              isCopy: false,
+                            ),
+                          ),
+
+                          8.width,
+
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Icon(Icons.close, color: Colors.white),
+                          )
+                        ],
+                      ),
+                    ),30.height,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomTextField(isOptional: true,
+                          width: MediaQuery.of(context).size.width*0.3,
+                          onChanged: (value){
+                            controllers.firstCaps(value.toString(), settingsController.roleController);
+                          },
+                          text: "Role Name", hintText: "Role Name",
+                          controller: settingsController.roleController),
+                    ),20.height,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomTextField(isOptional: false, width: MediaQuery.of(context).size.width*0.3,
+                          onChanged: (value){
+                            controllers.firstCaps(value.toString(), settingsController.descriptionController);
+                          },
+                          text: "Description", hintText: "Description",
+                          controller: settingsController.descriptionController),
+                    ),10.height,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width*0.3,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                CustomText(text: "Permissions",colors: const Color(0xff4B5563),
+                                  size: 13,
+                                  isCopy: false,),
+                                const CustomText(
+                                  text: "*",
+                                  isCopy: false,
+                                  colors: Colors.red,
+                                  size: 25,
+                                )
+                              ],
+                            ),
+                            5.height,
+                            DropdownButtonFormField<String>(
+                              value: settingsController.permission,
+                              dropdownColor: Colors.white,
+                              style: GoogleFonts.lato(
+                                color: Colors.black,
+                                fontSize: 14,
+                              ),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                errorText: permissionError,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(color: Colors.grey.shade300),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(color: Colors.grey.shade300),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                  borderSide: BorderSide(color: colorsConst.primary),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                              ),
+                              items: settingsController.permissionList.map(
+                                    (e) => DropdownMenuItem(
+                                  value: e,
+                                  child: Text(
+                                    e,
+                                    style: GoogleFonts.lato(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ),
+                              ).toList(),
+                              onChanged: (v) {
+                                setState(() {
+                                  settingsController.permission = v;
+                                  if(settingsController.permission!=null){
+                                    permissionError = null;
+                                  }
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    20.height,
+                    CustomLoadingButton(
+                        callback: () async {
+                          setState(() {
+                            roleError = settingsController.roleController.text.trim().isEmpty
+                                ? "Please enter role name"
+                                : null;
+                            permissionError = settingsController.permission == null
+                                ? "Please select permission"
+                                : null;
+                          });
+                          if (roleError == null && permissionError == null) {
+                            await settingsController.insertRoleAPI(context);
+                          } else {
+                            controllers.productCtr.reset();
+                          }
+                        }, isLoading: true, controller: addRoleButtonController,text: "Save",
+                        backgroundColor: colorsConst.primary, radius: 10, width: 100)
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
   void addDepartmentDialog(BuildContext context) {
     showDialog(
       context: context,

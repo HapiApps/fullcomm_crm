@@ -2242,6 +2242,8 @@ void addListValues(){
                                   thickness: 1,
                                 ),
                                 20.height,
+                                Obx(()=>controllers.getColumn.value==false?
+                                CircularProgressIndicator():
                                 GridView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
@@ -2259,7 +2261,7 @@ void addListValues(){
                                         text:info.fieldName.toString(),width: textFieldSize,
                                         controller: info.controller!);
                                   },
-                                ),
+                                )),
                                 50.height,
                               ],
                             ),

@@ -2460,6 +2460,8 @@ class _AddLeadState extends State<AddLead> {
                       thickness: 1,
                     ),
                     20.height,
+                    Obx(()=>controllers.getColumn.value==false?
+                    CircularProgressIndicator():
                     GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -2477,7 +2479,7 @@ class _AddLeadState extends State<AddLead> {
                             text:info.fieldName.toString(),width: textFieldSize,
                             controller: info.controller!);
                       },
-                    ),
+                    )),
                     15.height,
                   ]),
                 ),

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:fullcomm_crm/controller/reminder_controller.dart';
 import 'package:http/http.dart' as http;
@@ -465,10 +466,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      // debugPrint("================================================");
-      // debugPrint("RAW RESPONSE");
-      // debugPrint("================================================");
-      // log(request.body);
+      debugPrint("================================================");
+      debugPrint("RAW RESPONSE");
+      debugPrint("================================================");
+      print(request.body);
 
       if (request.statusCode == 401) {
 
@@ -498,10 +499,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         Map<String, dynamic>.from(
             response['data']['dashboard_report']);
 
-        // debugPrint("================================================");
-        // debugPrint("DASHBOARD REPORT");
-        // debugPrint("================================================");
-        // debugPrint(dashboardReport.toString());
+        debugPrint("================================================");
+        debugPrint("DASHBOARD REPORT");
+        debugPrint("================================================");
+        debugPrint(dashboardReport.toString());
 
         dashController.totalMails.value =
             dashboardReport["total_mails"].toString();
@@ -523,12 +524,12 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         dashController.totalAmt.value =
             dashboardReport["total_amount"].toString();
 
-        // debugPrint("totalMails => ${dashController.totalMails.value}");
-        // debugPrint("totalCalls => ${dashController.totalCalls.value}");
-        // debugPrint("totalSuspects => ${dashController.totalSuspects.value}");
-        // debugPrint("totalQuotations => ${dashController.totalQuotations.value}");
-        // debugPrint("totalOrders => ${dashController.totalOrders.value}");
-        // debugPrint("totalAmt => ${dashController.totalAmt.value}");
+        debugPrint("totalMails => ${dashController.totalMails.value}");
+        debugPrint("totalCalls => ${dashController.totalCalls.value}");
+        debugPrint("totalSuspects => ${dashController.totalSuspects.value}");
+        debugPrint("totalQuotations => ${dashController.totalQuotations.value}");
+        debugPrint("totalOrders => ${dashController.totalOrders.value}");
+        debugPrint("totalAmt => ${dashController.totalAmt.value}");
 
         /// =====================================================
         /// Activity Customer REPORT
@@ -571,10 +572,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         List<dynamic> rangeReport =
         List<dynamic>.from(response['data']['range_report']);
 
-        // debugPrint("================================================");
-        // debugPrint("RANGE REPORT");
-        // debugPrint("================================================");
-        // debugPrint(rangeReport.toString());
+        debugPrint("================================================");
+        debugPrint("RANGE REPORT");
+        debugPrint("================================================");
+        debugPrint(rangeReport.toString());
 
         controllers.rangeStatusList.value =
         List<Map<String, dynamic>>.from(rangeReport);
@@ -615,10 +616,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         Map<String, dynamic>.from(
             response['data']['rating_report']);
 
-        // debugPrint("================================================");
-        // debugPrint("RATING REPORT");
-        // debugPrint("================================================");
-        // debugPrint(ratingReport.toString());
+        debugPrint("================================================");
+        debugPrint("RATING REPORT");
+        debugPrint("================================================");
+        debugPrint(ratingReport.toString());
 
         totalCold.value =
         "${ratingReport["lead_cold"] ?? 0}";
@@ -654,17 +655,17 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         List<dynamic>.from(
             response['data']['lead_count_report']);
 
-        // debugPrint("================================================");
-        // debugPrint("LEAD COUNT REPORT");
-        // debugPrint("================================================");
-        // debugPrint(leadCountReport.toString());
+        debugPrint("================================================");
+        debugPrint("LEAD COUNT REPORT");
+        debugPrint("================================================");
+        debugPrint(leadCountReport.toString());
 
         color = generateColors(leadCountReport.length);
 
         leadReport.value = leadCountReport;
 
-        // debugPrint("leadReport => ${leadReport.value}");
-        // debugPrint("color => $color");
+        debugPrint("leadReport => ${leadReport.value}");
+        debugPrint("color => $color");
 
         /// =====================================================
         /// VISIT STATUS REPORT
@@ -674,10 +675,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         List<dynamic>.from(
             response['data']['visit_status_report']);
 
-        // debugPrint("================================================");
-        // debugPrint("VISIT STATUS REPORT");
-        // debugPrint("================================================");
-        // debugPrint(callStatusReport.toString());
+        debugPrint("================================================");
+        debugPrint("VISIT STATUS REPORT");
+        debugPrint("================================================");
+        debugPrint(callStatusReport.toString());
 
         visitStatusReport.value = callStatusReport;
 

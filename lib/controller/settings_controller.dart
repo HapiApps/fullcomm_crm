@@ -1,10 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/common/billing_data/local_data.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/utilities/jwt_storage.dart';
 import 'package:fullcomm_crm/models/office_hours_obj.dart';
 import 'package:fullcomm_crm/models/role_obj.dart';
+import 'package:fullcomm_crm/provider/employee_provider.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
@@ -19,6 +22,280 @@ import 'controller.dart';
 final settingsController = Get.put(SettingsController());
 
 class SettingsController extends GetxController with GetSingleTickerProviderStateMixin {
+
+
+  void showAddRoleDialog(context) {
+    String? roleError;
+    String? descriptionError;
+    String? permissionError;
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              insetPadding: const EdgeInsets.symmetric(horizontal: 80, vertical: 50),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: Container(
+                width: 630,
+                color: Colors.white,
+                padding: const EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      /// Header
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Add Role",
+                            style: GoogleFonts.lato(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: const Text(
+                              "×",
+                              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Divider(thickness: 1, color: Colors.grey.shade300),
+                      const SizedBox(height: 8),
+
+                      /// Role Name
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Role Name",
+                              style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
+                          const CustomText(
+                            text: "*",
+                            isCopy: false,
+                            colors: Colors.red,
+                            size: 25,
+                          )
+                        ],
+                      ),
+                      5.height,
+                      TextFormField(
+                        textCapitalization: TextCapitalization.sentences,
+                        controller: settingsController.roleController,
+                        style: GoogleFonts.lato(
+                          color: Colors.black,
+                          fontSize: 17,
+                        ),
+                        onChanged: (value){
+                          controllers.firstCaps(value, settingsController.roleController);
+                          if(settingsController.roleController.text.trim().isNotEmpty){
+                            setState(() {
+                              roleError = null;
+                            });
+                          }
+                        },
+                        decoration: InputDecoration(
+                          hintText: "Role Name",
+                          errorText: roleError,
+                          hintStyle: TextStyle(
+                            color: const Color(0xFFCCCCCC),
+                            fontSize: 17,
+                            fontFamily: GoogleFonts.lato().fontFamily,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: colorsConst.primary),
+                          ),
+                        ),
+                      ),
+                      15.height,
+                      /// Description
+                      Text("Description",
+                          style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
+                      5.height,
+                      SizedBox(
+                        height: 100,
+                        width: 600,
+                        child: TextFormField(
+                          textCapitalization: TextCapitalization.sentences,
+                          controller: settingsController.descriptionController,
+                          maxLines: 3,
+                          style: GoogleFonts.lato(
+                            color: Colors.black,
+                            fontSize: 17,
+                          ),
+                          onChanged: (value){
+                            controllers.firstCaps(value, settingsController.descriptionController);
+                          },
+                          decoration: InputDecoration(
+                            hintText: "Description",
+                            errorText: descriptionError,
+                            hintStyle: GoogleFonts.lato(
+                              color: const Color(0xFFCCCCCC),
+                              fontSize: 17,
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: BorderSide(
+                                color: Colors.grey.shade300,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: BorderSide(color: Colors.grey.shade300),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              borderSide: BorderSide(color: colorsConst.primary),
+                            ),
+                          ),
+                        ),
+                      ),
+                      5.height,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text("Permissions",
+                              style: GoogleFonts.lato(fontSize: 17, color: const Color(0xff737373))),
+                          const CustomText(
+                            text: "*",
+                            isCopy: false,
+                            colors: Colors.red,
+                            size: 25,
+                          )
+                        ],
+                      ),
+                      5.height,
+                      DropdownButtonFormField<String>(
+                        value: settingsController.permission,
+                        dropdownColor: Colors.white,
+                        style: GoogleFonts.lato(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.white,
+                          errorText: permissionError,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: Colors.grey.shade300),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(4),
+                            borderSide: BorderSide(color: colorsConst.primary),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                        ),
+                        items: settingsController.permissionList.map(
+                              (e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(
+                              e,
+                              style: GoogleFonts.lato(
+                                color: Colors.black,
+                                fontSize: 17,
+                              ),
+                            ),
+                          ),
+                        ).toList(),
+                        onChanged: (v) {
+                          setState(() {
+                            settingsController.permission = v;
+                            if(settingsController.permission!=null){
+                              permissionError = null;
+                            }
+                          });
+                        },
+                      ),
+                      15.height,
+
+                      /// Action Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            width: 80,
+                            height: 35,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.white,
+                                foregroundColor: Colors.black,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(7),
+                                  side: const BorderSide(color: Color(0xff0078D7)),
+                                ),
+                                padding: EdgeInsets.zero,
+                                elevation: 0,
+                              ),
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text(
+                                "Cancel",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          CustomLoadingButton(
+                            callback: () async {
+                              setState(() {
+                                roleError = settingsController.roleController.text.trim().isEmpty
+                                    ? "Please enter role name"
+                                    : null;
+                                permissionError = settingsController.permission == null
+                                    ? "Please select permission"
+                                    : null;
+                              });
+                              if (roleError == null && permissionError == null) {
+                                await settingsController.insertRoleAPI(context);
+                              } else {
+                                controllers.productCtr.reset();
+                              }
+                            },
+                            height: 40,
+                            isLoading: true,
+                            backgroundColor: colorsConst.primary,
+                            radius: 7,
+                            width: 140,
+                            controller: controllers.productCtr,
+                            isImage: false,
+                            text: "Save Role",
+                            textColor: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   TextEditingController roleController          = TextEditingController();
   TextEditingController descriptionController   = TextEditingController();
   TextEditingController updateRoleController    = TextEditingController();
@@ -288,7 +565,8 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
     }
   }
 
-  Future insertRoleAPI(BuildContext context) async {
+  Future insertRoleAPI(BuildContext context,
+      {EmployeeProvider? employeeProvider}) async {
     try{
       Map data = {
         "action": "insert_role",
@@ -312,16 +590,27 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return insertRoleAPI(context);
+          return insertRoleAPI(context,employeeProvider: employeeProvider);
         } else {
           controllers.setLogOut();
         }
       }
       if (request.statusCode == 200 && response["message"]=="Role added successfully"){
+        final newDept = RoleModel(id: response["data"]["id"],
+            cosId: controllers.storage.read("cos_id"), uId: response["data"]["id"],
+            roleName: roleController.text.trim(), description: descriptionController.text.trim(), permission: permission.toString());
+
+        employeeProvider?.role = newDept;
+        employeeProvider?.roleId = newDept.id;
+
+        roleList.add(RoleModel(id: response["data"]["id"],
+            cosId: controllers.storage.read("cos_id"), uId: response["data"]["id"],
+            roleName: roleController.text.trim(), description: descriptionController.text.trim(), permission: permission.toString()));   // ✅ update real list
+
         roleController.clear();
         descriptionController.clear();
         permission=null;
-        allRoles();
+        // allRoles();
         Navigator.pop(context);
         utils.snackBar(context: context, msg: "Role added successfully", color: Colors.green);
         controllers.productCtr.reset();

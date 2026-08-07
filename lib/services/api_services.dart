@@ -5224,6 +5224,7 @@ class ApiService {
   }
   Future getCustomFields() async {
     try {
+      controllers.getColumn.value=false;
       controllers.addList.clear();
       Map data = {
         "search_type": "custom_fields",
@@ -5251,10 +5252,12 @@ class ApiService {
       if (request.statusCode == 200) {
         final List<dynamic> response = jsonDecode(request.body);
         controllers.addList.value = response.map<AdditionalInfo>((e) => AdditionalInfo.fromJson(e)).toList();
-
+        controllers.getColumn.value=true;
       } else {
+        controllers.getColumn.value=true;
       }
     } catch (e) {
+      controllers.getColumn.value=true;
       // controllers.versionActive.value = false;
     }
   }

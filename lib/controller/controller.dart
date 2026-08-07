@@ -37,6 +37,7 @@ final controllers = Get.put(Controller());
 
 class Controller extends GetxController with GetSingleTickerProviderStateMixin {
   RxList<AdditionalInfo> addList=<AdditionalInfo>[].obs;
+  var getColumn=true.obs;
   late TabController tabController;
   var tabCurrentIndex = 0.obs;
   bool isDialogOpen = false;

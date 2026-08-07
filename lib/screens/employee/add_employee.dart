@@ -233,18 +233,25 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                                   children: [
                                     Row(
                                       children: [
-                                        CustomText(
-                                          text: "Role",
-                                          colors: const Color(0xff757575),
-                                          size: 13,
-                                          isCopy: false,
+                                        Row(
+                                          children: [
+                                            CustomText(
+                                              text: "Role",
+                                              colors: const Color(0xff757575),
+                                              size: 13,
+                                              isCopy: false,
+                                            ),
+                                            const CustomText(
+                                              text: "*",
+                                              colors: Colors.red,
+                                              size: 25,
+                                              isCopy: false,
+                                            )
+                                          ],
                                         ),
-                                        const CustomText(
-                                          text: "*",
-                                          colors: Colors.red,
-                                          size: 25,
-                                          isCopy: false,
-                                        )
+                                        IconButton(onPressed: (){
+                                          employeeProvider.addRoleDialog(context);
+                                        }, icon: Icon(Icons.add))
                                       ],
                                     ),
                                     Container(
