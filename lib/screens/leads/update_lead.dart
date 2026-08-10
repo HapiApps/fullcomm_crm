@@ -936,6 +936,9 @@ void addListValues(){
                                                 reverse: true,
                                                 itemCount:controllers.numberList.length,
                                                 itemBuilder: (context,index){
+                                                  if(controllers.numberList[index].text.isNotEmpty&&controllers.leadWhatsCrt[0].text==controllers.numberList[index].text){
+                                                    checkList[index]=true;
+                                                  }
                                                   return Column(
                                                       children:[
                                                         if(index==controllers.numberList.length-1)

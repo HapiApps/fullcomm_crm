@@ -2720,8 +2720,8 @@ void checkDate(){
                                                   ...dashController.selectFilter.value =="Weekly"?
                                                   dashController.comparisonReport.map((e) {
 
-                                                    int last = int.parse(e['last_week'].toString());
-                                                    int current = int.parse(e['this_week'].toString());
+                                                    int last = int.tryParse(e['last_week']?.toString() ?? '0') ?? 0;
+                                                    int current = int.tryParse(e['this_week']?.toString() ?? '0') ?? 0;
                                                     int diff = current - last;
 
                                                     return Padding(
@@ -2735,7 +2735,7 @@ void checkDate(){
                                                               SizedBox(
                                                                 width: screenWidth/5,
                                                                 child: CustomText(
-                                                                  text:e['category'],isCopy: true,isBold: true,textAlign: TextAlign.start
+                                                                  text:e['category']??'',isCopy: true,isBold: true,textAlign: TextAlign.start
                                                                 ),
                                                               ),
                                                               SizedBox(
@@ -2780,9 +2780,8 @@ void checkDate(){
                                                     );
                                                   }).toList():
                                                   dashController.comparisonReport2.map((e) {
-
-                                                    int last = int.parse(e['last_week'].toString());
-                                                    int current = int.parse(e['this_week'].toString());
+                                                    int last = int.tryParse(e['last_week']?.toString() ?? '0') ?? 0;
+                                                    int current = int.tryParse(e['this_week']?.toString() ?? '0') ?? 0;
                                                     int diff = current - last;
 
                                                     return Padding(
@@ -2796,7 +2795,7 @@ void checkDate(){
                                                               SizedBox(
                                                                 width: screenWidth/5,
                                                                 child: CustomText(
-                                                                  text:e['category'],isCopy: true,isBold: true,textAlign: TextAlign.start
+                                                                  text:e['category']??'',isCopy: true,isBold: true,textAlign: TextAlign.start
                                                                 ),
                                                               ),
                                                               SizedBox(

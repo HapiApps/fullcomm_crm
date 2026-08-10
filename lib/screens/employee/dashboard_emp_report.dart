@@ -98,18 +98,18 @@ class _EmployeePerformanceTableState extends State<EmployeePerformanceTable> {
                 padding: const EdgeInsets.fromLTRB(0, 3, 0, 3),
                 child: Row(
                   children: [
-                    EmployeeProfile(name: data["s_name"],),
+                    EmployeeProfile(name: data["s_name"]??'',),
                     SizedBox(
                       width: 60,
                       child: CustomText(
-                          text: data["leads"].toString(),
+                          text: (data["leads"]?? 0).toString(),
                           isCopy: false,
                           isBold: true,textAlign: TextAlign.start
                       ),
                     ),SizedBox(
                       width: 95,
                       child: CustomText(
-                          text: data["customers"].toString(),
+                          text: (data["customers"]?? 0).toString(),
                           isCopy: false,
                           isBold: true,textAlign: TextAlign.start
                       ),
@@ -117,28 +117,28 @@ class _EmployeePerformanceTableState extends State<EmployeePerformanceTable> {
                     SizedBox(
                       width: 95,
                       child: CustomText(
-                          text: data["quotations"].toString(),
+                          text: (data["quotations"]?? 0).toString(),
                           isCopy: false,
                           isBold: true,textAlign: TextAlign.start
                       ),
                     ),SizedBox(
                       width: 110,
                       child: CustomText(
-                          text: data["meetings"].toString(),
+                          text: (data["meetings"]?? 0).toString(),
                           isCopy: false,
                           isBold: true,textAlign: TextAlign.start
                       ),
                     ),SizedBox(
                       width: 50,
                       child: CustomText(
-                          text: data["calls"].toString(),
+                          text: (data["calls"]?? 0).toString(),
                           isCopy: false,
                           isBold: true,textAlign: TextAlign.start
                       ),
                     ),SizedBox(
                       width: 50,
                       child: CustomText(
-                        text: data["mails"].toString(),
+                        text: (data["mails"]?? 0).toString(),
                         isCopy: false,
                         isBold: true,textAlign: TextAlign.start,
                       ),
@@ -146,10 +146,11 @@ class _EmployeePerformanceTableState extends State<EmployeePerformanceTable> {
                     SizedBox(
                       width: 100,
                       child: PerformanceBar(
-                        percentage: double.parse(data["total_activity"].toString()),
+                        percentage: double.tryParse(
+                          (data["total_activity"] ?? 0).toString(),
+                        ) ?? 0,
                       ),
                     )
-
                   ],
                 ),
               );

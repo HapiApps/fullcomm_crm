@@ -2,6 +2,7 @@ import 'package:animated_custom_dropdown/custom_dropdown.dart';
 import 'package:flutter/material.dart';
 import '../../common/constant/colors_constant.dart';
 import '../../controller/reminder_controller.dart';
+import 'Customtext.dart';
 
 class SearchCustomDropdown<T> extends StatefulWidget {
   const SearchCustomDropdown(
@@ -26,93 +27,68 @@ class SearchCustomDropdown<T> extends StatefulWidget {
 class _SearchCustomDropdownState extends State<SearchCustomDropdown> {
   //SingleSelectController searchCont = SingleSelectController;
   @override
+  @override
   Widget build(BuildContext context) {
-    // return Container(
-    //   width: widget.width,
-    //   height: 40,
-    //   alignment: Alignment.center,
-    //   decoration: BoxDecoration(
-    //     color: Colors.white,
-    //     borderRadius: BorderRadius.circular(5),
-    //     border: Border.all(
-    //       color: Colors.grey.shade400, // 🔥 darker
-    //       width: 1.2,                  // 🔥 important
-    //     ),
-    //   ),
-    //   child: CustomDropdown.multiSelect(
-    //     hintText: widget.hintText,
-    //     items: widget.valueList,
-    //     decoration: CustomDropdownDecoration(
-    //         hintStyle: TextStyle(
-    //           color: colorsConst.primary,
-    //           fontSize: 13,
-    //           fontWeight: FontWeight.w500,
-    //           // fontStyle: FontStyle.italic,
-    //         ),
-    //         headerStyle: const TextStyle(
-    //             color: Colors.black, fontSize: 13, fontFamily: "Lato"),
-    //         searchFieldDecoration: SearchFieldDecoration(
-    //           hintStyle: TextStyle(
-    //             color: colorsConst.primary,
-    //             fontSize: 13,
-    //           ),
-    //           prefixIcon:
-    //           IconButton(onPressed: () {}, icon: const Icon(Icons.add,size: 15,)),
-    //           textStyle: const TextStyle(
-    //               color: Colors.black, fontSize: 13, fontFamily: "Lato"),
-    //         ),
-    //
-    //         listItemStyle: const TextStyle(
-    //             color: Colors.black,
-    //             fontSize: 13,
-    //             fontWeight: FontWeight.w500)),
-    //           onListChanged: (item) {
-    //             FocusScope.of(context).unfocus();
-    //             remController.changeAssignedIs(context,item);
-    //           },
-    //   ),
-    // );
+    if (widget.valueList.isEmpty) {
+      return SizedBox(
+        width: widget.width,
+        height: 40,
+        child: Container(
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.grey.shade400,
+              width: 1.2,
+            ),
+            borderRadius: BorderRadius.circular(5),
+          ),
+          child: CustomText(
+            text:"No employees found",
+              colors: Colors.grey,
+              size: 13, isCopy: false,
+          ),
+        ),
+      );
+    }
+
     return SizedBox(
       width: widget.width,
       height: 40,
       child: CustomDropdown.multiSelect(
         hintText: widget.hintText,
         items: widget.valueList,
-
         decoration: CustomDropdownDecoration(
           closedBorderRadius: BorderRadius.circular(5),
           expandedBorderRadius: BorderRadius.circular(5),
-          /// 🔥 முக்கியம்
           closedBorder: Border.all(
             color: Colors.grey.shade400,
             width: 1.2,
           ),
-
           expandedBorder: Border.all(
-            color: Colors.blue, // focus color
+            color: Colors.blue,
             width: 1.5,
           ),
-
           hintStyle: TextStyle(
             color: colorsConst.primary,
             fontSize: 13,
             fontWeight: FontWeight.w500,
           ),
-
-          headerStyle: TextStyle(
+          headerStyle: const TextStyle(
             color: Colors.black,
             fontSize: 13,
           ),
-
           searchFieldDecoration: SearchFieldDecoration(
             hintStyle: TextStyle(
               color: colorsConst.primary,
               fontSize: 13,
             ),
-            prefixIcon: Icon(Icons.add, size: 15),
+            prefixIcon: const Icon(
+              Icons.add,
+              size: 15,
+            ),
           ),
         ),
-
         onListChanged: (item) {
           FocusScope.of(context).unfocus();
           remController.changeAssignedIs(context, item);
