@@ -186,9 +186,9 @@ class BillingProvider with ChangeNotifier{
         _productsList = response.productList ?? [];
         dropdownFocusNode.requestFocus();
         //debugPrint("products ${_productsList.length}");
-        for(int i = 0; i<_productsList.length;i++){
-          //debugPrint("barcode ${_productsList[i].barcode} ${_productsList[i].pTitle} ${_productsList[i].pVariation}${_productsList[i].unit}");
-        }
+        // for(int i = 0; i<_productsList.length;i++){
+        //   //debugPrint("barcode ${_productsList[i].barcode} ${_productsList[i].pTitle} ${_productsList[i].pVariation}${_productsList[i].unit}");
+        // }
       }else{
         _productsList=[];
       }
@@ -1823,6 +1823,7 @@ class BillingProvider with ChangeNotifier{
       Navigator.pop(context);
       clearProductForm();
       productCtr.getProducts();
+      getProducts();
       utils.snackBar(context: context, msg: "Product Added Successfully", color: Colors.green);
     } else {
       utils.snackBar(context: context, msg: "Product Added Failed", color: Colors.red);
@@ -1926,6 +1927,7 @@ class BillingProvider with ChangeNotifier{
       Navigator.pop(context);
       clearProductForm();
       productCtr.getProducts();
+      getProducts();
       utils.snackBar(context: context, msg: "Product Updated Successfully", color: Colors.green);
     } else {
       utils.snackBar(context: context, msg: "Product Updated Failed", color: Colors.red);
@@ -1943,6 +1945,9 @@ class BillingProvider with ChangeNotifier{
             (item) => productCtr.selectedPrdIds.contains(item.id),
       );
       productCtr.products2.removeWhere(
+            (item) => productCtr.selectedPrdIds.contains(item.id),
+      );
+      _productsList.removeWhere(
             (item) => productCtr.selectedPrdIds.contains(item.id),
       );
       // productCtr.getProducts();
