@@ -731,18 +731,18 @@ class EmployeeProvider with ChangeNotifier {
           builder: (context, setState) {
             return Dialog(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              // insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
               child: Container(
                 width: 420,
-                // height: 400,
+                height: 400,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
                   color: Colors.white,
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  // mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     /// 🔵 HEADER
                     Container(
@@ -771,9 +771,10 @@ class EmployeeProvider with ChangeNotifier {
                           )
                         ],
                       ),
-                    ),30.height,
+                    ),
+                    10.height,
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                       child: CustomTextField(isOptional: true,
                           width: MediaQuery.of(context).size.width*0.3,
                           onChanged: (value){
@@ -781,18 +782,18 @@ class EmployeeProvider with ChangeNotifier {
                           },
                           text: "Role Name", hintText: "Role Name",
                           controller: settingsController.roleController),
-                    ),20.height,
+                    ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                       child: CustomTextField(isOptional: false, width: MediaQuery.of(context).size.width*0.3,
                           onChanged: (value){
                             controllers.firstCaps(value.toString(), settingsController.descriptionController);
                           },
                           text: "Description", hintText: "Description",
                           controller: settingsController.descriptionController),
-                    ),10.height,
+                    ),
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width*0.3,
                         child: Column(
@@ -862,7 +863,7 @@ class EmployeeProvider with ChangeNotifier {
                         ),
                       ),
                     ),
-                    20.height,
+                    5.height,
                     CustomLoadingButton(
                         callback: () async {
                           setState(() {

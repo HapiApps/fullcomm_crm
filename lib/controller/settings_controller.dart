@@ -596,17 +596,13 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
         }
       }
       if (request.statusCode == 200 && response["message"]=="Role added successfully"){
-        final newDept = RoleModel(id: response["data"]["id"],
-            cosId: controllers.storage.read("cos_id"), uId: response["data"]["id"],
+        final newDept = RoleModel(id: response["data"]["id"].toString(),
+            cosId: controllers.storage.read("cos_id"), uId: response["data"]["id"].toString(),
             roleName: roleController.text.trim(), description: descriptionController.text.trim(), permission: permission.toString());
+        roleList.add(newDept);   // ✅ update real list
 
         employeeProvider?.role = newDept;
         employeeProvider?.roleId = newDept.id;
-
-        roleList.add(RoleModel(id: response["data"]["id"],
-            cosId: controllers.storage.read("cos_id"), uId: response["data"]["id"],
-            roleName: roleController.text.trim(), description: descriptionController.text.trim(), permission: permission.toString()));   // ✅ update real list
-
         roleController.clear();
         descriptionController.clear();
         permission=null;

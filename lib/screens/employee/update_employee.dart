@@ -265,7 +265,10 @@ class _UpdateEmployeeState extends State<UpdateEmployee> {
                                           colors: Colors.red,
                                           size: 25,
                                           isCopy: false,
-                                        )
+                                        ),
+                                        IconButton(onPressed: (){
+                                          employeeProvider.addRoleDialog(context);
+                                        }, icon: Icon(Icons.add))
                                       ],
                                     ),
                                     Container(

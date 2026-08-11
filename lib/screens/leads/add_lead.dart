@@ -276,6 +276,7 @@ class _AddLeadState extends State<AddLead> {
   @override
   Widget build(BuildContext context) {
     double textFieldSize = (MediaQuery.of(context).size.width - 400) / 1.8;
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         // appBar: PreferredSize(
         //   preferredSize: const Size.fromHeight(60),
@@ -285,7 +286,7 @@ class _AddLeadState extends State<AddLead> {
       SideBar(),
       20.width,
       Container(
-          width: MediaQuery.of(context).size.width - 180,
+          width: controllers.isLeftOpen.value==true?screenWidth-200:screenWidth-60,
           alignment: Alignment.center,
           child: Column(
             children: [
@@ -561,7 +562,7 @@ class _AddLeadState extends State<AddLead> {
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height - 180,
-                width: MediaQuery.of(context).size.width - 180,
+                // width: MediaQuery.of(context).size.width - 180,
                 child: SingleChildScrollView(
                   physics: const AlwaysScrollableScrollPhysics(),
                   child: Column(children: [

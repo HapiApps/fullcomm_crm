@@ -77,7 +77,7 @@ class UpdateLead extends StatefulWidget {
   final String? numOfHeadcount;
   final String? expectedBillingValue;
   final String? detailsOfRequired;
-  final String? points;
+  final String points;
   final String visitType;
   final String? refBy;
   String updateTs;
@@ -122,7 +122,7 @@ class UpdateLead extends StatefulWidget {
     this.country,
     this.pinCode,
     this.linkedin,
-    this.points,
+    required this.points,
     this.x, this.quotationStatus,
     this.productDiscussion, this.discussionPoint,
     this.quotationRequired, this.arpuValue,
@@ -397,6 +397,7 @@ void addListValues(){
     // print(controllers.addList.first.fieldName);
     // print(controllers.addList.first.fieldValue);
     double textFieldSize = (MediaQuery.of(context).size.width - 400) / 1.8;
+    double screenWidth = MediaQuery.of(context).size.width;
     return SelectionArea(
       child: Scaffold(
           // appBar: PreferredSize(
@@ -408,7 +409,7 @@ void addListValues(){
               SideBar(),
               20.width,
               Container(
-                width:MediaQuery.of(context).size.width-180,
+                width: controllers.isLeftOpen.value==true?screenWidth-200:screenWidth-60,
                 alignment: Alignment.center,
                 child: Column(
                   children:[
@@ -849,8 +850,8 @@ void addListValues(){
                       ),
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height-180,
-                      width: MediaQuery.of(context).size.width-180,
+                      height: MediaQuery.of(context).size.height - 180,
+                      // width: MediaQuery.of(context).size.width-180,
                       child: GestureDetector(
                         onTap: () {
                           _focusNode.requestFocus();
@@ -2255,7 +2256,7 @@ void addListValues(){
                                     crossAxisCount: 2, // 2 items per row
                                     crossAxisSpacing: 50,
                                     mainAxisSpacing: 10,
-                                    childAspectRatio: 3,
+                                    childAspectRatio: 10,
                                   ),
                                   itemBuilder: (context, index) {
                                     final info = controllers.addList[index];

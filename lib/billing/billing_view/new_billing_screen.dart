@@ -5325,6 +5325,12 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
 
     // Round Off Value
     final roundOff = finalTotal - grandTotal;
+
+    String formattedAmount(String amount) {
+      final value = double.tryParse(amount) ?? 0;
+      return NumberFormat('#,##0.00', 'en_IN').format(value);
+    }
+
     pdf.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
@@ -5403,9 +5409,9 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                   border: pw.TableBorder.all(),
                   columnWidths: {
                     0: const pw.FlexColumnWidth(1),
-                    1: const pw.FlexColumnWidth(4),
+                    1: const pw.FlexColumnWidth(3),
                     2: const pw.FlexColumnWidth(1),
-                    3: const pw.FlexColumnWidth(1),
+                    3: const pw.FlexColumnWidth(1.5),
                     4: const pw.FlexColumnWidth(2),
                   },
                   children: [
@@ -5413,11 +5419,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                     /// HEADER
                     pw.TableRow(
                       children: [
-                        tableCell("S.No.", isHeader: true),
-                        tableCell("Product Name", isHeader: true),
-                        tableCell("Qty", isHeader: true),
-                        tableCell("MRP", isHeader: true),
-                        tableCell("Amount INR", isHeader: true),
+                        tableCell("S.No.", isHeader: false),
+                        tableCell("Product Name", isHeader: false),
+                        tableCell("Qty", isHeader: false),
+                        tableCell("MRP", isHeader: false, alignment: pw.Alignment.centerRight),
+                        tableCell("Amount INR", isHeader: false, alignment: pw.Alignment.centerRight),
                       ],
                     ),
 
@@ -5431,8 +5437,8 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                           tableCell("${index + 1}"),
                           tableCell(p.productTitle.toString()),
                           tableCell(p.quantity.toString()),
-                          tableCell(p.p_out_price.toString()),
-                          tableCell("Rs. ${TextFormat.formattedAmount(billProduct.calculateSubtotal())}"),
+                          tableCell(formattedAmount(p.p_out_price.toString()), alignment: pw.Alignment.centerRight),
+                          tableCell(formattedAmount(billProduct.calculateSubtotal().toString()), alignment: pw.Alignment.centerRight,isHeader: true),
                         ],
                       );
                     }),
@@ -5471,11 +5477,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                         pw.BoxDecoration(border: pw.Border.all()),
                         child: pw.Column(
                           children: [
-                            totalRows("Total Before Tax", TextFormat.formattedAmount(billingPvr.calculatedGrandTotal())),
-                            totalRows("CGST ${billingPvr.calculateTotalGst()}%", TextFormat.formattedAmount(cgst)),
-                            totalRows("SGST ${billingPvr.calculateTotalGst()}%", TextFormat.formattedAmount(sgst)),
-                            totalRows("Round Off", "$roundOff"),
-                            totalRows("Total After", TextFormat.formattedAmount(finalTotal)),
+                            totalRows("Total Before Tax", formattedAmount(billingPvr.calculatedGrandTotal().toString())),
+                            totalRows("CGST ${billingPvr.calculateTotalGst()}%", formattedAmount(cgst.toString())),
+                            totalRows("SGST ${billingPvr.calculateTotalGst()}%", formattedAmount(sgst.toString())),
+                            totalRows("Round Off", roundOff.toStringAsFixed(2)),
+                            totalRows("Total After", formattedAmount(finalTotal.toString()),isBold: true),
                             // totalRows("Tax for HapiApps", data.totalAmt,isBold: true),
                             pw.SizedBox(height: 20),
                             pw.Text("Signature"),
@@ -5493,16 +5499,20 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                 pw.SizedBox(height: 10),
                 pw.ListView.builder(
                   itemCount: productCtr.termsAndConditionsList.length,
-                  itemBuilder: (context,i){
-                    return
-                      pw.Row(
-                        crossAxisAlignment: pw.CrossAxisAlignment.start,
-                        children: [
-                          pw.Text("${i+1}. "),
-                          pw.Text(productCtr.termsAndConditionsList[i]["name"])
-                        ],
-                      );
-                  }, )
+                  itemBuilder: (context, i) {
+                    return pw.Row(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        pw.Text("${i + 1}. "),
+                        pw.Expanded(
+                          child: pw.Text(
+                            productCtr.termsAndConditionsList[i]["name"] ?? "",
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ],
             ),
           );
@@ -5551,9 +5561,10 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
     );
   }
 
-  pw.Widget tableCell(String text, {bool isHeader = false}) {
-    return pw.Padding(
-      padding: const pw.EdgeInsets.all(6),
+  pw.Widget tableCell(String text, {bool isHeader = false, pw.Alignment alignment = pw.Alignment.centerLeft}) {
+    return pw.Container(
+      alignment: alignment,
+      padding: const pw.EdgeInsets.all(5),
       child: pw.Text(
         text,
         style: pw.TextStyle(

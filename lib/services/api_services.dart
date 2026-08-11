@@ -338,6 +338,8 @@ class ApiService {
             color: Colors.green,
             context: Get.context!);
         list[index]=NewLeadObj(
+          points: controllers.leadActions.text.trim(),
+          referredBy: controllers.throughBy.text.trim(),
           userId: leadId,
           select: false,
           firstname: controllers.leadNameCrt[0].text.trim(),
@@ -407,6 +409,8 @@ class ApiService {
           updatedTs: DateTime.now().toString(), additional: controllers.addList,
         );
         list2[index]=NewLeadObj(
+          points: controllers.leadActions.text.trim(),
+          referredBy: controllers.throughBy.text.trim(),
           userId: leadId,
           select: false,
           whatsapp: controllers.leadWhatsCrt[0].text,
@@ -2049,6 +2053,8 @@ class ApiService {
             debugPrint("dataaaa: ${controllers.leadCategoryList[i].list.length}");
             debugPrint("dataaaa: ${controllers.leadCategoryList[i].list2.length}");
             controllers.leadCategoryList[i].list.add(NewLeadObj(
+              points: controllers.leadActions.text.trim(),
+              referredBy: controllers.throughBy.text.trim(),
               additionalInfo: controllers.addList.toString(),
               select: false,
               userId:customerId.toString(),
@@ -2067,7 +2073,6 @@ class ApiService {
               notes: controllers.leadActions.text.trim(),
               quotationStatus: "",
               quotationRequired: "1",
-              points: controllers.leadActions.text.trim(),
               doorNo: controllers.doorNumberController.text.trim(),
               area: controllers.areaController.text.trim(),
               city: controllers.cityController.text.trim(),
@@ -2121,6 +2126,8 @@ class ApiService {
               updatedTs: DateTime.now().toString(), additional: controllers.addList,
             ));
             controllers.leadCategoryList[i].list2.add(NewLeadObj(
+              points: controllers.leadActions.text.trim(),
+              referredBy: controllers.throughBy.text.trim(),
               additionalInfo: controllers.addList.toString(),
               select: false,
               userId:customerId.toString(),
@@ -2193,6 +2200,8 @@ class ApiService {
               updatedTs: DateTime.now().toString(), additional: controllers.addList,
             ));
             controllers.allLeadList.add(NewLeadObj(
+              points: controllers.leadActions.text.trim(),
+              referredBy: controllers.throughBy.text.trim(),
               select: false,
               userId:customerId.toString(),
               addressId: addressId.toString(),

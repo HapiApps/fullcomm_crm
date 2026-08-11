@@ -490,7 +490,7 @@ void checkDate(){
                                         //   ),
                                         // ),
                                         SizedBox(
-                                          width: screenWidth/4,
+                                          width: screenWidth/5,
                                           child: SearchObjectDropdown<AllCustomersObj>(
                                             items: controllers.customers,
                                             hint: "Search Leads",
@@ -529,6 +529,7 @@ void checkDate(){
                                           crossAxisAlignment: CrossAxisAlignment.end,
                                           children: [
                                             Container(
+                                              width: screenWidth/4.2,
                                               padding: const EdgeInsets.all(7),
                                               decoration: _filterGroupDecoration(),
                                               child: Row(
@@ -753,7 +754,7 @@ void checkDate(){
                                           ],
                                         ),
                                         SizedBox(
-                                          width: width/70,
+                                          width: width/90,
                                         )
                                       ],
                                     ),
@@ -1048,7 +1049,7 @@ void checkDate(){
                                                       ),
                                                     ),
                                                   ),
-                                                  10.width,
+                                                  5.width,
                                                   Row(
                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     children: [
@@ -1523,6 +1524,9 @@ void checkDate(){
                                             children: [
                                               Row(
                                                 children: [
+                                                  // IconButton(onPressed: (){
+                                                  //   utils.makeCall("9677070824");
+                                                  // }, icon: Icon(Icons.call)),
                                                   InkWell(
                                                       onTap: (){
                                                         controllers.selectedIndex.value=102;

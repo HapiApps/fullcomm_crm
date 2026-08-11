@@ -1670,20 +1670,20 @@ class ReminderUtils {
                                   isOptional: false,
                                   valueList:["Day(s)", "Week(s)","Month(s)","Quarter(s)", "Year(s)","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
                                   text: "",
-                                  width: 100,
+                                  width: 120,
                                   onChanged: (value) async {
                                     setState(() {
                                       remController.repeatOn = value.toString();
                                     });
                                   },
                                 ),
-                                10.width,
+                                5.width,
                                 remController.repeatWise=="Never"?0.height:Obx(() => CustomDateBox(
                                   text: "End Date",
                                   value: remController.enDate.value,
                                   isOptional: true,
                                   errorText: endDError,
-                                  width: 150,
+                                  width: 120,
                                   onTap: () {
                                     utils.datePicker(
                                         isFutureDate: true,
@@ -1698,12 +1698,12 @@ class ReminderUtils {
                                   },
                                 ),
                                 ),
-                                10.width,
+                                5.width,
                                 remController.repeatWise=="Never"?0.height:Obx(() => CustomDateBox(
                                   text: "End Time",
                                   isOptional: true,
                                   value: remController.enTime.value,
-                                  width: 150,
+                                  width: 120,
                                   errorText: endTError,
                                   onTap: () {
                                     utils.timePicker(

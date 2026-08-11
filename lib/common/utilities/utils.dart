@@ -35,10 +35,28 @@ import 'package:http/http.dart' as http;
 import 'dart:html' as html;
 import 'dart:ui_web' as ui;
 import '../styles/styles.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 final Utils utils = Utils._();
 
 class Utils {
   Utils._();
+
+  Future<void> makeCall(String number) async {
+    final Uri uri = Uri(
+      scheme: 'tel',
+      path: number,
+    );
+
+    try {
+      await launchUrl(
+        uri,
+        mode: LaunchMode.externalApplication,
+      );
+    } catch (e) {
+      debugPrint("Call error: $e");
+    }
+  }
   bool validateWebsite(String value) {
     final regex = RegExp(
       r'^(https?:\/\/)?([\w-]+\.)+[\w-]{2,}(\/.*)?$',

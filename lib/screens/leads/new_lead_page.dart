@@ -738,7 +738,15 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                                 controllers.idList.add(lead.userId);
                                               }
                                               setState(() {});
-                                              debugPrint("...${controllers.idList}");
+
+                                              ///
+                                              for (var lead in widget.list) {
+                                                if(lead.select==true){
+                                                  controllers.isAllSelected.value = true;
+                                                }else{
+                                                  controllers.isAllSelected.value = false;
+                                                }
+                                              }
                                             },
                                             visitType: data.visitType.toString(),
                                             detailsOfServiceReq: data.detailsOfServiceRequired.toString(),
@@ -990,41 +998,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
                               ),
                             ),
                           ),
-                          // SizedBox(
-                          //   width: 200,
-                          //   child: Column(
-                          //     children: [
-                          //       ReasonHeader(),
-                          //       SizedBox(
-                          //         height: MediaQuery.of(context).size.height - 345,
-                          //         child: Obx(() {
-                          //           if(widget.list.isEmpty){
-                          //             return 0.height;
-                          //           }
-                          //           return ScrollConfiguration(
-                          //             behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                          //             child: ListView.builder(
-                          //               controller: _leftController,
-                          //               shrinkWrap: true,
-                          //               physics: const ScrollPhysics(),
-                          //               itemCount: widget.list.length,
-                          //               itemBuilder: (context, index) {
-                          //                 NewLeadObj data = widget.list[index];
-                          //                 return ReasonTile(
-                          //                   key: ValueKey(data.userId),
-                          //                   index: controllers.currentProspectPage.value==1?index:index+(int.parse(controllers.showData)),
-                          //                   history: data.historyInfo.toString(),
-                          //                 );
-                          //               },
-                          //             ),
-                          //           );
-                          //         }
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
-
                         ],
                       ),
                     ),

@@ -316,7 +316,7 @@ void checkType(){
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           CustomText(text: "STATUS",colors: colorsConst.textColor,isCopy: true),10.height,
-                                                          CustomText(text: cust?.rating ?? "",colors: colorsConst.textColor,isCopy: true,isBold: true,),
+                                                          CustomText(text: widget.pageName,colors: colorsConst.textColor,isCopy: true,isBold: true,),
                                                         ],
                                                       ),
                                                     )
@@ -581,7 +581,7 @@ void checkType(){
                                                             onPressed: () {
                                                               Get.to(
                                                                 UpdateLead(
-                                                                  points: cust?.points,
+                                                                  points: cust!.points.toString(),
                                                                   refBy: cust?.refBy.toString(),
                                                                   additional: additional,
                                                                   x: cust?.x,

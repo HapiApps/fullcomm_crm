@@ -60,6 +60,7 @@ class _ProductPageState extends State<ProductPage> {
       productCtr.isSelectAll.value = false;
       productCtr.idsList.value.clear();
       _focusNode.requestFocus();
+      productCtr.selectedCallSortBy.value="All";
       productCtr.filterProducts(
         value: controllers.searchText.value.toLowerCase(),
         selectedRangeStart: remController.selectedCallRange.value?.start,
