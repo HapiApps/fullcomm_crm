@@ -3318,11 +3318,10 @@ class Utils {
                         CustomText(
                           text: "Employees",
                           size: 13,
-                          colors: colorsConst.fieldHead,
                           isCopy: false,
                         ),
                       ],
-                    ),
+                    ),2.height,
                     SearchCustomDropdown(
                       text: "",isOptional: false,
                       hintText: remController.assignedIds.value==""?"":remController.assignedNames.value,
@@ -3432,6 +3431,22 @@ class Utils {
                         controllers.productCtr.reset();
                         return;
                       }
+                      final selectedDate = DateFormat("dd-MM-yyyy") .parse(controllers.fDate.value);
+                      final selectedTime = DateFormat("h:mm a") .parse(controllers.fTime.value);
+                      final now = DateTime.now();
+                      final selectedDateTime = DateTime(selectedDate.year, selectedDate.month, selectedDate.day, selectedTime.hour, selectedTime.minute);
+                      final isToday = selectedDate.year == now.year && selectedDate.month == now.month && selectedDate.day == now.day;
+
+                      if (isToday && selectedDateTime.isBefore(now)) {
+                        setState(() {
+                          stTimeError = "Please select a future time";
+                        });
+                        controllers.productCtr.reset();
+                        return;
+                      }
+                      setState(() {
+                        stTimeError = null;
+                      });
 
                       // if (controllers.toDate.value.isEmpty) {
                       //   setState(() => enDateError = "Select end date");

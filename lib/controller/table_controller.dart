@@ -560,6 +560,11 @@ final ScrollController scrollController=ScrollController();
           controllers.setLogOut();
         }
       }
+      if(request.body.contains("This heading already exists")){
+        apiService.errorDialog(Get.context!,'This heading already exists');
+        controllers.productCtr.reset();
+        return;
+      }
       if (request.statusCode == 200 ){
         headingFields.add(heading);
         final prefs = await SharedPreferences.getInstance();
@@ -574,7 +579,7 @@ final ScrollController scrollController=ScrollController();
           );
         }
         apiService.getCustomFields();
-        utils.snackBar(context: context, msg: "Heading added successfully", color: Colors.green);
+        utils.showToast("Heading added successfully",Colors.green);
         tableController.applyChanges();
         controllers.productCtr.reset();
       } else {

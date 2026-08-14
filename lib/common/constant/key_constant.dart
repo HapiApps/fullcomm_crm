@@ -5,11 +5,36 @@ final InputFormatters constInputFormatters = InputFormatters._();
 class InputFormatters {
   InputFormatters._();
 
+  // final List<TextInputFormatter> mobileNumberInput = [
+  //   LengthLimitingTextInputFormatter(10),
+  //   FilteringTextInputFormatter.digitsOnly,
+  //   FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+  // ];
+
   final List<TextInputFormatter> mobileNumberInput = [
-    LengthLimitingTextInputFormatter(10),
-    FilteringTextInputFormatter.digitsOnly,
-    FilteringTextInputFormatter.allow(RegExp("[0-9]"))
+    TextInputFormatter.withFunction((oldValue, newValue) {
+      String text = newValue.text;
+
+      // Digits மட்டும்
+      text = text.replaceAll(RegExp(r'\D'), '');
+
+      // Paste செய்தால் +91 / 91 remove
+      if (text.startsWith('91') && text.length > 10) {
+        text = text.substring(2);
+      }
+
+      // 10 digits-க்கு மேல் type/paste செய்தால் first 10 மட்டும்
+      if (text.length > 10) {
+        text = text.substring(0, 10);
+      }
+
+      return TextEditingValue(
+        text: text,
+        selection: TextSelection.collapsed(offset: text.length),
+      );
+    }),
   ];
+
   final List<TextInputFormatter> fifteenChars = [
     LengthLimitingTextInputFormatter(15),
     FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))

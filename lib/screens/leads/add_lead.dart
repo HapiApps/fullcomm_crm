@@ -1363,8 +1363,7 @@ class _AddLeadState extends State<AddLead> {
                                                         keyboardType: TextInputType.number,
                                                         textInputAction: TextInputAction.next,
                                                         isOptional: true,
-                                                        inputFormatters:
-                                                        constInputFormatters.mobileNumberInput,
+                                                        inputFormatters: constInputFormatters.mobileNumberInput,
                                                         onChanged: (value) async {
                                                           // if (value.toString().isNotEmpty) {
                                                           //   String newValue =

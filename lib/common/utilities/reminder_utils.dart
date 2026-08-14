@@ -1800,6 +1800,40 @@ class ReminderUtils {
                                 return;
                               }
 
+                              final selectedDate = DateFormat("dd-MM-yyyy") .parse(remController.stDate.value);
+                              final selectedTime = DateFormat("h:mm a") .parse(remController.stTime.value);
+                              final now = DateTime.now();
+                              final selectedDateTime = DateTime(selectedDate.year, selectedDate.month, selectedDate.day, selectedTime.hour, selectedTime.minute);
+                              final isToday = selectedDate.year == now.year && selectedDate.month == now.month && selectedDate.day == now.day;
+
+                              if (isToday && selectedDateTime.isBefore(now)) {
+                                setState(() {
+                                  startTError = "Please select a future start time";
+                                });
+                                controllers.productCtr.reset();
+                                return;
+                              }
+                              setState(() {
+                                startTError = null;
+                              });
+
+                              final selectedDate2 = DateFormat("dd-MM-yyyy") .parse(remController.enDate.value);
+                              final selectedTime2 = DateFormat("h:mm a") .parse(remController.enTime.value);
+                              final selectedDateTime2 = DateTime(selectedDate2.year, selectedDate2.month, selectedDate2.day, selectedTime2.hour, selectedTime2.minute);
+                              final isToday2 = selectedDate2.year == now.year && selectedDate2.month == now.month && selectedDate2.day == now.day;
+
+                              if (isToday2 && selectedDateTime2.isBefore(now)) {
+                                setState(() {
+                                  endTError = "Please select a future end time";
+                                });
+                                controllers.productCtr.reset();
+                                return;
+                              }
+                              setState(() {
+                                endTError = null;
+                              });
+
+
                               final selType = Provider.of<ReminderProvider>(context, listen: false).selectedNotification ?? "";
 
                               final needEmployee = selType == "followup" || (selType != "followup" && selType != "meeting");

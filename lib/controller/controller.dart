@@ -3211,7 +3211,8 @@ debugPrint("sortField ${sortField}");
       );
 
       // debugPrint("STATUS CODE insert_series: ${response.statusCode}");
-      // debugPrint("RAW RESPONSE: ${response.body}");
+      debugPrint("RAW RESPONSE: ${controllers.storage.read("cos_id")}");
+      debugPrint("RAW RESPONSE: ${response.body}");
       controllers.leadCtr.reset();
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();

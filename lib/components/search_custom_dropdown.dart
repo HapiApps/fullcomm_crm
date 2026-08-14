@@ -54,7 +54,7 @@ class _SearchCustomDropdownState extends State<SearchCustomDropdown> {
 
     return SizedBox(
       width: widget.width,
-      height: 40,
+      height: 45,
       child: CustomDropdown.multiSelect(
         hintText: widget.hintText,
         items: widget.valueList,
