@@ -2010,7 +2010,7 @@ class BillingProvider with ChangeNotifier{
   bool validatePrices(BillingProvider p, BuildContext context) {
     // ---------- BASIC TEXT VALIDATION ----------
     if (p.title.text.trim().isEmpty) {
-      utils.showToast("Enter Product Name",Colors.red);
+      utils.showToast("Enter Product Name 112",Colors.red);
       return false;
     }
 

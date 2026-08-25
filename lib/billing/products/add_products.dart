@@ -124,11 +124,35 @@ class _AddProductDialogState extends State<AddProductDialog> {
     );
   }
 
-  void _save(BillingProvider p) {
+  bool _saving = false;
+
+  Future<void> _save(BillingProvider p) async {
     FocusScope.of(context).unfocus();
-    if (p.loading) return;
+    if (p.loading || _saving) return;
     if (!p.validatePrices(p, context)) return;
-    p.insertProduct(context);
+
+    setState(() => _saving = true);
+
+    await p.insertProduct(context);
+
+    if (!mounted) return;
+    setState(() => _saving = false);
+
+    // clear all fields after save
+    p.title.clear();
+    p.sku.clear();
+    p.barcode.clear();
+    p.variations.clear();
+    p.units.clear();
+    p.mrp.clear();
+    p.outPrice.clear();
+    p.inPrice.clear();
+    p.gst = '0';
+    p.isLoose = 0;
+    p.selectedCategoryId = null;
+    p.selectedSubCategoryId = null;
+
+    nameFN.requestFocus();
   }
 
   @override
@@ -171,7 +195,7 @@ class _AddProductDialogState extends State<AddProductDialog> {
                       const SizedBox(height: 16),
 
                       _field("Product Name", p.title, nameFN, skuFN, cap: true),
-                      _field("HSN Code", p.sku, skuFN, barcodeFN),
+                      _field("HSN Code", p.sku, skuFN, barcodeFN, numbers: true),
 
                       Row(
                         children: [
@@ -231,14 +255,31 @@ class _AddProductDialogState extends State<AddProductDialog> {
                         const InputDecoration(labelText: "Category"),
                         value: p.selectedCategory,
                         icon: InkWell(
-                          onTap:(){
+                          onTap: () {
                             showDialog(
                               context: context,
                               barrierDismissible: true,
                               builder: (_) => const AddCatDialog(),
                             );
                           },
-                            child: Icon(Icons.add)),
+                          borderRadius: BorderRadius.circular(8),
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: Theme.of(context).primaryColor.withOpacity(0.4),
+                                width: 1,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.add,
+                              size: 20,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                        ),
                         items: p.categories
                             .map((c) => DropdownMenuItem(
                           value: c,
@@ -434,10 +475,19 @@ class _AddProductDialogState extends State<AddProductDialog> {
                           width: double.infinity,
                           height: 48,
                           child: ElevatedButton(
-                            onPressed: p.loading ? null : () => _save(p),
+                            onPressed: (p.loading || _saving) ? null : () => _save(p),
                             style: ElevatedButton.styleFrom(
                                 backgroundColor: colorsConst.primary),
-                            child: const Text("SAVE PRODUCT",
+                            child: _saving
+                                ? const SizedBox(
+                              width: 22,
+                              height: 22,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                                : const Text("SAVE PRODUCT",
                                 style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold)),
@@ -802,7 +852,7 @@ class _EditProductDialogState extends State<EditProductDialog> {
 
                       const SizedBox(height: 12),
 
-                      _field("Variation", p.variations, variationFN, unitFN),
+                      _field("Variation", p.variations, variationFN, unitFN, numbers: true),
                       _field("Unit", p.units, unitFN, mrpFN),
                       _field("MRP", p.mrp, mrpFN, outPriceFN, numbers: true),
 
