@@ -2129,10 +2129,17 @@ class Utils {
     final regex = RegExp(r'^@?[a-zA-Z0-9_]{4,15}$');
     return regex.hasMatch(cleaned);
   }
+  ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? snackBar({
+    required String msg,
+    required Color color,
+    required BuildContext context
+  }) {
+    final messengerState = rootScaffoldMessengerKey.currentState;
+    if (messengerState == null) {
+      debugPrint("SnackBar skipped — ScaffoldMessengerState not ready: $msg");
+      return null;
+    }
 
-  ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar({required BuildContext context,
-  required String msg,
-  required Color color}) {
     var snack = SnackBar(
       width: 500,
       content: Center(child: Text(msg)),
@@ -2144,8 +2151,26 @@ class Utils {
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
     );
-    return rootScaffoldMessengerKey.currentState!.showSnackBar(snack);
+
+    return messengerState.showSnackBar(snack);
   }
+  // ScaffoldFeatureController<SnackBar, SnackBarClosedReason> snackBar({
+  //   required BuildContext context,
+  // required String msg,
+  // required Color color}) {
+  //   var snack = SnackBar(
+  //     width: 500,
+  //     content: Center(child: Text(msg)),
+  //     behavior: SnackBarBehavior.floating,
+  //     duration: const Duration(seconds: 4),
+  //     backgroundColor: color,
+  //     elevation: 5,
+  //     shape: const RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.all(Radius.circular(20)),
+  //     ),
+  //   );
+  //   return rootScaffoldMessengerKey.currentState!.showSnackBar(snack);
+  // }
   Future<bool> showExitDialog(BuildContext context) async {
     bool? exit = await showDialog(
       context: context,
@@ -3362,7 +3387,6 @@ class Utils {
                             decoration: InputDecoration(
                               hintText: "Notes",
                               border: OutlineInputBorder(),
-
                               enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
                                     color: Colors.grey.shade400,

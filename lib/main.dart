@@ -18,8 +18,6 @@ import 'common/constant/api.dart';
 import 'common/constant/colors_constant.dart';
 import 'common/widgets/log_in.dart';
 import 'controller/reminder_controller.dart';
-import 'firebase_options.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 

@@ -2698,8 +2698,8 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      // debugPrint("request.body");
-      // debugPrint(request.body);
+       debugPrint("request.body");
+       debugPrint(request.body);
 
       final Map<String, dynamic> response = json.decode(request.body);
 
@@ -5471,7 +5471,7 @@ class ApiService {
         controllers.storage.write("id", response["data"]["id"]);
         controllers.storage.write("cos_id", response["data"]["cos_id"]);
         final prefs = await SharedPreferences.getInstance();
-        prefs.setBool("loginScreen${versionNum}", true);
+        prefs.setBool("loginScreen$versionNum", true);
         String input = "Admin";
         controllers.isAdmin.value = input == "Admin" ? true : false;
         prefs.setBool("isAdmin", controllers.isAdmin.value);

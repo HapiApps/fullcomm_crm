@@ -614,8 +614,8 @@ void checkType(){
                                                                   country: addr?.country ?? widget.country ?? "",
                                                                   pinCode: addr?.pincode ?? widget.pinCode ?? "",
                                                                   statusUpdate: cust?.statusUpdate,
-                                                                  prospectEnrollmentDate: cust?.prospectEnrollmentDate,
-                                                                  expectedConvertionDate: cust?.expectedConvertionDate,
+                                                                  prospectEnrollmentDate: cust.prospectEnrollmentDate,
+                                                                  expectedConvertionDate: cust.expectedConvertionDate,
                                                                   numOfHeadcount: cust?.numOfHeadcount,
                                                                   expectedBillingValue: cust?.expectedBillingValue,
                                                                   arpuValue: cust?.arpuValue,
@@ -1136,14 +1136,13 @@ void checkType(){
                                                                       .getUserHeading(
                                                                       "expected_billing_value") ??
                                                                       "Expected Monthly Billing Value").toUpperCase(),isCopy: true,size: 12),5.height,
-                                                                  CustomText(text: cust?.expectedBillingValue ?? "",isCopy: true,isBold: true,),
+                                                                  CustomText(text: cust?.expectedBillingValue.toString() == '0'?"":cust?.expectedBillingValue ?? "",isCopy: true,isBold: true,),
                                                                 ],
                                                               ),
                                                               Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
-                                                                  CustomText(text: _formatHeading(controllers
-                                                                      .getUserHeading(
+                                                                  CustomText(text: _formatHeading(controllers.getUserHeading(
                                                                       "num_of_headcount") ??
                                                                       "Total Number Of Head Count").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                   CustomText(text: cust?.numOfHeadcount ?? "",isCopy: true,isBold: true,),

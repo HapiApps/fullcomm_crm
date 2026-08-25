@@ -3932,7 +3932,7 @@ var otp = "".obs,sentOtp = "".obs;
       );
       debugPrint("request ${data}");
       debugPrint("request ${request.body}");
-      // Map<String, dynamic> response = json.decode(request.body);
+       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -3945,6 +3945,9 @@ var otp = "".obs,sentOtp = "".obs;
         getIndustries();
         controllers.productCtr.reset();
         Navigator.pop(context);
+      } else if(response["message"].toString().trim() == "Value already exists") {
+        apiService.errorDialog(Get.context!, "Industry already exists");
+        controllers.productCtr.reset();
       } else {
         apiService.errorDialog(Get.context!,request.body);
         controllers.productCtr.reset();
