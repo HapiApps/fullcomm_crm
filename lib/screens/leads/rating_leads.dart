@@ -402,7 +402,7 @@ class _RatingLeadsState extends State<RatingLeads> {
                                       }
                                     },
                                     onSortDate: () {
-                                      controllers.sortField.value = 'date';
+                                      controllers.sortField.value = 'mobile';
                                       controllers.sortOrder.value =
                                       controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
                                     },

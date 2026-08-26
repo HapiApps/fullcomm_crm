@@ -886,6 +886,30 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
   //
   //   list1.assignAll(list2);
   // }
+  String _normalize(String s) =>
+      s.toLowerCase().replaceAll(RegExp(r'[\s_]'), '');
+
+  String resolveKey(String systemField, Map map) {
+    if (map.containsKey(systemField)) return systemField;
+
+    const aliases = {
+      "phone_no": ["mobile_number", "phone"],
+    };
+    if (aliases.containsKey(systemField)) {
+      for (var alt in aliases[systemField]!) {
+        if (map.containsKey(alt)) return alt;
+      }
+    }
+
+    final target = _normalize(systemField);
+    for (final key in map.keys) {
+      if (_normalize(key.toString()) == target) {
+        return key.toString();
+      }
+    }
+
+    return systemField;
+  }
   void sortLeads(List list1, List<NewLeadObj> list2) {
     debugPrint("========== SORT LEADS ==========");
 
@@ -897,49 +921,16 @@ RxList<TextEditingController> infoNumberList=<TextEditingController>[].obs;
           sortField.value.trim().toLowerCase(),
     );
 
-    final systemField = field.systemField;
+    final rawMap = list2.first.asMap();
+    final systemField = resolveKey(field.systemField, rawMap);
 
     debugPrint("Header      : ${field.userHeading}");
     debugPrint("SystemField : $systemField");
 
     debugPrint("Map Keys : ${list2.first.asMap().keys}");
-
+    //debugPrint("Full Map: ${list2.first.asMap()}");
     debugPrint("Value A : ${list2.first.asMap()[systemField]}");
     debugPrint("Value B : ${list2.length > 1 ? list2[1].asMap()[systemField] : ""}");
-
-    // list2.sort((a, b) {
-    //   final valA = (a.asMap()[systemField] ?? "").toString().toLowerCase();
-    //   final valB = (b.asMap()[systemField] ?? "").toString().toLowerCase();
-    //
-    //   debugPrint("$valA  <=>  $valB");
-    //
-    //   return sortOrder.value == "asc"
-    //       ? valA.compareTo(valB)
-    //       : valB.compareTo(valA);
-    // });
-///
-//     list2.sort((a, b) {
-//       final valueA = a.asMap()[systemField];
-//       final valueB = b.asMap()[systemField];
-//
-//       // Numeric sorting
-//       final numA = num.tryParse(valueA?.toString() ?? "");
-//       final numB = num.tryParse(valueB?.toString() ?? "");
-//
-//       if (numA != null && numB != null) {
-//         return sortOrder.value == "asc"
-//             ? numA.compareTo(numB)
-//             : numB.compareTo(numA);
-//       }
-//
-//       // String sorting
-//       final strA = (valueA ?? "").toString().trim().toLowerCase();
-//       final strB = (valueB ?? "").toString().trim().toLowerCase();
-//
-//       return sortOrder.value == "asc"
-//           ? strA.compareTo(strB)
-//           : strB.compareTo(strA);
-//     });
     list2.sort((a, b) {
       final valueA = a.asMap()[systemField];
       final valueB = b.asMap()[systemField];

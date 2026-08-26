@@ -3640,7 +3640,7 @@ class ApiService {
       );
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      debugPrint("body");
+      debugPrint("body ${request.fields.toString()}");
       debugPrint(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -3861,15 +3861,15 @@ class ApiService {
       request.fields['total_amt'] = totalAmt;
       request.fields['name'] = name;
       request.fields['number'] = number;
-      // request.fields['productList'] = productListJson;
+       //request.fields['productList'] = productListJson;
       request.headers.addAll({
         'X-API-TOKEN': "${TokenStorage().readToken()}",
         'Content-Type': 'application/json'
       });
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      // print(request.fields);
-      // print(body);
+      print(request.fields);
+      print(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {

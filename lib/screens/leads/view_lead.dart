@@ -1142,8 +1142,7 @@ void checkType(){
                                                               Column(
                                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                                 children: [
-                                                                  CustomText(text: _formatHeading(controllers.getUserHeading(
-                                                                      "num_of_headcount") ??
+                                                                  CustomText(text: _formatHeading(controllers.getUserHeading("num_of_headcount") ??
                                                                       "Total Number Of Head Count").toUpperCase(),isCopy: true,size: 12),5.height,
                                                                   CustomText(text: cust?.numOfHeadcount ?? "",isCopy: true,isBold: true,),
                                                                   10.height,
@@ -1156,7 +1155,7 @@ void checkType(){
                                                                   CustomText(text: _formatHeading(controllers
                                                                       .getUserHeading("rating") ??
                                                                       "Prospect Grading").toUpperCase(),isCopy: true,size: 12),5.height,
-                                                                  CustomText(text: cust?.rating ?? "",isCopy: true,isBold: true,),
+                                                                  CustomText(text: cust?.rating.toString() == '0'?"":cust?.rating ?? "",isCopy: true,isBold: true,),
                                                                 ],
                                                               ),
                                                             ],

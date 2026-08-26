@@ -131,18 +131,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
 
   @override
   Widget build(BuildContext context) {
-
-    final screenWidth = MediaQuery.of(context).size.width;
-    // double tableWidth;
-    // if (screenWidth >= 1600) {
-    //   tableWidth = 4000;
-    // } else if (screenWidth >= 1200) {
-    //   tableWidth = 3000;
-    // } else if (screenWidth >= 900) {
-    //   tableWidth = 2400;
-    // } else {
-    //   tableWidth = 2000;
-    // }
     double tableWidth = tableController.tableHeadings.fold(
       0.0,
           (sum, h) => sum + (tableController.colWidth[h] ?? 150),

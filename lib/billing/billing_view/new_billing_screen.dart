@@ -3169,6 +3169,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                               controllers.emailSubjectCtr.text="Invoice";
                                                               controllers.emailMessageCtr.clear();
                                                             });
+                                                            //controllers.directNavigate.value = true;
                                                             showDialog(
                                                                 context: context,
                                                                 barrierDismissible: false,
@@ -5294,6 +5295,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
     String productListJson = jsonEncode(
       billingPvr.billingItems.map((e) => e.toJson()).toList(),
     );
+    print("productListJson: $productListJson");
     if(controllers.directNavigate.value==false){
       apiService.insertQuotationAPI(context, pdf,productListJson);
     }else{
