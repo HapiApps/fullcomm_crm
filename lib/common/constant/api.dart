@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 /// Dev
 // const String domain      = "https://aruu.celwiz.com";
 // const bool isRelease     = false;
-// const String version     = "Version 0.0.11";
-// const String versionNum  = "0.0.11";
+// const String version     = "Version 0.0.13";
+// const String versionNum  = "0.0.13";
 /// Prod
 const String domain      = "https://aruu.in/";//Logo change panna nu
 const bool isRelease     = true;
@@ -22,7 +22,7 @@ const String scriptApi       = "$domain/CRM/script.php";
 const String prospectsScript = "$domain/CRM/prospects_script.php";
 const String qualifiedScript = "$domain/CRM/qualified_script.php";
 const String getImage        = "$domain/CRM/get_files.php";
-const String imageFile        = "$domain/CRM/image_file.php";
+const String imageFile       = "$domain/CRM/image_file.php";
 
 /// Thirumal database
 /// Dev

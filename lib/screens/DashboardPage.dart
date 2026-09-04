@@ -351,6 +351,7 @@ void checkDate(){
 
   @override
   void dispose() {
+    super.dispose();
     // _leadItemController.dispose();
     _focusNode.dispose();
     _appScroll.dispose();
@@ -853,7 +854,7 @@ void checkDate(){
                                         controllers.selectedQualifiedSortBy.value = dashController.selectedSortBy.value;
                                         controllers.isLeadsExpanded.value=true;
                                         setState(() {
-                                          controllers.selectedIndex.value =int.parse(controllers.leadCategoryList[0].leadStatus);
+                                          controllers.selectedIndex.value = int.parse(controllers.leadCategoryList[0].leadStatus);
                                         });
                                         // debugPrint(controllers.selectedIndex.value);
                                         Navigator.push(

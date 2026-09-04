@@ -486,11 +486,6 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
 
         final response = jsonDecode(request.body);
 
-        // debugPrint("================================================");
-        // debugPrint("FULL RESPONSE");
-        // debugPrint("================================================");
-        // debugPrint(response.toString());
-
         /// =====================================================
         /// DASHBOARD REPORT
         /// =====================================================

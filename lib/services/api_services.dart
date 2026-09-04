@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -50,201 +51,6 @@ final ApiService apiService = ApiService._();
 class ApiService {
   ApiService._();
 
-  // Future insertLeadAPI(BuildContext context) async {
-  //   var index = controllers.isMainPersonList.indexWhere((element) => element == true);
-  //   controllers.leadNames.value = "";
-  //   controllers.leadMobiles.value = "";
-  //   controllers.leadEmails.value = "";
-  //   controllers.leadTitles.value = "";
-  //   controllers.leadWhatsApps.value = "";
-  //   if (index != -1) {
-  //     controllers.mainLeadName.value = controllers.leadNameCrt[index].text;
-  //     controllers.mainLeadMobile.value = controllers.leadMobileCrt[index].text;
-  //     controllers.mainLeadEmail.value = controllers.leadEmailCrt[index].text;
-  //     controllers.mainLeadTitle.value = controllers.leadTitleCrt[index].text;
-  //     controllers.mainLeadWhatsApp.value = controllers.leadWhatsCrt[index].text;
-  //   } else {
-  //     controllers.mainLeadName.value = controllers.leadNameCrt[0].text;
-  //     controllers.mainLeadMobile.value = controllers.leadMobileCrt[0].text;
-  //     controllers.mainLeadEmail.value = controllers.leadEmailCrt[0].text;
-  //     controllers.mainLeadTitle.value = controllers.leadTitleCrt[0].text;
-  //     controllers.mainLeadWhatsApp.value = controllers.leadWhatsCrt[0].text;
-  //   }
-  //   for (int i = 0; i < controllers.leadPersonalItems.value; i++) {
-  //     if (i == 0) {
-  //       controllers.leadNames.value += controllers.leadNameCrt[i].text;
-  //       controllers.leadMobiles.value += controllers.leadMobileCrt[i].text;
-  //       controllers.leadEmails.value += controllers.leadEmailCrt[i].text;
-  //       controllers.leadTitles.value += controllers.leadTitleCrt[i].text;
-  //       controllers.leadWhatsApps.value += controllers.leadWhatsCrt[i].text;
-  //     } else if (i != 0 && controllers.leadNameCrt[i].text.isNotEmpty) {
-  //       controllers.leadNames.value += "||${controllers.leadNameCrt[i].text}";
-  //       controllers.leadMobiles.value +=
-  //           "||${controllers.leadMobileCrt[i].text}";
-  //       controllers.leadEmails.value += "||${controllers.leadEmailCrt[i].text}";
-  //       controllers.leadTitles.value += "||${controllers.leadTitleCrt[i].text}";
-  //       controllers.leadWhatsApps.value +=
-  //           "||${controllers.leadWhatsCrt[i].text}";
-  //     }
-  //   }
-  //   List<Map<String, String>> leadFields = [];
-  //
-  //   for (int i = 0; i < controllers.leadFieldItems.value; i++) {
-  //     leadFields.add(
-  //       {
-  //         "field_name": controllers.leadFieldName[i].text.trim(),
-  //         "field_value": controllers.leadFieldValue[i].text.trim()
-  //       },
-  //     );
-  //   }
-  //   String jsonString = json.encode(leadFields);
-  //
-  //   try {
-  //     //1-Suspects,2-Prospects,3-Qualified,4-Customers.
-  //     var leadId; //controllers.visitType
-  //     for (var role in controllers.leadCategoryList) {
-  //       if (role['value'] == controllers.leadCategory) {
-  //         leadId = role['id'];
-  //         break;
-  //       }
-  //     }
-  //     var callListId;
-  //     for (var role in controllers.callList) {
-  //       if (role['value'] == controllers.visitType) {
-  //         callListId = role['id'];
-  //         break;
-  //       }
-  //     }
-  //     Map data = {
-  //       "data": jsonString,
-  //       "lead_status": leadId,
-  //       "cos_id": controllers.storage.read("cos_id"),
-  //       "main_name": controllers.mainLeadName.value,
-  //       "main_title": controllers.mainLeadTitle.value,
-  //       "main_mobile": controllers.mainLeadMobile.value,
-  //       "main_whatsapp": controllers.mainLeadMobile.value,
-  //       "main_email": controllers.mainLeadEmail.value,
-  //       "name": controllers.leadNames.value,
-  //       "title": controllers.leadTitles.value,
-  //       "mobile_number": controllers.leadMobiles.value,
-  //       "whatsapp_number": controllers.leadMobiles.value,
-  //       "email": controllers.leadEmails.value,
-  //       "co_name": controllers.leadCoNameCrt.text.trim(),
-  //       "co_website": controllers.leadWebsite.text.trim(),
-  //       "co_number": controllers.leadCoMobileCrt.text.trim(),
-  //       "co_email": controllers.leadCoEmailCrt.text.trim(),
-  //       "linkedin": controllers.leadLinkedinCrt.text.trim(),
-  //       "gst_number": controllers.leadGstNumCrt.text.trim(),
-  //       "gst_DOR": controllers.leadDOR.value,
-  //       "gst_location": controllers.leadGstLocationCrt.text.trim(),
-  //       "x": controllers.leadXCrt.text.trim(),
-  //       "date_of_connection": controllers.empDOB.value,
-  //       "source_details": controllers.leadSourceCrt.text.trim(),
-  //       "owner": controllers.leadOwnerNameCrt.text.trim(),
-  //       "budget": controllers.budgetCrt.text.isEmpty
-  //           ? "0"
-  //           : controllers.budgetCrt.text.trim(),
-  //       "timeline_decision": controllers.leadTime.text.trim(),
-  //       "industry": controllers.industry,
-  //       "user_id": controllers.storage.read("id"),
-  //       "service_interest": controllers.service,
-  //       "product_service": controllers.leadProduct.text.trim(),
-  //       "description": controllers.leadDescription.text.trim(),
-  //       "status": controllers.status,
-  //       "rating": controllers.selectedRating,
-  //       "source": controllers.source,
-  //       "door_no": controllers.doorNumberController.text.trim(),
-  //       "street_name": controllers.streetNameController.text.trim(),
-  //       "area": controllers.areaController.text.trim(),
-  //       "city": controllers.selectedCity.value,
-  //       "state": controllers.selectedState.value,
-  //       "pin_code": controllers.pinCodeController.text,
-  //       "country": controllers.selectedCountry.value,
-  //       "actions": controllers.leadActions.text,
-  //       "discussion_point": controllers.leadDisPointsCrt.text,
-  //       "points": controllers.leadPointsCrt.text,
-  //       "platform": 3,
-  //       "visit_type": callListId,
-  //       "action": "insert_lead"
-  //     };
-  //
-  //     final request = await http.post(
-  //       Uri.parse(scriptApi),
-  //       headers: {
-  //         'X-API-TOKEN': "${TokenStorage().readToken()}",
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: jsonEncode(data),
-  //     );
-  //     Map<String, dynamic> response = json.decode(request.body);
-  //     if (request.statusCode == 401) {
-  //       final refreshed = await controllers.refreshToken();
-  //       if (refreshed) {
-  //         return insertLeadAPI(context);
-  //       } else {
-  //         controllers.setLogOut();
-  //       }
-  //     }
-  //     if (request.statusCode == 200 && response["message"] == "OK") {
-  //       billing_utils.snackBar(
-  //           msg: "Your Lead is created successfully !",
-  //           color: colorsConst.primary,
-  //           context: Get.context!);
-  //       final prefs = await SharedPreferences.getInstance();
-  //
-  //       prefs.remove("leadName");
-  //       prefs.remove("leadCount");
-  //       prefs.remove("leadMobileNumber");
-  //       prefs.remove("leadEmail");
-  //       prefs.remove("leadTitle");
-  //       prefs.remove("leadWhatsApp");
-  //       prefs.remove("leadCoName");
-  //       prefs.remove("leadCoMobile");
-  //       prefs.remove("leadWebsite");
-  //       prefs.remove("leadCoEmail");
-  //       prefs.remove("leadProduct");
-  //       prefs.remove("leadOwnerName");
-  //       prefs.remove("industry");
-  //       prefs.remove("source");
-  //       prefs.remove("status");
-  //       prefs.remove("rating");
-  //       prefs.remove("service");
-  //       prefs.remove("leadDNo");
-  //       prefs.remove("leadStreet");
-  //       prefs.remove("leadArea");
-  //       prefs.remove("leadCity");
-  //       prefs.remove("leadPinCode");
-  //       prefs.remove("budget");
-  //       prefs.remove("leadState");
-  //       prefs.remove("leadCountry");
-  //       prefs.remove("leadX");
-  //       prefs.remove("leadLinkedin");
-  //       prefs.remove("leadTime");
-  //       prefs.remove("leadDescription");
-  //       for (int i = 0; i < controllers.leadPersonalItems.value; i++) {
-  //         controllers.leadNameCrt[i].text = "";
-  //         controllers.leadMobileCrt[i].text = "";
-  //         controllers.leadEmailCrt[i].text = "";
-  //         controllers.leadTitleCrt[i].text = "";
-  //         controllers.leadWhatsCrt[i].text = "";
-  //       }
-  //       apiService.allLeadsDetails();
-  //       apiService.allNewLeadsDetails();
-  //       controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
-  //       controllers.allCustomerFuture = apiService.allCustomerDetails();
-  //       await Future.delayed(const Duration(milliseconds: 100));
-  //       Get.to(const Suspects(), duration: Duration.zero);
-  //       controllers.leadCtr.reset();
-  //     } else {
-  //       errorDialog(Get.context!, request.body);
-  //       controllers.leadCtr.reset();
-  //     }
-  //   } catch (e) {
-  //     errorDialog(Get.context!, e.toString());
-  //     controllers.leadCtr.reset();
-  //   }
-  // }
-
   Future updateLeadAPI(BuildContext context,
       {required int index,
         required String name,
@@ -290,7 +96,6 @@ class ApiService {
         "status": controllers.status,
         'details_of_service_required': controllers.sourceCrt.text.trim(),
         'rating': controllers.prospectGradingCrt.text.trim(),
-        //"owner":controllers.leadOwnerNameCrt.text.trim(),
         'prospect_enrollment_date': controllers.prospectDate.value.isEmpty?"${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}":controllers.prospectDate.value,
         'expected_convertion_date': controllers.exDate.value.isEmpty?"${(controllers.dateTime.day.toString().padLeft(2, "0"))}.${(controllers.dateTime.month.toString().padLeft(2, "0"))}.${(controllers.dateTime.year.toString())}":controllers.exDate.value,
         "num_of_headcount": controllers.noOfHeadCountCrt.text,
@@ -307,7 +112,6 @@ class ApiService {
         "whatsapp_number": controllers.leadWhatsCrt[0].text,
         "email": controllers.leadEmailCrt[0].text,
         "action": "update_customer",
-        // "additional_list": addList
         "additional_list": controllers.addList,
       };
 
@@ -320,8 +124,6 @@ class ApiService {
         },
       );
       Map<String, dynamic> response = json.decode(request.body);
-      print(data);
-      print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -509,11 +311,6 @@ class ApiService {
           DateTime dateB = DateTime.parse(b.updatedTs.toString());
           return dateB.compareTo(dateA); // Desc order
         });
-        // Navigator.pushReplacement(
-        //   context,
-        //   MaterialPageRoute(builder: (_) =>  NewLeadPage(index: controllers.leadCategoryList[0].leadStatus ,
-        //       name: controllers.leadCategoryList[0].value,list: list,list2: list2, listIndex: 0,)),
-        // );
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (_) =>  NewLeadPage(index: index.toString(),
@@ -526,7 +323,6 @@ class ApiService {
         controllers.leadCtr.reset();
       }
     } catch (e) {
-      // log(e.toString());
       errorDialog(Get.context!, e.toString());
       controllers.leadCtr.reset();
     }
@@ -588,12 +384,6 @@ class ApiService {
           controllers.comCountry.text = country;
           controllers.comState.text = state;
           controllers.comCity.text = district;
-
-          // ✅ FINAL PRINT (THIS is what you want)
-          // debugPrint("PINCODE: $pinCode");
-          // debugPrint("COUNTRY: ${controllers.comCountry.text}");
-          // debugPrint("STATE  : ${controllers.comState.text}");
-          // debugPrint("CITY   : ${controllers.comCity.text}");
         } else {
           _resetPinValues();
         }
@@ -602,7 +392,6 @@ class ApiService {
       }
     } catch (e) {
       _resetPinValues();
-      // debugPrint("PINCODE ERROR: $e");
     }
   }
   void _resetPinValues() {
@@ -622,10 +411,6 @@ class ApiService {
 
       final request = await http.post(
         Uri.parse(scriptApi),
-        // headers: {
-        //   "Accept": "application/text",
-        //   "Content-Type": "application/x-www-form-urlencoded"
-        // },
         headers: {
           'X-API-TOKEN': "${TokenStorage().readToken()}",
           'Content-Type': 'application/json',
@@ -633,7 +418,6 @@ class ApiService {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      // debugPrint(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
@@ -671,9 +455,6 @@ class ApiService {
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      // debugPrint(data.toString());
-      // debugPrint(request.body);
-      // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -725,7 +506,6 @@ class ApiService {
       );
       debugPrint(data.toString());
       debugPrint(request.body);
-      // Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -755,10 +535,6 @@ class ApiService {
 
       final request = await http.post(
         Uri.parse(scriptApi),
-        // headers: {
-        //   "Accept": "application/text",
-        //   "Content-Type": "application/x-www-form-urlencoded"
-        // },
         headers: {
           'X-API-TOKEN': "${TokenStorage().readToken()}",
           'Content-Type': 'application/json',
@@ -784,11 +560,7 @@ class ApiService {
 
     }
   }
-
-
-
   List<Map<String, String>> prospectsList = [];
-
   Future insertProspectsAPI(
       BuildContext context, List<Map<String, String>> list) async {
     try {
@@ -806,7 +578,6 @@ class ApiService {
         allQualifiedDetails();
         controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
         Navigator.pop(context);
-        // Get.to(const Prospects(), duration: Duration.zero);
         controllers.productCtr.reset();
       } else {
         errorDialog(Get.context!, request.body);
@@ -1163,7 +934,6 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print(data);
       log(request.body);
       Map<String, dynamic> response = json.decode(request.body);
       if (request.statusCode == 401) {
@@ -1672,14 +1442,9 @@ class ApiService {
         }
       }
       if (response.statusCode == 200) {
-        // apiService.allLeadsDetails();
-        // apiService.allNewLeadsDetails();
-        // apiService.allGoodLeadsDetails();
-        // apiService.allTargetLeadsDetails();
         getHeading();
-        // apiService.getLeadCategories();
         apiService.getCustomLeads();
-        Get.to(DashboardPage());
+        Navigator.pop(context);
         prospectsList.clear();
         customerList.clear();
 
@@ -1885,6 +1650,8 @@ class ApiService {
           'Content-Type': 'application/json',
         },
         body: jsonEncode(data),
+      ).timeout(
+        const Duration(seconds: 20),
       );
 
       final body = response.body.toString();
@@ -1900,147 +1667,6 @@ class ApiService {
       }
       if (response.statusCode == 200 &&
         body.contains("Customer saved successfully")) {
-        // list.add(NewLeadObj(
-        //   select: false,
-        //   firstname: controllers.leadNameCrt[0].text.trim(),
-        //   email: controllers.leadEmailCrt[0].text.trim(),
-        //   mobileNumber: controllers.numberList
-        //       .map((e) => e.text.trim())
-        //       .where((e) => e.isNotEmpty)
-        //       .join("||"),
-        //   whatsapp: controllers.leadWhatsCrt[0].text.trim(),
-        //   userId: controllers.storage.read("id").toString(),
-        //   companyName: controllers.leadCoNameCrt.text.trim(),
-        //   productDiscussion: controllers.prodDescriptionController.text.trim(),
-        //   source: controllers.leadDisPointsCrt.text.trim(),
-        //   notes: controllers.leadActions.text.trim(),
-        //   quotationStatus: "",
-        //   quotationRequired: "1",
-        //
-        //   doorNo: controllers.doorNumberController.text.trim(),
-        //   area: controllers.areaController.text.trim(),
-        //   city: controllers.cityController.text.trim(),
-        //   country: controllers.selectedCountry.value,
-        //   state: controllers.stateController.text.trim(),
-        //   pincode: controllers.pinCodeController.text.trim(),
-        //
-        //   companyWebsite: controllers.leadWebsite.text.trim(),
-        //   companyNumber: controllers.infoNumberList
-        //       .map((e) => e.text.trim())
-        //       .where((e) => e.isNotEmpty)
-        //       .join("||"),
-        //   companyEmail: controllers.leadCoEmailCrt.text.trim(),
-        //   linkedin: controllers.leadLinkedinCrt.text.trim(),
-        //   x: controllers.leadXCrt.text.trim(),
-        //
-        //   industry: controllers.industry.toString(),
-        //   product: controllers.leadProduct.text.trim(),
-        //   sourceDetails: controllers.leadProduct.text.trim(),
-        //
-        //   type: "1",
-        //   lat: "0.0",
-        //   lng: "0.0",
-        //
-        //   leadStatus: leadId.toString(),
-        //   status: controllers.status.toString(),
-        //   visitType: callListId.toString(),
-        //
-        //   prospectEnrollmentDate:
-        //   controllers.prospectDate.value.isEmpty
-        //       ? DateFormat("dd.MM.yyyy").format(DateTime.now())
-        //       : controllers.prospectDate.value,
-        //
-        //   expectedConvertionDate:
-        //   controllers.exDate.value.isEmpty
-        //       ? DateFormat("dd.MM.yyyy").format(DateTime.now())
-        //       : controllers.exDate.value,
-        //
-        //   statusUpdate: controllers.statusCrt.text.trim(),
-        //   numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
-        //   expectedBillingValue:
-        //   controllers.exMonthBillingValCrt.text.trim(),
-        //   arpuValue: controllers.arpuCrt.text.trim(),
-        //
-        //   detailsOfServiceRequired:
-        //   controllers.sourceCrt.text.trim(),
-        //   rating: controllers.prospectGradingCrt.text.trim(),
-        //   owner: controllers.leadTitleCrt[0].text.trim(),
-        //
-        //   createdTs: DateTime.now().toString(),
-        //   updatedTs: DateTime.now().toString(),
-        // ));        // apiService.getCustomLeads();
-        // list2.add(NewLeadObj(
-        //   select: false,
-        //   firstname: controllers.leadNameCrt[0].text.trim(),
-        //   email: controllers.leadEmailCrt[0].text.trim(),
-        //   mobileNumber: controllers.numberList
-        //       .map((e) => e.text.trim())
-        //       .where((e) => e.isNotEmpty)
-        //       .join("||"),
-        //   whatsapp: controllers.leadWhatsCrt[0].text.trim(),
-        //   userId: controllers.storage.read("id").toString(),
-        //   companyName: controllers.leadCoNameCrt.text.trim(),
-        //   productDiscussion: controllers.prodDescriptionController.text.trim(),
-        //   source: controllers.leadDisPointsCrt.text.trim(),
-        //   notes: controllers.leadActions.text.trim(),
-        //
-        //   quotationStatus: "",
-        //   quotationRequired: "1",
-        //
-        //   doorNo: controllers.doorNumberController.text.trim(),
-        //   area: controllers.areaController.text.trim(),
-        //   city: controllers.cityController.text.trim(),
-        //   country: controllers.selectedCountry.value,
-        //   state: controllers.stateController.text.trim(),
-        //   pincode: controllers.pinCodeController.text.trim(),
-        //
-        //   companyWebsite: controllers.leadWebsite.text.trim(),
-        //   companyNumber: controllers.infoNumberList
-        //       .map((e) => e.text.trim())
-        //       .where((e) => e.isNotEmpty)
-        //       .join("||"),
-        //   companyEmail: controllers.leadCoEmailCrt.text.trim(),
-        //   linkedin: controllers.leadLinkedinCrt.text.trim(),
-        //   x: controllers.leadXCrt.text.trim(),
-        //
-        //   industry: controllers.industry.toString(),
-        //   product: controllers.leadProduct.text.trim(),
-        //   sourceDetails: controllers.leadProduct.text.trim(),
-        //
-        //   type: "1",
-        //   lat: "0.0",
-        //   lng: "0.0",
-        //
-        //   leadStatus: leadId.toString(),
-        //   status: controllers.status.toString(),
-        //   visitType: callListId.toString(),
-        //
-        //   prospectEnrollmentDate:
-        //   controllers.prospectDate.value.isEmpty
-        //       ? DateFormat("dd.MM.yyyy").format(DateTime.now())
-        //       : controllers.prospectDate.value,
-        //
-        //   expectedConvertionDate:
-        //   controllers.exDate.value.isEmpty
-        //       ? DateFormat("dd.MM.yyyy").format(DateTime.now())
-        //       : controllers.exDate.value,
-        //
-        //   statusUpdate: controllers.statusCrt.text.trim(),
-        //   numOfHeadcount: controllers.noOfHeadCountCrt.text.trim(),
-        //   expectedBillingValue:
-        //   controllers.exMonthBillingValCrt.text.trim(),
-        //   arpuValue: controllers.arpuCrt.text.trim(),
-        //
-        //   detailsOfServiceRequired:
-        //   controllers.sourceCrt.text.trim(),
-        //   rating: controllers.prospectGradingCrt.text.trim(),
-        //   owner: controllers.leadTitleCrt[0].text.trim(),
-        //
-        //   createdTs: DateTime.now().toString(),
-        //   updatedTs: DateTime.now().toString(),
-        // ));        // apiService.getCustomLeads();
-        // debugPrint("After nav: ${list.last}");
-        // debugPrint("After nav: ${list.length}");
         var res = jsonDecode(response.body);
 
         int customerId = int.parse(res["cus_id"].toString());
@@ -2049,9 +1675,6 @@ class ApiService {
         int index=0;
         for(var i=0;i<controllers.leadCategoryList.length;i++){
           if(controllers.leadCategoryList[i].leadStatus=="1"){
-            debugPrint("dataaaa: ${controllers.leadCategoryList[i]}");
-            debugPrint("dataaaa: ${controllers.leadCategoryList[i].list.length}");
-            debugPrint("dataaaa: ${controllers.leadCategoryList[i].list2.length}");
             controllers.leadCategoryList[i].list.add(NewLeadObj(
               points: controllers.leadActions.text.trim(),
               referredBy: controllers.throughBy.text.trim(),
@@ -2066,7 +1689,6 @@ class ApiService {
                   .where((e) => e.isNotEmpty)
                   .join("||"),
               whatsapp: controllers.leadWhatsCrt[0].text.trim(),
-              // userId: controllers.storage.read("id").toString(),
               companyName: controllers.leadCoNameCrt.text.trim(),
               productDiscussion: controllers.prodDescriptionController.text.trim(),
               source: controllers.leadDisPointsCrt.text.trim(),
@@ -2290,10 +1912,7 @@ class ApiService {
             break;
           }
         }
-        debugPrint("dataaaa: ${data}");
-        debugPrint("dataaaa: ${data!.list.length}");
-        debugPrint("dataaaa: ${data.list2.length}");
-        controllers.selectedIndex.value=int.parse(data.leadStatus.toString());
+        controllers.selectedIndex.value=int.parse(data!.leadStatus.toString());
         if(controllers.selectedQualifiedSortBy.value==""){
           controllers.selectedQualifiedSortBy.value="All";
         }
@@ -2317,102 +1936,28 @@ class ApiService {
       } else {
         errorDialog(context, body);
       }
+    } on TimeoutException {
+      controllers.leadCtr.reset();
+
+      errorDialog(context, "Internet connection is slow. Please check your connection and try again.",
+      );
+    } on SocketException {
+      controllers.leadCtr.reset();
+
+      errorDialog(context, "Please check your internet connection and try again.",
+      );
+    } on http.ClientException {
+      controllers.leadCtr.reset();
+      errorDialog(
+        context, "Unable to connect to the server. Please check your internet connection.",
+      );
     } catch (e) {
-      errorDialog(context, e.toString());
+      controllers.leadCtr.reset();
+      errorDialog(context, "Something went wrong. Please try again.",
+      );
     }
   }
 
-
-  // List<Map<String, String>> qualifiedList = [];
-  // Future insertQualifiedAPI(BuildContext context,List<Map<String, String>> list) async {
-  //   try {
-  //     debugPrint("insertQualifiedAPI");
-  //     final request = await http.post(Uri.parse(qualifiedScript),
-  //         headers: {
-  //           'X-API-TOKEN': "${TokenStorage().readToken()}",
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: jsonEncode(list),
-  //         encoding: Encoding.getByName("utf-8"));
-  //     Map<String, dynamic> response = json.decode(request.body);
-  //     if (request.statusCode == 200 && response["message"] == "OK") {
-  //       apiService.allLeadsDetails();
-  //       apiService.allNewLeadsDetails();
-  //       allCustomerDetails();
-  //       controllers.allGoodLeadFuture = apiService.allGoodLeadsDetails();
-  //       Navigator.pop(context);
-  //       qualifiedList.clear();
-  //       // Get.to(const Qualified(), duration: Duration.zero);
-  //       controllers.productCtr.reset();
-  //     } else {
-  //       errorDialog(Get.context!, request.body);
-  //       controllers.productCtr.reset();
-  //     }
-  //   } on SocketException {
-  //     controllers.productCtr.reset();
-  //     errorDialog(Get.context!, 'No internet connection');
-  //     //throw Exception('No internet connection'); // Handle network errors
-  //   } on HttpException catch (e) {
-  //     controllers.productCtr.reset();
-  //     errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
-  //     //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
-  //   } catch (e) {
-  //     errorDialog(Get.context!, e.toString());
-  //     controllers.productCtr.reset();
-  //   }
-  // }
-
-  // Future insertPromoteAPI(BuildContext context,String id,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
-  //   try {
-  //     debugPrint("insertQualifiedAPI");
-  //     Map<String, dynamic> data ={
-  //       "id": id,
-  //       "lead_status": status,
-  //       "created_by": controllers.storage.read("id"),
-  //       "cos_id": controllers.storage.read("cos_id"),
-  //       "action": "update_promote"
-  //     };
-  //     final request = await http.post(Uri.parse(scriptApi),
-  //         headers: {
-  //           'X-API-TOKEN': "${TokenStorage().readToken()}",
-  //           'Content-Type': 'application/json',
-  //         },
-  //         body: jsonEncode(data),
-  //         encoding: Encoding.getByName("utf-8"));
-  //     Map<String, dynamic> response = json.decode(request.body);
-  //     debugPrint(data.toString());
-  //     debugPrint(request.body);
-  //     if (request.statusCode == 401) {
-  //       final refreshed = await controllers.refreshToken();
-  //       if (refreshed) {
-  //         return insertPromoteAPI(context,id,status,name,list,list2);
-  //       } else {
-  //         controllers.setLogOut();
-  //       }
-  //     }
-  //     if (request.statusCode == 200 && response["message"] == "OK") {
-  //       controllers.selectedIndex.value=int.parse(status);
-  //       Get.back();
-  //       Get.to( NewLeadPage(index: status, name: name,list: list,list2: list2,), duration: Duration.zero);
-  //       controllers.productCtr.reset();
-  //     }
-  //     else {
-  //       errorDialog(Get.context!, request.body);
-  //       controllers.productCtr.reset();
-  //     }
-  //   } on SocketException {
-  //     controllers.productCtr.reset();
-  //     errorDialog(Get.context!, 'No internet connection');
-  //     //throw Exception('No internet connection'); // Handle network errors
-  //   } on HttpException catch (e) {
-  //     controllers.productCtr.reset();
-  //     errorDialog(Get.context!, 'Server error promote: ${e.toString()}');
-  //     //throw Exception('Server error employee: ${e.toString()}'); // Handle HTTP errors
-  //   } catch (e) {
-  //     errorDialog(Get.context!, e.toString());
-  //     controllers.productCtr.reset();
-  //   }
-  // }
   Future insertPromoteListAPI(BuildContext context,String reason,String status,String name, RxList<NewLeadObj> list, RxList<NewLeadObj> list2) async {
     try {
       debugPrint("#####");
@@ -2442,62 +1987,6 @@ class ApiService {
           controllers.setLogOut();
         }
       }
-      // if (request.statusCode == 200 && response["message"] == "OK") {
-      //   controllers.selectedIndex.value = int.parse(status);
-      //   RxList<NewLeadObj> tempList=<NewLeadObj>[].obs;
-      //   debugPrint("status: ${status}");
-      //   debugPrint("Selected Index: ${controllers.selectedIndex.value}");
-      //
-      //   for (var i = 0; i < controllers.idList.length; i++) {
-      //     debugPrint("Checking idList[$i]: ${controllers.idList[i]}");
-      //
-      //     for (var j = 0; j < list.length; j++) {
-      //       debugPrint("Comparing list[$j].userId: ${list[j].userId}");
-      //
-      //       if (list[j].userId == controllers.idList[i]) {
-      //         debugPrint("MATCH FOUND -> userId: ${list[j].userId}");
-      //
-      //         list[j].leadStatus = status;
-      //
-      //         tempList.add(list[j]);
-      //
-      //         debugPrint("Removing from main list index: $j");
-      //
-      //         list.removeAt(j);
-      //         list2.removeAt(j);
-      //
-      //       }
-      //     }
-      //   }
-      //
-      //   debugPrint("list2: ${list}");
-      //   debugPrint("list2: ${list2}");
-      //   debugPrint("controllers.leadCategoryList[int.parse(status)].list: ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
-      //   debugPrint("controllers.leadCategoryList[int.parse(status)].list2: ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
-      //
-      //
-      //   debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].leadStatus}");
-      //   debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].value}");
-      //   debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list}");
-      //   debugPrint("Category List : ${controllers.leadCategoryList[controllers.selectedIndex.value].list2}");
-      //   controllers.idList.clear();
-      //   // dashController.getDashboardReport();
-      //   // controllers.selectedIndex.value = int.parse(status);
-      //   // Navigator.pop(context); // dialog close only
-      //
-      //   Future.delayed(Duration(milliseconds: 10), () {
-      //     Get.to(
-      //           () => NewLeadPage(
-      //         key: UniqueKey(),
-      //         index: controllers.leadCategoryList[controllers.selectedIndex.value].leadStatus,
-      //         name: controllers.leadCategoryList[controllers.selectedIndex.value].value,
-      //         list: controllers.leadCategoryList[controllers.selectedIndex.value].list,
-      //         list2: controllers.leadCategoryList[controllers.selectedIndex.value].list2, listIndex: int.parse(status),
-      //       ),
-      //     );
-      //   });
-      //   controllers.productCtr.reset();
-      // }
       if (request.statusCode == 200 && response["message"] == "OK") {
         controllers.selectedIndex.value = int.parse(status);
         RxList<NewLeadObj> tempList=<NewLeadObj>[].obs;
@@ -3676,7 +3165,6 @@ class ApiService {
   }
   Future insertInvoiceAPI(BuildContext context,pw.Document pdf,String productListJson) async {
     // try {
-    print("insertInvoiceAPI");
       var request = http.MultipartRequest('POST', Uri.parse(scriptApi));
       request.fields['clientMail'] = controllers.emailToCtr.text;
       // request.fields['clientMail'] = controllers.selectedCustomerEmail.value;
@@ -3868,8 +3356,6 @@ class ApiService {
       });
       var response = await request.send();
       var body = await response.stream.bytesToString();
-      print(request.fields);
-      print(body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5192,8 +4678,6 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("request.body");
-      print(data.toString());
       controllers.versionActive.value = false;
       controllers.updateAvailable.value = false;
       if (request.statusCode == 401) {
@@ -5247,9 +4731,6 @@ class ApiService {
           },
           body: jsonEncode(data),
           encoding: Encoding.getByName("utf-8"));
-      print("getCustomFields.body");
-      print(data.toString());
-      print(request.body);
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5795,27 +5276,6 @@ class ApiService {
       'https://www.googleapis.com/auth/calendar',
     ],
   );
-  Future<void> connectGoogleCalendar() async {
-
-    try {
-
-      final GoogleSignInAccount? user =
-      await googleSignIn.signIn();
-
-      if (user != null) {
-        final auth = await user.authentication;
-
-        print("auth.accessToken"); // 👈 Access Token
-        print(auth.accessToken); // 👈 Access Token
-      }
-
-    } catch (e) {
-
-      print(e);
-
-    }
-
-  }
 
   Future<void> connectCalendar() async {
     try {
@@ -5823,16 +5283,6 @@ class ApiService {
       final response = await http.post(
         Uri.parse(uri),
       );
-      print("connectCalendar");
-      print(response.body);
-      // if (response.statusCode == 200) {
-      //   final data = jsonDecode(response.body) as List;
-      //   controllers.allEmployeeLength.value = data.length;
-      //   return data.map((json) => EmployeeObj.fromJson(json)).toList();
-      // } else {
-      //   throw Exception(
-      //       'Failed to load employee: Status code ${response.statusCode}');
-      // }
     } on SocketException {
       throw Exception('No internet connection');
     } on HttpException catch (e) {
@@ -5863,9 +5313,6 @@ class ApiService {
 
         body: jsonEncode(data),
       );
-      // debugPrint("customer_chats");
-      // debugPrint(data.toString());
-      // debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5902,7 +5349,6 @@ class ApiService {
   List<Map<String, String>> newLeadList = [];
 
   Future<void> getCustomLeads() async {
-    // debugPrint("getCustomLeads");
     controllers.isCrmData.value = false;
     controllers.allLeadList.clear();
     final url = Uri.parse(scriptApi);
@@ -5924,9 +5370,6 @@ class ApiService {
 
         body: jsonEncode(data),
       );
-      // debugPrint("all_leads");
-      // debugPrint(data.toString());
-      // log(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -5946,12 +5389,9 @@ class ApiService {
             if (controllers.leadCategoryList[i].leadStatus == controllers.allLeadList[j].leadStatus) {
               controllers.leadCategoryList[i].list.add(controllers.allLeadList[j]);
               controllers.leadCategoryList[i].list2.add(controllers.allLeadList[j]);
-              // debugPrint("Added → ${controllers.allLeadList[j].leadStatus} to ${controllers.leadCategoryList[i].leadStatus}");
             }
           }
-          // debugPrint("Final List for ${controllers.leadCategoryList[i].leadStatus} : ${controllers.leadCategoryList[i].list}");
         }
-        // debugPrint("----------> ${controllers.leadCategoryList}");
         controllers.isCrmData.value=true;
         dashController.getWholeReport();
       } else {
@@ -6002,9 +5442,6 @@ class ApiService {
 
         body: jsonEncode(data),
       );
-      // debugPrint("emp_leads");
-      // debugPrint(data.toString());
-      // log(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
@@ -6017,8 +5454,6 @@ class ApiService {
         final data = jsonDecode(response.body) as List;
         controllers.empLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         controllers.empLeadList2.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-        // debugPrint("controllers.allEmpList.value");
-        // debugPrint(controllers.empLeadList.value.length.toString());
         for(var i=0;i<controllers.empLeadList.length;i++){
           if(controllers.empLeadList[i].category==controllers.leadCategoryList.last.value){
             controllers.mainCus.value++;
@@ -6052,7 +5487,6 @@ class ApiService {
     }
   }
   Future<void> getLeadRatingDetails(String type) async {
-    // debugPrint("getLeadRatingDetails");
     controllers.isCrmData.value = false;
     controllers.ratingList.clear();
     controllers.ratingList2.clear();
@@ -6074,8 +5508,6 @@ class ApiService {
           "action": "get_data"
         }),
       );
-      // debugPrint("response.bodyyyy");
-      // debugPrint(response.body);
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
