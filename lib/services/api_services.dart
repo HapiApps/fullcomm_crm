@@ -2502,6 +2502,43 @@ class ApiService {
       throw Exception('Failed to load album');
     }
   }
+
+  Future syncContactsToCrm() async {
+    try {
+      Map data = {
+        "cos_id": controllers.storage.read("cos_id"),
+        "mobile_number": controllers.storage.read("mobile"),
+        "action": "sync_contacts_to_crm"
+      };
+      print("Sync Contacts Data: $data");
+      final request = await http.post(Uri.parse(scriptApi),
+          headers: {
+            'X-API-TOKEN': "${TokenStorage().readToken()}",
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(data),
+          encoding: Encoding.getByName("utf-8"));
+      debugPrint("syncContactsToCrm");
+      debugPrint(request.body);
+      if (request.statusCode == 401) {
+        final refreshed = await controllers.refreshToken();
+        if (refreshed) {
+          return await syncContactsToCrm();
+        } else {
+          controllers.setLogOut();
+        }
+      }
+      if (request.statusCode == 200) {
+        getCustomLeads();
+      } else {
+        throw Exception('Failed to load album');
+      }
+    } catch (e) {
+      throw Exception('Failed to load album');
+    }
+  }
+
+
   Future getWhatsAppCustomers() async {
     try {
       controllers.whatsAppCustomers.clear();
@@ -5361,6 +5398,7 @@ class ApiService {
         "lead_id": "",
         "action": "get_data"
       };
+      print("All leads data $data");
       final response = await http.post(
         url,
         headers: {
@@ -5380,6 +5418,7 @@ class ApiService {
       }
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
+        print("allLeadList ${data.length}");
         // newLeadList.clear();
         controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
         // controllers.searchNewLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
@@ -5394,6 +5433,7 @@ class ApiService {
         }
         controllers.isCrmData.value=true;
         dashController.getWholeReport();
+
       } else {
         controllers.allLeadList.clear();
         throw Exception('Failed to load leads: Status code ${response.body}');

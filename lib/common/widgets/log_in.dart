@@ -42,8 +42,8 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
     setState(() {
       controllers.loginNumber.text = mobileNumber.toString();
       controllers.loginPassword.text = password.toString();
-      if (kDebugMode) {
-        controllers.loginNumber.text = isRelease==false?"8220134995":"9585245494";
+      if (kDebugMode) {//"8220134995"
+        controllers.loginNumber.text = isRelease==false?"9999999991":"9585245494";
         controllers.loginPassword.text = isRelease==false?"a1b2C3##":"a1b2C3##";
       }
     });
@@ -55,9 +55,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addObserver(this);
-
     // Initial page load focus
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted && mobileFocus.canRequestFocus) {
@@ -233,7 +231,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                       children: [
                         Obx(()=>TextButton(
                           onPressed: isLoading.value==true
-                              ? null // ⭐ button disable
+                              ? null
                               : () async {
                             if (controllers.loginNumber.text.isEmpty) {
                               mobileUtils.snackBar(

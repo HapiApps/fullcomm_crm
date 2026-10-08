@@ -190,24 +190,26 @@ class SideBar extends StatelessWidget {
                       ),
                     ),
                   ),
-                  ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: controllers.leadCategoryList.length - 1,
-                      itemBuilder: (context,index){
-                        return AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          child: isExpanded?
-                          Container(
-                            width: 110,alignment: Alignment.centerLeft,
-                            child: subItem(context, controllers.isLeadsExpanded,controllers.isSettingsExpanded,controllers.leadCategoryList[index].value,
-                              int.parse(controllers.leadCategoryList[index].leadStatus),
-                              NewLeadPage(index: controllers.leadCategoryList[index].leadStatus,
-                              name: controllers.leadCategoryList[index].value,list: controllers.leadCategoryList[index].list,
-                              list2: controllers.leadCategoryList[index].list2, listIndex: index,),
-                            ),
-                          ):0.height,
-                        );
-                      }),
+                  Obx((){
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: controllers.leadCategoryList.value.length - 1,
+                        itemBuilder: (context,index){
+                          return AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 300),
+                            child: isExpanded?
+                            Container(
+                              width: 110,alignment: Alignment.centerLeft,
+                              child: subItem(context, controllers.isLeadsExpanded,controllers.isSettingsExpanded,controllers.leadCategoryList.value[index].value,
+                                int.parse(controllers.leadCategoryList.value[index].leadStatus),
+                                NewLeadPage(index: controllers.leadCategoryList.value[index].leadStatus,
+                                  name: controllers.leadCategoryList.value[index].value,list: controllers.leadCategoryList.value[index].list,
+                                  list2: controllers.leadCategoryList.value[index].list2, listIndex: index,),
+                              ),
+                            ):0.height,
+                          );
+                        });
+                  })
                 ],
               );
             }),

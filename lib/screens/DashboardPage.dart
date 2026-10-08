@@ -85,35 +85,129 @@ class _DashboardPageState extends State<DashboardPage>
       return "";
     }
   }
+  // File-oda mela (class-ku veliya)
+  bool _crmSyncedThisSession = false;
+
+// State class-kulla helper
+  Future<void> _runBatch(List<Future<void> Function()> tasks) async {
+    await Future.wait(tasks.map((t) async {
+      try {
+        await t();
+      } catch (e) {
+        debugPrint("API error: $e");
+      }
+    }));
+    await Future.delayed(const Duration(milliseconds: 300)); // batches idaiyila chinna gap
+  }
+
   @override
+  void initState() {
+    super.initState();
+    _focusNode = FocusNode();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      dashController.selectedSortBy.value =
+      "${controllers.storage.read("selectedSortBy") ?? "Today"}";
+      _focusNode.requestFocus();
+      controllers.selectedIndex.value = 100;
+      remController.selectedMeetSortBy.value = dashController.selectedSortBy.value;
+      remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
+      remController.selectedReminderSortBy.value = dashController.selectedSortBy.value;
+      checkDate();
+
+      final billing = Provider.of<BillingProvider>(context, listen: false);
+      final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
+
+      await _runBatch([
+            () async => dashController.getToken(),
+            () async => apiService.getHeading(),
+            () async => apiService.currentVersion(),
+      ]);
+      if (!mounted) return;
+
+      final now = DateTime.now();
+      String fmt(DateTime d) =>
+          "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
+      final today = fmt(now);
+      final last7 = fmt(now.subtract(const Duration(days: 7)));
+
+      await _runBatch([
+            () async => dashController.getCustomerReport(last7, today),
+            () async => dashController.getWholeReport(),
+            () async {
+          if (remController.reminderList.isEmpty) await remController.allReminders("2");
+        },
+            () async {
+          if (remController.callMailsDetailsList.isEmpty) await apiService.getMailCallActivity();
+        },
+      ]);
+      if (!mounted) return;
+
+      remController.dashboardMeetings(
+        searchText: controllers.searchText.value.toLowerCase(),
+        callType: controllers.selectMeetingType.value,
+        sortField: controllers.sortFieldMeetingActivity.value,
+        sortOrder: controllers.sortOrderMeetingActivity.value,
+      );
+      remController.dashboardSortReminders();
+      remController.dashboardCommunicationFilterList(
+        dataList: remController.callMailsDetailsList2,
+        searchText: controllers.searchText.value.toLowerCase(),
+        callType: controllers.selectCallType.value,
+        sortField: controllers.sortFieldCallActivity.value,
+        sortOrder: controllers.sortOrderCallActivity.value,
+        selectedMonth: remController.selectedCallMonth.value,
+        selectedRange: remController.selectedCallRange.value,
+        selectedDateFilter: remController.selectedCallSortBy.value,
+      );
+
+      await _runBatch([
+            () async { if (controllers.leadCategoryList.isEmpty) await apiService.getLeadCategories(); },
+            () async { if (controllers.allLeadList.isEmpty) await apiService.getCustomLeads(); },
+            () async { if (controllers.allLeadCategoryList.isEmpty) await apiService.getAllLeadCategories(); },
+            () async => apiService.getAllEmployees(),
+      ]);
+      if (!mounted) return;
+
+      await _runBatch([
+            () async { if (billing.productsList.isEmpty) await billing.getProducts(); },
+            () async { if (productCtr.products.isEmpty) await productCtr.getProducts(); },
+            () async { if (productCtr.ordersList.isEmpty) await productCtr.getOrderDetails(); },
+            () async { if (productCtr.quotationsList.isEmpty) await productCtr.getQuotationDetails(); },
+      ]);
+      if (!mounted) return;
+
+      await _runBatch([
+            () async { if (productCtr.termsAndConditionsList.isEmpty) await productCtr.getTermsAndConditions(); },
+            () async { if (pyrlCtr.settingList.isEmpty) await services.getRoleSettings(context); },
+            () async { if (controllers.hCallStatusList.isEmpty) await controllers.getCallStatus(); },
+            () async { if (controllers.industriesList.isEmpty) await controllers.getIndustries(); },
+      ]);
+      if (!mounted) return;
+
+      await _runBatch([
+            () async => employeeData.staffRoleDetailsData(context: context),
+            () async { if (controllers.instagramCustomers.isEmpty) await apiService.getInstagramCustomers(); },
+            () async => controllers.insertSeriesNo(context, true),
+      ]);
+
+      if (!_crmSyncedThisSession) {
+        _crmSyncedThisSession = true;
+        await apiService.syncContactsToCrm();
+      }
+    });
+  }
+  // @override
   // void initState() {
   //   super.initState();
   //   _focusNode = FocusNode();
   //   dashController.getToken();
   //   apiService.getHeading();
-  //   // Timer.periodic(const Duration(seconds: 30), (timer) {
-  //   //   dashController.refreshTime.value++;
-  //   // });
   //   WidgetsBinding.instance.addPostFrameCallback((_) {
   //     dashController.selectedSortBy.value="${controllers.storage.read("selectedSortBy") ?? "Today"}";
-  //     // var selectedMeetRange = Rxn<DateTimeRange>(
-  //     //   DateTimeRange(
-  //     //     start: DateTime(
-  //     //       DateTime.now().year,
-  //     //       DateTime.now().month,
-  //     //       DateTime.now().day,
-  //     //     ),
-  //     //     end: DateTime(
-  //     //       DateTime.now().year,
-  //     //       DateTime.now().month,
-  //     //       DateTime.now().day,
-  //     //     ),
-  //     //   ),
-  //     // );
-  //     // remController.selectedCallRange=selectedMeetRange;
-  //     // remController.selectedReminderRange=selectedMeetRange;
   //     _focusNode.requestFocus();
   //     controllers.insertSeriesNo(context,true);
+  //     apiService.syncContactsToCrm();
   //     if(controllers.leadCategoryList.isEmpty){
   //       apiService.getLeadCategories();
   //     }
@@ -149,6 +243,9 @@ class _DashboardPageState extends State<DashboardPage>
   //     }
   //     if(pyrlCtr.settingList.isEmpty){
   //       services.getRoleSettings(context);
+  //     }
+  //     if(controllers.instagramCustomers.isEmpty){
+  //       apiService.getInstagramCustomers();
   //     }
   //     apiService.currentVersion();
   //     controllers.selectedIndex.value = 100;
@@ -188,125 +285,8 @@ class _DashboardPageState extends State<DashboardPage>
   //         today);
   //     dashController.getWholeReport();
   //   });
-  //
-  //   // _leadItemController = AnimationController(
-  //   //   vsync: this,
-  //   //   duration: const Duration(milliseconds: 2200),
-  //   // );
-  //   //
-  //   // _leadItemAnimations = [
-  //   //   // Suspect
-  //   //   CurvedAnimation(
-  //   //     parent: _leadItemController,
-  //   //     curve: const Interval(0.0, 0.20, curve: Curves.easeOut),
-  //   //   ),
-  //   //
-  //   //   // Prospect
-  //   //   CurvedAnimation(
-  //   //     parent: _leadItemController,
-  //   //     curve: const Interval(0.35, 0.55, curve: Curves.easeOut),
-  //   //   ),
-  //   //
-  //   //   // Qualified
-  //   //   CurvedAnimation(
-  //   //     parent: _leadItemController,
-  //   //     curve: const Interval(0.70, 0.90, curve: Curves.easeOut),
-  //   //   ),
-  //   //
-  //   //   // Customer
-  //   //   CurvedAnimation(
-  //   //     parent: _leadItemController,
-  //   //     curve: const Interval(1.00, 1.0, curve: Curves.easeOut),
-  //   //   ),
-  //   // ];
   // }
-  void initState() {
-    super.initState();
-    _focusNode = FocusNode();
-    dashController.getToken();
-    apiService.getHeading();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      dashController.selectedSortBy.value="${controllers.storage.read("selectedSortBy") ?? "Today"}";
-      _focusNode.requestFocus();
-      controllers.insertSeriesNo(context,true);
-      if(controllers.leadCategoryList.isEmpty){
-        apiService.getLeadCategories();
-      }
-      if(controllers.allLeadList.isEmpty){
-        apiService.getCustomLeads();
-      }
-      if(controllers.allLeadCategoryList.isEmpty){
-        apiService.getAllLeadCategories();
-      }
-      apiService.getAllEmployees();
-      if(Provider.of<BillingProvider>(context, listen: false).productsList.isEmpty){
-        Provider.of<BillingProvider>(context, listen: false).getProducts();
-      }
-      if(productCtr.products.isEmpty){
-        productCtr.getProducts();
-      }
-      final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
-      employeeData.staffRoleDetailsData(context: context);
-      if(controllers.hCallStatusList.isEmpty){
-        controllers.getCallStatus();
-      }
-      if(controllers.industriesList.isEmpty){
-        controllers.getIndustries();
-      }
-      if(productCtr.ordersList.isEmpty){
-        productCtr.getOrderDetails();
-      }
-      if(productCtr.quotationsList.isEmpty){
-        productCtr.getQuotationDetails();
-      }
-      if(productCtr.termsAndConditionsList.isEmpty){
-        productCtr.getTermsAndConditions();
-      }
-      if(pyrlCtr.settingList.isEmpty){
-        services.getRoleSettings(context);
-      }
-      if(controllers.instagramCustomers.isEmpty){
-        apiService.getInstagramCustomers();
-      }
-      apiService.currentVersion();
-      controllers.selectedIndex.value = 100;
-      DateTime now = DateTime.now();
-      checkDate();
-      remController.selectedMeetSortBy.value=dashController.selectedSortBy.value;
-      remController.selectedCallSortBy.value=dashController.selectedSortBy.value;
-      remController.selectedReminderSortBy.value=dashController.selectedSortBy.value;
-      remController.dashboardMeetings(
-        searchText: controllers.searchText.value.toLowerCase(),
-        callType: controllers.selectMeetingType.value,
-        sortField: controllers.sortFieldMeetingActivity.value,
-        sortOrder: controllers.sortOrderMeetingActivity.value,
-      );
-      if(remController.reminderList.isEmpty){
-        remController.allReminders("2");
-      }
-      if(remController.callMailsDetailsList.isEmpty){
-        apiService.getMailCallActivity();
-      }
-      remController.dashboardSortReminders();
-      remController.dashboardCommunicationFilterList(
-        dataList: remController.callMailsDetailsList2,
-        searchText: controllers.searchText.value.toLowerCase(),
-        callType: controllers.selectCallType.value,
-        sortField: controllers.sortFieldCallActivity.value,
-        sortOrder: controllers.sortOrderCallActivity.value,
-        selectedMonth: remController.selectedCallMonth.value,
-        selectedRange: remController.selectedCallRange.value,
-        selectedDateFilter: remController.selectedCallSortBy.value,
-      );
-      String today =
-          "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-      var last7days = DateTime.now().subtract(Duration(days: 7));
-      dashController.getCustomerReport(
-          "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
-          today);
-      dashController.getWholeReport();
-    });
-  }
+
 void checkDate(){
   DateTime now = DateTime.now();
   switch (dashController.selectedSortBy.value) {
