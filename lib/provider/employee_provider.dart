@@ -890,6 +890,7 @@ class EmployeeProvider with ChangeNotifier {
       },
     );
   }
+
   void addDepartmentDialog(BuildContext context) {
     showDialog(
       context: context,

@@ -159,7 +159,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
                     10.height,
                     // Filter Section
                     FilterSection(
-                      //Santhiya
                       leadIndex: widget.index,
                       itemCount: widget.list.length,
                       count: widget.list2.length,
@@ -972,6 +971,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                                 numOfHeadcount: data.numOfHeadcount ?? "",
                                                 expectedBillingValue: data.expectedBillingValue ?? "",
                                                 arpuValue: data.arpuValue ?? "",
+                                                audioUrl: data.audioUrl ?? "",
                                                 updatedTs: data.updatedTs ?? "",
                                                 sourceDetails: data.sourceDetails ?? "", additional: data.additional??[],
                                               );

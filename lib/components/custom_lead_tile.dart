@@ -8,10 +8,12 @@ import 'package:fullcomm_crm/common/constant/colors_constant.dart';
 import 'package:fullcomm_crm/components/custom_text.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../common/constant/api.dart';
 import '../common/utilities/jwt_storage.dart';
 import '../controller/table_controller.dart';
 import '../models/new_lead_obj.dart';
+import '../res/components/audio_message_player.dart';
 import '../services/api_services.dart';
 
 class CustomLeadTile extends StatefulWidget {
@@ -82,6 +84,7 @@ class CustomLeadTile extends StatefulWidget {
   final RxList<NewLeadObj> list2;
   final List additional;
   final String promoteReason;
+  final String? audioUrl;
   const CustomLeadTile(
       {super.key,
       this.showCheckbox = true,
@@ -144,6 +147,7 @@ class CustomLeadTile extends StatefulWidget {
       this.visitType,
       this.points,
       this.detailsOfServiceReq,
+      this.audioUrl,
       required this.pageName, required this.list, required this.list2, required this.listIndex, required this.leadIndex, required this.additional, required this.promoteReason});
 
   @override
@@ -654,6 +658,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
       "details_of_service_required": widget.detailsOfServiceReq,
       "updatedTs": widget.updatedTs,
       "Promote Reason": widget.promoteReason,
+      "audio_url": widget.audioUrl,
     };
 
     /// additional_info dynamic add
@@ -923,7 +928,18 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         ),
                       );
                     }
-
+                    if (heading.trim().toLowerCase() == "audio") {
+                      final audio = (widget.audioUrl ?? "").trim();
+                      final hasAudio = audio.isNotEmpty && audio != "null";
+                      return Container(
+                        height: 45,
+                        alignment: Alignment.centerLeft,
+                        padding: const EdgeInsets.symmetric(horizontal: 6),
+                        child: hasAudio
+                            ? AudioMessagePlayer(url: audioFullUrl(audio))
+                            : const SizedBox(),
+                      );
+                    }
                     // Existing code...
                     String normalize(String s) =>
                         s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
@@ -945,6 +961,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         textAlign: TextAlign.start,
                       ),
                     );
+
                   }),
                 ]),
           ],

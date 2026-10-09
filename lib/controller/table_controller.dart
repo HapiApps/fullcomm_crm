@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common/constant/api.dart';
 import '../common/utilities/jwt_storage.dart';
@@ -40,161 +41,9 @@ final ScrollController scrollController=ScrollController();
   var isLoading = false.obs;
   var headingFields = <String>[].obs;
 
-  // void setHeading(List<dynamic> billing_data) async {
-  //   debugPrint("Set Heading 1");
-  //   try {
-  //     headingFields.value = billing_data
-  //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
-  //         .toList();
-  //
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final saved = prefs.getString('tableHeadings');
-  //     if (saved != null) {
-  //       final List<dynamic> decoded = jsonDecode(saved);
-  //       final savedHeadings = decoded.cast<String>();
-  //
-  //       final combined = List<String>.from(savedHeadings);
-  //       for (var i = 0; i < headingFields.length; i++) {
-  //         if (i < combined.length) {
-  //           combined[i] = headingFields[i];
-  //         } else {
-  //           combined.add(headingFields[i]);
-  //         }
-  //       }
-  //       tableHeadings.value = combined;
-  //     } else {
-  //       tableHeadings.value = List<String>.from(headingFields);
-  //     }
-  //     for (var h in tableHeadings) {
-  //       colWidth[h] = 150;
-  //     }
-  //     await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
-  //   } catch (e) {
-  //     debugPrint("Set Heading fields error: $e");
-  //   }
-  // }
-  /// changed 9 mar
-  // void setHeading(List<dynamic> billing_data) async {
-  //   debugPrint("Set Heading 1");
-  //
-  //   try {
-  //     headingFields.value = billing_data
-  //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
-  //         .toList();
-  //
-  //     debugPrint("Heading Fields: $headingFields");
-  //
-  //     final prefs = await SharedPreferences.getInstance();
-  //     debugPrint("SharedPreferences loaded");
-  //
-  //     final saved = prefs.getString('tableHeadings');
-  //     debugPrint("Saved value: $saved");
-  //
-  //     if (saved != null) {
-  //       final decoded = jsonDecode(saved);
-  //       debugPrint("Decoded: $decoded");
-  //
-  //       List<String> savedHeadings = [];
-  //
-  //       if (decoded is List) {
-  //         savedHeadings = decoded.cast<String>();
-  //         debugPrint("Decoded is List");
-  //       } else if (decoded is Map) {
-  //         savedHeadings = decoded.values.map((e) => e.toString()).toList();
-  //         debugPrint("Decoded is Map");
-  //       }
-  //
-  //       final combined = List<String>.from(savedHeadings);
-  //
-  //       for (var i = 0; i < headingFields.length; i++) {
-  //         debugPrint("Loop index: $i");
-  //
-  //         if (i < combined.length) {
-  //           combined[i] = headingFields[i];
-  //         } else {
-  //           combined.add(headingFields[i]);
-  //         }
-  //       }
-  //
-  //       tableHeadings.value = combined;
-  //       debugPrint("Table Headings: $tableHeadings");
-  //
-  //     } else {
-  //       debugPrint("No saved billing_data");
-  //       tableHeadings.value = List<String>.from(headingFields);
-  //     }
-  //
-  //     for (var h in tableHeadings) {
-  //       colWidth[h] = 150;
-  //     }
-  //
-  //     await prefs.setString('tableHeadings', jsonEncode(tableHeadings));
-  //     debugPrint("Saved to SharedPreferences");
-  //
-  //   } catch (e) {
-  //     debugPrint("Set Heading fields error: $e");
-  //   }
-  // }
-  /// March 14
-  // void setHeading(List<dynamic> billing_data) async {
-  //   debugPrint("Set Heading 1");
-  //
-  //   try {
-  //     headingFields.value = billing_data
-  //         .map((e) => controllers.formatHeading(e['user_heading'].toString()))
-  //         .toList();
-  //
-  //     debugPrint("Heading Fields: $headingFields");
-  //
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final saved = prefs.getString('tableHeadings');
-  //
-  //     if (saved != null) {
-  //       final decoded = jsonDecode(saved);
-  //
-  //       List<String> savedHeadings = [];
-  //
-  //       if (decoded is List) {
-  //         savedHeadings = decoded.cast<String>();
-  //       }
-  //
-  //       debugPrint("Saved Headings: $savedHeadings");
-  //
-  //       // saved list base
-  //       final combined = List<String>.from(savedHeadings);
-  //
-  //       // new headings மட்டும் add
-  //       for (var h in headingFields) {
-  //         if (!combined.contains(h)) {
-  //           combined.add(h);
-  //         }
-  //       }
-  //       for (var h in tableHeadings) {
-  //         colWidth[h] = 150;
-  //       }
-  //       tableHeadings.value = combined;
-  //
-  //     } else {
-  //       tableHeadings.value = List<String>.from(headingFields);
-  //     }
-  //
-  //     debugPrint("Final Headings: ${tableHeadings.value}");
-  //
-  //     await prefs.setString(
-  //         'tableHeadings', jsonEncode(tableHeadings.value));
-  //
-  //   } catch (e) {
-  //     debugPrint("Set Heading fields error: $e");
-  //   }
-  // }
   void setHeading(List<dynamic> data) async {
-    // debugPrint("Set Heading 1");
-
     try {
-      // normalize function
       String normalize(String s) => s.trim().toLowerCase();
-
-      // API headings
       headingFields.value = data
           .map((e) => controllers
           .formatHeading(e['user_heading'].toString().trim()))
@@ -240,6 +89,10 @@ final ScrollController scrollController=ScrollController();
           seen.add(normalize(h));
           uniqueHeadings.add(h);
         }
+      }
+      const audioHeading = "Audio";
+      if (!seen.contains(normalize(audioHeading))) {
+        uniqueHeadings.add(audioHeading);
       }
 
       tableHeadings.value = uniqueHeadings;
@@ -312,7 +165,10 @@ final ScrollController scrollController=ScrollController();
         savedMap = apiMap;
         isChanged = true;
       }
-
+      if (!savedMap.containsKey('audio_url')) {
+        savedMap['audio_url'] = 'Audio';
+        isChanged = true;
+      }
       /// final headings list
       List<String> finalHeadings = savedMap.values.toList();
 
@@ -323,7 +179,7 @@ final ScrollController scrollController=ScrollController();
 
       /// column width
       for (var h in finalHeadings) {
-        colWidth[h] = 150;
+        colWidth[h] = h.trim().toLowerCase() == "audio" ? 230 : 150;
       }
 
       /// save
@@ -346,7 +202,7 @@ final ScrollController scrollController=ScrollController();
     super.onInit();
     tableHeadings.value = headingFields.toSet().toList();
     for (var h in tableHeadings) {
-      colWidth[h] = 150; // default width
+      colWidth[h] = colWidth[h] ?? (normalize(h) == "audio" ? 230 : 150);
     }
   }
 
@@ -374,32 +230,9 @@ final ScrollController scrollController=ScrollController();
 
   // Cancel changes (restore default)
   void cancelChanges() async{
-    // headingFields.value = [
-    //   "Name",
-    //   "Company Name",
-    //   "Mobile Number",
-    //   "Details Of Services Required",
-    //   "Source Of Prospect",
-    //   "Added Date",
-    //   "City",
-    //   "Status Update",
-    //   "Designation",
-    //   "Department",
-    //   "Email",
-    //   "Manager",
-    //   "Prospect Source Details",
-    //   "Expected Conversion Date",
-    //   "Discussion Points",
-    //   "Product Discussion",
-    //   "Rating",
-    //   "Status",
-    //   "Total Number Of Head Count",
-    //   "Expected Billing Value",
-    //   "Arpu Value"
-    // ];
     tableHeadings.value = headingFields.toSet().toList();
     for (var h in tableController.tableHeadings) {
-      colWidth[h] = 150; // default width
+      colWidth[h] = h.trim().toLowerCase() == "audio" ? 230 : 150;
     }
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('tableHeadings', jsonEncode(tableHeadings.toList()));

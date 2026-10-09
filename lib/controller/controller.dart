@@ -3955,35 +3955,49 @@ var otp = "".obs,sentOtp = "".obs;
     Get.offAll(() => LoginPage());
     controllers.selectedIndex.value = 10;
   }
-  Future refreshToken() async {
-    try{
-      // debugPrint("refreshToken..........");
-      Map data = {
-        "action": "refresh_tokens",
-        "id": controllers.storage.read("id"),
-        "refresh_token": "${TokenStorage().readRefreshToken()}",
-      };
-      final request = await http.post(Uri.parse(scriptApi),
-          headers: {
-            'X-API-TOKEN': "${TokenStorage().readToken()}",
-            'Content-Type': 'application/json',
-          },
-          body: jsonEncode(data),
-          encoding: Encoding.getByName("utf-8")
-      );
-      // debugPrint("request ${billing_data}");
-      // debugPrint("request ${request.body}");
-      Map<String, dynamic> response = json.decode(request.body);
-      if (request.statusCode == 200){
-        TokenStorage().writeToken(response['access_token']);
-        return true;
-      } else {
-        return false;
-      }
-    }catch(e){
+  Future<bool>? _refreshing;
+
+  Future<bool> refreshToken() {
+    _refreshing ??= _doRefreshToken().whenComplete(() => _refreshing = null);
+    return _refreshing!;
+  }
+
+  Future<bool> _doRefreshToken() async {
+    final refresh = TokenStorage().readRefreshToken();
+    if (refresh == null || refresh.toString().isEmpty) {
       return false;
     }
+
+    final request = await http.post(
+      Uri.parse(scriptApi),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        "action": "refresh_tokens",
+        "id": controllers.storage.read("id"),
+        "refresh_token": refresh,
+      }),
+      encoding: Encoding.getByName("utf-8"),
+    ).timeout(const Duration(seconds: 20));
+
+    debugPrint("refreshToken status: ${request.statusCode}");
+
+    if (request.statusCode == 200) {
+      final response = jsonDecode(request.body) as Map<String, dynamic>;
+      final newToken = response['access_token'];
+      if (newToken == null || newToken.toString().isEmpty) {
+        return false;
+      }
+      TokenStorage().writeToken(newToken.toString());
+      return true;
+    }
+
+    if (request.statusCode == 401) {
+      return false;
+    }
+
+    throw Exception("Refresh server error: ${request.statusCode}");
   }
+
   Future<bool> saveVisitingCardToServers(
       String contactType,
       String nameP,

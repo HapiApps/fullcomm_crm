@@ -599,7 +599,7 @@ class SettingsController extends GetxController with GetSingleTickerProviderStat
         final newDept = RoleModel(id: response["data"]["id"].toString(),
             cosId: controllers.storage.read("cos_id"), uId: response["data"]["id"].toString(),
             roleName: roleController.text.trim(), description: descriptionController.text.trim(), permission: permission.toString());
-        roleList.add(newDept);   // ✅ update real list
+        roleList.add(newDept);
 
         employeeProvider?.role = newDept;
         employeeProvider?.roleId = newDept.id;

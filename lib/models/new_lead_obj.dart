@@ -57,6 +57,7 @@ class NewLeadObj {
   final String? updatedTs;
   final String? createdTs;
   final String? points;
+  final String? audioUrl;
   final String? discussionPoints;
   final String? visitType;
   final String? accountManager;
@@ -129,6 +130,7 @@ class NewLeadObj {
       this.historyInfo,
       this.detailsOfServiceRequired,
         this.additionalInfo,
+        this.audioUrl,
         this.whatsapp,this.industry,this.product,this.x, this.additional, this.category
       });
   factory NewLeadObj.fromJson(Map<String, dynamic> json) {
@@ -169,6 +171,7 @@ class NewLeadObj {
       companyName: json["company_name"]?.toString() ?? '',
       leadStatus: json["lead_status"]?.toString() ?? '',
       rating: json["rating"]?.toString() ?? '',
+      audioUrl: json["audio_url"]?.toString() ?? '',
       quotationStatus: json["quotation_status"]?.toString() ?? '',
       quotationRequired: json["quotation_required"]?.toString() ?? '',
       productDiscussion: json["product_discussion"]?.toString() ?? '',
@@ -201,7 +204,7 @@ class NewLeadObj {
       product: json["product"]?.toString() ?? '',
       industry: json["industry"]?.toString() ?? '',
       x: json["x"]?.toString() ?? '',
-      historyInfo: json["history_info"]?.toString() ?? '',
+      historyInfo: json["history_info"]?.toString() ?? ''
     );
   }
 
@@ -271,7 +274,8 @@ class NewLeadObj {
       "linkedin": linkedin,
       "industry": industry,
       "product": product,
-      "x": x
+      "x": x,
+      "audio_url": audioUrl
     };
   }
 
@@ -340,6 +344,7 @@ class NewLeadObj {
       "details_of_service_required": detailsOfServiceRequired,
       "updatedTs": updatedTs,
       "date": updatedTs,
+      "audio_url": audioUrl
     };
   }
   @override

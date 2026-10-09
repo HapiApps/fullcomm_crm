@@ -2529,7 +2529,11 @@ class ApiService {
         }
       }
       if (request.statusCode == 200) {
-        getCustomLeads();
+        final res = jsonDecode(request.body);
+        final added = int.tryParse("${res['added']}") ?? 0;
+        if (added > 0) {
+          getCustomLeads(showLoader: false);
+        }
       } else {
         throw Exception('Failed to load album');
       }
@@ -5382,15 +5386,22 @@ class ApiService {
     }
   }
 
-  /// New Leads -santhiya
   List<Map<String, String>> newLeadList = [];
+  Future<void>? _leadsFuture;
+  Future<void> getCustomLeads({bool showLoader = true}) {
+    _leadsFuture ??= _fetchCustomLeads(showLoader).whenComplete(() {
+      _leadsFuture = null;
+    });
+    return _leadsFuture!;
+  }
 
-  Future<void> getCustomLeads() async {
-    controllers.isCrmData.value = false;
-    controllers.allLeadList.clear();
+  Future<void> _fetchCustomLeads(bool showLoader) async {
+    if (showLoader) {
+      controllers.isCrmData.value = false;
+    }
     final url = Uri.parse(scriptApi);
     try {
-      Map data={
+      Map data = {
         "search_type": "all_leads",
         "cos_id": controllers.storage.read("cos_id"),
         "role": controllers.storage.read("role"),
@@ -5405,54 +5416,62 @@ class ApiService {
           'X-API-TOKEN': "${TokenStorage().readToken()}",
           'Content-Type': 'application/json',
         },
-
         body: jsonEncode(data),
       );
+
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return getCustomLeads();
+          return _fetchCustomLeads(showLoader);
         } else {
+          controllers.isCrmData.value = true;
           controllers.setLogOut();
+          return;
         }
       }
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body) as List;
         print("allLeadList ${data.length}");
-        // newLeadList.clear();
-        controllers.allLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-        // controllers.searchNewLeadList.value = data.map((json) => NewLeadObj.fromJson(json)).toList();
-        for (var e in controllers.leadCategoryList) { e.list.clear(); e.list2.clear(); }
+        controllers.allLeadList.value =
+            data.map((json) => NewLeadObj.fromJson(json)).toList();
+
+        for (var e in controllers.leadCategoryList) {
+          e.list.clear();
+          e.list2.clear();
+        }
         for (int i = 0; i < controllers.leadCategoryList.length; i++) {
           for (int j = 0; j < controllers.allLeadList.length; j++) {
-            if (controllers.leadCategoryList[i].leadStatus == controllers.allLeadList[j].leadStatus) {
+            if (controllers.leadCategoryList[i].leadStatus ==
+                controllers.allLeadList[j].leadStatus) {
               controllers.leadCategoryList[i].list.add(controllers.allLeadList[j]);
               controllers.leadCategoryList[i].list2.add(controllers.allLeadList[j]);
             }
           }
         }
-        controllers.isCrmData.value=true;
+        controllers.isCrmData.value = true;
         dashController.getWholeReport();
-
       } else {
         controllers.allLeadList.clear();
+        controllers.isCrmData.value = true;
         throw Exception('Failed to load leads: Status code ${response.body}');
       }
     } on SocketException {
       controllers.allLeadList.clear();
-      controllers.isCrmData.value=true;
+      controllers.isCrmData.value = true;
       throw Exception('No internet connection');
     } on HttpException catch (e) {
       controllers.allLeadList.clear();
-      controllers.isCrmData.value=true;
+      controllers.isCrmData.value = true;
       throw Exception('Server error: ${e.toString()}');
     } catch (e) {
       controllers.allLeadList.clear();
-      controllers.isCrmData.value=true;
+      controllers.isCrmData.value = true;
       controllers.newLeadList.clear();
       throw Exception('Unexpected error: ${e.toString()}');
     }
   }
+
   Future<void> getEmpLeads(String startDate,String endDate) async {
     controllers.isCustomer.value=false;
     controllers.empLeadList.clear();

@@ -266,6 +266,163 @@ class _HeaderSectionState extends State<HeaderSection> {
 
   void showDragDropDialog(BuildContext context) {
     tableController.isLoading.value = false;
+
+    String n(String s) => s.replaceAll(RegExp(r'\s+'), ' ').trim().toLowerCase();
+    bool isAudio(String h) => n(h) == "audio";
+
+    dynamic fieldFor(String heading) {
+      return controllers.fields.firstWhereOrNull((e) =>
+      n(e.userHeading.toString()) == n(heading) ||
+          n(controllers.formatHeading(e.userHeading.toString())) == n(heading));
+    }
+
+    Widget buildTile(int i) {
+      final heading = tableController.headingFields[i];
+      final audio = isAudio(heading);
+
+      return ListTile(
+        key: ValueKey(heading),
+        leading: audio
+            ? Tooltip(
+          message: "Default column, cannot be deleted",
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Icon(Icons.lock_outline,
+                size: 16, color: Colors.grey.shade400),
+          ),
+        )
+            : IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    content: CustomText(
+                      text: "Are you sure you want to delete this column?",
+                      size: 16,
+                      isBold: true,
+                      isCopy: true,
+                      colors: colorsConst.textColor,
+                    ),
+                    actions: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: colorsConst.primary),
+                                color: Colors.white),
+                            width: 80,
+                            height: 25,
+                            child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.zero,
+                                  ),
+                                  backgroundColor: Colors.white,
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: CustomText(
+                                  text: "Cancel",
+                                  isCopy: false,
+                                  colors: colorsConst.primary,
+                                  size: 14,
+                                )),
+                          ),
+                          10.width,
+                          CustomLoadingButton(
+                            callback: () async {
+                              final f = fieldFor(heading);
+                              if (f == null) {
+                                controllers.productCtr.reset();
+                                Navigator.pop(context);
+                                utils.showToast("Column not found", Colors.red);
+                                return;
+                              }
+                              tableController.isLoading.value = true;
+                              final id = f.id;
+                              final prefs = await SharedPreferences.getInstance();
+                              tableController.headingFields
+                                  .removeWhere((item) => n(item) == n(heading));
+                              tableController.tableHeadings
+                                  .removeWhere((item) => n(item) == n(heading));
+                              await prefs.setString('tableHeadings',
+                                  jsonEncode(tableController.headingFields.toList()));
+                              tableController.deleteColumnAPI(context, id);
+                            },
+                            height: 35,
+                            isLoading: true,
+                            backgroundColor: colorsConst.primary,
+                            radius: 2,
+                            width: 80,
+                            controller: controllers.productCtr,
+                            isImage: false,
+                            text: "Delete",
+                            textColor: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+            icon: SvgPicture.asset(
+              "assets/images/a_delete.svg",
+              width: 16,
+              height: 16,
+            )),
+        title: TextFormField(
+          initialValue: heading,
+          readOnly: audio,
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(40),
+          ],
+          onFieldSubmitted: (value) async {
+            if (audio) return;
+            final oldValue = heading;
+            final newValue = value.trim();
+
+            if (newValue.isEmpty) {
+              utils.showToast("Enter a value", Colors.red);
+              return;
+            }
+            if (newValue == oldValue) return;
+
+            final exists = tableController.headingFields
+                .any((h) => h != oldValue && n(h) == n(newValue));
+            if (exists) {
+              utils.showToast("This heading already exists", Colors.orange);
+              return;
+            }
+
+            final f = fieldFor(oldValue);
+            if (f == null) {
+              utils.showToast("Column not found", Colors.red);
+              return;
+            }
+
+            tableController.isLoading.value = true;
+            final idx = tableController.headingFields.indexOf(oldValue);
+            if (idx != -1) {
+              tableController.headingFields[idx] = newValue;
+            }
+            final prefs = await SharedPreferences.getInstance();
+            await prefs.setString('tableHeadings',
+                jsonEncode(tableController.headingFields.toList()));
+            tableController.updateColumnNameAPI(context, newValue, oldValue, f.id);
+          },
+          decoration: InputDecoration(
+            fillColor: Colors.purple,
+            border: InputBorder.none,
+            contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          ),
+        ),
+      );
+    }
+
     Get.dialog(
       Dialog(
         child: Container(
@@ -279,10 +436,9 @@ class _HeaderSectionState extends State<HeaderSection> {
                 children: [
                   Text("Manage Columns", style: TextStyle(fontSize: 18)),
                   IconButton(
-                    tooltip: "Add Column",
-                      onPressed: (){
-                      // Navigator.of(context).pop();
-                      utils.showAddColumnDialog(context);
+                      tooltip: "Add Column",
+                      onPressed: () {
+                        utils.showAddColumnDialog(context);
                       },
                       icon: Icon(Icons.add))
                 ],
@@ -297,117 +453,7 @@ class _HeaderSectionState extends State<HeaderSection> {
                         onReorder: tableController.reorderWords,
                         children: [
                           for (int i = 0; i < tableController.headingFields.length; i++)
-                            ListTile(
-                              key: ValueKey(tableController.headingFields[i]),
-                              leading: IconButton(
-                                  onPressed: (){
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          content: CustomText(
-                                            text: "Are you sure delete this column?",
-                                            size: 16,
-                                            isBold: true,
-                                            isCopy: true,
-                                            colors: colorsConst.textColor,
-                                          ),
-                                          actions: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                              children: [
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(color: colorsConst.primary),
-                                                      color: Colors.white),
-                                                  width: 80,
-                                                  height: 25,
-                                                  child: ElevatedButton(
-                                                      style: ElevatedButton.styleFrom(
-                                                        shape: const RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius.zero,
-                                                        ),
-                                                        backgroundColor: Colors.white,
-                                                      ),
-                                                      onPressed: () {
-                                                        Navigator.pop(context);
-                                                      },
-                                                      child: CustomText(
-                                                        text: "Cancel",
-                                                        isCopy: false,
-                                                        colors: colorsConst.primary,
-                                                        size: 14,
-                                                      )),
-                                                ),
-                                                10.width,
-                                                CustomLoadingButton(
-                                                  callback: () async {
-                                                  tableController.isLoading.value = true;
-                                                  final id = controllers.fields[i].id;
-                                                  final prefs = await SharedPreferences.getInstance();
-                                                  tableController.headingFields.removeWhere((item) => item == controllers.fields[i].userHeading);
-                                                  tableController.tableHeadings.removeWhere((item) => item == controllers.fields[i].userHeading);
-                                                  await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
-                                                  tableController.deleteColumnAPI(context,id);
-                                                  },
-                                                  height: 35,
-                                                  isLoading: true,
-                                                  backgroundColor: colorsConst.primary,
-                                                  radius: 2,
-                                                  width: 80,
-                                                  controller: controllers.productCtr,
-                                                  isImage: false,
-                                                  text: "Delete",
-                                                  textColor: Colors.white,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
-                                  icon: SvgPicture.asset(
-                                    "assets/images/a_delete.svg",
-                                    width: 16,
-                                    height: 16,
-                                  )),
-                              title: TextFormField(
-                                initialValue: tableController.headingFields[i],
-                                inputFormatters: [
-                                  LengthLimitingTextInputFormatter(40),
-                                ],
-                                onFieldSubmitted: (value) async {
-                                  final oldValue = tableController.headingFields[i];
-                                  if(value.trim().isNotEmpty){
-                                    // Same value check
-                                    for(var i=0;i<tableController.headingFields.length;i++){
-                                      debugPrint("tableController.headingFields[i] ${tableController.headingFields[i]}");
-                                      debugPrint("oldValue ${oldValue}");
-                                      debugPrint("newValue ${value.trim()}");
-                                      if (tableController.headingFields[i].trim().toLowerCase() ==value.trim()) {
-                                        utils.showToast("This heading already exists", Colors.orange);
-                                        break;
-                                      }
-                                    }
-                                    tableController.isLoading.value = true;
-                                    final id = controllers.fields[i].id;
-                                    tableController.headingFields[i]=value;
-                                    print(tableController.headingFields);
-                                    final prefs = await SharedPreferences.getInstance();
-                                    await prefs.setString('tableHeadings', jsonEncode(tableController.headingFields.toList()));
-                                    tableController.updateColumnNameAPI(context, value, oldValue, id);
-                                  }else{
-                                    utils.showToast("Enter a value",Colors.red);
-                                  }
-                                },
-                                decoration: InputDecoration(
-                                  fillColor: Colors.purple,
-                                  border: InputBorder.none,
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                ),
-                              ),
-                            ),
+                            buildTile(i),
                         ],
                       ),
                       if (tableController.isLoading.value)
@@ -418,43 +464,11 @@ class _HeaderSectionState extends State<HeaderSection> {
                   );
                 }),
               ),
-              // Expanded(
-              //   child: Obx(() {
-              //     return ReorderableListView(
-              //       onReorder: tableController.reorderWords,
-              //       children: [
-              //         for (int i = 0; i < tableController.headingFields.length; i++)
-              //           ListTile(
-              //             key: ValueKey(tableController.headingFields[i]),
-              //             title: TextFormField(
-              //               initialValue: tableController.headingFields[i],
-              //               inputFormatters: [
-              //                 LengthLimitingTextInputFormatter(40),
-              //               ],
-              //               onChanged: (val) {
-              //                 //tableController.headingFields[i] = val; // update the list
-              //               },
-              //               onFieldSubmitted: (value){
-              //                 final id = controllers.fields[i].id;
-              //                 tableController.updateColumnNameAPI(context, value, id);
-              //               },
-              //               decoration: InputDecoration(
-              //                 border: InputBorder.none,
-              //                 contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-              //               ),
-              //             ), // optional drag handle
-              //           ),
-              //       ],
-              //     );
-              //   }),
-              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   CustomLoadingButton(
                     callback: () {
-                      //Santhiya
-                      // tableController.cancelChanges();
                       Get.back();
                     },
                     isLoading: false,

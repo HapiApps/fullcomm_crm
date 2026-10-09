@@ -42,13 +42,13 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
     setState(() {
       controllers.loginNumber.text = mobileNumber.toString();
       controllers.loginPassword.text = password.toString();
-      if (kDebugMode) {//"8220134995"
+      if (kDebugMode) {//"9894647723"//ja&&Ga##
         controllers.loginNumber.text = isRelease==false?"9999999991":"9585245494";
         controllers.loginPassword.text = isRelease==false?"a1b2C3##":"a1b2C3##";
       }
     });
   }
-  //santhiya2
+
   final FocusNode mobileFocus = FocusNode();
   final FocusNode passwordFocus = FocusNode();
 

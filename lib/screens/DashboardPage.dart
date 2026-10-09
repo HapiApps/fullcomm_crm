@@ -37,6 +37,8 @@ import 'leads/new_lead_page.dart';
 import 'leads/rating_customer_page.dart';
 import 'order/order_page.dart';
 
+bool _crmSyncedThisSession = false;
+
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -85,10 +87,7 @@ class _DashboardPageState extends State<DashboardPage>
       return "";
     }
   }
-  // File-oda mela (class-ku veliya)
-  bool _crmSyncedThisSession = false;
 
-// State class-kulla helper
   Future<void> _runBatch(List<Future<void> Function()> tasks) async {
     await Future.wait(tasks.map((t) async {
       try {
@@ -97,7 +96,7 @@ class _DashboardPageState extends State<DashboardPage>
         debugPrint("API error: $e");
       }
     }));
-    await Future.delayed(const Duration(milliseconds: 300)); // batches idaiyila chinna gap
+    await Future.delayed(const Duration(milliseconds: 300));
   }
 
   @override

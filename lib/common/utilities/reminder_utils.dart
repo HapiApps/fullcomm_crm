@@ -1200,6 +1200,19 @@ class ReminderUtils {
   //     },
   //   );
   // }
+
+  DateTime parseTime(String value) {
+    var s = value
+        .trim()
+        .replaceAll('\u202F', ' ')
+        .replaceAll('\u00A0', ' ')
+        .toUpperCase();
+    s = s.replaceAllMapped(
+        RegExp(r'(\d{1,2})\.(\d{2})'), (m) => '${m[1]}:${m[2]}');
+    s = s.replaceAll(RegExp(r'A\.?M\.?'), 'AM').replaceAll(RegExp(r'P\.?M\.?'), 'PM');
+    return DateFormat("h:mm a", "en_US").parse(s);
+  }
+
   void showAddReminderDialog(BuildContext context) {
     String? titleError;
     String? startDError;
@@ -1217,7 +1230,6 @@ class ReminderUtils {
     remController.stDate.value = DateFormat('dd-MM-yyyy').format(futureDate);
     controllers.dateOfConCtr.text = DateFormat('dd-MM-yyyy').format(futureDate);
     remController.stTime.value = DateFormat('hh.mm a').format(DateTime.now().subtract(const Duration(minutes: 15)));
-
 
     controllers.selectedEmployeeId.value="";
     controllers.selectedCustomerId.value="";
@@ -1284,7 +1296,6 @@ class ReminderUtils {
                           children: [
                             CustomTextField(
                               hintText: "Set reminder for the Event",
-                              // hintText: "Enter Event Name",
                               text: "Set reminder for the Event",
                               controller: remController.titleController,
                               width: textFieldSize,
@@ -1321,7 +1332,6 @@ class ReminderUtils {
                                               activeColor: const Color(0xFF0078D7),
                                               onChanged: (v) {
                                                 provider.setNotification(v!);
-                                                // clear errors when changing type
                                                 setState(() {
                                                   employeeError = null;
                                                   customerError = null;
@@ -1359,7 +1369,6 @@ class ReminderUtils {
                                             ),
                                           ],
                                         ),
-                                        // you can add more types similarly
                                       ],
                                     );
                                   },
@@ -1383,7 +1392,7 @@ class ReminderUtils {
                                         pathVal: remController.stDate);
                                     if (startDError != null) {
                                       setState(() {
-                                        startDError = null; // clear error on typing
+                                        startDError = null;
                                       });
                                     }
                                   },
@@ -1404,7 +1413,7 @@ class ReminderUtils {
                                         pathVal: remController.stTime);
                                     if (startTError != null) {
                                       setState(() {
-                                        startTError = null; // clear error on typing
+                                        startTError = null;
                                       });
                                     }
                                   },
@@ -1462,12 +1471,10 @@ class ReminderUtils {
                               },
                             ),
                             SizedBox(
-                              // color: Colors.pinkAccent,
                               height:70,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Employees column - show red * dynamically based on selected type
                                   Consumer<ReminderProvider>(
                                     builder: (context, provider, _) {
                                       final sel = provider.selectedNotification ?? "";
@@ -1494,41 +1501,6 @@ class ReminderUtils {
                                                   )
                                               ],
                                             ),
-                                            ///Santhiya
-                                            // KeyboardDropdownField<AllEmployeesObj>(
-                                            //   items: controllers.employees,
-                                            //   borderRadius: 5,
-                                            //   borderColor: Colors.grey.shade300,
-                                            //   hintText: "Employees",
-                                            //   labelText: "",
-                                            //   labelBuilder: (customer) =>
-                                            //   '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                            //   itemBuilder: (customer) {
-                                            //     return Container(
-                                            //       width: 300,
-                                            //       alignment: Alignment.topLeft,
-                                            //       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                            //       child: CustomText(
-                                            //         text:
-                                            //         '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                            //         colors: Colors.black,
-                                            //         size: 14,
-                                            //         isCopy:false,
-                                            //         textAlign: TextAlign.start,
-                                            //       ),
-                                            //     );
-                                            //   },
-                                            //   textEditingController: controllers.empController,
-                                            //   onSelected: (value) {
-                                            //     setState((){
-                                            //       employeeError=null;
-                                            //     });
-                                            //     controllers.selectEmployee(value);
-                                            //   },
-                                            //   onClear: () {
-                                            //     controllers.clearSelectedEmployee();
-                                            //   },
-                                            // ),
                                             SearchCustomDropdown(
                                               text: "",isOptional: false,
                                               hintText: remController.assignedIds.value==""?"":remController.assignedNames.value,
@@ -1537,12 +1509,11 @@ class ReminderUtils {
                                                 setState((){
                                                   employeeError=null;
                                                 });
-                                                // taskProvider.saveDraft();
                                               },
                                               width: screenWidth/4,
                                             ),
                                             if (employeeError != null)
-                                            Padding(
+                                              Padding(
                                                 padding: const EdgeInsets.only(top: 4.0),
                                                 child: Text(
                                                   employeeError!,
@@ -1557,7 +1528,6 @@ class ReminderUtils {
                                     },
                                   ),
                                   20.width,
-                                  // Customer column - star shown dynamically
                                   Consumer<ReminderProvider>(
                                     builder: (context, provider, _) {
                                       final sel = provider.selectedNotification ?? "";
@@ -1648,6 +1618,12 @@ class ReminderUtils {
                                   onChanged: (value) async {
                                     setState(() {
                                       remController.repeatWise = value.toString();
+                                      if (remController.repeatWise == "Never") {
+                                        remController.enDate.value = "";
+                                        remController.enTime.value = "";
+                                        endDError = null;
+                                        endTError = null;
+                                      }
                                     });
                                   },
                                 ),
@@ -1692,7 +1668,7 @@ class ReminderUtils {
                                         pathVal: remController.enDate);
                                     if (endDError != null) {
                                       setState(() {
-                                        endDError = null; // clear error on typing
+                                        endDError = null;
                                       });
                                     }
                                   },
@@ -1713,7 +1689,7 @@ class ReminderUtils {
                                         pathVal: remController.enTime);
                                     if (endTError != null) {
                                       setState(() {
-                                        endTError = null; // clear error on typing
+                                        endTError = null;
                                       });
                                     }
                                   },
@@ -1776,107 +1752,147 @@ class ReminderUtils {
                           10.width,
                           CustomLoadingButton(
                             callback: () async {
-                              if (remController.titleController.text.trim().isEmpty) {
-                                setState(() {
-                                  titleError = "Please enter reminder title";
-                                });
-                                controllers.productCtr.reset();
-                                return;
-                              }
-
-                              if (remController.stDate.value.isEmpty) {
-                                setState(() {
-                                  startDError = "Please select start date";
-                                });
-                                controllers.productCtr.reset();
-                                return;
-                              }
-
-                              if (remController.stTime.value.isEmpty) {
-                                setState(() {
-                                  startTError = "Please select start time";
-                                });
-                                controllers.productCtr.reset();
-                                return;
-                              }
-
-                              final selectedDate = DateFormat("dd-MM-yyyy") .parse(remController.stDate.value);
-                              final selectedTime = DateFormat("h:mm a") .parse(remController.stTime.value);
-                              final now = DateTime.now();
-                              final selectedDateTime = DateTime(selectedDate.year, selectedDate.month, selectedDate.day, selectedTime.hour, selectedTime.minute);
-                              final isToday = selectedDate.year == now.year && selectedDate.month == now.month && selectedDate.day == now.day;
-
-                              if (isToday && selectedDateTime.isBefore(now)) {
-                                setState(() {
-                                  startTError = "Please select a future start time";
-                                });
-                                controllers.productCtr.reset();
-                                return;
-                              }
-                              setState(() {
-                                startTError = null;
-                              });
-
-                              final selectedDate2 = DateFormat("dd-MM-yyyy") .parse(remController.enDate.value);
-                              final selectedTime2 = DateFormat("h:mm a") .parse(remController.enTime.value);
-                              final selectedDateTime2 = DateTime(selectedDate2.year, selectedDate2.month, selectedDate2.day, selectedTime2.hour, selectedTime2.minute);
-                              final isToday2 = selectedDate2.year == now.year && selectedDate2.month == now.month && selectedDate2.day == now.day;
-
-                              if (isToday2 && selectedDateTime2.isBefore(now)) {
-                                setState(() {
-                                  endTError = "Please select a future end time";
-                                });
-                                controllers.productCtr.reset();
-                                return;
-                              }
-                              setState(() {
-                                endTError = null;
-                              });
-
-
-                              final selType = Provider.of<ReminderProvider>(context, listen: false).selectedNotification ?? "";
-
-                              final needEmployee = selType == "followup" || (selType != "followup" && selType != "meeting");
-                              final needCustomer = selType == "meeting" || (selType != "followup" && selType != "meeting");
-
-                              //Santhiya
-                              if (remController.assignedIds.value=="") {
-                              // if (needEmployee && controllers.selectedEmployeeId.value.isEmpty) {
-                                setState(() {
-                                  employeeError = "Please select employee";
-                                });
-                                controllers.productCtr.reset();
-                                return;
-                              }else{
-                                setState(() {
-                                  employeeError = null;
-                                });
-                              }
-
-                              if (needCustomer && controllers.selectedCustomerId.value.isEmpty) {
-                                setState(() {
-                                  customerError = "Please select customer";
-                                });
-                                controllers.productCtr.reset();
-                                return;
-                              }
-
-                              bool allFilled = true;
-                              for (var i = 0; i < remController.reminders.length; i++) {
-                                if (remController.reminders[i].titleController.text.isEmpty) {
-                                  allFilled = false;
-                                  break;
+                              try {
+                                if (remController.titleController.text.trim().isEmpty) {
+                                  setState(() {
+                                    titleError = "Please enter reminder title";
+                                  });
+                                  controllers.productCtr.reset();
+                                  return;
                                 }
-                              }
-                              if (!allFilled) {
+                                setState(() {
+                                  titleError = null;
+                                });
+
+                                if (remController.stDate.value.trim().isEmpty) {
+                                  setState(() {
+                                    startDError = "Please select start date";
+                                  });
+                                  controllers.productCtr.reset();
+                                  return;
+                                }
+
+                                if (remController.stTime.value.trim().isEmpty) {
+                                  setState(() {
+                                    startTError = "Please select start time";
+                                  });
+                                  controllers.productCtr.reset();
+                                  return;
+                                }
+
+                                final now = DateTime.now();
+                                final selectedDate = DateFormat("dd-MM-yyyy").parse(remController.stDate.value.trim());
+                                final selectedTime = parseTime(remController.stTime.value);
+                                final selectedDateTime = DateTime(
+                                  selectedDate.year, selectedDate.month, selectedDate.day,
+                                  selectedTime.hour, selectedTime.minute,
+                                );
+                                final isToday = selectedDate.year == now.year &&
+                                    selectedDate.month == now.month &&
+                                    selectedDate.day == now.day;
+
+                                if (isToday && selectedDateTime.isBefore(now)) {
+                                  setState(() {
+                                    startTError = "Please select a future start time";
+                                  });
+                                  controllers.productCtr.reset();
+                                  return;
+                                }
+                                setState(() {
+                                  startDError = null;
+                                  startTError = null;
+                                });
+
+                                final bool needsEnd = remController.repeatWise != "Never";
+
+                                if (needsEnd) {
+                                  if (remController.enDate.value.trim().isEmpty) {
+                                    setState(() {
+                                      endDError = "Please select end date";
+                                    });
+                                    controllers.productCtr.reset();
+                                    return;
+                                  }
+
+                                  if (remController.enTime.value.trim().isEmpty) {
+                                    setState(() {
+                                      endTError = "Please select end time";
+                                    });
+                                    controllers.productCtr.reset();
+                                    return;
+                                  }
+
+                                  final selectedDate2 = DateFormat("dd-MM-yyyy").parse(remController.enDate.value.trim());
+                                  final selectedTime2 = parseTime(remController.enTime.value);
+                                  final selectedDateTime2 = DateTime(
+                                    selectedDate2.year, selectedDate2.month, selectedDate2.day,
+                                    selectedTime2.hour, selectedTime2.minute,
+                                  );
+
+                                  if (selectedDateTime2.isBefore(selectedDateTime)) {
+                                    setState(() {
+                                      endTError = "End time must be after start time";
+                                    });
+                                    controllers.productCtr.reset();
+                                    return;
+                                  }
+                                }
+                                setState(() {
+                                  endDError = null;
+                                  endTError = null;
+                                });
+
+                                final selType = Provider.of<ReminderProvider>(context, listen: false).selectedNotification ?? "";
+                                final needCustomer = selType == "meeting" || (selType != "followup" && selType != "meeting");
+
+                                if (remController.assignedIds.value == "") {
+                                  setState(() {
+                                    employeeError = "Please select employee";
+                                  });
+                                  controllers.productCtr.reset();
+                                  return;
+                                } else {
+                                  setState(() {
+                                    employeeError = null;
+                                  });
+                                }
+
+                                if (needCustomer && controllers.selectedCustomerId.value.isEmpty) {
+                                  setState(() {
+                                    customerError = "Please select customer";
+                                  });
+                                  controllers.productCtr.reset();
+                                  return;
+                                }
+                                setState(() {
+                                  customerError = null;
+                                });
+
+                                bool allFilled = true;
+                                for (var i = 0; i < remController.reminders.length; i++) {
+                                  if (remController.reminders[i].titleController.text.trim().isEmpty) {
+                                    allFilled = false;
+                                    break;
+                                  }
+                                }
+                                if (!allFilled) {
+                                  mobileUtils.toastBox(
+                                      context: Get.context!,
+                                      text: "Please enter reminder title");
+                                  controllers.productCtr.reset();
+                                  return;
+                                }
+
+                                remController.insertReminderAPI(
+                                    context,
+                                    Provider.of<ReminderProvider>(context, listen: false).selectedNotification);
+                              } catch (e) {
+                                debugPrint("Reminder validation error: $e");
+                                controllers.productCtr.reset();
                                 mobileUtils.toastBox(
                                     context: Get.context!,
-                                    text: "Please enter reminder title");
-                                controllers.productCtr.reset();
-                                return;
+                                    text: "Please check the date and time");
                               }
-
-                              remController.insertReminderAPI(context, Provider.of<ReminderProvider>(context, listen: false).selectedNotification);
                             },
                             height: 40,
                             isLoading: true,
@@ -1900,6 +1916,7 @@ class ReminderUtils {
       },
     );
   }
+
   void showEditReminderDialog(String id,BuildContext context) {
     String? titleError;
     String? startDError;
