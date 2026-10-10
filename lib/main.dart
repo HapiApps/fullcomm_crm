@@ -22,7 +22,7 @@ import 'controller/reminder_controller.dart';
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // ✅ MUST
+  WidgetsFlutterBinding.ensureInitialized();
   await GetStorage.init();
   final prefs = await SharedPreferences.getInstance();
   final loginScreen = prefs.getBool("loginScreen$versionNum") ?? false;

@@ -67,7 +67,6 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   }
   OtpFieldControllerV2 otpbox = OtpFieldControllerV2();
 
-  //santhiya2
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);

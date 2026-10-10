@@ -17,6 +17,7 @@ import '../controller/table_controller.dart';
 import '../models/all_customers_obj.dart';
 import '../models/customer_full_obj.dart';
 import '../models/new_lead_obj.dart';
+import '../screens/leads/customer_audio_dialog.dart';
 import '../screens/records/cus_mail_comments.dart';
 import '../screens/leads/update_lead.dart';
 import '../screens/records/records.dart';
@@ -268,31 +269,13 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
 
   @override
   Widget build(BuildContext context) {
-    // print("widget.additional......");
-    // print(widget.additional);
     final headings = tableController.tableHeadings;
-    // final int totalColumns = tableController.tableHeadings.length + 1 + (widget.showCheckbox ? 1 : 0);
     final Map<int, TableColumnWidth> columnWidths = {
-      0: FlexColumnWidth(0.6),//santhiya
-      1: FlexColumnWidth(0.6),//santhiya
+      0: FlexColumnWidth(0.6),
+      1: FlexColumnWidth(0.6),
       2: const FlexColumnWidth(2),
       3: FixedColumnWidth(tableController.colWidth[headings.first] ?? 150),
     };
-    //  final Map<int, TableColumnWidth> columnWidths = {};
-    // int colIndex = 2;
-    // for (int hIndex = 0; hIndex < tableController.tableHeadings.length; hIndex++) {
-    //   final heading = tableController.tableHeadings[hIndex];
-    //   final width = tableController.colWidth[heading] ?? 150;
-    //   columnWidths[colIndex] = FixedColumnWidth(width);
-    //   colIndex++;
-    // }
-
-    // columnWidths[0] =  widget.showCheckbox?FlexColumnWidth(1):FlexColumnWidth(3); // Actions / checkbox
-    // columnWidths[1] = const FlexColumnWidth(1.5); // Name
-    // columnWidths[2] = const FlexColumnWidth(2); // Company / next
-    // for (int i = 3; i < totalColumns; i++) {
-    //   columnWidths[i] = const FlexColumnWidth(2);
-    // }
     return Obx(()=>tableController.isTableLoading.value?CircularProgressIndicator():InkWell(
       onTap: () {
         Get.to(
@@ -872,6 +855,13 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                               controllers.selectedIndex.value=107;
                               Get.to(NewBillingScreen());
                             }
+                            else if (value == "Customer Audio") {
+                              showCustomerAudioDialog(
+                                context,
+                                customerId: widget.id.toString(),
+                                customerName: widget.name.toString(),
+                              );
+                            }
                           },
                           // onCanceled: () {
                           //   isMenuOpen.value = false;
@@ -931,6 +921,10 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                             PopupMenuItem(
                                 value: "Delete",
                                 child: Text("Delete",
+                                    style: TextStyle(color: colorsConst.textColor))),
+                            PopupMenuItem(
+                                value: "Customer Audio",
+                                child: Text("Customer Audio",
                                     style: TextStyle(color: colorsConst.textColor))),
                           ],
                           child: Icon((Icons.more_horiz),color: colorsConst.primary,)

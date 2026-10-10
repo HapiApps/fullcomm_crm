@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/billing_utils/sized_box.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/components/custom_sidebar.dart';
-import 'package:fullcomm_crm/controller/dashboard_controller.dart';
-import 'package:fullcomm_crm/models/month_report_obj.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -27,7 +24,6 @@ import '../../controller/reminder_controller.dart';
 import '../../models/all_customers_obj.dart';
 import '../order/order_page.dart';
 import '../quotation/view_quotation_details.dart';
-import 'emp_filter.dart';
 
 class EmployeeReportPage extends StatefulWidget {
   final String id;
@@ -129,6 +125,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
     170,  // 8 Date
     250,  // 8 Date
   ];
+
   Widget headerCell(int index, Widget child) {
     return Stack(
       children: [
@@ -171,11 +168,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    final Map<int, TableColumnWidth> tableWidthMap = {
-      for (int i = 0; i < quotationColumns.length; i++) i: FixedColumnWidth(quotationColumns[i])
-    };
 
-    double totalTableWidth = quotationColumns.reduce((a, b) => a + b);
     return Scaffold(
       body: Row(
         children: [
@@ -505,7 +498,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                               title: "Leads",
                               // value: repCtr.totalSuspects.value,
                               // value: controllers.empLeadList.length.toString(),
-                              value: controllers.allCus.value.toString(),
+                              value: repCtr.totalSuspects.value,
                               icon: Icons.groups_outlined,
                               color: Colors.pink,
                               selectedColor: repCtr.selectFilter.value=="Leads"?colorsConst.primary:Colors.grey.shade200,
@@ -519,7 +512,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                               title: "Calls",
                               // value: repCtr.totalCalls.value,
                               // value: remController.paginatedItems.length.toString(),
-                              value: controllers.allCalls.value,
+                              value: repCtr.totalCalls.value,
                               icon: Icons.call,
                               color: Colors.blue,
                               selectedColor: repCtr.selectFilter.value=="Calls"?colorsConst.primary:Colors.grey.shade200,
@@ -551,7 +544,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                               title: "Mails",
                               width: width/8.5,
                               // value: repCtr.totalMails.value,
-                              value: remController.paginatedMailItems.length.toString(),
+                              value: repCtr.totalMails.value,
                               icon: Icons.mail_outline,
                               color: Colors.green,
                               selectedColor: repCtr.selectFilter.value=="Mails"?colorsConst.primary:Colors.grey.shade200,
@@ -579,7 +572,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                               width: width/6.5,
                               // value: repCtr.totalMeetings.value,
                               // value: remController.paginatedAppItems.length.toString(),
-                              value: controllers.allScheduleMeet.value,
+                              value: repCtr.totalMeetings.value,
                               icon: Icons.calendar_today,
                               color: Colors.deepPurple,
                               selectedColor: repCtr.selectFilter.value=="Appointments"?colorsConst.primary:Colors.grey.shade200,
@@ -610,7 +603,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                             DashboardCard(
                               title: "Quotations",
                               width: width/6.5,
-                              value: productCtr.fullOrder.value.toString(),
+                              value: repCtr.totalQuotations.value,
                               // value: productCtr.paginatedItems.length.toString(),
                               // value: repCtr.totalQuotations.value,
                               icon: Icons.description_outlined,
@@ -634,7 +627,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                               title: "Orders",
                               width: width/8.5,
                               // value: repCtr.totalOrders.value,
-                              value: productCtr.paginatedOrdersItems.length.toString(),
+                              value: repCtr.totalOrders.value,
                               icon: Icons.shopping_cart,
                               color: Colors.brown,
                               selectedColor: repCtr.selectFilter.value=="Orders"?colorsConst.primary:Colors.grey.shade200,
@@ -2761,7 +2754,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                                               SizedBox(
                                                 width: width/7,
                                                 child: CustomText(size: 15,
-                                                  text: "Last Week",
+                                                  text: "Previous",
                                                   isCopy: false,colors: Colors.white,
                                                   isBold: true,
                                                 ),
@@ -2769,7 +2762,7 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                                               SizedBox(
                                                 width: width/7,
                                                 child: CustomText(size: 15,
-                                                  text: "This Week",colors: Colors.white,
+                                                  text: "Current",colors: Colors.white,
                                                   isCopy: false,
                                                   isBold: true,
                                                 ),
@@ -2791,19 +2784,17 @@ class _EmployeeReportPageState extends State<EmployeeReportPage> {
                                               ),
                                               SizedBox(
                                                 width: width/7,
-                                                child: CustomText(size: 15,
-                                                  text: "${repCtr.formatDate(repCtr.lastWeekStart)} to ${repCtr.formatDate(repCtr.lastWeekEnd)}",
-                                                  isCopy: false,colors: Colors.white,
-                                                  isBold: true,
-                                                ),
+                                                child: Obx(() => CustomText(size: 15,
+                                                  text: repCtr.comparePrevious.value,
+                                                  isCopy: false, colors: Colors.white, isBold: true,
+                                                )),
                                               ),
                                               SizedBox(
                                                 width: width/7,
-                                                child: CustomText(size: 15,
-                                                  text: "${repCtr.formatDate(repCtr.thisWeekStart)} to ${repCtr.formatDate(repCtr.thisWeekEnd)}",
-                                                  isCopy: false,colors: Colors.white,
-                                                  isBold: true,
-                                                ),
+                                                child: Obx(() => CustomText(size: 15,
+                                                  text: repCtr.compareCurrent.value,
+                                                  isCopy: false, colors: Colors.white, isBold: true,
+                                                )),
                                               ),
                                               SizedBox(
                                                 width: width/8,

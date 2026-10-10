@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:get/get.dart';
@@ -244,6 +245,8 @@ void changeType() {
   repCtr.getWholeReport(repCtr.empId.value);
 }
 var refreshData=true.obs;
+  final compareCurrent  = "".obs;
+  final comparePrevious = "".obs;
   Future getWholeReport(String id) async {
     try {
       refreshData.value=false;
@@ -278,10 +281,10 @@ var refreshData=true.obs;
         "thisMonthTo": thisMonthTo,
       };
 
-      // debugPrint("================================================");
-      // debugPrint("REQUEST DATA");
-      // debugPrint("================================================");
-      // debugPrint(data.toString());
+      debugPrint("================================================");
+      debugPrint("REQUEST DATA");
+      debugPrint("================================================");
+      debugPrint(data.toString());
 
       final request = await http.post(
         Uri.parse(scriptApi),
@@ -292,10 +295,10 @@ var refreshData=true.obs;
         body: jsonEncode(data),
         encoding: Encoding.getByName("utf-8"),
       );
-      // debugPrint("================================================");
-      // debugPrint("RAW RESPONSE");
-      // debugPrint("================================================");
-      // log(request.body);
+      debugPrint("================================================");
+      debugPrint("RAW RESPONSE");
+      debugPrint("================================================");
+      log(request.body);
 
       if (request.statusCode == 401) {
 
@@ -351,6 +354,9 @@ var refreshData=true.obs;
         comparisonReport.value=comReport;
 
         Map acReport = response['data']['activity_summary'];
+        final labels = response['data']['comparison_labels'];
+        compareCurrent.value  = labels['current'].toString();
+        comparePrevious.value = labels['previous'].toString();
         activeReport.value=acReport;
         refreshData.value=true;
       } else {
