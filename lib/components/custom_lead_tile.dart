@@ -82,9 +82,14 @@ class CustomLeadTile extends StatefulWidget {
   final bool saveValue;
   final RxList<NewLeadObj> list;
   final RxList<NewLeadObj> list2;
+  final Map<String, dynamic>? lastCall;
+  final Map<String, dynamic>? lastMail;
+  final Map<String, dynamic>? lastMeeting;
+  final Map<String, dynamic>? lastReminder;
   final List additional;
   final String promoteReason;
   final String? audioUrl;
+
   const CustomLeadTile(
       {super.key,
       this.showCheckbox = true,
@@ -148,7 +153,10 @@ class CustomLeadTile extends StatefulWidget {
       this.points,
       this.detailsOfServiceReq,
       this.audioUrl,
-      required this.pageName, required this.list, required this.list2, required this.listIndex, required this.leadIndex, required this.additional, required this.promoteReason});
+        this.lastCall, this.lastMail, this.lastMeeting, this.lastReminder,
+      required this.pageName, required this.list, required this.list2,
+        required this.listIndex, required this.leadIndex, required this.additional,
+        required this.promoteReason});
 
   @override
   State<CustomLeadTile> createState() => _CustomLeadTileState();
@@ -240,7 +248,6 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
       "audio_url": widget.audioUrl,
     };
 
-    /// additional_info dynamic add
     if (widget.additional != null) {
       for (var item in widget.additional) {
         if (item is Map<String, dynamic>) {
@@ -250,12 +257,73 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
         }
       }
     }
-// debugPrint("widget.additionalll ${widget.additional}");
-// debugPrint("widget.additional $data");
     return data;
   }
+
   late TextEditingController statusController;
   late Map<String, TextEditingController> fieldControllers;
+
+  String timeAgo(DateTime dt) {
+    final now = DateTime.now();
+    final diff = now.difference(dt);
+
+    if (diff.isNegative || diff.inMinutes < 1) return "just now";
+    if (diff.inMinutes < 60) {
+      final m = diff.inMinutes;
+      return "$m ${m == 1 ? 'minute' : 'minutes'} ago";
+    }
+    if (diff.inHours < 24) {
+      final h = diff.inHours;
+      return "$h ${h == 1 ? 'hour' : 'hours'} ago";
+    }
+
+    final days = DateTime(now.year, now.month, now.day)
+        .difference(DateTime(dt.year, dt.month, dt.day))
+        .inDays;
+
+    if (days == 1) return "yesterday";
+    if (days < 7) return "$days days ago";
+    if (days < 30) {
+      final w = (days / 7).floor();
+      return "$w ${w == 1 ? 'week' : 'weeks'} ago";
+    }
+    if (days < 365) {
+      final mo = (days / 30).floor();
+      return "$mo ${mo == 1 ? 'month' : 'months'} ago";
+    }
+    final y = (days / 365).floor();
+    return "$y ${y == 1 ? 'year' : 'years'} ago";
+  }
+
+  String getLastActivityText() {
+    final List<Map<String, dynamic>> items = [];
+
+    void add(String label, Map<String, dynamic>? m) {
+      if (m == null) return;
+      final dt = DateTime.tryParse(m['created_ts']?.toString() ?? '');
+      if (dt == null) return;
+      items.add({"label": label, "dt": dt});
+    }
+
+    final callType = widget.lastCall?['call_type']?.toString().toLowerCase();
+    final callLabel = callType == "incoming"
+        ? "Last call received"
+        : callType == "outgoing"
+        ? "Last call made"
+        : "Last call";
+
+    add("Last mail sent", widget.lastMail);
+    add(callLabel, widget.lastCall);
+    add("Last meeting added", widget.lastMeeting);
+    add("Last reminder added", widget.lastReminder);
+
+    if (items.isEmpty) return "No interaction yet";
+
+    items.sort((a, b) => (b["dt"] as DateTime).compareTo(a["dt"] as DateTime));
+    final latest = items.first;
+
+    return "${latest["label"]} ${timeAgo(latest["dt"] as DateTime)}";
+  }
 
   @override
   void initState() {
@@ -297,39 +365,81 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
     super.dispose();
   }
   String formatShortDateTime(String dateTime) {
-    final dt = DateTime.parse(dateTime);
+    final dt = DateTime.tryParse(dateTime);
+    if (dt == null) return "";
     final now = DateTime.now();
-
-    if (dt.year == now.year) {
-      return DateFormat("d MMM, hh:mm a").format(dt);
-    } else {
-      return DateFormat("d MMM yyyy, hh:mm a").format(dt);
-    }
+    return dt.year == now.year
+        ? DateFormat("d MMM, hh:mm a").format(dt)
+        : DateFormat("d MMM yyyy, hh:mm a").format(dt);
   }
 
-  String getCategoryReason(String jsonString) {
-    final List data = jsonString!="null"&&jsonString!=""?jsonDecode(jsonString):[];
+  String getCategoryReason(dynamic input) {
+    List data = [];
+
+    if (input is List) {
+      data = input;
+    } else if (input is String && input.trim().isNotEmpty && input != "null") {
+      try {
+        final decoded = jsonDecode(input);
+        if (decoded is List) data = decoded;
+      } catch (_) {
+        return "";
+      }
+    }
 
     return data.map((e) {
       final category = e["category"] ?? "";
       final reason = e["reason"] ?? "";
-      final date = formatShortDateTime(e["created_ts"] ?? "");
+      final date = formatShortDateTime(e["created_ts"]?.toString() ?? "");
 
       return reason.toString().trim().isEmpty
           ? "$category ($date)"
           : "$category - $reason ($date)";
     }).join("\n");
   }
+
+  String getActivityTooltip(String name) {
+    String ago(Map<String, dynamic>? m) {
+      final dt = DateTime.tryParse(m?['created_ts']?.toString() ?? '');
+      return dt == null ? '' : timeAgo(dt);
+    }
+
+    String clean(dynamic v) {
+      final s = v?.toString().trim() ?? '';
+      return s == 'null' ? '' : s;
+    }
+
+    String row(String label, Map<String, dynamic>? m, String detail) {
+      if (m == null) return '$label: -';
+      final d = detail.isEmpty ? '' : ' - $detail';
+      return '$label: ${ago(m)}$d';
+    }
+
+    final call = widget.lastCall;
+    final mail = widget.lastMail;
+    final meet = widget.lastMeeting;
+    final rem = widget.lastReminder;
+
+    final callDetail = [clean(call?['call_type']), clean(call?['call_status'])]
+        .where((e) => e.isNotEmpty)
+        .join(', ');
+    final meetDetail = [clean(meet?['title']), clean(meet?['status'])]
+        .where((e) => e.isNotEmpty)
+        .join(', ');
+
+    return [
+      name,
+      '',
+      row('Call', call, callDetail),
+      row('Mail', mail, clean(mail?['subject'])),
+      row('Meeting', meet, meetDetail),
+      row('Reminder', rem, clean(rem?['title'])),
+    ].join('\n');
+  }
+
   @override
   Widget build(BuildContext context) {
-    // final int totalColumns = tableController.tableHeadings.length + 1 + (widget.showCheckbox ? 1 : 0);
-    // final Map<int, TableColumnWidth> columnWidths = {}; // Company / next
-    // for (int i = 0; i < totalColumns; i++) {
-    //   columnWidths[i] = const FlexColumnWidth(2);
-    // }
     return Obx((){
-      // final headings = tableController.tableHeadings;
-      // headings.add("Promote Reason");
       final headings = List<String>.from(tableController.tableHeadings);
 
       if (!headings.contains("Promote Reason")) {
@@ -342,8 +452,6 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
         final w = tableController.colWidth[h] ?? 155;
         columnWidths[idx++] = FixedColumnWidth(w.toDouble());
       }
-      // print("displayHeadings.length");
-      // print(displayHeadings.length);
       if (tableController.isTableLoading.value) {
         return SizedBox(
           height: 60,
@@ -406,7 +514,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
 
                     if (isLastColumn) {
                       return Container(
-                        height: 45,
+                        height: 52,
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: CustomText(
@@ -420,7 +528,7 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                     if (heading.toLowerCase() == "added date" ||
                         heading.toLowerCase() == "prospect enrollment date") {
                       return Container(
-                        height: 45,
+                        height: 52,
                         alignment: Alignment.centerLeft,
                         padding: const EdgeInsets.symmetric(horizontal: 5),
                         child: CustomText(
@@ -455,8 +563,50 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
 
                     final controller = key != null ? fieldControllers[key] : null;
 
+                    final isNameColumn = key == "mainName" || key == "name";
+
+                    if (isNameColumn) {
+                      final summary = getLastActivityText();
+                      final hasActivity = summary != "No interaction yet";
+                      final fullName = controller?.text.trim() ?? "";
+                      return Tooltip(
+                        message: getActivityTooltip(fullName),
+                        waitDuration: const Duration(milliseconds: 300),
+                        padding: const EdgeInsets.all(10),
+                        textAlign: TextAlign.left,
+                        textStyle: const TextStyle(fontSize: 12, color: Colors.white, height: 1.4),
+                        child: Container(
+                          height: 52,
+                          alignment: Alignment.centerLeft,
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CustomText(
+                                  text: fullName,
+                                  isCopy: false,
+                                  textAlign: TextAlign.start,
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  summary,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: hasActivity ? Colors.green.shade700 : Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }
                     return Container(
-                      height: 45,
+                      height: 52,
                       alignment: Alignment.centerLeft,
                       padding: const EdgeInsets.symmetric(horizontal: 5),
                       child: CustomText(
@@ -465,7 +615,6 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
                         textAlign: TextAlign.start,
                       ),
                     );
-
                   }),
                 ]),
           ],

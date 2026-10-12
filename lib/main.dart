@@ -1,11 +1,14 @@
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/provider/dashboard_provider.dart';
 import 'package:fullcomm_crm/provider/employee_provider.dart';
 import 'package:fullcomm_crm/provider/reminder_provider.dart';
 import 'package:fullcomm_crm/screens/DashboardPage.dart';
+import 'package:fullcomm_crm/screens/dashboard_mobile.dart';
 import 'package:fullcomm_crm/services/api_services.dart';
 import 'package:flutter/material.dart';
+import 'package:fullcomm_crm/services/services/notification_service.dart';
 import 'package:fullcomm_crm/view_models/billing_provider.dart';
 import 'package:fullcomm_crm/view_models/customer_provider.dart';
 import 'package:get/get.dart';
@@ -51,6 +54,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => CustomersProvider()),
 
       ],child: MyApp(loginScreen: loginScreen,)));
+  NotificationService.requestPermission();
 }
 
 class MyInheritedWidget extends InheritedWidget {
@@ -169,8 +173,9 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
           home: SelectionArea(
-              // child:widget.loginScreen == false ? const LoginPage() : kIsWeb?DashboardPage():MobileDashboard()),
-              child:widget.loginScreen == false ? const LoginPage() : DashboardPage()),
+               //child:widget.loginScreen == false ? const LoginPage() : kIsWeb?DashboardPage():MobileDashboardPage()),
+               child:MobileDashboardPage()),
+              //child:widget.loginScreen == false ? const LoginPage() : DashboardPage()),
         ),
       );
   }

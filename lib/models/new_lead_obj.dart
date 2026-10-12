@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:fullcomm_crm/models/customer_full_obj.dart';
 List<T> listParser<T>(
     dynamic raw,
@@ -73,6 +75,10 @@ class NewLeadObj {
   final String? category;
   final List<AdditionalInfo>? additional;
   bool? select;
+  final Map<String, dynamic>? lastCall;
+  final Map<String, dynamic>? lastMail;
+  final Map<String, dynamic>? lastMeeting;
+  final Map<String, dynamic>? lastReminder;
 
   NewLeadObj(
       {this.userId,
@@ -131,7 +137,9 @@ class NewLeadObj {
       this.detailsOfServiceRequired,
         this.additionalInfo,
         this.audioUrl,
-        this.whatsapp,this.industry,this.product,this.x, this.additional, this.category
+        this.whatsapp,this.industry,this.product,this.x, this.additional, this.category,
+        this.lastCall, this.lastMail, this.lastMeeting, this.lastReminder,
+
       });
   factory NewLeadObj.fromJson(Map<String, dynamic> json) {
     return NewLeadObj(
@@ -204,7 +212,15 @@ class NewLeadObj {
       product: json["product"]?.toString() ?? '',
       industry: json["industry"]?.toString() ?? '',
       x: json["x"]?.toString() ?? '',
-      historyInfo: json["history_info"]?.toString() ?? ''
+        lastCall: json['last_call'] is Map ? Map<String, dynamic>.from(json['last_call']) : null,
+        lastMail: json['last_mail'] is Map ? Map<String, dynamic>.from(json['last_mail']) : null,
+        lastMeeting: json['last_meeting'] is Map ? Map<String, dynamic>.from(json['last_meeting']) : null,
+        lastReminder: json['last_reminder'] is Map ? Map<String, dynamic>.from(json['last_reminder']) : null,
+      historyInfo: json["history_info"] == null
+          ? ''
+          : (json["history_info"] is String
+          ? json["history_info"]
+          : jsonEncode(json["history_info"])),
     );
   }
 

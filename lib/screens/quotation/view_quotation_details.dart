@@ -1,29 +1,17 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_line/dotted_line.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
 import 'package:fullcomm_crm/controller/controller.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:fullcomm_crm/screens/leads/update_lead.dart';
-import 'package:fullcomm_crm/services/api_services.dart';
 import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
-import '../../common/utilities/reminder_utils.dart';
-import '../../common/utilities/utils.dart';
-import '../../components/custom_loading_button.dart';
+import '../../common/utilities/dashboard_dialog.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
-import '../../controller/image_controller.dart';
 import '../../controller/product_controller.dart';
-import '../../controller/reminder_controller.dart';
-import '../../models/customer_full_obj.dart';
-import '../../models/new_lead_obj.dart';
 import '../../models/order_model.dart';
-import '../invoice/invoice.dart';
 
 class ViewQuotationDetails extends StatefulWidget {
   final String id;

@@ -14,6 +14,7 @@ import '../common/constant/api.dart';
 import '../common/constant/colors_constant.dart';
 import '../common/constant/dashboard_assets.dart';
 import '../common/styles/decoration.dart';
+import '../common/utilities/dashboard_dialog.dart';
 import '../common/utilities/reminder_utils.dart';
 import '../common/utilities/test_download.dart';
 import '../common/utilities/utils.dart';
@@ -31,6 +32,7 @@ import '../models/all_customers_obj.dart';
 import '../provider/employee_provider.dart';
 import '../services/api_services.dart';
 import '../services/new_payroll_api_services.dart';
+import '../services/services/notification_service.dart';
 import '../view_models/billing_provider.dart';
 import 'employee/dashboard_emp_report.dart';
 import 'leads/new_lead_page.dart';
@@ -38,6 +40,7 @@ import 'leads/rating_customer_page.dart';
 import 'order/order_page.dart';
 
 bool _crmSyncedThisSession = false;
+bool _todayNotifiedThisSession = false;
 
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
@@ -53,6 +56,7 @@ class _DashboardPageState extends State<DashboardPage>
   final ScrollController _appScroll = ScrollController();
   final ScrollController _remScroll = ScrollController();
   final ScrollController _comScroll = ScrollController();
+
   String formatFirstDate(String input) {
     try {
       List<String> parts = input.split("||").map((e) => e.trim()).toList();
@@ -85,6 +89,148 @@ class _DashboardPageState extends State<DashboardPage>
     } catch (e) {
       // debugPrint("Error parsing: $e");
       return "";
+    }
+  }
+
+  void _openReminderPage() {
+    remController.selectedReminderSortBy.value = dashController.selectedSortBy.value=="Last 7 Days"?
+    "Next 7 Days":dashController.selectedSortBy.value=="Last 30 Days"?
+    "Next 30 Days":dashController.selectedSortBy.value;
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context,
+            animation1,
+            animation2) =>
+        const ReminderPage(),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
+    controllers.oldIndex.value = controllers.selectedIndex.value;
+    controllers.selectedIndex.value = 102;
+  }
+
+  void _openAppointmentPage() {
+    remController.selectedMeetSortBy.value = dashController.selectedSortBy.value=="Last 7 Days"?
+    "Next 7 Days":dashController.selectedSortBy.value=="Last 30 Days"?
+    "Next 30 Days":dashController.selectedSortBy.value;
+    controllers.changeTab(2);
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation1, animation2) =>
+        const Records(
+          isReload: "true",
+        ),
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
+    controllers.oldIndex.value = controllers.selectedIndex.value;
+    controllers.selectedIndex.value = 101;
+  }
+
+  List<String> _pickCustomersToCall({int count = 5}) {
+    final List<Map<String, dynamic>> picked = [];
+
+    for (final l in controllers.allLeadList) {
+      final firstName = (l.firstname ?? '').trim();
+      final company = (l.companyName ?? '').trim();
+      final name = firstName.isNotEmpty ? firstName : company;
+      final phone = (l.mobileNumber ?? '').trim();
+
+      if (name.isEmpty || name == 'null') continue;
+      if (phone.isEmpty || phone == 'null') continue;
+
+      DateTime? latest;
+      for (final m in [l.lastCall, l.lastMail, l.lastMeeting, l.lastReminder]) {
+        if (m == null) continue;
+        final dt = DateTime.tryParse(m['created_ts']?.toString() ?? '');
+        if (dt != null && (latest == null || dt.isAfter(latest))) latest = dt;
+      }
+
+      picked.add({'name': name, 'last': latest});
+    }
+    picked.sort((a, b) {
+      final da = a['last'] as DateTime?;
+      final db = b['last'] as DateTime?;
+      if (da == null && db == null) return 0;
+      if (da == null) return -1;
+      if (db == null) return 1;
+      return da.compareTo(db);
+    });
+
+    return picked.take(count).map((e) => e['name'] as String).toList();
+  }
+
+
+  Future<void> _showTodayNotifications() async {
+    if (_todayNotifiedThisSession) return;
+    _todayNotifiedThisSession = true;
+
+    final allowed = await NotificationService.requestPermission();
+    if (!allowed) return;
+
+    final reminders = remController.getTodayReminders();
+    final meetings = remController.getTodayMeetings();
+    if (reminders.isEmpty && meetings.isEmpty) {
+      final names = _pickCustomersToCall();
+
+      if (names.isEmpty) {
+        NotificationService.show(
+          'No appointments or reminders today',
+          'Your schedule is clear today. A good time to reach out to your leads!',
+          tag: 'today-empty',
+          sticky: true,
+        );
+      } else {
+        NotificationService.show(
+          'No appointments or reminders today',
+          'Why not call these customers today?\n'
+              '${names.map((n) => '• $n').join('\n')}',
+          tag: 'today-empty',
+          sticky: true,
+        );
+      }
+      return;
+    }
+
+    for (final m in meetings) {
+      final startTime = m.time.split('||').first.trim();
+      final cus = m.cusName.trim();
+      final com = m.comName.trim();
+      final who = cus.isNotEmpty && com.isNotEmpty
+          ? '$cus ($com)'
+          : (cus.isNotEmpty ? cus : com);
+
+      NotificationService.show(
+        'Appointment today at $startTime',
+        who.isEmpty
+            ? 'You have an appointment "${m.title}". Would you like to view the details?'
+            : 'Are you ready for your "${m.title}" meeting with $who? Would you like to view the details?',
+        tag: 'meeting-${m.id}',
+        sticky: true,
+        onClick: _openAppointmentPage,
+      );
+      await Future.delayed(const Duration(milliseconds: 400));
+    }
+
+    for (final r in reminders) {
+      final time = r.startDt.split(' ').skip(1).join(' ');
+      final isFollowUp = r.type.toString() == '1';
+      final customer = r.customerName.trim();
+
+      NotificationService.show(
+        '${isFollowUp ? "Follow-up" : "Reminder"} today at $time',
+        customer.isNotEmpty
+            ? 'Do you want to follow up with $customer about "${r.title}"? Open the Reminders page?'
+            : 'Reminder: "${r.title}". Open the Reminders page?',
+        tag: 'reminder-${r.id}',
+        sticky: true,
+        onClick: _openReminderPage,
+      );
+      await Future.delayed(const Duration(milliseconds: 400));
     }
   }
 
@@ -194,97 +340,10 @@ class _DashboardPageState extends State<DashboardPage>
         _crmSyncedThisSession = true;
         await apiService.syncContactsToCrm();
       }
+        await _showTodayNotifications();
+
     });
   }
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _focusNode = FocusNode();
-  //   dashController.getToken();
-  //   apiService.getHeading();
-  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-  //     dashController.selectedSortBy.value="${controllers.storage.read("selectedSortBy") ?? "Today"}";
-  //     _focusNode.requestFocus();
-  //     controllers.insertSeriesNo(context,true);
-  //     apiService.syncContactsToCrm();
-  //     if(controllers.leadCategoryList.isEmpty){
-  //       apiService.getLeadCategories();
-  //     }
-  //     if(controllers.allLeadList.isEmpty){
-  //       apiService.getCustomLeads();
-  //     }
-  //     if(controllers.allLeadCategoryList.isEmpty){
-  //       apiService.getAllLeadCategories();
-  //     }
-  //     apiService.getAllEmployees();
-  //     if(Provider.of<BillingProvider>(context, listen: false).productsList.isEmpty){
-  //       Provider.of<BillingProvider>(context, listen: false).getProducts();
-  //     }
-  //     if(productCtr.products.isEmpty){
-  //       productCtr.getProducts();
-  //     }
-  //     final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
-  //     employeeData.staffRoleDetailsData(context: context);
-  //     if(controllers.hCallStatusList.isEmpty){
-  //       controllers.getCallStatus();
-  //     }
-  //     if(controllers.industriesList.isEmpty){
-  //       controllers.getIndustries();
-  //     }
-  //     if(productCtr.ordersList.isEmpty){
-  //       productCtr.getOrderDetails();
-  //     }
-  //     if(productCtr.quotationsList.isEmpty){
-  //       productCtr.getQuotationDetails();
-  //     }
-  //     if(productCtr.termsAndConditionsList.isEmpty){
-  //       productCtr.getTermsAndConditions();
-  //     }
-  //     if(pyrlCtr.settingList.isEmpty){
-  //       services.getRoleSettings(context);
-  //     }
-  //     if(controllers.instagramCustomers.isEmpty){
-  //       apiService.getInstagramCustomers();
-  //     }
-  //     apiService.currentVersion();
-  //     controllers.selectedIndex.value = 100;
-  //     DateTime now = DateTime.now();
-  //     checkDate();
-  //     remController.selectedMeetSortBy.value=dashController.selectedSortBy.value;
-  //     remController.selectedCallSortBy.value=dashController.selectedSortBy.value;
-  //     remController.selectedReminderSortBy.value=dashController.selectedSortBy.value;
-  //     remController.dashboardMeetings(
-  //       searchText: controllers.searchText.value.toLowerCase(),
-  //       callType: controllers.selectMeetingType.value,
-  //       sortField: controllers.sortFieldMeetingActivity.value,
-  //       sortOrder: controllers.sortOrderMeetingActivity.value,
-  //     );
-  //     if(remController.reminderList.isEmpty){
-  //       remController.allReminders("2");
-  //     }
-  //     if(remController.callMailsDetailsList.isEmpty){
-  //       apiService.getMailCallActivity();
-  //     }
-  //     remController.dashboardSortReminders();
-  //     remController.dashboardCommunicationFilterList(
-  //       dataList: remController.callMailsDetailsList2,
-  //       searchText: controllers.searchText.value.toLowerCase(),
-  //       callType: controllers.selectCallType.value,
-  //       sortField: controllers.sortFieldCallActivity.value,
-  //       sortOrder: controllers.sortOrderCallActivity.value,
-  //       selectedMonth: remController.selectedCallMonth.value,
-  //       selectedRange: remController.selectedCallRange.value,
-  //       selectedDateFilter: remController.selectedCallSortBy.value,
-  //     );
-  //     String today =
-  //         "${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}";
-  //     var last7days = DateTime.now().subtract(Duration(days: 7));
-  //     dashController.getCustomerReport(
-  //         "${last7days.year}-${last7days.month.toString().padLeft(2, '0')}-${last7days.day.toString().padLeft(2, '0')}",
-  //         today);
-  //     dashController.getWholeReport();
-  //   });
-  // }
 
 void checkDate(){
   DateTime now = DateTime.now();
@@ -425,50 +484,6 @@ void checkDate(){
                                             ],
                                           ),
                                         ),
-                                        // SizedBox(
-                                        //   width: screenWidth/4,
-                                        //   child: CDropdownField<AllCustomersObj>(
-                                        //     items: controllers.customers,
-                                        //     labelBuilder: (item) => item.name,
-                                        //     leadBuilder: (item) => item.category,
-                                        //     subLabelBuilder: (item) => item.phoneNo, // 🔥 optional
-                                        //     itemBuilder: (item) => SizedBox(), // not used now
-                                        //     textEditingController:controllers.search,
-                                        //     onSelected: (item) {
-                                        //       debugPrint("item.name");
-                                        //       debugPrint(item.name);
-                                        //       controllers.search.text = item.name.toString();
-                                        //       for (var i = 0; i < controllers.leadCategoryList.length; i++) {
-                                        //         if(controllers.leadCategoryList[i].value==item.category.toString()){
-                                        //           debugPrint(controllers.leadCategoryList[i].value);
-                                        //           debugPrint(item.category.toString());
-                                        //
-                                        //           controllers.selectedIndex.value =int.tryParse(item.leadStatus.toString()) ?? 0;
-                                        //           Get.off(
-                                        //                 () => NewLeadPage(
-                                        //               index: item.leadStatus,
-                                        //               name: controllers.leadCategoryList[i].value,
-                                        //               list: controllers.leadCategoryList[i].list,
-                                        //               list2: controllers.leadCategoryList[i].list2,
-                                        //               listIndex: i,
-                                        //             ),
-                                        //             preventDuplicates: false,
-                                        //           );
-                                        //           break;
-                                        //         }
-                                        //       }
-                                        //       // showDialog(
-                                        //       //   context: context,
-                                        //       //   builder: (_) => AlertDialog(
-                                        //       //     title: Text("Customer"),
-                                        //       //     content: Text(item.name),
-                                        //       //   ),
-                                        //       // );
-                                        //     },
-                                        //     borderRadius: 8,
-                                        //     borderColor: Colors.grey,
-                                        //   ),
-                                        // ),
                                         SizedBox(
                                           width: screenWidth/5,
                                           child: SearchObjectDropdown<AllCustomersObj>(
@@ -478,8 +493,6 @@ void checkDate(){
                                             subTitle: (e) => e.phoneNo,
                                             trailingText: (e) =>e.category,
                                             onSelected: (lead) {
-                                              // print(lead.id);
-                                              // print(lead.name);
                                               controllers.search.text = lead.name.toString();
                                               for (var i = 0; i < controllers.leadCategoryList.length; i++) {
                                                 if(controllers.leadCategoryList[i].value==lead.category.toString()){
@@ -665,8 +678,7 @@ void checkDate(){
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                                  mainAxisAlignment: MainAxisAlignment.center,
                                                   children: [
                                                     Icon(Icons.calendar_today_outlined,color:Colors.white,size: 15,),
                                                     6.width,
@@ -744,90 +756,6 @@ void checkDate(){
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    // WaveStatCard(
-                                    //     title: "Mails",
-                                    //     numericValue: int.parse(dashController
-                                    //         .totalMails.value
-                                    //         .toString()),
-                                    //     maxValue: maxValue,
-                                    //     iconPath: DashboardAssets.mail,
-                                    //     valueColor: const Color(0xff2457C5),
-                                    //     callback:(){
-                                    //       remController.selectedMailSortBy.value = dashController.selectedSortBy.value;
-                                    //       controllers.changeTab(1);
-                                    //       Navigator.push(
-                                    //         context,
-                                    //         PageRouteBuilder(
-                                    //           pageBuilder: (context,
-                                    //               animation1,
-                                    //               animation2) =>
-                                    //           const Records(
-                                    //             isReload: "true",
-                                    //           ),
-                                    //           transitionDuration:
-                                    //           Duration.zero,
-                                    //           reverseTransitionDuration:
-                                    //           Duration.zero,
-                                    //         ),
-                                    //       );
-                                    //       controllers.oldIndex.value =
-                                    //           controllers.selectedIndex.value;
-                                    //       controllers.selectedIndex.value = 101;
-                                    //       // apiService.crmReminder(context);
-                                    //     }
-                                    // ),
-                                    // WaveStatCard(
-                                    //     title: "Calls",
-                                    //     numericValue: int.parse(dashController.totalCalls.value.toString()),
-                                    //     // numericValue: remController.callFilteredList.length,
-                                    //     maxValue: maxValue,
-                                    //     iconPath: DashboardAssets.phone,
-                                    //     valueColor: const Color(0xff53922A),
-                                    //     callback:(){
-                                    //       remController.selectedCallSortBy.value = dashController.selectedSortBy.value;
-                                    //       controllers.changeTab(0);
-                                    //       Navigator.push(
-                                    //         context,
-                                    //         PageRouteBuilder(
-                                    //           pageBuilder: (context,
-                                    //               animation1,
-                                    //               animation2) =>
-                                    //           const Records(
-                                    //             isReload: "true",
-                                    //           ),
-                                    //           transitionDuration:
-                                    //           Duration.zero,
-                                    //           reverseTransitionDuration:
-                                    //           Duration.zero,
-                                    //         ),
-                                    //       );
-                                    //       controllers.oldIndex.value = controllers.selectedIndex.value;
-                                    //       controllers.selectedIndex.value = 101;
-                                    //     }
-                                    // ),
-                                    ///
-                                    // IconButton(onPressed: ()async{
-                                    //   final expenses = <Expense>[
-                                    //     Expense(
-                                    //       expenseDate: DateTime.now(),
-                                    //       debitLedger: "Office Expenses",
-                                    //       debitGroup: "Indirect Expenses",
-                                    //       creditLedger: "Cash",
-                                    //       amount: 1000,
-                                    //       gstApplicable: true,
-                                    //       gstAmount: 180,
-                                    //       voucherType: "Payment",
-                                    //       voucherNo: "PV001",
-                                    //       narration: "Office Stationery",
-                                    //     ),
-                                    //   ];
-                                    //   final path = await TallyXmlExportService().exportToXml(
-                                    //     expenses,
-                                    //     companyName: "ABC Pvt Ltd",
-                                    //   );
-                                    //
-                                    //   print(path);
-                                    // }, icon: Icon(Icons.add),),
                                     WaveStatCard(
                                       callback: () {
                                         controllers.selectedQualifiedSortBy.value = dashController.selectedSortBy.value;
@@ -877,7 +805,6 @@ void checkDate(){
                                         // verifyPan("FQTPB9709M");
                                       },
                                       title: "Appointments",
-                                      // numericValue: int.parse(dashController.totalMeetings.value.toString()),
                                       numericValue: remController.dMeetings.length,
                                       maxValue: maxValue,
                                       iconPath: DashboardAssets.date,
@@ -895,16 +822,12 @@ void checkDate(){
                                                 animation1,
                                                 animation2) =>
                                             const ReminderPage(),
-                                            transitionDuration:
-                                            Duration.zero,
-                                            reverseTransitionDuration:
-                                            Duration.zero,
+                                            transitionDuration: Duration.zero,
+                                            reverseTransitionDuration: Duration.zero,
                                           ),
                                         );
-                                        controllers.oldIndex.value =
-                                            controllers.selectedIndex.value;
-                                        controllers.selectedIndex.value =
-                                        102;
+                                        controllers.oldIndex.value = controllers.selectedIndex.value;
+                                        controllers.selectedIndex.value = 102;
                                       },
                                       title: "Reminders",
                                       // numericValue: int.parse(dashController.totalReminders.value.toString()),

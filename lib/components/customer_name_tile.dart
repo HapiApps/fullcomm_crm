@@ -90,6 +90,10 @@ class CustomerNameTile extends StatefulWidget {
   final RxList<NewLeadObj> list;
   final RxList<NewLeadObj> list2;
   final List<AdditionalInfo> additional;
+  final Map<String, dynamic>? lastCall;
+  final Map<String, dynamic>? lastMail;
+  final Map<String, dynamic>? lastMeeting;
+  final Map<String, dynamic>? lastReminder;
 
   const CustomerNameTile(
       {super.key,
@@ -151,7 +155,11 @@ class CustomerNameTile extends StatefulWidget {
         this.visitType,
         this.points,
         this.detailsOfServiceReq,
-        required this.pageName, required this.leadIndex, required this.list, required this.list2, required this.listIndex, required this.refBy, required this.additional});
+        this.lastCall, this.lastMail, this.lastMeeting, this.lastReminder,
+        required this.pageName, required this.leadIndex,
+        required this.list, required this.list2,
+        required this.listIndex, required this.refBy,
+        required this.additional});
 
   @override
   State<CustomerNameTile> createState() => _CustomerNameTileState();
@@ -238,6 +246,71 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
       "updatedTs": widget.updatedTs,
     };
   }
+
+  late Map<String, TextEditingController> fieldControllers;
+
+  String timeAgo(DateTime dt) {
+    final now = DateTime.now();
+    final diff = now.difference(dt);
+
+    if (diff.isNegative || diff.inMinutes < 1) return "just now";
+    if (diff.inMinutes < 60) {
+      final m = diff.inMinutes;
+      return "$m ${m == 1 ? 'minute' : 'minutes'} ago";
+    }
+    if (diff.inHours < 24) {
+      final h = diff.inHours;
+      return "$h ${h == 1 ? 'hour' : 'hours'} ago";
+    }
+
+    final days = DateTime(now.year, now.month, now.day)
+        .difference(DateTime(dt.year, dt.month, dt.day))
+        .inDays;
+
+    if (days == 1) return "yesterday";
+    if (days < 7) return "$days days ago";
+    if (days < 30) {
+      final w = (days / 7).floor();
+      return "$w ${w == 1 ? 'week' : 'weeks'} ago";
+    }
+    if (days < 365) {
+      final mo = (days / 30).floor();
+      return "$mo ${mo == 1 ? 'month' : 'months'} ago";
+    }
+    final y = (days / 365).floor();
+    return "$y ${y == 1 ? 'year' : 'years'} ago";
+  }
+
+  String getLastActivityText() {
+    final List<Map<String, dynamic>> items = [];
+
+    void add(String label, Map<String, dynamic>? m) {
+      if (m == null) return;
+      final dt = DateTime.tryParse(m['created_ts']?.toString() ?? '');
+      if (dt == null) return;
+      items.add({"label": label, "dt": dt});
+    }
+
+    final callType = widget.lastCall?['call_type']?.toString().toLowerCase();
+    final callLabel = callType == "incoming"
+        ? "Last call received"
+        : callType == "outgoing"
+        ? "Last call made"
+        : "Last call";
+
+    add("Last mail sent", widget.lastMail);
+    add(callLabel, widget.lastCall);
+    add("Last meeting added", widget.lastMeeting);
+    add("Last reminder added", widget.lastReminder);
+
+    if (items.isEmpty) return "No interaction yet";
+
+    items.sort((a, b) => (b["dt"] as DateTime).compareTo(a["dt"] as DateTime));
+    final latest = items.first;
+
+    return "${latest["label"]} ${timeAgo(latest["dt"] as DateTime)}";
+  }
+
 
   late TextEditingController statusController;
   @override
@@ -427,7 +500,6 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                               "assets/images/reminder.svg",
                             )),
                       ),
-                      /// Extra call icon santhiya
                       Tooltip(
                         message: "Add call log for this Customer.",
                         child: InkWell(
@@ -938,67 +1010,61 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                   final key = controllers.fields
                       .firstWhereOrNull((f) => normalize(f.userHeading) == normalize(heading))
                       ?.systemField;
-                  // final value = key != null ? toJson()[key] ?? "" : "";
-                  // return Tooltip(
-                  //   message: value.toString() == "null" ? "" : value.toString(),
-                  //   child: Container(
-                  //     height: 45,
-                  //     alignment: Alignment.centerLeft,
-                  //     padding: const EdgeInsets.symmetric(horizontal: 5),
-                  //     child: CustomText(
-                  //       textAlign: TextAlign.left,
-                  //       text: value.toString() == "null" ? "" : value.toString(),
-                  //       size: 14,
-                  //       colors: colorsConst.textColor,
-                  //       isCopy: false,
-                  //     ),
-                  //   ),
-                  // );
+
                   final value = key != null ? toJson()[key] ?? "" : "";
+                  final text = value.toString() == "null" ? "" : value.toString();
+
+                  final isNameColumn = key == "mainName" || key == "name";
+                  final summary = getLastActivityText();
+                  final hasActivity = summary != "No interaction yet";
 
                   return GestureDetector(
-                      onDoubleTap: () {
+                    onDoubleTap: () {
                       setState(() {
-                      isEditing = true;
-                      });},
-                    onTap: (){
+                        isEditing = true;
+                      });
+                    },
+                    onTap: () {
                       setState(() {
-                      isEditing = false;
+                        isEditing = false;
                       });
                     },
                     child: Container(
-                      height: 45,
-                      // color: Colors.yellow,
+                      height: 52,
                       alignment: Alignment.centerLeft,
                       padding: const EdgeInsets.symmetric(horizontal: 5),
-                      // child: TextFormField(
-                      //   readOnly:true,
-                      //   // readOnly: isEditing, // 👈 important
-                      //   onFieldSubmitted: (value) async {
-                      //     if(TextEditingController(
-                      //       text: value.toString() == "null" ? "" : value.toString(),
-                      //     ).text.isNotEmpty){
-                      //       // updateLeadAPI(context);
-                      //     }else{
-                      //       utils.snackBar(context: context, msg: "Enter a value", color: Colors.red);
-                      //     }
-                      //
-                      //   },
-                      //   controller: TextEditingController(
-                      //     text: value.toString() == "null" ? "" : value.toString(),
-                      //   ),
-                      //   textAlign: TextAlign.left,
-                      //   style: TextStyle(
-                      //     fontSize: 14,
-                      //     color: colorsConst.textColor,
-                      //   ),
-                      //   decoration: const InputDecoration(
-                      //     border: InputBorder.none,
-                      //     isDense: true,
-                      //     contentPadding: EdgeInsets.zero,
-                      //   ),
-                      // ),
-                      child: CustomText(text: value.toString() == "null" ? "" : value.toString(), isCopy: false,textAlign: TextAlign.start,),
+                      child: isNameColumn
+                          ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CustomText(
+                            text: text,
+                            isCopy: false,
+                            textAlign: TextAlign.start,
+                          ),
+                          const SizedBox(height: 2),
+                          Tooltip(
+                            message: summary,
+                            child: Text(
+                              summary,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: hasActivity
+                                    ? Colors.green.shade700
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                          : CustomText(
+                        text: text,
+                        isCopy: false,
+                        textAlign: TextAlign.start,
+                      ),
                     ),
                   );
                 }),
@@ -1007,94 +1073,6 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
       ),
     ));
   }
-  // Future updateLeadAPI(BuildContext context) async {
-  //   try {
-  //     Map billing_data = {
-  //       "cos_id": controllers.storage.read("cos_id"),
-  //
-  //       "city": getVal("city"),
-  //       "source": getVal("source"),
-  //       "source_details": getVal("source_details"),
-  //       "product_discussion": getVal("product_discussion"),
-  //       "linkedin": getVal("linkedin"),
-  //       "x": getVal("x"),
-  //
-  //       "door_no": getVal("addressLine1"),
-  //       "area": getVal("area"),
-  //       "country": getVal("country"),
-  //       "state": getVal("state"),
-  //       "pincode": getVal("pinCode"),
-  //
-  //       "industry": getVal("industry"),
-  //       "points": getVal("points"),
-  //       "status_update": getVal("status_update"),
-  //       "details_of_service_required": getVal("details_of_service_required"),
-  //
-  //       "expected_billing_value": getVal("expected_billing_value"),
-  //       "arpu_value": getVal("arpu_value"),
-  //       "num_of_headcount": getVal("num_of_headcount"),
-  //
-  //       "prospect_enrollment_date": getVal("prospect_enrollment_date"),
-  //       "expected_convertion_date": getVal("expected_convertion_date"),
-  //
-  //       "owner": getVal("owner"),
-  //       "status": getVal("status"),
-  //       "rating": getVal("rating"),
-  //
-  //       "name": getVal("mainName"),
-  //       "title": getVal("title"),
-  //       "phone_no": getVal("mainMobile"),
-  //       "whatsapp_number": getVal("whatsappNumber"),
-  //       "email": getVal("email"),
-  //
-  //       "company_name": getVal("company_name"),
-  //       "co_website": getVal("companyWebsite"),
-  //       "co_number": getVal("companyNumber"),
-  //       "co_email": getVal("companyEmail"),
-  //
-  //       "address_id": widget.addressId,
-  //       "lead_id": widget.id,
-  //       "action": "update_customer",
-  //     };
-  //     final request = await http.post(
-  //       Uri.parse(scriptApi),
-  //       body: jsonEncode(billing_data),
-  //       headers: {
-  //         'X-API-TOKEN': "${TokenStorage().readToken()}",
-  //         'Content-Type': 'application/json',
-  //       },
-  //     );
-  //     // print("update_customer");
-  //     // print(request.body);
-  //     Map<String, dynamic> response = json.decode(request.body);
-  //     if (request.statusCode == 401) {
-  //       final refreshed = await controllers.refreshToken();
-  //       if (refreshed) {
-  //         return updateLeadAPI(context);
-  //       } else {
-  //         controllers.setLogOut();
-  //       }
-  //     }
-  //     if (request.statusCode == 200 &&
-  //         response["message"] == "Customer updated successfully") {
-  //       billing_utils.snackBar(msg: "Your Lead is updated successfully !",
-  //           color: Colors.green,context:Get.context!);
-  //       Get.back();
-  //       apiService.allNewLeadsDetails();
-  //       apiService.allLeadsDetails();
-  //       apiService.allGoodLeadsDetails();
-  //       controllers.leadCtr.reset();
-  //     } else {
-  //       Navigator.of(context).pop();
-  //       billing_utils.snackBar(context:Get.context!,msg:"Failed", color: Colors.red);
-  //       controllers.leadCtr.reset();
-  //     }
-  //   } catch (e) {
-  //     Navigator.of(context).pop();
-  //     billing_utils.snackBar(context:Get.context!,msg:"Something went wrong, Please try again later", color: Colors.red);
-  //     controllers.leadCtr.reset();
-  //   }
-  // }
 
 }
 

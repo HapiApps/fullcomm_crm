@@ -469,14 +469,14 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
       debugPrint("================================================");
       debugPrint("RAW RESPONSE");
       debugPrint("================================================");
-      print(request.body);
+      debugPrint(request.body);
 
       if (request.statusCode == 401) {
 
         final refreshed = await controllers.refreshToken();
 
         if (refreshed) {
-          return getWholeReport();
+          return await getWholeReport();
         } else {
           controllers.setLogOut();
         }

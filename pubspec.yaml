@@ -100,6 +100,7 @@ dependencies:
   just_audio: ^0.10.6
   audioplayers: ^6.8.1
   record: ^7.1.2
+  flutter_local_notifications:
 
 dev_dependencies:
   flutter_test:

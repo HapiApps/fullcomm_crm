@@ -707,6 +707,10 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                         itemBuilder: (context, index) {
                                           NewLeadObj data = widget.list[index];
                                           return CustomerNameTile(
+                                            lastCall: data.lastCall,
+                                            lastMail: data.lastMail,
+                                            lastMeeting: data.lastMeeting,
+                                            lastReminder: data.lastReminder,
                                             refBy: data.referredBy.toString(),
                                             key: ValueKey(data.userId),
                                             listIndex: index,
@@ -897,6 +901,10 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                             itemBuilder: (context, index) {
                                               NewLeadObj data = widget.list[index];
                                               return CustomLeadTile(
+                                                lastCall: data.lastCall,
+                                                lastMail: data.lastMail,
+                                                lastMeeting: data.lastMeeting,
+                                                lastReminder: data.lastReminder,
                                                 promoteReason: data.historyInfo.toString(),
                                                 leadIndex: widget.index,
                                                 key: ValueKey(data.userId),
