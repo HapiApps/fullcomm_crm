@@ -3,7 +3,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:get/get.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'dart:html' as html;
 import '../../billing_utils/sized_box.dart';
 import '../../components/Customtext.dart';
 import '../../controller/reminder_controller.dart';
@@ -13,6 +12,7 @@ import '../../models/reminder_obj.dart';
 import '../constant/api.dart';
 import '../constant/colors_constant.dart';
 import '../styles/decoration.dart';
+
 
 class AddReminderModel {
   final TextEditingController titleController = TextEditingController();
@@ -561,15 +561,7 @@ void showMailImageDialog(
   );
 }
 
-void downloadImage(String imageUrl, String fileName) {
-  final anchor = html.AnchorElement(href: imageUrl)
-    ..setAttribute("download", fileName)
-    ..target = "_blank";
 
-  html.document.body?.append(anchor);
-  anchor.click();
-  anchor.remove();
-}
 void showImageDialog(
     BuildContext context,
     List<String> images,

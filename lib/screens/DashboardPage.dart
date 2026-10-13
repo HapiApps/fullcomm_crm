@@ -49,8 +49,7 @@ class DashboardPage extends StatefulWidget {
   State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage>
-    with SingleTickerProviderStateMixin {
+class _DashboardPageState extends State<DashboardPage> with SingleTickerProviderStateMixin {
   late FocusNode _focusNode;
   var services=NewPayrollApiServices.instance;
   final ScrollController _appScroll = ScrollController();

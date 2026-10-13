@@ -7,11 +7,13 @@ import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:flutter/material.dart';
 import '../../common/constant/api.dart';
 import '../../common/constant/colors_constant.dart';
+import '../../common/platform/file_download.dart';
 import '../../common/utilities/dashboard_dialog.dart';
 import '../../components/custom_sidebar.dart';
 import '../../components/custom_text.dart';
 import '../../controller/product_controller.dart';
 import '../../models/order_model.dart';
+
 
 class ViewQuotationDetails extends StatefulWidget {
   final String id;

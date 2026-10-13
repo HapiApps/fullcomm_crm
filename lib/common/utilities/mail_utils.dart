@@ -1045,8 +1045,7 @@ class MailUtils {
                                         // utils.chooseFile(mediaDataV:imageController.empMediaData,
                                         //     fileName:imageController.empFileName,
                                         //     pathName:imageController.photo1);
-                                        FilePickerResult? result =
-                                            await FilePicker.platform.pickFiles(
+                                        FilePickerResult? result = await FilePicker.platform.pickFiles(
                                           allowMultiple: true,
 
                                           /// ALL TYPES

@@ -173,8 +173,7 @@ class _MyAppState extends State<MyApp> {
             ),
           ),
           home: SelectionArea(
-               //child:widget.loginScreen == false ? const LoginPage() : kIsWeb?DashboardPage():MobileDashboardPage()),
-               child:MobileDashboardPage()),
+               child:widget.loginScreen == false ? const LoginPage() : kIsWeb? DashboardPage(): MobileDashboardPage()),
               //child:widget.loginScreen == false ? const LoginPage() : DashboardPage()),
         ),
       );

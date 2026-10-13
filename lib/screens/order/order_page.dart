@@ -1,9 +1,8 @@
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import 'package:fullcomm_crm/common/styles/decoration.dart';
-import 'package:fullcomm_crm/common/utilities/utils.dart';
 import 'package:fullcomm_crm/components/custom_no_data.dart';
 import 'package:fullcomm_crm/models/order_model.dart';
 import 'package:get/get.dart';
@@ -21,7 +20,7 @@ import '../../controller/controller.dart';
 import '../../controller/product_controller.dart';
 import '../../controller/reminder_controller.dart';
 import 'dart:typed_data';
-import 'dart:html' as html;
+
 class OrderPage extends StatefulWidget {
   const OrderPage({super.key, });
 
@@ -1211,18 +1210,12 @@ class OrderInvoiceDialog extends StatelessWidget {
     /// SAVE PDF
     final Uint8List pdfBytes = await pdf.save();
 
-    /// DOWNLOAD PDF IN WEB
-    final blob = html.Blob([pdfBytes], 'application/pdf');
-    final url = html.Url.createObjectUrlFromBlob(blob);
-
-    html.AnchorElement(href: url)
-      ..setAttribute(
-        "download",
-        "Invoice_${data.orderId}.pdf",
-      )
-      ..click();
-
-    html.Url.revokeObjectUrl(url);
+    await FileSaver.instance.saveFile(
+      name: "Invoice_${data.orderId}",
+      bytes: pdfBytes,
+      fileExtension: "pdf",
+      mimeType: MimeType.pdf,
+    );
   }
   Future<void> printInvoice(Order data) async {
     final pdf = pw.Document();

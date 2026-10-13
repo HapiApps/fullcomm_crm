@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.13.2
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -67,7 +67,7 @@ dependencies:
   liquid_pull_to_refresh: ^3.0.1
   super_tooltip: ^2.0.9
   csc_picker_plus: ^0.0.3
-  file_picker: ^9.2.1
+  file_picker: ^10.3.10
   excel: ^4.0.6
   path_provider: ^2.1.5
   flutter_staggered_grid_view: ^0.7.0
@@ -79,7 +79,7 @@ dependencies:
   table_calendar:
   universal_html: ^2.2.4
   flutter_datetime_picker_plus: ^2.2.0
-  device_info_plus:
+  device_info_plus: ^11.5.0
   otp_text_field_v2: ^1.0.3
   syncfusion_flutter_calendar: ^29.1.41
   animated_custom_dropdown:
@@ -101,6 +101,7 @@ dependencies:
   audioplayers: ^6.8.1
   record: ^7.1.2
   flutter_local_notifications:
+  file_saver: ^0.7.0
 
 dev_dependencies:
   flutter_test:

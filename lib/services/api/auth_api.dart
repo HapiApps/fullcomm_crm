@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -14,6 +15,7 @@ import 'package:fullcomm_crm/controller/reminder_controller.dart';
 import 'package:fullcomm_crm/controller/settings_controller.dart';
 import 'package:fullcomm_crm/screens/DashboardPage.dart';
 
+import '../../screens/dashboard_mobile.dart';
 import '../api_services.dart';
 
 extension AuthApi on ApiService {
@@ -73,7 +75,14 @@ extension AuthApi on ApiService {
         remController.allReminders("2");
         settingsController.allRoles();
         settingsController.allOfficeHours();
-        Get.to(const DashboardPage(), duration: Duration.zero);
+        final bool isMobileApp = !kIsWeb &&
+            (defaultTargetPlatform == TargetPlatform.android ||
+                defaultTargetPlatform == TargetPlatform.iOS);
+
+        Get.to(
+          isMobileApp ? const MobileDashboardPage() : const DashboardPage(),
+          duration: Duration.zero,
+        );
         controllers.loginCtr.reset();
       } else {
         controllers.loginCtr.reset();
@@ -225,7 +234,14 @@ extension AuthApi on ApiService {
           msg: "Password Updated Successfully",
           color: Colors.green,
         );
-        Get.to(const DashboardPage(), duration: Duration.zero);
+        final bool isMobileApp = !kIsWeb &&
+            (defaultTargetPlatform == TargetPlatform.android ||
+                defaultTargetPlatform == TargetPlatform.iOS);
+
+        Get.to(
+          isMobileApp ? const MobileDashboardPage() : const DashboardPage(),
+          duration: Duration.zero,
+        );
         controllers.loginCtr.reset();
       } else {
         utils.snackBar(

@@ -41,6 +41,7 @@ class _CustomerAudioDialogState extends State<CustomerAudioDialog> {
   final AudioRecorder _recorder = AudioRecorder();
   final TextEditingController _titleCtr = TextEditingController();
 
+
   _Mode _mode = _Mode.list;
   String? _playingUrl;
   bool _saving = false;
@@ -48,6 +49,8 @@ class _CustomerAudioDialogState extends State<CustomerAudioDialog> {
   int _seconds = 0;
   String? _recordedPath;
   String _ext = 'webm';
+  DateTime? _endedAt;
+  int _durationSec = 0;
 
   @override
   void initState() {
@@ -64,6 +67,8 @@ class _CustomerAudioDialogState extends State<CustomerAudioDialog> {
     _player.dispose();
     _recorder.dispose();
     _titleCtr.dispose();
+    _endedAt = null;
+    _durationSec = 0;
     super.dispose();
   }
 
@@ -117,6 +122,9 @@ class _CustomerAudioDialogState extends State<CustomerAudioDialog> {
     _timer?.cancel();
     final path = await _recorder.stop();
     if (!mounted) return;
+    _recordedPath = path;
+    _endedAt = DateTime.now();
+    _durationSec = _seconds;
     if (path == null) {
       setState(() => _mode = _Mode.list);
       return;
@@ -156,13 +164,18 @@ class _CustomerAudioDialogState extends State<CustomerAudioDialog> {
         title: _titleCtr.text.trim(),
         bytes: bytes,
         fileName: 'voice_${DateTime.now().millisecondsSinceEpoch}.$_ext',
+        endTs: DateFormat('yyyy-MM-dd HH:mm:ss').format(_endedAt!),
+        durationSec: _durationSec,
       );
+
       if (ok && mounted) {
         utils.snackBar(context: context, msg: "Audio saved", color: Colors.green);
         setState(() {
           _recordedPath = null;
           _playingUrl = null;
           _mode = _Mode.list;
+          _endedAt = null;
+          _durationSec = 0;
         });
         _reload();
       }
@@ -316,7 +329,9 @@ class _CustomerAudioDialogState extends State<CustomerAudioDialog> {
         }
         final audios = snap.data ?? [];
         if (audios.isEmpty) {
-          return const Center(child: Text("No audio yet. Tap the mic to record."));
+          return const Center(
+              child:
+          Text("No audio yet. Tap the mic to record."));
         }
         return ListView.separated(
           itemCount: audios.length,
@@ -332,7 +347,12 @@ class _CustomerAudioDialogState extends State<CustomerAudioDialog> {
               ),
               title: Text(a.title.isEmpty ? a.fileName : a.title,
                   overflow: TextOverflow.ellipsis),
-              subtitle: Text(a.createdTs),
+              subtitle: Text(
+                [
+                  a.endTs.isNotEmpty ? a.endTs : a.createdTs,
+                  if (a.durationSec > 0) _fmt(a.durationSec),
+                ].join('  •  '),
+              ),
             );
           },
         );

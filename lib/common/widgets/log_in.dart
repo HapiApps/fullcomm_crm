@@ -35,6 +35,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   var isLoading = false.obs;
   DateTime? currentBackPressTime;
   var back = 0;
+
   Future<void> readValue() async {
     SharedPreferences sharedPref = await SharedPreferences.getInstance();
     final mobileNumber = sharedPref.getString("loginNumber") ?? "";
@@ -56,7 +57,6 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    // Initial page load focus
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted && mobileFocus.canRequestFocus) {
         mobileFocus.requestFocus();
@@ -77,11 +77,9 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
 
   @override
   Widget build(BuildContext context) {
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   if (mounted) {
-    //     FocusScope.of(context).requestFocus(mobileFocus);
-    //   }
-    // });
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final bool isMobile = screenWidth < 700;
+    final double formWidth = isMobile ? screenWidth * 0.85 : screenWidth / 3.5;
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -105,6 +103,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
         body: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            if (!isMobile)
             Container(
               width: MediaQuery.of(context).size.width / 2.3,
               height: MediaQuery.of(context).size.height,
@@ -115,14 +114,12 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
             ),
             Container(
               alignment: Alignment.center,
-              width: MediaQuery.of(context).size.width / 2.3,
+              width: isMobile ? screenWidth : screenWidth / 2.3,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  //Image.asset("assets/images/ARUU.png"),
                   Image.asset(loginLogo,height: 100,),
-                  //50.height,
                   Text("Login",
                       style: GoogleFonts.poppins(
                         fontSize: 40,
@@ -143,7 +140,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                         onFieldSubmitted: (value) {
                           FocusScope.of(context).requestFocus(passwordFocus);
                         },
-                        width: MediaQuery.of(context).size.width / 3.5,
+                        width: formWidth,
                         height: 40,
                         textInputAction: TextInputAction.next,
                         inputFormatters: constInputFormatters.mobileNumberInput,
@@ -168,7 +165,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                           SharedPreferences sharedPref = await SharedPreferences.getInstance();
                           sharedPref.setString("loginPassword", value.toString().trim());
                         },
-                        width: MediaQuery.of(context).size.width / 3.5,
+                        width: formWidth,
                         height: 40,
                         isLogin: true,
                         textInputAction: TextInputAction.next,
@@ -178,7 +175,6 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                         text: 'Password',
                         hintText: 'Enter Your Password',
                         isOptional: true,
-                        //Santhiya
                         onEdit: () {
                           controllers.loginCtr.start();
                           if (controllers.loginNumber.text.isEmpty) {
@@ -224,7 +220,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                     ],
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width / 3.5,
+                    width: formWidth,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -361,14 +357,12 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
         }
         return true;
       } else {
-        //Santhiya
         utils.snackBar(
             msg: "Mobile number not registered", color: Colors.red, context: Get.context!);
         isLoading.value=false;
         return false;
       }
     } catch (e) {
-      //Santhiya
       utils.snackBar(
           msg: "Mobile number not registered", color: Colors.red, context: Get.context!);
       isLoading.value=false;

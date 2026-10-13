@@ -5,34 +5,20 @@
 
     <meta charset="UTF-8">
     <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-    <meta name="description" content="ARUU’s EasyCRM CRM">
+    <meta name="description" content="ARUU CRM">
 
-    <!-- 🚫 Disable browser cache -->
     <meta name="cache-control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
 
     <link rel="icon" type="image/png" href="favicon.png"/>
-    <title>ARUU’s EasyCRM CRM</title>
+    <title>ARUU CRM</title>
     <link rel="manifest" href="manifest.json">
 
-    <!-- 🚫 Disable Flutter Service Worker (IMPORTANT FIX) -->
-<!--    <script>-->
-<!--        if ('serviceWorker' in navigator) {-->
-<!--          window.addEventListener('load', function () {-->
-<!--            navigator.serviceWorker.getRegistrations().then(function (registrations) {-->
-<!--              registrations.forEach(function (registration) {-->
-<!--                registration.unregister();-->
-<!--              });-->
-<!--            });-->
-<!--          });-->
-<!--        }-->
-<!--    </script>-->
 </head>
 
 <body>
 
-<!-- 🔥 Splash Screen -->
 <div id="splash-screen">
     <video id="splash-gif" autoplay muted loop playsinline>
         <source src="crm_splash.mp4" type="video/mp4">
@@ -40,7 +26,6 @@
     </video>
 </div>
 
-<!-- Screenshot Block Popup -->
 <div id="screenshot-popup" style="
     display:none;
     position: fixed;
@@ -92,10 +77,8 @@
     }
 </style>
 
-<!-- 🚀 Flutter App Loader -->
 <script src="flutter_bootstrap.js"></script>
 
-<!-- Splash hide after Flutter loads -->
 <script>
     window.addEventListener('flutter-first-frame', function () {
       const splash = document.getElementById('splash-screen');
@@ -114,7 +97,6 @@
     }, 15000);
 </script>
 
-<!-- PrintScreen block -->
 <script>
     document.addEventListener("keyup", function (e) {
       if (e.key === "PrintScreen") {

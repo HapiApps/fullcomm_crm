@@ -7,6 +7,15 @@ allprojects {
 
 rootProject.buildDir = "../build"
 subprojects {
+    afterEvaluate { project ->
+        if (project.hasProperty('android')) {
+            project.android {
+                compileSdk = 36
+            }
+        }
+    }
+}
+subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
 }
 subprojects {

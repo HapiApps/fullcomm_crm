@@ -1,6 +1,6 @@
 import 'dart:convert';
-import 'dart:html' as html;
 import 'package:excel/excel.dart' hide Border;
+import 'package:file_saver/file_saver.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -37,18 +37,13 @@ class HeaderSection extends StatefulWidget {
 }
 
 class _HeaderSectionState extends State<HeaderSection> {
+
   Future<void> exportLeadsToExcel(
-      List<NewLeadObj> leads,
-      List<CustomerField> fields) async {
-
-    print("excellllll ${leads.length} - ${fields.length}");
-
+      List<NewLeadObj> leads, List<CustomerField> fields) async {
     final excel = Excel.createExcel();
     final sheet = excel.sheets[excel.getDefaultSheet()!];
 
     final headers = fields.map((f) => f.userHeading).toList();
-
-    // Header row
     sheet?.appendRow(headers.map((h) => TextCellValue(h)).toList());
 
     final headerStyle = CellStyle(
@@ -64,44 +59,31 @@ class _HeaderSectionState extends State<HeaderSection> {
       cell?.cellStyle = headerStyle;
     }
 
-    // Data rows
     for (final lead in leads) {
       final map = lead.toJson();
-
       final row = fields.map((f) {
         final value = map[f.systemField];
-
         return TextCellValue(
-          (value == null || value.toString() == 'null')
-              ? ''
-              : value.toString(),
+          (value == null || value.toString() == 'null') ? '' : value.toString(),
         );
       }).toList();
-
       sheet?.appendRow(row);
     }
 
-    // Convert to bytes
     final fileBytes = excel.encode();
-
     if (fileBytes == null) {
       print("Excel encode failed");
       return;
     }
 
-    final blob = html.Blob([fileBytes]);
-    final url = html.Url.createObjectUrlFromBlob(blob);
-
-    // ✅ create download link
-    final anchor = html.AnchorElement(href: url)
-      ..setAttribute("download", "leads_export.xlsx")
-      ..click();
-
-    // ✅ delay revoke (important)
-    Future.delayed(Duration(seconds: 2), () {
-      html.Url.revokeObjectUrl(url);
-    });
+    await FileSaver.instance.saveFile(
+      name: "leads_export",
+      bytes: Uint8List.fromList(fileBytes),
+      fileExtension: "xlsx",
+      mimeType: MimeType.microsoftExcel,
+    );
   }
+
   @override
   Widget build(BuildContext context) {
     final controllers = Get.find<Controller>();
@@ -141,23 +123,7 @@ class _HeaderSectionState extends State<HeaderSection> {
         ),
         widget.isAction?Row(
           children: [
-            // CustomLoadingButton(
-            //   // callback: pickImageAndReadText,
-            //   callback: (){
-            //     Get.to(VisitingCardPage(), duration: Duration.zero);
-            //     // VisitingCardScan
-            //   },
-            //   isLoading: false,
-            //   height: 35,
-            //   backgroundColor: Colors.white,
-            //   radius: 2,
-            //   width: 100,
-            //   isImage: false,
-            //   text: "V CARD",
-            //   textColor: colorsConst.primary,
-            // ),
-            // 15.width,
-            // ---- Export button ----
+
             controllers.storage.read("role") != "See All Customer Records"
                 ? const SizedBox.shrink()
                 : CustomLoadingButton(

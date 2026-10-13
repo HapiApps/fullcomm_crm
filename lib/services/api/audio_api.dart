@@ -8,12 +8,16 @@ import 'package:fullcomm_crm/services/api_services.dart';
 
 class CustomerAudio {
   final String id, title, fileName, url, createdTs;
+  final String endTs;
+  final int durationSec;
   CustomerAudio({
     required this.id,
     required this.title,
     required this.fileName,
     required this.url,
     required this.createdTs,
+    required this.endTs,
+    required this.durationSec,
   });
 
   factory CustomerAudio.fromJson(Map<String, dynamic> j) => CustomerAudio(
@@ -22,6 +26,8 @@ class CustomerAudio {
     fileName: (j['file_name'] ?? '').toString(),
     url: (j['file_url'] ?? '').toString(),
     createdTs: (j['created_ts'] ?? '').toString(),
+    endTs: (j['end_ts'] ?? '').toString(),
+    durationSec: (j['duration_seconds'] ?? 0).toInt(),
   );
 }
 
@@ -58,6 +64,8 @@ extension AudioApi on ApiService {
     required String title,
     required Uint8List bytes,
     required String fileName,
+    required String endTs,
+    required int durationSec,
   }) async {
     final request = http.MultipartRequest('POST', Uri.parse(scriptApi));
     request.fields['action'] = 'insert_customer_audio';
@@ -66,6 +74,8 @@ extension AudioApi on ApiService {
     request.fields['customer_id'] = customerId;
     request.fields['title'] = title;
     request.headers['X-API-TOKEN'] = "${TokenStorage().readToken()}";
+    request.fields['end_ts'] = endTs;
+    request.fields['duration_seconds'] = durationSec.toString();
     request.files.add(
         http.MultipartFile.fromBytes('audio', bytes, filename: fileName));
 
@@ -79,7 +89,9 @@ extension AudioApi on ApiService {
             customerId: customerId,
             title: title,
             bytes: bytes,
-            fileName: fileName);
+            fileName: fileName,
+            endTs: endTs,
+            durationSec: durationSec);
       }
       controllers.setLogOut();
       return false;
