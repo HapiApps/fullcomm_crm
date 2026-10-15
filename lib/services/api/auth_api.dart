@@ -19,11 +19,13 @@ import '../../screens/dashboard_mobile.dart';
 import '../api_services.dart';
 
 extension AuthApi on ApiService {
-  void loginCApi(context) async {
+  void loginCApi(context, {String? fcmToken}) async {
     try {
       Map data = {
         "mobile_number": controllers.loginNumber.text,
         "password": controllers.loginPassword.text,
+        "fcm_token": fcmToken,
+        "platform": kIsWeb ? "3" : "1",
         "action": "login_jwt"
       };
       final request = await http.post(Uri.parse(scriptApi),

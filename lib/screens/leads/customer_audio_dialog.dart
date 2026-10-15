@@ -71,6 +71,20 @@ class _CustomerAudioDialogState extends State<CustomerAudioDialog> {
     _durationSec = 0;
     super.dispose();
   }
+  String _fmtDur(int s) {
+    final m = s ~/ 60;
+    final r = s % 60;
+    if (m == 0) return '$r secs';
+    if (r == 0) return '$m ${m == 1 ? 'min' : 'mins'}';
+    return '$m ${m == 1 ? 'min' : 'mins'} $r secs';
+  }
+
+  String _fmtTs(String raw) {
+    if (raw.isEmpty) return '';
+    final d = DateTime.tryParse(raw);
+    if (d == null) return raw;
+    return DateFormat('dd MMM yyyy hh:mm a').format(d);
+  }
 
   String _fmt(int s) =>
       '${(s ~/ 60).toString().padLeft(2, '0')}:${(s % 60).toString().padLeft(2, '0')}';
@@ -161,7 +175,7 @@ class _CustomerAudioDialogState extends State<CustomerAudioDialog> {
 
       final ok = await apiService.insertCustomerAudio(
         customerId: widget.customerId,
-        title: _titleCtr.text.trim(),
+        title: 'Voice Note',
         bytes: bytes,
         fileName: 'voice_${DateTime.now().millisecondsSinceEpoch}.$_ext',
         endTs: DateFormat('yyyy-MM-dd HH:mm:ss').format(_endedAt!),
@@ -324,34 +338,115 @@ class _CustomerAudioDialogState extends State<CustomerAudioDialog> {
         if (snap.hasError) {
           return Center(
             child: TextButton(
-                onPressed: _reload, child: const Text("Failed to load. Tap to retry")),
+                onPressed: _reload,
+                child: const Text("Failed to load. Tap to retry")),
           );
         }
-        final audios = snap.data ?? [];
+
+        final audios = List<CustomerAudio>.from(snap.data ?? []);
+        audios.sort((x, y) {
+          final dx = DateTime.tryParse(x.endTs.isNotEmpty ? x.endTs : x.createdTs);
+          final dy = DateTime.tryParse(y.endTs.isNotEmpty ? y.endTs : y.createdTs);
+          if (dx == null || dy == null) return 0;
+          return dx.compareTo(dy);
+        });
+
         if (audios.isEmpty) {
           return const Center(
-              child:
-          Text("No audio yet. Tap the mic to record."));
+              child: Text("No audio yet. Tap the mic to record."));
         }
+
         return ListView.separated(
+          padding: const EdgeInsets.symmetric(vertical: 4),
           itemCount: audios.length,
-          separatorBuilder: (_, __) => const Divider(height: 1),
+          separatorBuilder: (_, __) => const SizedBox(height: 10),
           itemBuilder: (_, i) {
             final a = audios[i];
             final playing = _playingUrl == a.url;
-            return ListTile(
-              leading: IconButton(
-                icon: Icon(playing ? Icons.pause_circle : Icons.play_circle,
-                    color: colorsConst.primary, size: 32),
-                onPressed: () => _toggle(a.url),
-              ),
-              title: Text(a.title.isEmpty ? a.fileName : a.title,
-                  overflow: TextOverflow.ellipsis),
-              subtitle: Text(
-                [
-                  a.endTs.isNotEmpty ? a.endTs : a.createdTs,
-                  if (a.durationSec > 0) _fmt(a.durationSec),
-                ].join('  •  '),
+            final seq = i + 1;
+            final ts = _fmtTs(a.endTs.isNotEmpty ? a.endTs : a.createdTs);
+
+            return InkWell(
+              borderRadius: BorderRadius.circular(12),
+              onTap: () => _toggle(a.url),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: playing
+                      ? colorsConst.primary.withOpacity(0.08)
+                      : Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: playing
+                        ? colorsConst.primary
+                        : Colors.grey.shade300,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 42,
+                      height: 42,
+                      decoration: BoxDecoration(
+                        color: colorsConst.primary,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        playing ? Icons.pause : Icons.play_arrow,
+                        color: Colors.white,
+                        size: 26,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Voice Note $seq',
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 3),
+                          Row(
+                            children: [
+                              Icon(Icons.access_time,
+                                  size: 13, color: Colors.grey.shade600),
+                              const SizedBox(width: 4),
+                              Flexible(
+                                child: Text(
+                                  ts,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 12, color: Colors.grey.shade600),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (a.durationSec > 0)
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: colorsConst.primary.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          _fmtDur(a.durationSec),
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: colorsConst.primary,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
             );
           },

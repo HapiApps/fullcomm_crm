@@ -21,28 +21,27 @@ import 'common/constant/api.dart';
 import 'common/constant/colors_constant.dart';
 import 'common/widgets/log_in.dart';
 import 'controller/reminder_controller.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-
+@pragma('vm:entry-point')
+Future<void> _firebaseBgHandler(RemoteMessage message) async {
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+}
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  if (!kIsWeb) {
+    FirebaseMessaging.onBackgroundMessage(_firebaseBgHandler);
+  }
+  NotificationService.listenForeground();
   await GetStorage.init();
   final prefs = await SharedPreferences.getInstance();
   final loginScreen = prefs.getBool("loginScreen$versionNum") ?? false;
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.web,
-  // );
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  //   print(" Foreground message: ${message.data}");
-  //
-  //   // App already open -> show dialog/snackbar
-  // });
-  //
-  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-  //   print(" Notification tapped: ${message.data}");
-  //
-  //   // When user clicks the notification and app opens
-  // });
 
   runApp(
       MultiProvider(

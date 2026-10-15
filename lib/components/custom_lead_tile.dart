@@ -248,13 +248,11 @@ class _CustomLeadTileState extends State<CustomLeadTile> {
       "audio_url": widget.audioUrl,
     };
 
-    if (widget.additional != null) {
-      for (var item in widget.additional) {
-        if (item is Map<String, dynamic>) {
-          item.forEach((key, value) {
-            data[key] = value;
-          });
-        }
+    for (var item in widget.additional) {
+      if (item is Map<String, dynamic>) {
+        item.forEach((key, value) {
+          data[key] = value;
+        });
       }
     }
     return data;

@@ -1,4 +1,8 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import '../api_services.dart';
 
 class NotificationService {
   static final FlutterLocalNotificationsPlugin _plugin =
@@ -62,5 +66,46 @@ class NotificationService {
         iOS: const DarwinNotificationDetails(),
       ),
     );
+  }
+  static Future<String?> getFcmToken() async {
+    try {
+      final granted = await requestPermission();
+      if (!granted) return null;
+
+      final messaging = FirebaseMessaging.instance;
+
+      if (defaultTargetPlatform == TargetPlatform.iOS) {
+        String? apns = await messaging.getAPNSToken();
+        int retry = 0;
+        while (apns == null && retry < 5) {
+          await Future.delayed(const Duration(seconds: 1));
+          apns = await messaging.getAPNSToken();
+          retry++;
+        }
+      }
+
+      final token = await messaging.getToken();
+      print('FCM Mobile Token App: $token');
+      return token;
+    } catch (e) {
+      print('FCM token error: $e');
+      return null;
+    }
+  }
+
+  static void listenForeground() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage m) {
+      print("Received foreground message: ${m.messageId}");
+      apiService.getCustomLeads();
+      show(
+        m.notification?.title ?? m.data['title'] ?? 'Notification',
+        m.notification?.body ?? m.data['body'] ?? '',
+        tag: m.messageId,
+      );
+    });
+  }
+
+  static void listenTokenRefresh(void Function(String token) onRefresh) {
+    FirebaseMessaging.instance.onTokenRefresh.listen(onRefresh);
   }
 }

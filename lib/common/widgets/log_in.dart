@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/custom_loading_button.dart';
 import '../../components/custom_textfield.dart';
 import '../../controller/controller.dart';
+import '../../services/services/notification_service.dart';
 import '../constant/key_constant.dart';
 import '../utilities/mobile_snackbar.dart';
 import '../utilities/utils.dart';
@@ -263,7 +264,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                   ),
                   70.height,
                   CustomLoadingButton(
-                      callback: () {
+                      callback: () async {
                         if (controllers.loginNumber.text.isEmpty) {
                           mobileUtils.snackBar(
                               context: Get.context!,
@@ -299,10 +300,12 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver{
                         }
                         else {
                           FocusScope.of(context).unfocus();
-                          apiService.loginCApi(context);
+                          String? fcmToken;
+                            fcmToken = await NotificationService.getFcmToken();
+                            print('FCM Web Token: $fcmToken');
+                          apiService.loginCApi(context, fcmToken: fcmToken);
                         }
                       },
-
                       isLoading: true,
                       text: "Login",
                       textSize: 20,
