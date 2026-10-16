@@ -297,8 +297,7 @@ class _ReasonHeaderState extends State<ReasonHeader> {
       return Table(
         columnWidths: columnWidths,
         border: TableBorder(
-          horizontalInside:
-          BorderSide(width: 0.5, color: Colors.grey.shade400),
+          horizontalInside: BorderSide(width: 0.5, color: Colors.grey.shade400),
           verticalInside:
           BorderSide(width: 0.5, color: Colors.grey.shade400),
           right: BorderSide(width: 0.5, color: Colors.grey.shade400),

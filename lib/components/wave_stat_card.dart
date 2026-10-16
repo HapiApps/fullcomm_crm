@@ -1,106 +1,4 @@
 import 'package:flutter/material.dart';
-
-
-// class WaveStatCard extends StatelessWidget {
-//   final String title;
-//   final String value;
-//   final String iconPath;
-//   final String waveImage;
-//   final Color valueColor;
-//
-//   const WaveStatCard({
-//     super.key,
-//     required this.title,
-//     required this.value,
-//     required this.iconPath,
-//     required this.waveImage,
-//     required this.valueColor,
-//   });
-//
-//   @override
-//   @override
-//   Widget build(BuildContext context) {
-//     return Flexible(
-//       child: Container(
-//         height: 120,
-//         margin: const EdgeInsets.symmetric(horizontal: 10),
-//         decoration: BoxDecoration(
-//           color: Colors.white,
-//           borderRadius: BorderRadius.circular(20),
-//           boxShadow: const [
-//             BoxShadow(
-//               color: Colors.black26,
-//               blurRadius: 10,
-//               spreadRadius: 2,
-//               offset: Offset(0, 4),
-//             ),
-//           ],
-//         ),
-//         child: Stack(
-//           clipBehavior: Clip.none,
-//           children: [
-//             /// 🔵 WAVE IMAGE
-//             Positioned(
-//               bottom: 0,
-//               left: 0,
-//               right: 0,
-//               child: ClipRRect(
-//                 borderRadius: const BorderRadius.vertical(
-//                   bottom: Radius.circular(20),
-//                 ),
-//                 child: Image.asset(
-//                   waveImage,
-//                   fit: BoxFit.cover,
-//                 ),
-//               ),
-//             ),
-//
-//             /// 🧾 CONTENT
-//             Padding(
-//               padding: const EdgeInsets.all(14),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   Row(
-//                     children: [
-//                       Expanded(
-//                         child: Text(
-//                           title,
-//                           maxLines: 1,
-//                           overflow: TextOverflow.ellipsis,
-//                           style: const TextStyle(
-//                             fontSize: 13,
-//                             fontWeight: FontWeight.bold,
-//                           ),
-//                         ),
-//                       ),
-//                       8.width,
-//                       Image.asset(
-//                         iconPath,
-//                         width: 20,
-//                         height: 20,
-//                       ),
-//                     ],
-//                   ),
-//
-//                  5.height,
-//                   CustomText(
-//                     text: value,
-//                     isCopy: false,
-//                     size: 20,
-//                     isBold: true,
-//                     colors:  valueColor,
-//                   ),
-//                 ],
-//               ),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-//
-// }
 import 'dart:math' as math;
 import 'package:fullcomm_crm/common/extentions/extensions.dart';
 import '../common/utilities/animated_wave_painter.dart';
@@ -151,7 +49,6 @@ class _WaveStatCardState extends State<WaveStatCard>
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
     double percentage = 0.0;
 
     if (widget.numericValue > 0) {
@@ -163,8 +60,6 @@ class _WaveStatCardState extends State<WaveStatCard>
       onTap:widget.callback,
       child: Container(
         height: 120,
-        width: MediaQuery.of(context).size.width*0.15,
-        // width: MediaQuery.of(context).size.width*0.1,
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -186,22 +81,6 @@ class _WaveStatCardState extends State<WaveStatCard>
                 borderRadius: const BorderRadius.vertical(
                   bottom: Radius.circular(20),
                 ),
-
-                // child: AnimatedBuilder(
-                //   animation: _controller,
-                //   builder: (context, child) {
-                //     return CustomPaint(
-                //       painter: AnimatedWavePainter(
-                //         color: widget.valueColor,
-                //         percentage: percentage,
-                //         waveShift: _controller.value,
-                //       ),
-                //     );
-                //   },
-                // ),
-                // child: Container(
-                //   color: widget.valueColor.withOpacity(0.15),
-                // ),
                 child: AnimatedBuilder(
                   animation: _controller,
                   builder: (_, __) {
@@ -223,7 +102,6 @@ class _WaveStatCardState extends State<WaveStatCard>
               padding: const EdgeInsets.all(8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(15, 10, 15, 10),

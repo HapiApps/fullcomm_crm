@@ -225,7 +225,6 @@ class _MobileDashboardPageState extends State<MobileDashboardPage> {
       final employeeData = Provider.of<EmployeeProvider>(context, listen: false);
 
       await _runBatch([
-            () async => dashController.getToken(),
             () async => apiService.getHeading(),
             () async => apiService.currentVersion(),
       ]);

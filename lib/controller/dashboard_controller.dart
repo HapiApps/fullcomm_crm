@@ -43,7 +43,7 @@ class DashboardController extends GetxController {
   // var totalProspects   = "0".obs;
   // var totalQualified   = "0".obs;
   // var totalUnQualified = "0".obs;
-  // var totalCustomers   = "0".obs;
+   var totalCustomers   = "0".obs;
   var totalQuotations   = "0".obs;
   var totalQuotationsAmt   = "0".obs;
   var totalOrders   = "0".obs;
@@ -51,13 +51,6 @@ class DashboardController extends GetxController {
   var dayReport = <CustomerDayData>[].obs;
   RxBool isLoading = false.obs;
 
-  Future<void> getToken() async {
-    try {
-      String? token = await FirebaseMessaging.instance.getToken();
-      apiService.updateTokenAPI(token.toString());
-    }catch(e){
-    }
-  }
   final List<String> filters = [
     "Today",
     "Yesterday",
@@ -434,13 +427,12 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "cos_id": controllers.storage.read("cos_id"),
         "role": controllers.storage.read("role"),
         "id": controllers.storage.read("id"),
-        "action": "get_dashboard_report",
-        "stDate": dashController.date1.value,
-        "enDate": dashController.date2.value,
         "lead_status": controllers.leadCategoryList.isNotEmpty
             ? controllers.leadCategoryList.last.leadStatus
             : "",
-
+        "action": "get_dashboard_report",
+        "stDate": dashController.date1.value,
+        "enDate": dashController.date2.value,
         "lastWeekFrom": lastWeekFrom,
         "lastWeekTo": lastWeekTo,
         "thisWeekFrom": thisWeekFrom,
@@ -452,10 +444,10 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
         "thisMonthTo": thisMonthTo,
       };
 
-      // debugPrint("================================================");
-      // debugPrint("REQUEST DATA");
-      // debugPrint("================================================");
-      // debugPrint(data.toString());
+      debugPrint("================================================");
+      debugPrint("REQUEST DATA");
+      debugPrint("================================================");
+      debugPrint(data.toString());
 
       final request = await http.post(
         Uri.parse(scriptApi),
@@ -507,6 +499,9 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
 
         dashController.totalSuspects.value =
             dashboardReport['new_customers'].toString();
+
+        dashController.totalCustomers.value =
+            dashboardReport['total_customers'].toString();
 
         dashController.totalQuotations.value =
             dashboardReport["total_quotations"].toString();
@@ -597,12 +592,6 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
                 .map((e) => double.parse(
                 e["total_customers"].toString()))
                 .toList();
-
-        // debugPrint("xLabels => ${controllers.xLabels}");
-        // debugPrint("calls => ${controllers.calls}");
-        // debugPrint("mails => ${controllers.mails}");
-        // debugPrint("updates => ${controllers.updates}");
-
         /// =====================================================
         /// RATING REPORT
         /// =====================================================

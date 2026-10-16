@@ -12,6 +12,7 @@ class DashboardAssets {
   static const String phone = "assets/images/phone.png";
   static const String date = "assets/images/date.png";
   static const String people = "assets/images/people.png";
+  static const String customers = "assets/images/customers.png";
   static const String alarm = "assets/images/alarm.png";
   static const String cart = "assets/images/cart3.png";
   static const String quo = "assets/images/quo.png";

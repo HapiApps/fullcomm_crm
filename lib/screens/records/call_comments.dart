@@ -37,6 +37,7 @@ class _CallCommentsState extends State<CallComments> {
     170,  // 8 Date
     170,  // 8 added by
   ];
+
   Widget headerCell(int index, Widget child) {
     return Stack(
       children: [
@@ -67,6 +68,7 @@ class _CallCommentsState extends State<CallComments> {
       ],
     );
   }
+
   bool dateCheck() {
     return controllers.stDate.value !=
         "${DateTime.now().day.toString().padLeft(2, "0")}"

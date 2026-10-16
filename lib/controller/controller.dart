@@ -3508,7 +3508,7 @@ var otp = "".obs,sentOtp = "".obs;
       isImageLoaded = false.obs,
       isLead = true.obs,
       chatLoading = true.obs,
-      isCrmData = true.obs,
+      isCrmData = false.obs,
       isCustomer = true.obs,
       isProduct = true.obs,
       isEmployee = true.obs;
