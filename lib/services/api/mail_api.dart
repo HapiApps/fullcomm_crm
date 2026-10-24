@@ -166,7 +166,7 @@ extension MailApi on ApiService {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return insertEmailAPI(context, id, image);
+          return await insertEmailAPI(context, id, image);
         } else {
           controllers.setLogOut();
         }
@@ -233,7 +233,7 @@ extension MailApi on ApiService {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return insertMultipleEmailAPI(
+          return await insertMultipleEmailAPI(
               context, sendList, nameList, idList, image);
         } else {
           controllers.setLogOut();
@@ -287,7 +287,7 @@ extension MailApi on ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return getAllMailActivity();
+          return await getAllMailActivity();
         } else {
           controllers.setLogOut();
         }
@@ -335,7 +335,7 @@ extension MailApi on ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return getReplyMailActivity(isMain);
+          return await getReplyMailActivity(isMain);
         } else {
           controllers.setLogOut();
         }

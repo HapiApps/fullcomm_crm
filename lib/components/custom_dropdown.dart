@@ -107,6 +107,7 @@ class IndustryDropdown extends StatelessWidget {
   final String hint;
   final double width;
   final VoidCallback onAdd;
+  final GlobalKey<DropdownSearchState<Map<String, dynamic>>>? dropdownKey;
 
   const IndustryDropdown({
     super.key,
@@ -115,11 +116,11 @@ class IndustryDropdown extends StatelessWidget {
     required this.onAdd,
     this.hint = "Select Industry",
     required this.width,
+    this.dropdownKey,
   });
 
   @override
   Widget build(BuildContext context) {
-    // sort by value
     final sortedList = List<Map<String, dynamic>>.from(items)
       ..sort((a, b) =>
           a['value'].toString().toLowerCase().compareTo(
@@ -150,6 +151,7 @@ class IndustryDropdown extends StatelessWidget {
           ),
           child: Obx(()=>controllers.refreshValue.value?
           DropdownSearch<Map<String, dynamic>>(
+            key: dropdownKey,
             items: sortedList,
             itemAsString: (item) => item['value'] ?? '',
             onChanged: onChanged,
@@ -173,7 +175,6 @@ class IndustryDropdown extends StatelessWidget {
                 ),
               ),
 
-              /// 🔥 custom popup with ADD option
               containerBuilder: (ctx, popupWidget) {
                 return Column(
                   children: [

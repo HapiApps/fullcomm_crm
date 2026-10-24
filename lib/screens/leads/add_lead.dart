@@ -1,4 +1,5 @@
 ///NEW LEAD PAGE
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fullcomm_crm/common/styles/styles.dart';
 import 'package:flutter/material.dart';
@@ -120,6 +121,7 @@ class _AddLeadState extends State<AddLead> {
   final FocusNode cName = FocusNode();
   final FocusNode cNo = FocusNode();
   final FocusNode linkedin = FocusNode();
+  final FocusNode industryFocus = FocusNode();
   final FocusNode cEmail = FocusNode();
   final FocusNode cProduct = FocusNode();
   final FocusNode cServices = FocusNode();
@@ -143,6 +145,8 @@ class _AddLeadState extends State<AddLead> {
   final FocusNode pincode = FocusNode();
   final FocusNode throughByF = FocusNode();
   final FocusNode ins = FocusNode();
+
+  final GlobalKey<DropdownSearchState<Map<String, dynamic>>> industryKey = GlobalKey<DropdownSearchState<Map<String, dynamic>>>();
   @override
   void initState() {
     // TODO: implement initState
@@ -170,7 +174,7 @@ class _AddLeadState extends State<AddLead> {
     cServices.dispose();
     website.dispose();
     cX.dispose();
-
+    industryFocus.dispose();
     ob1.dispose();
     ob2.dispose();
     ob3.dispose();
@@ -655,19 +659,21 @@ class _AddLeadState extends State<AddLead> {
                                           return SizedBox(
                                             width: textFieldSize,
                                             child: ListView.builder(
-                                                shrinkWrap:true,
-                                                reverse: true,
+                                                shrinkWrap: true,
+                                                physics: const NeverScrollableScrollPhysics(),
                                                 itemCount:controllers.numberList.length,
                                                 itemBuilder: (context,index){
                                                   return Column(
+                                                      key: ObjectKey(controllers.numberList[index]),
                                                       children:[
-                                                        if(index==controllers.numberList.length-1)
+                                                        if(index == 0)
                                                           Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             Row(
                                                               children: [
-                                                                CustomText(text: _formatHeading(
+                                                                CustomText(
+                                                                    text: _formatHeading(
                                                                     controllers.getUserHeading(
                                                                         "mobile_name") ??
                                                                         "Mobile No"), isCopy: false),
@@ -681,8 +687,6 @@ class _AddLeadState extends State<AddLead> {
 
                                                                   for (var i = 0; i < controllers.numberList.length; i++) {
                                                                     String number = controllers.numberList[i].text.trim();
-
-                                                                    // Empty or not 10 digits
                                                                     if (number.isEmpty || number.length != 10) {
                                                                       isMistake = true;
                                                                       utils.snackBar(
@@ -695,8 +699,6 @@ class _AddLeadState extends State<AddLead> {
                                                                       );
                                                                       break;
                                                                     }
-
-                                                                    // Duplicate check
                                                                     if (uniqueNumbers.contains(number)) {
                                                                       isMistake = true;
                                                                       utils.snackBar(
@@ -727,101 +729,111 @@ class _AddLeadState extends State<AddLead> {
                                                         ),
                                                         Row(
                                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            children:[
-                                                              SizedBox(
-                                                                width: textFieldSize-40,
-                                                                child: TextFormField(
-                                                                  controller:controllers.numberList[index],
-                                                                  focusNode: phoneFocusList[index],
-                                                                  style: const TextStyle(
-                                                                    color: Colors.black,
-                                                                    fontSize: 15,
-                                                                    fontFamily: "Lato",
+                                                          children: [
+                                                            SizedBox(
+                                                              width: textFieldSize - 40,
+                                                              child: TextFormField(
+                                                                key: ObjectKey(controllers.numberList[index]), // NEW
+                                                                controller: controllers.numberList[index],
+                                                                focusNode: phoneFocusList[index],
+                                                                style: const TextStyle(
+                                                                  color: Colors.black,
+                                                                  fontSize: 15,
+                                                                  fontFamily: "Lato",
+                                                                ),
+                                                                cursorColor: colorsConst.primary,
+                                                                onChanged: (value) {
+                                                                  if (checkList[index] == true) {
+                                                                    final whatsCtrl = controllers.leadWhatsCrt[0];
+                                                                    if (whatsCtrl.text != value) {
+                                                                      whatsCtrl.value = TextEditingValue(
+                                                                        text: value,
+                                                                        selection: TextSelection.collapsed(offset: value.length),
+                                                                      );
+                                                                    }
+                                                                  }
+                                                                },
+                                                                onEditingComplete: () {
+                                                                  FocusScope.of(context).requestFocus(whatsApp);
+                                                                },
+                                                                inputFormatters: [
+                                                                  FilteringTextInputFormatter.digitsOnly,
+                                                                  LengthLimitingTextInputFormatter(10),
+                                                                ],
+                                                                textInputAction: TextInputAction.next,
+                                                                decoration: InputDecoration(
+                                                                  hoverColor: Colors.transparent,
+                                                                  focusColor: Colors.transparent,
+                                                                  hintText: _formatHeading(
+                                                                      controllers.getUserHeading("mobile_name") ?? "Mobile No"),
+                                                                  errorStyle: TextStyle(
+                                                                      color: Colors.red, fontSize: 13, fontFamily: "Lato"),
+                                                                  hintStyle: TextStyle(
+                                                                      color: Colors.grey.shade400,
+                                                                      fontSize: 13,
+                                                                      fontFamily: "Lato"),
+                                                                  fillColor: Colors.white,
+                                                                  filled: true,
+                                                                  suffixIcon: InkWell(
+                                                                    onTap: () {
+                                                                      setState(() {
+                                                                        bool newValue = !checkList[index];
+                                                                        for (int i = 0; i < checkList.length; i++) {
+                                                                          checkList[i] = false;
+                                                                        }
+                                                                        checkList[index] = newValue;
+                                                                        if (newValue) {
+                                                                          controllers.leadWhatsCrt[0].text =
+                                                                              controllers.numberList[index].text;
+                                                                        } else {
+                                                                          controllers.leadWhatsCrt[0].clear();
+                                                                        }
+                                                                      });
+                                                                    },
+                                                                    child: Icon(Icons.check_circle,
+                                                                        color: checkList[index] == false
+                                                                            ? Colors.grey
+                                                                            : Colors.green),
                                                                   ),
-                                                                  cursorColor: colorsConst.primary,
-                                                                  onChanged: (value) {
-                                                                    setState(() {
-                                                                      if(checkList[index]==true){
-                                                                        controllers.leadWhatsCrt[0].text =controllers.numberList[index].text;
-                                                                      }
-                                                                    });
-                                                                  },
-                                                                  onEditingComplete: () {
-                                                                    FocusScope.of(context)
-                                                                        .requestFocus(whatsApp);
-                                                                  },
-                                                                  inputFormatters: constInputFormatters.mobileNumberInput,
-                                                                  textInputAction: TextInputAction.next,
-                                                                  decoration: InputDecoration(
-                                                                    hoverColor: Colors.transparent,
-                                                                    focusColor: Colors.transparent,
-                                                                    hintText:_formatHeading(
-                                                                        controllers.getUserHeading(
-                                                                            "mobile_name") ??
-                                                                            "Mobile No"),
-                                                                    errorStyle: TextStyle(color: Colors.red, fontSize: 13, fontFamily: "Lato"),
-                                                                    hintStyle: TextStyle(
-                                                                        color: Colors.grey.shade400, fontSize: 13, fontFamily: "Lato"),
-                                                                    fillColor:Colors.white,
-                                                                    filled: true,
-                                                                    suffixIcon: InkWell(
-                                                                        onTap: () {
-                                                                          setState(() {
-                                                                            bool newValue = !checkList[index];
-                                                                            for (int i = 0; i < checkList.length; i++) {
-                                                                              checkList[i] = false;
-                                                                            }
-                                                                            checkList[index] = newValue;
-                                                                            if (newValue) {
-                                                                              controllers.leadWhatsCrt[0].text =
-                                                                                  controllers.numberList[index].text;
-                                                                            } else {
-                                                                              controllers.leadWhatsCrt[0].clear();
-                                                                            }
-                                                                          });
-                                                                        },
-                                                                        child: Icon(Icons.check_circle, color: checkList[index]==false?Colors.grey:Colors.green)),
-                                                                    enabledBorder: OutlineInputBorder(
-                                                                        borderSide: BorderSide(
-                                                                          color: Colors.grey.shade400,
-                                                                        ),
-                                                                        borderRadius: BorderRadius.circular(5)),
-                                                                    focusedBorder: OutlineInputBorder(
-                                                                        borderSide: BorderSide(
-                                                                          color: colorsConst.primary,
-                                                                        ),
-                                                                        borderRadius: BorderRadius.circular(5)),
-                                                                    focusedErrorBorder: OutlineInputBorder(
-                                                                        borderSide: BorderSide(
-                                                                            color: const Color(0xffE1E5FA)),
-                                                                        borderRadius: BorderRadius.circular(5)),
-                                                                    contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
-                                                                    errorBorder: OutlineInputBorder(
-                                                                        borderSide: BorderSide(
-                                                                            color: const Color(0xffE1E5FA)),
-                                                                        borderRadius: BorderRadius.circular(5)),
-                                                                  ),
+                                                                  enabledBorder: OutlineInputBorder(
+                                                                      borderSide: BorderSide(color: Colors.grey.shade400),
+                                                                      borderRadius: BorderRadius.circular(5)),
+                                                                  focusedBorder: OutlineInputBorder(
+                                                                      borderSide: BorderSide(color: colorsConst.primary),
+                                                                      borderRadius: BorderRadius.circular(5)),
+                                                                  focusedErrorBorder: OutlineInputBorder(
+                                                                      borderSide: BorderSide(color: const Color(0xffE1E5FA)),
+                                                                      borderRadius: BorderRadius.circular(5)),
+                                                                  contentPadding:
+                                                                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10.0),
+                                                                  errorBorder: OutlineInputBorder(
+                                                                      borderSide: BorderSide(color: const Color(0xffE1E5FA)),
+                                                                      borderRadius: BorderRadius.circular(5)),
                                                                 ),
                                                               ),
-                                                              InkWell(
-                                                                  onTap:(){
-                                                                    if (controllers.numberList.length > 1) {
-                                                                      controllers.numberList.removeAt(index);
-                                                                      phoneFocusList[index].dispose();
-                                                                      phoneFocusList.removeAt(index);
-                                                                      checkList.removeAt(index);
-                                                                      controllers.update();
-                                                                    }else{
-                                                                      utils.snackBar(context: context, msg: "Enter at least one ${_formatHeading(
-                                                                          controllers.getUserHeading(
-                                                                              "mobile_name") ??
-                                                                              "Mobile No")}", color: Colors.red);
-                                                                    }
-                                                                  },
-                                                                  child:SvgPicture.asset("assets/images/delete.svg",width: 20,height: 20,)
-                                                              )
-                                                            ]
-                                                        ),5.height
+                                                            ),
+                                                            InkWell(
+                                                              onTap: () {
+                                                                if (controllers.numberList.length > 1) {
+                                                                  controllers.numberList.removeAt(index);
+                                                                  phoneFocusList[index].dispose();
+                                                                  phoneFocusList.removeAt(index);
+                                                                  checkList.removeAt(index);
+                                                                  controllers.update();
+                                                                } else {
+                                                                  utils.snackBar(
+                                                                      context: context,
+                                                                      msg:
+                                                                      "Enter at least one ${_formatHeading(controllers.getUserHeading("mobile_name") ?? "Mobile No")}",
+                                                                      color: Colors.red);
+                                                                }
+                                                              },
+                                                              child: SvgPicture.asset("assets/images/delete.svg",
+                                                                  width: 20, height: 20),
+                                                            )
+                                                          ],
+                                                        ),
+                                                        5.height
                                                       ]
                                                   );
                                                 }),
@@ -829,24 +841,19 @@ class _AddLeadState extends State<AddLead> {
                                         }),10.height,
                                         CustomTextField(
                                           onEdit: () {
-                                            FocusScope.of(context)
-                                                .requestFocus(account);
+                                            FocusScope.of(context).requestFocus(account);
                                           },
                                           focusNode: whatsApp,
                                           hintText: "Whatsapp No",
                                           text: "Whatsapp",
-                                          controller:
-                                              controllers.leadWhatsCrt[index],
+                                          controller: controllers.leadWhatsCrt[index],
                                           width: textFieldSize,
                                           isOptional: false,
                                           keyboardType: TextInputType.number,
                                           textInputAction: TextInputAction.next,
-                                          inputFormatters: constInputFormatters
-                                              .mobileNumberInput,
+                                          inputFormatters: constInputFormatters.mobileNumberInput,
                                           onChanged: (value) async {
-                                            SharedPreferences sharedPref =
-                                                await SharedPreferences
-                                                    .getInstance();
+                                            SharedPreferences sharedPref = await SharedPreferences.getInstance();
                                             sharedPref.setString(
                                                 "leadWhats$index",
                                                 value.toString().trim());
@@ -1118,7 +1125,6 @@ class _AddLeadState extends State<AddLead> {
                                                         for (var i = 0; i < controllers.infoNumberList.length; i++) {
                                                           String number = controllers.infoNumberList[i].text.trim();
 
-                                                          // Empty or not 10 digits
                                                           if (number.isEmpty || number.length != 10) {
                                                             isMistake = true;
                                                             utils.snackBar(
@@ -1162,7 +1168,7 @@ class _AddLeadState extends State<AddLead> {
                                                       child: CustomTextField(
                                                         focusNode: phoneFocusList2[index],
                                                         onEdit: () {
-                                                          FocusScope.of(context).requestFocus(linkedin);
+                                                          industryKey.currentState?.openDropDownSearch();
                                                         },
                                                         hintText: "",
                                                         text: "",
@@ -1199,12 +1205,14 @@ class _AddLeadState extends State<AddLead> {
                               Obx(()=>controllers.refreshValue.value==false?
                               CircularProgressIndicator():
                               IndustryDropdown(
+                                dropdownKey: industryKey,
                                 width: textFieldSize,
                                 items: controllers.industriesList,
                                 onChanged: (val) {
                                   setState(() {
                                     controllers.industry = val?['value'];
                                   });
+                                  FocusScope.of(context).requestFocus(linkedin);
                                 },
                                 onAdd: () {
                                   FocusScope.of(context).requestFocus(ins);
