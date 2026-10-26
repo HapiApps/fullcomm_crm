@@ -2168,107 +2168,53 @@ void appointmentStatus(context,String value){
     required RxString pathVal,
     required bool isFutureDate,
   }) async {
-
     DateTime dateTime = DateTime.now();
-
-    debugPrint("---- DATE PICKER OPEN ----");
-    debugPrint("Controller Text : ${textEditingController?.text}");
-
-    // ---------- Parse Existing Date ----------
-    if (pathVal.value!="") {
-
+    if (pathVal.value.isNotEmpty) {
       try {
-
-        String cleaned = pathVal.value
+        final parts = pathVal.value
             .replaceAll("/", "-")
             .replaceAll(".", "-")
-            .trim();
-
-        debugPrint("Cleaned Date String : $cleaned");
-
-        List<String> parts = cleaned.split("-");
-
-        debugPrint("Split Parts : $parts");
+            .trim()
+            .split("-");
 
         if (parts.length == 3) {
+          final p1 = int.tryParse(parts[0]) ?? 0;
+          final p2 = int.tryParse(parts[1]) ?? 0;
+          final p3 = int.tryParse(parts[2]) ?? 0;
 
-          int p1 = int.tryParse(parts[0]) ?? 0;
-          int p2 = int.tryParse(parts[1]) ?? 0;
-          int p3 = int.tryParse(parts[2]) ?? 0;
-
-          debugPrint("Parsed => p1:$p1  p2:$p2  p3:$p3");
-
-          // Detect format
-          if (p1 > 31) {
-            // YYYY-MM-DD
-            dateTime = DateTime(p1, p2, p3);
-            debugPrint("Format Detected : YYYY-MM-DD");
-
-          } else {
-            // DD-MM-YYYY
-            dateTime = DateTime(p3, p2, p1);
-            debugPrint("Format Detected : DD-MM-YYYY");
-          }
-
-          debugPrint("Initial DateTime Set : $dateTime");
+          dateTime = p1 > 31 ? DateTime(p1, p2, p3) : DateTime(p3, p2, p1);
         }
-
       } catch (e) {
-        debugPrint("Date Parse Error : $e");
         dateTime = DateTime.now();
       }
     }
 
-    debugPrint("Opening DatePicker with Initial Date : $dateTime");
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final first = isFutureDate ? today : DateTime(2000);
+    final last = isFutureDate ? DateTime(now.year + 1, now.month, now.day) : today;
 
-    // ---------- Show Date Picker ----------
+    if (dateTime.isBefore(first)) dateTime = first;
+    if (dateTime.isAfter(last)) dateTime = last;
+
     final value = await showDatePicker(
       context: context!,
       initialDate: dateTime,
-      firstDate: isFutureDate==true?DateTime.now():DateTime(2026),
-      lastDate: isFutureDate==true?DateTime(DateTime.now().year+1,DateTime.now().month,DateTime.now().day,):DateTime.now(),
+      firstDate: first,
+      lastDate: last,
     );
 
-    debugPrint("Selected Date From Picker : $value");
-
-    // ---------- Set Selected Date ----------
     if (value != null) {
-
-      dateTime = value;
-
-      String formattedDate =
-          "${dateTime.day.toString().padLeft(2, "0")}-"
-          "${dateTime.month.toString().padLeft(2, "0")}-"
-          "${dateTime.year}";
-
-      debugPrint("Formatted Date : $formattedDate");
+      final formattedDate =
+          "${value.day.toString().padLeft(2, "0")}-"
+          "${value.month.toString().padLeft(2, "0")}-"
+          "${value.year}";
 
       textEditingController?.text = formattedDate;
-      pathVal?.value = formattedDate;
-      if (remController.stDate.value.isNotEmpty &&
-          remController.enDate.value.isNotEmpty) {
-
-        DateTime start = DateFormat("dd-MM-yyyy")
-            .parse(remController.stDate.value);
-
-        DateTime end = DateFormat("dd-MM-yyyy")
-            .parse(remController.enDate.value);
-
-        if (end.isBefore(start)) {
-          utils.showToast("End date cannot be before start date", Colors.red);
-          remController.enDate.value = "";
-          controllers.dateOfConCtr.clear();
-          return;
-        }
-      }
-      // debugPrint("Controller Updated Successfully ✅");
-
-    } else {
-      debugPrint("User Cancelled Date Picker ❌");
+      pathVal.value = formattedDate;
     }
-    controllers.prospectDate.value=controllers.empDOB.value;
-    debugPrint("---- DATE PICKER END ----");
   }
+
   Future<void> callDatePicker({
     BuildContext? context,
     TextEditingController? textEditingController,

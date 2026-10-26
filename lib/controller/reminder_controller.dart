@@ -3605,6 +3605,7 @@ class ReminderController extends GetxController with GetSingleTickerProviderStat
   bool isCheckedReminder(String id) {
     return selectedReminderIds.contains(id);
   }
+
   void toggleReminderSelection(String id) {
     if (selectedReminderIds.contains(id)) {
       selectedReminderIds.remove(id);
@@ -3703,7 +3704,7 @@ void unSelectAllAppointments() {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return allReminders(type);
+          return await allReminders(type);
         } else {
           controllers.setLogOut();
         }

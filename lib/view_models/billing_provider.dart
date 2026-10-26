@@ -1829,49 +1829,63 @@ class BillingProvider with ChangeNotifier{
       utils.snackBar(context: context, msg: "Product Added Failed", color: Colors.red);
     }
   }
+
   Future<void> insertCat(BuildContext context) async {
-    final catProv = context.read<BillingProvider>();
+    final newTitle = category.text.trim();
+    final parentId = selectedCategory?.id;
+    final isSub = parentId != null;
+
     loading = true;
     notifyListeners();
-    Map<String, dynamic> data={};
-    if(catProv.selectedCategory==null){
-      data={
-        "action": "insert_categories",
-        "type": "1",
-        "title": category.text.trim(),
-        "cos_id": controllers.storage.read("cos_id").toString(),
-        "created_by": controllers.storage.read("id").toString(),
-      };
-    }else{
-      data={
-        "action": "insert_categories",
-        "type": "2",
-        "title": category.text.trim(),
-        "c_id": catProv.selectedCategory!.id.toString(),
-        "cos_id": controllers.storage.read("cos_id").toString(),
-        "created_by": controllers.storage.read("id").toString(),
-      };
-    }
+
+    final data = <String, dynamic>{
+      "action": "insert_categories",
+      "type": isSub ? "2" : "1",
+      "title": newTitle,
+      if (isSub) "c_id": parentId.toString(),
+      "cos_id": controllers.storage.read("cos_id").toString(),
+      "created_by": controllers.storage.read("id").toString(),
+    };
 
     final success = await PlaceOrderRepository.insertProduct(data);
 
+    if (!success) {
+      loading = false;
+      notifyListeners();
+      utils.snackBar(context: context, msg: "Category Added Failed", color: Colors.red);
+      return;
+    }
+
+    final messenger = ScaffoldMessenger.maybeOf(context);
+    Navigator.pop(context);
+    category.clear();
+
+    categories.clear();
+    await fetchCategories();
+
+    if (!isSub) {
+      final newCat = categories.lastWhereOrNull(
+            (c) => c.title.trim().toLowerCase() == newTitle.toLowerCase(),
+      );
+      selectedCategoryId = newCat?.id;
+      selectedSubCategoryId = null;
+    } else {
+      selectedCategoryId = parentId;
+      final newSub = selectedCategory?.subcategories.lastWhereOrNull(
+            (s) => s.title.trim().toLowerCase() == newTitle.toLowerCase(),
+      );
+      selectedSubCategoryId = newSub?.id;
+    }
+
     loading = false;
     notifyListeners();
-    if (success) {
-      Navigator.pop(context);
-      category.clear();
-      final p = context.read<BillingProvider>();
-      selectedCategoryId = null;
-      selectedSubCategoryId = null;
-      categories.clear();
-      fetchCategories();
-      notifyListeners();
-      // Navigator.pop(context);
-      // productCtr.getProducts();
-      utils.snackBar(context: context, msg: "Category Added Successfully", color: Colors.green);
-    } else {
-      utils.snackBar(context: context, msg: "Category Added Failed", color: Colors.red);
-    }
+
+    messenger?.showSnackBar(
+      const SnackBar(
+        content: Text("Category Added Successfully"),
+        backgroundColor: Colors.green,
+      ),
+    );
   }
 
   Future<void> updateProduct(BuildContext context,String id) async {

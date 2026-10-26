@@ -365,16 +365,6 @@ class _AddReminderState extends State<AddReminder> {
                                     controllers.clearSelectedCustomer();
                                   },
                                 ),
-                                // if (employeeError != null)
-                                //   Padding(
-                                //     padding: const EdgeInsets.only(top: 4.0),
-                                //     child: Text(
-                                //       employeeError!,
-                                //       style: const TextStyle(
-                                //           color: Colors.red,
-                                //           fontSize: 13),
-                                //     ),
-                                //   ),
                               ],
                             ),
                           ),

@@ -69,12 +69,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
   }
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    // debugPrint("widget.list: ${widget.list}");
-    // debugPrint("widget.list2: ${widget.list}");
-    // debugPrint("widget.list: ${widget.list.length}");
-    // debugPrint("widget.list2: ${widget.list2.length}");
     _focusNode = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       controllers.currentProspectPage.value=1;
@@ -89,22 +84,11 @@ class _NewLeadPageState extends State<NewLeadPage> {
       apiService.getCustomFields();
       controllers.groupController.selectIndex(0);
       setState(() {
-        // controllers.search.clear();
         controllers.idList.clear();
         for (var lead in widget.list) {
           lead.select = false;
         }
-        // apiService.newLeadList = [];
-        // apiService.newLeadList.clear();
-        // //Santhiya
         controllers.isAllSelected.value = false;
-        // for (var item in controllers.isLeadsList) {
-        //   item["isSelect"] = false;
-        //
-        //   widget.list.removeWhere(
-        //         (e) => e.userId== item["lead_id"],
-        //   );
-        // }
       });
     });
     _leftController.addListener(() {
@@ -132,8 +116,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
   @override
   Widget build(BuildContext context) {
     double tableWidth = tableController.tableHeadings.fold(
-      0.0,
-          (sum, h) => sum + (tableController.colWidth[h] ?? 150),
+      0.0, (sum, h) => sum + (tableController.colWidth[h] ?? 150),
     );
     return SelectionArea(
       child: Scaffold(
@@ -172,15 +155,13 @@ class _NewLeadPageState extends State<NewLeadPage> {
                         utils.showDeleteDialog(
                             context: context, name: 'delete this ${widget.name}',
                             isDelete: true,
-                            callBack: ()async{
+                            callBack: ()async {
                               _focusNode.requestFocus();
                               await apiService.deleteCustomersAPI(context, controllers.idList.value,widget.list,widget.list2);
                             },
                             controller: controllers.productCtr);
                       },
                       onMail: () {
-                        // mailUtils.bulkEmailDialog(_focusNode, list: widget.list);
-                        // mailUtils.bulkEmailDialog(_focusNode, list: controllers.allLeadList);
                         imageController.images.clear();
                         mailUtils.bulkEmail(_focusNode, list: widget.list);
                       },
@@ -192,8 +173,7 @@ class _NewLeadPageState extends State<NewLeadPage> {
                             String selectedStage = "";
                             bool isEdit = false;
 
-                            TextEditingController reasonController =
-                            TextEditingController();
+                            TextEditingController reasonController = TextEditingController();
 
                             int currentIndex = int.parse(widget.index.toString());
                             int nextIndex = currentIndex + 1;
@@ -607,7 +587,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
                           final companyNoSpace = company.replaceAll(" ", "");
                           final nameNoSpace = name.replaceAll(" ", "");
 
-                          // initials
                           final companyInitial =
                           company.split(" ").where((e) => e.isNotEmpty).map((e) => e[0]).join();
                           final nameInitial =
@@ -623,8 +602,6 @@ class _NewLeadPageState extends State<NewLeadPage> {
                         }).toList();
 
                         widget.list.value = suggestions;
-                        // print("onchanged called");
-
                         controllers.selectRadio(widget.list, widget.list2);
                       },
                       onSelectMonth: () {
@@ -676,27 +653,20 @@ class _NewLeadPageState extends State<NewLeadPage> {
                                   },
                                   onSortDate: () {
                                     setState(() {
-                                      // controllers.sortField.value = 'name';
                                       controllers.sortField.value = tableController.headingFields.first;
                                       controllers.sortOrder.value =
                                       controllers.sortOrder.value == 'asc' ? 'desc' : 'asc';
                                       controllers.sortLeads(widget.list,widget.list2);
-                                      // controllers.changePage(widget.list,widget.list2);
                                     });
                                   },
                                 ),
+
                                 SizedBox(
                                   height: MediaQuery.of(context).size.height - 345,
                                   child: Obx(() {
                                     if(widget.list.isEmpty){
                                       return 0.height;
                                     }
-
-                                    // sortedList.sort((a, b) {
-                                    //   DateTime dateA = DateTime.tryParse(a.createdTs ?? '') ?? DateTime(1970);
-                                    //   DateTime dateB = DateTime.tryParse(b.createdTs ?? '') ?? DateTime(1970);
-                                    //   return dateB.compareTo(dateA);
-                                    // });
                                     return ScrollConfiguration(
                                       behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
                                       child: ListView.builder(

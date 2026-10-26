@@ -222,32 +222,36 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final billing = Provider.of<BillingProvider>(context, listen: false);
       final customers = Provider.of<CustomersProvider>(context, listen: false);
-      FocusScope.of(context).requestFocus(billing.dropdownFocusNode);
-      billing.dropdownFocusNode.requestFocus();
-      // Set cashier
+
       billing.cashierController.text =
       "${billing.cashierNameController} - ${billing.cashierIdController}";
-
       billing.loadHeldBillsFromPrefs();
-      _focusNode.requestFocus();
-      // Load data
+
       if (billing.isWChecked) {
         await billing.getWholeSaleProducts();
-      } else {
-        if(Provider.of<BillingProvider>(context, listen: false).productsList.isEmpty){
-          Provider.of<BillingProvider>(context, listen: false).getProducts();
-        }
+      } else if (billing.productsList.isEmpty) {
+        await billing.getProducts();
       }
-      customers.getAllCustomers(context);
-      ///Commented
-      if(controllers.directNavigate.value==false){
+
+      if (controllers.directNavigate.value == false) {
         customers.resetCustomerDetails();
         billing.setBillingItems([]);
       }
+
+      customers.getAllCustomers(context);
+
+      _focusProductField();
+    });
+  }
+
+  void _focusProductField() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      final billing = Provider.of<BillingProvider>(context, listen: false);
+      FocusScope.of(context).requestFocus(billing.dropdownFocusNode);
     });
   }
 
@@ -280,20 +284,19 @@ class _NewBillingScreenState extends State<NewBillingScreen> {
   @override
   void dispose() {
     _focusNodeSearch.dispose();
-    //dropdownFocusNode.dispose();
     fieldFocusNode.dispose();
-    _focusNode.requestFocus();
     dropdownController.dispose();
     quantityVariationController.dispose();
     scrollController.dispose();
     super.dispose();
   }
+
   double safeDouble(dynamic value) {
     if (value == null) return 0;
 
     final cleaned = value
         .toString()
-        .replaceAll(RegExp(r'[^0-9.\-]'), "") // remove everything except digits . -
+        .replaceAll(RegExp(r'[^0-9.\-]'), "")
         .trim();
 
     return double.tryParse(cleaned) ?? 0;
@@ -992,7 +995,6 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                   width:controllers.isLeftOpen.value?MediaQuery.of(context).size.width - 160:MediaQuery.of(context).size.width - 60,
                   padding: const EdgeInsets.fromLTRB(16, 5, 16, 16),
                   child: Focus(
-                    autofocus: true,
                     focusNode: _focusNode,
                     child: Shortcuts(
                         shortcuts: <LogicalKeySet, Intent>{
@@ -1697,18 +1699,14 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                               focusNode: FocusNode(),
                               onKey: (RawKeyEvent event) {
                                 if (event is RawKeyDownEvent) {
-                                  // ☑️ If dropdown is focused → DO NOT HANDLE ARROWS
                                   if (dropdownController.text.isEmpty) {
-                                    // ▼▼ DOWN ARROW ▼▼
                                     if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
                                       _handleArrowDown();
                                     }
-                                    // ▲▲ UP ARROW ▲▲
                                     if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
                                       _handleArrowUp();
-                                    }// stop table navigation
+                                    }
                                   }
-                                  // ❌ BACKSPACE key → also remove selected row
                                   if (event.logicalKey == LogicalKeyboardKey.delete) {
                                     if (selectedRowIndex >= 0 &&
                                         selectedRowIndex < billingProvider.billingItems.length) {
@@ -1725,11 +1723,9 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                               child: GestureDetector(
                                   behavior: HitTestBehavior.translucent,
                                   onTap: () {
-                                    // 🔥 mouse click ஆனாலும் focus return
                                     _focusNode.requestFocus();
                                   },
-                                  child: billingProvider.isLoading ? LoadingWidgets
-                                      .circleLoading()
+                                  child: billingProvider.isLoading ? LoadingWidgets.circleLoading()
                                       : Column(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -1739,10 +1735,8 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                           children: [
                                             CustomLoadingButton(
                                               callback: ()async{
-                                                if (billingProvider.billingItems
-                                                    .isEmpty) {
-                                                  billingProvider.printButtonController
-                                                      .reset();
+                                                if (billingProvider.billingItems.isEmpty) {
+                                                  billingProvider.printButtonController.reset();
                                                   Toasts.showToastBar(
                                                     context: context,
                                                     text: 'Bill List is empty',
@@ -1765,12 +1759,12 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                 final paymentId = paymentMap[selectedMethod] ??
                                                     '0';
                                                 final now = DateTime.now();
-                                                final billNo = 'BILL${now
-                                                    .millisecondsSinceEpoch % 10000}';
+                                                final billNo = 'BILL${now.millisecondsSinceEpoch % 10000}';
                                                 final formattedDate =
                                                     '${now.day}/${now.month}/${now
                                                     .year} ${now.hour}:${now.minute}';
-                                                await billingProvider.saveHoldBillDetails(context: context,
+                                                await billingProvider.saveHoldBillDetails(
+                                                  context: context,
                                                   order: Order(
                                                     split_pay: billingProvider.selectBillMethod =="Split Payment"?
                                                     (billingProvider.upiPayment.text.isEmpty ? "0" : billingProvider.upiPayment .text): "0",
@@ -1834,7 +1828,6 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                             ),10.width,
                                             CustomLoadingButton(
                                               callback: ()async{
-                                                // âœ… Wait for result from HoldBillsScreen
                                                 final result = await Navigator.push(
                                                   context,
                                                   MaterialPageRoute(builder: (
@@ -1842,9 +1835,8 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                   ),
                                                 );
 
-                                                // âœ… If user released a bill, rebuild the screen
                                                 if (result == true) {
-                                                  setState(() {}); // refreshes UI to show restored products
+                                                  setState(() {});
                                                 }
                                               },
                                               isLoading: false,
@@ -1903,7 +1895,6 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                           ],
                                         ),
                                       ),
-                                      /// Fixed Header:
                                       if(controllers.directNavigate.value==true)
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(0, 0, 0, 10),
@@ -1929,13 +1920,11 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                             padding: const EdgeInsets.symmetric(horizontal: 0),
                                             child:Focus(
                                               onKeyEvent: (node, event) {
-                                                // 🚫 block ONLY arrow keys (these cause editable.dart crash)
                                                 if (event.logicalKey == LogicalKeyboardKey.arrowDown ||
                                                     event.logicalKey == LogicalKeyboardKey.arrowUp) {
                                                   return KeyEventResult.handled;
                                                 }
 
-                                                // ✅ allow everything else (numbers, enter, tab, etc)
                                                 return KeyEventResult.ignored;
                                               },
                                               onFocusChange: (hasFocus) {
@@ -1944,18 +1933,8 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                   final billing = billingProvider;
                                                   final text = dropdownController.text.trim();
 
-                                                  // 🔒 Skip validation during scan / programmatic update
                                                   if (_isProgrammaticChange) return;
-
-                                                  // ❌ Manual typing but no product selected
                                                   if (billing.selectedProduct == null && text.isNotEmpty) {
-                                                    // ScaffoldMessenger.of(context).showSnackBar(
-                                                    //   const SnackBar(
-                                                    //     content: Text("❌ Product not found"),
-                                                    //     backgroundColor: Colors.red,
-                                                    //   ),
-                                                    // );
-
                                                     Future.microtask(() {
                                                       billing.dropdownFocusNode.requestFocus();
 
@@ -1973,7 +1952,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                 data: Theme.of(context).copyWith(
                                                   inputDecorationTheme: InputDecorationTheme(
                                                     filled: true,
-                                                    fillColor: Colors.white, // 👈 change here
+                                                    fillColor: Colors.white,
                                                     enabledBorder: OutlineInputBorder(
                                                       borderRadius: BorderRadius.circular(5),
                                                       borderSide: BorderSide(color: Colors.grey.shade300, width: 0),
@@ -1986,11 +1965,9 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                 ),
                                                 child: KeyboardDropdownField<ProductData>(
                                                   focusNode: billingProvider.dropdownFocusNode,
-                                                  items: billingProvider.productsList
-                                                      .where((p) {
+                                                  items: billingProvider.productsList.where((p) {
                                                     final price = double.tryParse(p.outPrice?.toString() ?? "0") ?? 0;
 
-                                                    // Apply price > 0 condition to BOTH loose and normal products
                                                     if (price > 0) return true;
 
                                                     return false;
@@ -2037,7 +2014,7 @@ List<String> statusList = ["Send Quotation", "Create Invoice", "Proforma Invoice
                                                     final double qty =
                                                         double.tryParse(product.qtyLeft?.toString() ?? "0") ?? 0;
 
-                                                    bool isLowStock = qty > 0 && qty <= 20; // 🔥 low stock limit
+                                                    bool isLowStock = qty > 0 && qty <= 20;
 
 
                                                     bool isOutOfStock = qty <= 0;

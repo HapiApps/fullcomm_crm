@@ -107,18 +107,16 @@ class _ViewLeadState extends State<ViewLead> {
       return input;
     }
   }
-void checkType(){
-  for (var i=0;i<controllers.leadCategoryList.length;i++){
-    // debugPrint("widget.leadIndex... ${widget.leadIndex}");
-    // debugPrint("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].leadStatus}");
-    // debugPrint("controllers.leadCategoryList[i].leadStatus... ${controllers.leadCategoryList[i].displayOrder}");
-    if(controllers.leadCategoryList[i].leadStatus==widget.leadIndex){
-      type=controllers.leadCategoryList[i].displayOrder;
-      // debugPrint("type... $type");
-      break;
+
+  void checkType(){
+    for (var i=0;i<controllers.leadCategoryList.length;i++){
+      if(controllers.leadCategoryList[i].leadStatus==widget.leadIndex){
+        type=controllers.leadCategoryList[i].displayOrder;
+        break;
+      }
     }
   }
-}
+
   @override
   void initState() {
     super.initState();
@@ -126,7 +124,6 @@ void checkType(){
     _controller = ScrollController();
     _focusNode = FocusNode();
     _focusNode.requestFocus();
-    // call API to fetch CustomerFullDetails - ensure apiService has this method
     Future.delayed(Duration.zero, () {
       controllers.leadFuture =
           apiService.leadsDetailsForCustomer(widget.id.toString());
@@ -1470,7 +1467,6 @@ void checkType(){
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.all(10),
                                                                   child: Row(
-                                                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                     children: [
                                                                       Image.asset("assets/images/cus_detail/call2.png",width: 20,height: 20,),10.width,
                                                                       CustomText(text: "Call Log",isCopy: true,isBold: true,)
@@ -1486,7 +1482,6 @@ void checkType(){
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.all(10),
                                                                   child: Row(
-                                                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                     children: [
                                                                       Image.asset("assets/images/cus_detail/cal3.png",width: 20,height: 20),10.width,
                                                                       CustomText(text: "Meeting",isCopy: true,isBold: true,)
@@ -1502,7 +1497,6 @@ void checkType(){
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.all(10),
                                                                   child: Row(
-                                                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                     children: [
                                                                       Image.asset("assets/images/cus_detail/rem3.png",width: 20,height: 20),10.width,
                                                                       CustomText(text: "Reminder",isCopy: true,isBold: true,)
@@ -1524,7 +1518,6 @@ void checkType(){
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.all(10),
                                                                   child: Row(
-                                                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                     children: [
                                                                       Image.asset("assets/images/cus_detail/mail2.png",width: 20,height: 20),10.width,
                                                                       CustomText(text: "Mail",isCopy: true,isBold: true,)
@@ -1540,7 +1533,6 @@ void checkType(){
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.all(10),
                                                                   child: Row(
-                                                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                     children: [
                                                                       Image.asset("assets/images/order.png",width: 20,height: 20),10.width,
                                                                       CustomText(text: "Quotations",isCopy: true,isBold: true,)
@@ -1556,7 +1548,6 @@ void checkType(){
                                                                 child: Padding(
                                                                   padding: const EdgeInsets.all(10),
                                                                   child: Row(
-                                                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                                     children: [
                                                                       Image.asset("assets/images/cart_1.png",width: 20,height: 20),10.width,
                                                                       CustomText(text: "Orders",isCopy: true,isBold: true,)

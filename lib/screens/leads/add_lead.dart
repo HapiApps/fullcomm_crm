@@ -156,6 +156,15 @@ class _AddLeadState extends State<AddLead> {
     });
     getStringValue();
   }
+
+  final List<FocusNode> _gridNodes = [];
+
+  void _syncNodes(int length) {
+    while (_gridNodes.length < length) {
+      _gridNodes.add(FocusNode());
+    }
+  }
+
   @override
   void dispose() {
     ins.dispose();
@@ -184,13 +193,14 @@ class _AddLeadState extends State<AddLead> {
     ob7.dispose();
     ob8.dispose();
     ob9.dispose();
-
     door.dispose();
     area.dispose();
     city.dispose();
     state.dispose();
     pincode.dispose();
-
+    for (final n in _gridNodes) {
+      n.dispose();
+    }
     super.dispose();
   }
 
@@ -504,8 +514,7 @@ class _AddLeadState extends State<AddLead> {
                                     index == 0
                                         ? GroupButton(
                                             //isRadio: true,
-                                            controller:
-                                                controllers.groupController,
+                                            controller: controllers.groupController,
                                             options: GroupButtonOptions(
                                               //borderRadius: BorderRadius.circular(20),
                                               spacing: 1,
@@ -528,14 +537,12 @@ class _AddLeadState extends State<AddLead> {
                                                       size: 16,
                                                       isBold: true),
                                             ),
-                                            onSelected:
-                                                (name, index, isSelected) async {
+                                            onSelected: (name, index, isSelected) async {
                                               setState(() {
                                                 controllers.leadCategory = name;
                                               });
                                             },
-                                            buttons:
-                                                controllers.leadCategoryGrList,
+                                            buttons: controllers.leadCategoryGrList,
                                           )
                                         : 0.width,
                                   ],
@@ -1710,21 +1717,20 @@ class _AddLeadState extends State<AddLead> {
                                 );
                               },
                             ),
-                            Obx(
-                              () => CustomDateBox(
+                            Obx(() => CustomDateBox(
                                 isOptional: false,
                                 text: _formatHeading(controllers.getUserHeading(
                                     "expected_convertion_date") ??
                                     "Expected Conversion Date"),
                                 value: controllers.exDate.value,
                                 width: textFieldSize,
-                                onTap: () {
-                                  utils.datePicker(
+                                onTap: () async{
+                                  await utils.datePicker(
                                       isFutureDate: true,
                                       context: context,
-                                      textEditingController:
-                                          controllers.dateOfConCtr,
+                                      textEditingController: controllers.dateOfConCtr,
                                       pathVal: controllers.exDate);
+                                  if (!mounted) return;
                                   FocusScope.of(context).requestFocus(ob8);
                                 },
                               ),
@@ -1781,13 +1787,13 @@ class _AddLeadState extends State<AddLead> {
                                 isOptional: false,
                                 value: controllers.prospectDate.value,
                                 width: textFieldSize,
-                                onTap: () {
-                                  utils.datePicker(
+                                onTap: () async {
+                                  await utils.datePicker(
                                       isFutureDate: false,
                                       context: context,
-                                      textEditingController:
-                                          controllers.dateOfConCtr,
+                                      textEditingController: controllers.dateOfConCtr,
                                       pathVal: controllers.prospectDate);
+                                  if (!mounted) return;
                                   FocusScope.of(context).requestFocus(ob9);
                                 },
                               ),
@@ -1845,8 +1851,7 @@ class _AddLeadState extends State<AddLead> {
                                           value.toString().substring(1);
                                   if (newValue != value) {
                                     controllers.throughBy.value =
-                                        controllers.throughBy.value
-                                            .copyWith(
+                                        controllers.throughBy.value.copyWith(
                                           text: newValue,
                                           selection: TextSelection.collapsed(
                                               offset: newValue.length),
@@ -1858,7 +1863,7 @@ class _AddLeadState extends State<AddLead> {
                           ],
                         ),
                       ],
-                    ), ////Todo:Observation details
+                    ),
                     20.height,
                     Row(
                       children: [
@@ -2169,33 +2174,65 @@ class _AddLeadState extends State<AddLead> {
                             },
                             icon: Icon(Icons.add))
                       ],
-                    ), ////Todo:Address details
+                    ),
                     10.height,
                     Divider(
                       color: Colors.grey.shade400,
                       thickness: 1,
                     ),
                     20.height,
-                    Obx(()=>controllers.getColumn.value==false?
-                    CircularProgressIndicator():
-                    GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: controllers.addList.length,
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, // 2 items per row
-                        crossAxisSpacing: 50,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: 10,
-                      ),
-                      itemBuilder: (context, index) {
-                        final info = controllers.addList[index];
-                        return CustomTextField(
-                            hintText:info.fieldName.toString(),
-                            text:info.fieldName.toString(),width: textFieldSize,
-                            controller: info.controller!);
-                      },
-                    )),
+                    Obx(() {
+                      if (controllers.getColumn.value == false) {
+                        return const CircularProgressIndicator();
+                      }
+
+                      _syncNodes(controllers.addList.length);
+
+                      return GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        cacheExtent: 5000,
+                        itemCount: controllers.addList.length,
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 50,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: 10,
+                        ),
+                        itemBuilder: (context, index) {
+                          final info = controllers.addList[index];
+                          final isLast = index == controllers.addList.length - 1;
+
+                          return CustomTextField(
+                            focusNode: _gridNodes[index],
+                            hintText: info.fieldName.toString(),
+                            text: info.fieldName.toString(),
+                            width: textFieldSize,
+                            controller: info.controller!,
+                            textInputAction:
+                            isLast ? TextInputAction.done : TextInputAction.next,
+                            onEdit: () {
+                              if (!isLast) {
+                                final next = _gridNodes[index + 1];
+                                next.requestFocus();
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  final ctx = next.context;
+                                  if (ctx != null) {
+                                    Scrollable.ensureVisible(
+                                      ctx,
+                                      duration: const Duration(milliseconds: 200),
+                                      alignment: 0.3,
+                                    );
+                                  }
+                                });
+                              } else {
+                                FocusScope.of(context).unfocus();
+                              }
+                            },
+                          );
+                        },
+                      );
+                    }),
                     15.height,
                   ]),
                 ),

@@ -946,8 +946,8 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                             PopupMenuItem(
                                 value: "Promote",
                                 child: Text("Promote",
-                                    style:
-                                    TextStyle(color: colorsConst.textColor))),
+                                    style: TextStyle(
+                                        color: colorsConst.textColor))),
                             // PopupMenuItem(
                             //     value: "edit",
                             //     child: Text("Edit ${widget.pageName}",
@@ -955,13 +955,14 @@ class _CustomerNameTileState extends State<CustomerNameTile> {
                             PopupMenuItem(
                                 value: "mail",
                                 child: Text("Send Email",
-                                    style:
-                                    TextStyle(color: colorsConst.textColor))),
+                                    style: TextStyle(
+                                        color: colorsConst.textColor))),
                             PopupMenuItem(
                                 value: "Create Quotation",
                                 child: Text("Create Quotation",
-                                    style:
-                                    TextStyle(color: colorsConst.textColor))),
+                                    style: TextStyle(
+                                        color: colorsConst.textColor
+                                    ))),
                             // PopupMenuItem(
                             //     value: "Set a Reminder",
                             //     child: Text("Set a Reminder",

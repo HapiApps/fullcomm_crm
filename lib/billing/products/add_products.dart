@@ -1061,7 +1061,6 @@ class AddCatDialog extends StatefulWidget {
 }
 
 class _AddCatDialogState extends State<AddCatDialog> {
-  // ---------- FocusNodes ----------
   late FocusNode nameFN,
       skuFN,
       barcodeFN,
@@ -1076,24 +1075,24 @@ class _AddCatDialogState extends State<AddCatDialog> {
       looseNoFN,
       looseYesFN,
       saveFN;
+
   @override
   void initState() {
     super.initState();
-
-    nameFN = FocusNode();
-    skuFN = FocusNode();
-    barcodeFN = FocusNode();
-    generateFN = FocusNode();
-    categoryFN = FocusNode();
+    nameFN        = FocusNode();
+    skuFN         = FocusNode();
+    barcodeFN     = FocusNode();
+    generateFN    = FocusNode();
+    categoryFN    = FocusNode();
     subCategoryFN = FocusNode();
-    variationFN = FocusNode();
-    unitFN = FocusNode();
-    mrpFN = FocusNode();
-    outPriceFN = FocusNode();
-    inPriceFN = FocusNode();
-    looseNoFN = FocusNode();
-    looseYesFN = FocusNode();
-    saveFN = FocusNode();
+    variationFN   = FocusNode();
+    unitFN        = FocusNode();
+    mrpFN         = FocusNode();
+    outPriceFN    = FocusNode();
+    inPriceFN     = FocusNode();
+    looseNoFN     = FocusNode();
+    looseYesFN    = FocusNode();
+    saveFN        = FocusNode();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final p = context.read<BillingProvider>();
@@ -1170,7 +1169,8 @@ class _AddCatDialogState extends State<AddCatDialog> {
                           const Text("Add Category",
                               style: TextStyle(
                                   fontSize: 18, fontWeight: FontWeight.bold)),
-                          IconButton(onPressed: (){
+                          IconButton(
+                              onPressed: (){
                             Navigator.pop(context);
                           }, icon: Icon(Icons.clear))
                         ],

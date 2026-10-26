@@ -733,7 +733,7 @@ class SidebarItem extends StatelessWidget {
             remController.selectedReminderRange.value=null;
             remController.selectedCallRange.value=null;
             controllers.changeTab(0);
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               PageRouteBuilder(
                 pageBuilder: (context, animation1, animation2) => page!,
@@ -864,7 +864,7 @@ Widget subItem(BuildContext context, RxBool select, RxBool unSelect, String titl
             controllers.selectedIndex.value = index;
             select.value = true;
             // unSelect.value = false;
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               PageRouteBuilder(
                 pageBuilder: (context, animation1, animation2) => page,
