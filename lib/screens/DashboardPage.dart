@@ -462,7 +462,11 @@ void checkDate(){
                 screenWidth - 170:controllers.isLeftOpen.value==false&&controllers.isRightOpen.value==true?
                 screenWidth - 60:controllers.isLeftOpen.value==false&&controllers.isRightOpen.value==true?
                 screenWidth - 120:screenWidth - 60;
-                return controllers.isCrmData.value==false?Center(child: CircularProgressIndicator()):
+                return controllers.isCrmData.value==false?Container(
+                    width:width,
+                    height: MediaQuery.of(context).size.height,
+                    alignment: Alignment.center,
+                    child: Center(child: CircularProgressIndicator())):
                 Container(
                   width:width,
                   height: MediaQuery.of(context).size.height,

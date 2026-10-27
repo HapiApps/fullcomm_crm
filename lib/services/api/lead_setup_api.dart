@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/root/parse_route.dart';
 import 'package:http/http.dart' as http;
 import 'package:fullcomm_crm/common/constant/api.dart';
 import 'package:fullcomm_crm/common/utilities/jwt_storage.dart';
@@ -218,6 +219,7 @@ extension LeadSetupApi on ApiService {
       }
       if (request.statusCode == 200) {
         List response = json.decode(request.body);
+
         controllers.allLead.value = response.map<LeadStatusModel>((item) {
           return LeadStatusModel(
             leadStatus: item["lead_status"].toString(),
@@ -230,25 +232,57 @@ extension LeadSetupApi on ApiService {
             totalLead: item['total_lead'].toString(),
           );
         }).toList();
-        controllers.allLeadCategoryList.value =
-            response.map<LeadStatusModel>((item) {
-              return LeadStatusModel(
-                leadStatus: item["lead_status"].toString(),
-                value: item["value"].toString(),
-                id: item["id"].toString(),
-                icon1: item["icon1"].toString(),
-                icon2: item["icon2"].toString(),
-                displayOrder: item["display_order"],
-                active: item['active'].toString(),
-                totalLead: item['total_lead'].toString(),
-              );
-            }).toList();
+
+        controllers.allLeadCategoryList.value = response.map<LeadStatusModel>((item) {
+          return LeadStatusModel(
+            leadStatus: item["lead_status"].toString(),
+            value: item["value"].toString(),
+            id: item["id"].toString(),
+            icon1: item["icon1"].toString(),
+            icon2: item["icon2"].toString(),
+            displayOrder: item["display_order"],
+            active: item['active'].toString(),
+            totalLead: item['total_lead'].toString(),
+          );
+        }).toList();
+
+        _syncLeadCategoryList();
       } else {
         throw Exception('Failed to load album');
       }
     } catch (e) {
       throw Exception('Failed to load album');
     }
+  }
+
+  void _syncLeadCategoryList() {
+    final activeIds = controllers.allLeadCategoryList
+        .where((e) => e.active.toString() == "1")
+        .map((e) => e.id)
+        .toSet();
+
+    controllers.leadCategoryList.removeWhere((e) => !activeIds.contains(e.id));
+
+    final existingIds = controllers.leadCategoryList.map((e) => e.id).toSet();
+    for (final e in controllers.allLeadCategoryList) {
+      if (e.active.toString() == "1" && !existingIds.contains(e.id)) {
+        controllers.leadCategoryList.add(e);
+      }
+    }
+
+    for (final item in controllers.leadCategoryList) {
+      final fresh = controllers.allLeadCategoryList
+          .firstWhereOrNull((e) => e.id == item.id);
+      if (fresh != null) {
+        item.value = fresh.value;
+        item.displayOrder = fresh.displayOrder;
+        item.totalLead = fresh.totalLead;
+      }
+    }
+
+    controllers.leadCategoryList
+        .sort((a, b) => a.displayOrder.compareTo(b.displayOrder));
+    controllers.leadCategoryList.refresh();
   }
 
   Future getHeading() async {

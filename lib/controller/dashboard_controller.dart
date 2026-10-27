@@ -92,7 +92,6 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
       context: context,
       builder: (BuildContext context) {
         DateTimeRange? tempRange;
-
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
@@ -116,7 +115,6 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
                   startRangeSelectionColor: const Color(0xFF004AAD),
                   endRangeSelectionColor: const Color(0xFF004AAD),
                   rangeSelectionColor: const Color(0x22004AAD),
-                  // 👇 Already selected range
                   initialSelectedRange: dashController.selectedRange.value == null
                       ? null
                       : PickerDateRange(
@@ -244,6 +242,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
       },
     );
   }
+
   String _fmt(DateTime d) =>
       "${d.year}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
   bool canMoveForward() {
@@ -256,6 +255,7 @@ var date2="${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2, '
     return !DateTime(newEnd.year, newEnd.month, newEnd.day)
         .isAfter(DateTime(today.year, today.month, today.day));
   }
+
   int _shiftAmountForFilter(String filter) {
     switch (filter) {
       case "Last 7 Days":

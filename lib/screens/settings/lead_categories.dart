@@ -36,7 +36,12 @@ class _LeadCategoriesState extends State<LeadCategories> {
   var editIndex=100.obs;
   RxList<LeadStatusModel> lead=<LeadStatusModel>[].obs;
   List<FocusNode> nameFocusList = [];
-
+  FocusNode _focusFor(int index) {
+    while (nameFocusList.length <= index) {
+      nameFocusList.add(FocusNode());
+    }
+    return nameFocusList[index];
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -44,10 +49,10 @@ class _LeadCategoriesState extends State<LeadCategories> {
     if(controllers.allLeadCategoryList.isEmpty){
       apiService.getAllLeadCategories();
     }
-    nameFocusList = List.generate(
-      controllers.allLeadCategoryList.length,
-          (index) => FocusNode(),
-    );
+    // nameFocusList = List.generate(
+    //   controllers.allLeadCategoryList.length,
+    //       (index) => FocusNode(),
+    // );
     name = FocusNode();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       name.requestFocus();
@@ -64,6 +69,9 @@ class _LeadCategoriesState extends State<LeadCategories> {
   @override
   void dispose() {
     name.dispose();
+    for (final f in nameFocusList) {
+      f.dispose();
+    }
     super.dispose();
   }
   @override
@@ -228,14 +236,6 @@ class _LeadCategoriesState extends State<LeadCategories> {
                       borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(10),
                       ),
-                      // boxShadow: [
-                      //   BoxShadow(
-                      //     color: Colors.grey.withOpacity(0.3),
-                      //     blurRadius: 6,
-                      //     spreadRadius: 1,
-                      //     offset: const Offset(0, -1), // top shadow
-                      //   ),
-                      // ],
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -287,7 +287,6 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                 width:MediaQuery.of(context).size.width*0.2,
                                 height: 30,
                                 child: CustomSearchTextField(
-                                  // focusNode:focusNode,
                                   hintText: "Search Categories... ",
                                   controller: controllers.notesController,
                                   onChanged: (value) {
@@ -394,67 +393,27 @@ class _LeadCategoriesState extends State<LeadCategories> {
                         borderRadius: const BorderRadius.vertical(
                           bottom: Radius.circular(10),
                         ),
-                        // boxShadow: [
-                        //   BoxShadow(
-                        //     color: Colors.grey.withOpacity(0.3),
-                        //     blurRadius: 6,
-                        //     spreadRadius: 1,
-                        //     offset: const Offset(0, -1), // top shadow
-                        //   ),
-                        // ],
                       ),
                       child: Column(
                         children: [
                           Expanded(
                             child: ReorderableListView.builder(
-                              buildDefaultDragHandles: false, // default icon hide
-                              // shrinkWrap: true,
+                              buildDefaultDragHandles: false,
                               itemCount: controllers.allLeadCategoryList.length,
-                              // onReorder: (oldIndex, newIndex) async {
-                              //   if (newIndex > oldIndex) {
-                              //     newIndex -= 1;
-                              //   }
-                              //
-                              //   final item =
-                              //   controllers.allLeadCategoryList.removeAt(oldIndex);
-                              //   controllers.allLeadCategoryList.insert(newIndex, item);
-                              //
-                              //   // Only update display_order
-                              //   for (int i = 0; i < controllers.allLeadCategoryList.length; i++) {
-                              //     controllers.allLeadCategoryList[i].displayOrder = i+1;
-                              //   }
-                              //   isEdit.value = true;
-                              //   // print("${controllers.leadCategoryList}.....");
-                              //   controllers.update();
-                              // },
                               onReorder: (oldIndex, newIndex) async {
                                 if (newIndex > oldIndex) {
                                   newIndex -= 1;
                                 }
-
-                                final item =
-                                controllers.allLeadCategoryList.removeAt(oldIndex);
+                                final item = controllers.allLeadCategoryList.removeAt(oldIndex);
                                 controllers.allLeadCategoryList.insert(newIndex, item);
-
-                                // update display_order in allLeadCategoryList
                                 for (int i = 0; i < controllers.allLeadCategoryList.length; i++) {
                                   controllers.allLeadCategoryList[i].displayOrder = i + 1;
-                                  //
-                                  // // update same id in leadCategoryList
-                                  // int index = controllers.leadCategoryList.indexWhere(
-                                  //         (e) => e.id == controllers.allLeadCategoryList[i].id);
-                                  //
-                                  // if (index != -1) {
-                                  //   controllers.leadCategoryList[index].displayOrder = i + 1;
-                                  // }
                                 }
-
                                 isEdit.value = true;
                                 controllers.update();
                               },
                               itemBuilder: (context, index) {
                                 var data = controllers.allLeadCategoryList[index];
-
                                 return Padding(
                                   key: ValueKey(data.id),
                                   padding: const EdgeInsets.fromLTRB(10, 5, 10, 0),
@@ -498,7 +457,11 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                                           edit.value=true;
                                                           editIndex.value=index;
                                                           controllers.emailMessageCtr.text=data.value;
-                                                          FocusScope.of(context).requestFocus(nameFocusList[editIndex.value]);
+                                                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                            if (mounted) {
+                                                              FocusScope.of(context).requestFocus(_focusFor(index));
+                                                            }
+                                                          });
                                                         }
                                                       },
                                                       icon: editIndex.value==index?Icon(Icons.check):Image.asset("assets/images/lead5.png"),
@@ -568,7 +531,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                             SizedBox(
                                               width:140,
                                               child: TextField(
-                                                focusNode: nameFocusList[editIndex.value],
+                                                focusNode: _focusFor(index),
                                                 controller: controllers.emailMessageCtr,
                                                 decoration: InputDecoration(
                                                   border: UnderlineInputBorder(),
@@ -637,7 +600,9 @@ class _LeadCategoriesState extends State<LeadCategories> {
                                             child: Row(
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
-                                                Icon(Icons.circle,size: 8,color: data.active.toString()=="1"?Colors.green:Colors.orange,),5.width,
+                                                Icon(Icons.circle,size: 8,
+                                                  color: data.active.toString()=="1"?Colors.green:Colors.orange,),
+                                                5.width,
                                                 CustomText(
                                                     text: data.active.toString()=="1"?"Active":"In Active",
                                                     isCopy: false,
@@ -765,6 +730,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
       ),
     );
   }
+
   Future addCategories(BuildContext context,String ops,String id,int index) async {
     try {
       Map data = {
@@ -791,7 +757,7 @@ class _LeadCategoriesState extends State<LeadCategories> {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return addCategories(context,ops,id,index);
+          return await addCategories(context,ops,id,index);
         } else {
           controllers.setLogOut();
         }

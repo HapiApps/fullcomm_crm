@@ -1985,7 +1985,6 @@ class ReminderUtils {
                           children: [
                             CustomTextField(
                               hintText: "Set reminder for the Event",
-                              // hintText: "Enter Event Name",
                               text: "Set reminder for the Event",
                               controller: remController.titleController,
                               width: textFieldSize,
@@ -2084,7 +2083,7 @@ class ReminderUtils {
                                         pathVal: remController.stDate);
                                     if (startDError != null) {
                                       setState(() {
-                                        startDError = null; // clear error on typing
+                                        startDError = null;
                                       });
                                     }
                                   },
@@ -2168,7 +2167,6 @@ class ReminderUtils {
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  // Employees column - show red * dynamically based on selected type
                                   Consumer<ReminderProvider>(
                                     builder: (context, provider, _) {
                                       final sel = provider.selectedNotification ?? "";
@@ -2195,43 +2193,9 @@ class ReminderUtils {
                                                   )
                                               ],
                                             ),
-                                            ///Santhiya
-                                            // KeyboardDropdownField<AllEmployeesObj>(
-                                            //   items: controllers.employees,
-                                            //   borderRadius: 5,
-                                            //   borderColor: Colors.grey.shade300,
-                                            //   hintText: "Employees",
-                                            //   labelText: "",
-                                            //   labelBuilder: (customer) =>
-                                            //   '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                            //   itemBuilder: (customer) {
-                                            //     return Container(
-                                            //       width: 300,
-                                            //       alignment: Alignment.topLeft,
-                                            //       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                            //       child: CustomText(
-                                            //         text:
-                                            //         '${customer.name} ${customer.name.isEmpty ? "" : "-"} ${customer.phoneNo}',
-                                            //         colors: Colors.black,
-                                            //         size: 14,
-                                            //         isCopy:false,
-                                            //         textAlign: TextAlign.start,
-                                            //       ),
-                                            //     );
-                                            //   },
-                                            //   textEditingController: controllers.empController,
-                                            //   onSelected: (value) {
-                                            //     setState((){
-                                            //       employeeError=null;
-                                            //     });
-                                            //     controllers.selectEmployee(value);
-                                            //   },
-                                            //   onClear: () {
-                                            //     controllers.clearSelectedEmployee();
-                                            //   },
-                                            // ),
                                             SearchCustomDropdown(
-                                              text: "",isOptional: false,
+                                              text: "",
+                                              isOptional: false,
                                               hintText: remController.assignedNames.value==""?"":remController.assignedNames.value,
                                               valueList: controllers.employees,
                                               onChanged: (value) {
@@ -2505,21 +2469,6 @@ class ReminderUtils {
 
                               final needEmployee = selType == "followup" || (selType != "followup" && selType != "meeting");
                               final needCustomer = selType == "meeting" || (selType != "followup" && selType != "meeting");
-
-                              //Santhiya
-                              // if (remController.assignedNames.value=="") {
-                              // // if (needEmployee && controllers.selectedEmployeeId.value.isEmpty) {
-                              //   debugPrint("❌ Validation Failed => Employee Not Selected");
-                              //   setState(() {
-                              //     employeeError = "Please select employee";
-                              //   });
-                              //   controllers.productCtr.reset();
-                              //   return;
-                              // }else{
-                              //   setState(() {
-                              //     employeeError = null;
-                              //   });
-                              // }
 
                               if (needCustomer && controllers.selectedCustomerId.value.isEmpty) {
                                 setState(() {
@@ -2999,6 +2948,8 @@ class ReminderUtils {
   Widget reminderCard(int index,BuildContext context) {
     final reminder = remController.reminders[index];
     remController.reminders[index].titleController.text=remController.titleController.text;
+    print("Reminder Title: ${remController.titleController.text}");
+    print("Reminder Title from Controller: ${remController.reminders[index].titleController.text}");
     return  Container(
       //width: 550,
       padding: EdgeInsets.all(16),

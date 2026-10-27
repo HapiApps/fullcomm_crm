@@ -110,8 +110,8 @@ class _AddReminderState extends State<AddReminder> {
                           SizedBox(
                             width: textFieldSize,
                             child: CustomTextField(
-                              hintText: "Set reminder for the event",
-                              text: "Set reminder for the event",
+                              hintText: "Set reminder for the eventt",
+                              text: "Set reminder for the eventt",
                               controller: remController.titleController,
                               width: textFieldSize,
                               keyboardType: TextInputType.text,
@@ -131,7 +131,8 @@ class _AddReminderState extends State<AddReminder> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               8.height,
-                              CustomText(text: "Event Type",
+                              CustomText(
+                                text: "Event Type",
                                 colors: colorsConst.fieldHead,
                                 size: 13,
                                 isCopy: true,
@@ -422,17 +423,6 @@ class _AddReminderState extends State<AddReminder> {
                                     controllers.clearSelectedCustomer();
                                   },
                                 ),
-                                // if (customerError != null)
-                                //   Padding(
-                                //     padding:
-                                //     const EdgeInsets.only(top: 4.0),
-                                //     child: Text(
-                                //       customerError!,
-                                //       style: const TextStyle(
-                                //           color: Colors.red,
-                                //           fontSize: 13),
-                                //     ),
-                                //   ),
                               ],
                             ),
                           ),
