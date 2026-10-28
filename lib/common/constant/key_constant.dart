@@ -37,7 +37,7 @@ class InputFormatters {
 
   final List<TextInputFormatter> fifteenChars = [
     LengthLimitingTextInputFormatter(15),
-    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]"))
+    FilteringTextInputFormatter.allow(RegExp("[a-zA-Z ]"))
   ];
   final List<TextInputFormatter> decimalInput=[
     FilteringTextInputFormatter.allow(RegExp("[0-9.]"))

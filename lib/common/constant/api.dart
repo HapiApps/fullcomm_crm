@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 /// Dev
 const String domain      = "https://aruu.celwiz.com";
 const bool isRelease     = false;
-const String version     = "Version 0.0.14";
-const String versionNum  = "0.0.14";
+const String version     = "Version 0.0.15";
+const String versionNum  = "0.0.15";
 /// Prod
 // const String domain      = "https://aruu.in/";//Logo change panna nu
 // const bool isRelease     = true;

@@ -27,7 +27,6 @@ class SearchCustomDropdown<T> extends StatefulWidget {
 class _SearchCustomDropdownState extends State<SearchCustomDropdown> {
   //SingleSelectController searchCont = SingleSelectController;
   @override
-  @override
   Widget build(BuildContext context) {
     if (widget.valueList.isEmpty) {
       return SizedBox(

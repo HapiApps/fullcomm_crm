@@ -372,7 +372,7 @@ extension ActivityApi on ApiService {
       Map data = {
         "action": "update_meeting_details",
         "cus_id": controllers.selectedCustomerId.value,
-        "employee": controllers.selectedEmployeeId.value,
+        "employee": remController.assignedIds.value,
         "com_name": controllers.selectedCompanyName.value,
         "cus_name": controllers.selectedCustomerName.value,
         "title": controllers.meetingTitleCrt.text.trim(),
@@ -395,7 +395,7 @@ extension ActivityApi on ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return updateMeetingDetailsAPI(context, id);
+          return await updateMeetingDetailsAPI(context, id);
         } else {
           controllers.setLogOut();
         }
@@ -412,6 +412,8 @@ extension ActivityApi on ApiService {
         controllers.callCommentCont.text = "";
         Navigator.pop(context);
         controllers.productCtr.reset();
+        remController.assignedIds.value = "";
+        remController.assignedNames.value = "";
       } else {
         errorDialog(Get.context!, request.body);
         controllers.productCtr.reset();
@@ -449,7 +451,7 @@ extension ActivityApi on ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return updateAppointmentStatus(context, status);
+          return await updateAppointmentStatus(context, status);
         } else {
           controllers.setLogOut();
         }
@@ -501,7 +503,7 @@ extension ActivityApi on ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return getAllMeetingActivity(cusId);
+          return await getAllMeetingActivity(cusId);
         } else {
           controllers.setLogOut();
         }
@@ -553,7 +555,7 @@ extension ActivityApi on ApiService {
       if (request.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return getAllNoteActivity();
+          return await getAllNoteActivity();
         } else {
           controllers.setLogOut();
         }
@@ -593,7 +595,7 @@ extension ActivityApi on ApiService {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return allCommentDetails(id);
+          return await allCommentDetails(id);
         } else {
           controllers.setLogOut();
         }
@@ -648,7 +650,7 @@ extension ActivityApi on ApiService {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return allCommentReportDetails();
+          return await allCommentReportDetails();
         } else {
           controllers.setLogOut();
         }
@@ -700,7 +702,7 @@ extension ActivityApi on ApiService {
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return mailCommentDetails(id);
+          return await mailCommentDetails(id);
         } else {
           controllers.setLogOut();
         }

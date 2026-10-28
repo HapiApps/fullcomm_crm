@@ -360,8 +360,7 @@ class _GeneralSettingsState extends State<GeneralSettings> {
                                                   },
                                                   inputFormatters: constInputFormatters.fifteenChars,
                                                   focusNode: addFocus,
-                                                  decoration:
-                                                  const InputDecoration(
+                                                  decoration: const InputDecoration(
                                                     border: InputBorder.none,
                                                     contentPadding: EdgeInsets.fromLTRB(5, 0, 5, 15),
                                                   )

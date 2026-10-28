@@ -3208,41 +3208,44 @@ debugPrint("sortField ${sortField}");
       if (response.statusCode == 401) {
         final refreshed = await controllers.refreshToken();
         if (refreshed) {
-          return insertSeriesNo(context,isFetch);
+          return await insertSeriesNo(context,isFetch);
         } else {
           controllers.setLogOut();
         }
       }
       if (response.statusCode != 200) {
-        // debugPrint("SERVER ERROR");
+         debugPrint("SERVER ERROR");
         return;
       }
 
       final decoded = jsonDecode(response.body);
 
-      // ✅ Safety check
       if (decoded["status"] == "success" && decoded["data"] != null) {
 
-        List<Map<String, dynamic>> list =
-        List<Map<String, dynamic>>.from(decoded["data"]);
+        List<Map<String, dynamic>> list = List<Map<String, dynamic>>.from(decoded["data"]);
 
-        invoiceNo.value=list[0]["invoice"];
-        quotationNo.value=list[0]["quotation"];
-        comName.text=list[0]["c_name"];
-        comNumber.text=list[0]["c_no"];
-        comEmail.text=list[0]["c_email"];
-        comGSTNo.text=list[0]["gstin_no"];
-        comDoor.text=list[0]["door"];
-        comStreet.text=list[0]["street"];
-        comCity.text=list[0]["city"];
-        comState.text=list[0]["state"];
-        comCountry.text=list[0]["country"];
-        comPincode.text=list[0]["pincode"];
-        bankName.text=list[0]["bank"];
-        branchName.text=list[0]["branch"];
-        ifscCode.text=list[0]["ifsc"];
-        accNo.text=list[0]["acc_no"];
-        upiNo.text=list[0]["upi"];
+        invoiceNo.value   = list[0]["invoice"];
+        quotationNo.value = list[0]["quotation"];
+        comName.text      = list[0]["c_name"];
+        comNumber.text    = list[0]["c_no"];
+        comEmail.text     = list[0]["c_email"];
+        comGSTNo.text     = list[0]["gstin_no"];
+        comDoor.text      = list[0]["door"];
+        comStreet.text    = list[0]["street"];
+        comCity.text      = list[0]["city"];
+        comState.text     = list[0]["state"];
+        comCountry.text   = list[0]["country"];
+        comPincode.text   = list[0]["pincode"];
+        bankName.text     = list[0]["bank"];
+        branchName.text   = list[0]["branch"];
+        ifscCode.text     = list[0]["ifsc"];
+        accNo.text        = list[0]["acc_no"];
+        upiNo.text        = list[0]["upi"];
+
+      if(isFetch==false) {
+        utils.snackBar(
+            context: context, msg: "Saved successfully", color: Colors.green);
+      }
       } else {
         utils.snackBar(context: context, msg: "Failed", color: Colors.red);
       }
